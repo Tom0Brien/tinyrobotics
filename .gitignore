@@ -12,4 +12,5 @@ _deps
 data\*
 build\*
 **/build
-.vscode\*
+.vscode\
+settings.json

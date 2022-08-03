@@ -171,6 +171,19 @@ namespace RML {
 			}
 			return t;
 		}
+
+		/**
+         * @brief Cast an Eigen vector to std::vector.
+         * @param x the Eigen vector to be plotted
+         * @return the std::vector containing the elements of x
+         */
+        template <typename Scalar>
+        std::vector<Scalar> eigen_to_vec(const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& x) {
+            // Cast the Eigen vector to a std::vector
+            std::vector<Scalar> x_vec(x.data(), x.data() + x.rows() * x.cols());
+            return x_vec;
+        }
+
 }
 
 #endif

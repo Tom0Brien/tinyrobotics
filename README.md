@@ -31,6 +31,7 @@ This is a lightweight C++ library for modelling robots defined using a [URDF](ht
 - [Boost](https://www.boost.org/)
 - [autodiff](https://github.com/autodiff/autodiff)
 - [ifopt](https://github.com/ethz-adrl/ifopt)
+- [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)
 
 ### 2. Build with cmake
   ```bash
