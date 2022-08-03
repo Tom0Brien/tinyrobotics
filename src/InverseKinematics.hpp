@@ -69,7 +69,7 @@ namespace RML {
             VecBound bounds(GetRows());
             for(int i = 0; i < GetRows(); i++)
             {
-                bounds.at(i) = {-M_PI, M_PI};
+                bounds.at(i) = {-2*M_PI, 2*M_PI};
             }
             return bounds;
         }
@@ -147,11 +147,13 @@ namespace RML {
             std::shared_ptr<RobotModel<AutoDiffType>> _model,
             std::string& _source_link_name,
             std::string& _target_link_name,
-            const Eigen::Transform<Scalar, 3, Eigen::Affine>& _desired_pose) : CostTerm(name) {
+            const Eigen::Transform<Scalar, 3, Eigen::Affine>& _desired_pose,
+            const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& _q0 ) : CostTerm(name) {
             model = _model;
             source_link_name = _source_link_name;
             target_link_name = _target_link_name;
             desired_pose = _desired_pose;
+            q0 = _q0;
         }
 
         /// @brief The RobotModel used in the IK problem.
@@ -166,6 +168,9 @@ namespace RML {
         /// @brief The desired pose of the target link in the source link frame.
         Eigen::Transform<Scalar, 3, Eigen::Affine> desired_pose;
 
+        /// @brief The initial conditions for the IK solver.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q0;
+
 
         /**
          * @brief The cost function.
@@ -179,7 +184,8 @@ namespace RML {
                     const std::shared_ptr<RobotModel<AutoDiffType>> model,
                     const std::string& source_link_name,
                     const std::string& target_link_name,
-                    const Eigen::Transform<Scalar, 3, Eigen::Affine> desired_pose) {
+                    const Eigen::Transform<Scalar, 3, Eigen::Affine> Hst_desired,
+                    const Eigen::Matrix<AutoDiffType, Eigen::Dynamic, 1>& q0) {
             // Compute the forward kinematics from the source link to the target link using the current joint angles.
             Eigen::Transform<AutoDiffType, 3, Eigen::Affine> Hst_current = forward_kinematics(model, q, source_link_name, target_link_name);
 
@@ -189,7 +195,7 @@ namespace RML {
             rot2rpy<AutoDiffType>(Rst_current, Theta_st_current);
 
             // Compute the euler angles for desired
-            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> Rst_desired = desired_pose.linear();
+            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> Rst_desired = Hst_desired.linear();
             Eigen::Matrix<AutoDiffType, Eigen::Dynamic, 1> Theta_st_desired;
             rot2rpy<AutoDiffType>(Rst_desired, Theta_st_desired);
 
@@ -198,18 +204,13 @@ namespace RML {
             AutoDiffType orientation_error = (Eigen::Matrix<AutoDiffType, 3, 3>::Identity() - R_v_r).diagonal().sum();
             Eigen::Matrix<AutoDiffType, 1, 1> o_error;
             o_error(0,0) =  orientation_error;
-            // Compute axis angle equivalent for R_v_r 
-            // Eigen::AngleAxis<double> axis_angle = Eigen::AngleAxis<double>(R_v_r_d);
-            // // Compute the error vector
-            // using std::sin;
-            // Eigen::Matrix<AutoDiffType, 3, 1> error_vector = (axis_angleEigen::Matrix<double, 3, 1>(sin(axis_angle.axis().x()), sin(axis_angle.axis().y()), sin(axis_angle.axis().z()))).template cast<AutoDiffType>();
+            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, 1> q_diff = q - q0;
 
             // Quadratic cost function q^T*W*q + (k(q) - x*)^TK*(l(q) - x*)))
             Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> W = Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic>::Identity(model->n_q, model->n_q);
             Eigen::Matrix<AutoDiffType, 3, 3> K = Eigen::Matrix<AutoDiffType, 3, 3>::Identity();
-            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> cost = ((Hst_current.translation() - desired_pose.translation()).transpose() * 1 * K * (Hst_current.translation() - desired_pose.translation()))
-            + (q.transpose() * 1e-6 * W * q)
-            + o_error * 50 * o_error; //.transpose()  * 1 * K 
+            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> cost = ((Hst_current.translation() - Hst_desired.translation()).transpose() * 50 * K * (Hst_current.translation() - Hst_desired.translation()))
+            + (q - q0).transpose() * 1e-1 * W * (q - q0) + o_error.transpose() * 10 * o_error;
             return cost;
         }
 
@@ -223,7 +224,7 @@ namespace RML {
             Eigen::Matrix<AutoDiffType, Eigen::Dynamic, 1> q_auto(GetVariables()->GetComponent("configuration_vector")->GetValues());
 
             // Evaluate the cost function
-            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> cost_val = cost(q_auto, model, source_link_name, target_link_name, desired_pose);
+            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> cost_val = cost(q_auto, model, source_link_name, target_link_name, desired_pose, q0);
 
             return val(cost_val(0, 0));
         };
@@ -240,10 +241,10 @@ namespace RML {
                 // The output vector F = f(x) evaluated together with Jacobian matrix below
                 Eigen::Matrix<AutoDiffType, 1, 1> F;
 
-                // Compute the jacobian
-                Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> J = jacobian(cost, wrt(q_auto), at(q_auto, model, source_link_name, target_link_name, desired_pose), F);
+                // Compute the Jacobian
+                Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> J = jacobian(cost, wrt(q_auto), at(q_auto, model, source_link_name, target_link_name, desired_pose, q0), F);
 
-                // Fill the jacobian block
+                // Fill the Jacobian block
                 jac.resize(J.rows(), J.cols());
                 for(int i = 0; i < model->n_q; i++) {
                     jac.coeffRef(0, i) = J(0, i);
@@ -276,16 +277,16 @@ namespace RML {
             Problem nlp;
             nlp.AddVariableSet  (std::make_shared<IKVariables<double>>("configuration_vector", model, q0));
             // nlp.AddConstraintSet(std::make_shared<IKConstraint<double>>());
-            nlp.AddCostSet      (std::make_shared<IKCost<double, autodiff::dual>>("IK_cost", autodiff_model, source_link_name, target_link_name, desired_pose));
-
+            nlp.AddCostSet      (std::make_shared<IKCost<double, autodiff::dual>>("IK_cost", autodiff_model, source_link_name, target_link_name, desired_pose, q0));
             // nlp.PrintCurrent();
 
             // 2. Choose solver and options
             IpoptSolver ipopt;
-            ipopt.SetOption("linear_solver", "mumps");
+            ipopt.SetOption("linear_solver", "ma57");
             ipopt.SetOption("jacobian_approximation", "exact");
-            ipopt.SetOption("max_iter", 250);
-            ipopt.SetOption("acceptable_tol", 1e-9);
+            ipopt.SetOption("max_iter", 1000);
+            ipopt.SetOption("tol", 1e-6);
+            
             // 3. Solve
             ipopt.Solve(nlp);
             Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q = nlp.GetOptVariables()->GetValues();

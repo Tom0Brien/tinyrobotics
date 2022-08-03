@@ -9,7 +9,7 @@
 // Load the robot model from a URDF file
 std::shared_ptr<RML::RobotModel<double>> robot_model = RML::RobotModel<double>::from_urdf("data/urdfs/simple.urdf");
 
-TEST_CASE("Test forward kinematics", "[Kinematics]"){
+TEST_CASE("Test forward kinematics", "[ForwardKinematics]"){
     // Compute FK for a given configuration
     Eigen::VectorXd q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
@@ -31,7 +31,7 @@ TEST_CASE("Test forward kinematics", "[Kinematics]"){
 
 };
 
-TEST_CASE("Test forward kinematics to centre of mass", "[Kinematics]"){
+TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]"){
     // Compute FK for a given configuration
     Eigen::VectorXd q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
@@ -52,7 +52,7 @@ TEST_CASE("Test forward kinematics to centre of mass", "[Kinematics]"){
 
 }
 
-TEST_CASE ("Test translation geometric jacobian", "[Kinematics]") {
+TEST_CASE ("Test translation geometric jacobian", "[ForwardKinematics]") {
     // Compute the translation geometric jacobian of the left foot wrt the ground
     Eigen::VectorXd q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
@@ -80,12 +80,43 @@ TEST_CASE ("Test translation geometric jacobian", "[Kinematics]") {
     CHECK(Jv(2,3) - J_expected(2,3) < 1e-8);
 };
 
+#include <ifopt/problem.h>
+#include <ifopt/ipopt_solver.h>
+#include "test_vars_constr_cost.h"
+
+using namespace ifopt;
+
+TEST_CASE ("Test autodiff jacobian", "[InverseKinematics]") {
+  // 1. define the problem
+  Problem nlp;
+  nlp.AddVariableSet  (std::make_shared<ExVariables>());
+  nlp.AddConstraintSet(std::make_shared<ExConstraint>());
+  nlp.AddCostSet      (std::make_shared<ExCost>());
+  nlp.PrintCurrent();
+
+  // 2. choose solver and options
+  IpoptSolver ipopt;
+  ipopt.SetOption("linear_solver", "mumps");
+  ipopt.SetOption("jacobian_approximation", "exact");
+
+  // 3 . solve
+  ipopt.Solve(nlp);
+  Eigen::VectorXd x = nlp.GetOptVariables()->GetValues();
+  std::cout << x.transpose() << std::endl;
+
+  // 4. test if solution correct
+  double eps = 1e-5; //double precision
+  assert(1.0-eps < x(0) && x(0) < 1.0+eps);
+  assert(0.0-eps < x(1) && x(1) < 0.0+eps);
+}
+
 #include <chrono>
 using namespace std::chrono;
 
-TEST_CASE ("Test inverse kinematics simple", "[Kinematics]") {
-    const int ITERATIONS = 1000;
+TEST_CASE ("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
+    const int ITERATIONS = 500;
     std::shared_ptr<RML::RobotModel<double>> nugus_model = RML::RobotModel<double>::from_urdf("data/urdfs/nugus.urdf");
+    auto total_time = duration<double>::zero();
     for(int i = 0; i < ITERATIONS; ++i){
         // Make a random configuration
         Eigen::VectorXd q_random = nugus_model->random_configuration();
@@ -95,11 +126,12 @@ TEST_CASE ("Test inverse kinematics simple", "[Kinematics]") {
         std::string source_link_name = "torso";
         Hst_desired = RML::forward_kinematics(nugus_model, q_random, source_link_name, target_link_name);
         // Compute the inverse kinematics for the random desired transform
-        Eigen::VectorXd q0 = nugus_model->home_configuration();
+        Eigen::VectorXd q0 = q_random + 0.1*nugus_model->random_configuration();
         auto start = high_resolution_clock::now();
         Eigen::VectorXd q_solution = RML::inverse_kinematics(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
+        total_time += duration;
         std::cout << "Duration [ms]: " << duration.count() << std::endl;
         // Compute the forward kinematics for the solution
         Eigen::Transform<double, 3, Eigen::Affine> Hst_solution;
@@ -113,19 +145,24 @@ TEST_CASE ("Test inverse kinematics simple", "[Kinematics]") {
 
         Eigen::Matrix<double, 3, 3> R_error = Rst_desired * Rst_solution.transpose();
         double orientation_error = (Eigen::Matrix<double, 3, 3>::Identity() - R_error).diagonal().sum();
+
         // Check that the solution is close to the desired transform
         std::cout << "Hst_desired.translation(): " << Hst_desired.translation().transpose() << std::endl;
         std::cout << "Hst_solution.translation(): " << Hst_solution.translation().transpose() << std::endl;
         std::cout << "Hst_desired [r,p,y]: " << Hst_desired.linear().eulerAngles(0,1,2).transpose() << std::endl;
         std::cout << "Hst_solution [r,p,y]: " << Hst_solution.linear().eulerAngles(0,1,2).transpose() << std::endl;
+        std::cout << "q_random: " << q_random.transpose() << std::endl;
+        std::cout << "q0: " << q0.transpose() << std::endl;
+        std::cout << "q_solution: " << q_solution.transpose() << std::endl;
 
-        // REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
-        REQUIRE(orientation_error < 5e-1);
+        REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
+        REQUIRE(orientation_error < 1e-1);
     }
+    std::cout << "Average duration [ms]: " << total_time.count()/ITERATIONS << std::endl;
 }
 
 // TEST_CASE ("Test inverse kinematics Kuka", "[Kinematics]") {
-//     const int ITERATIONS = 1000;
+//     const int ITERATIONS = 10;
 //     std::shared_ptr<RML::RobotModel<double>> kuka_model = RML::RobotModel<double>::from_urdf("data/urdfs/kuka.urdf");
 //     kuka_model->show_details();
 
@@ -138,7 +175,7 @@ TEST_CASE ("Test inverse kinematics simple", "[Kinematics]") {
 //         std::string source_link_name = "calib_kuka_arm_base_link";
 //         Hst_desired = RML::forward_kinematics(kuka_model, q_random, source_link_name, target_link_name);
 //         // Compute the inverse kinematics for the random desired transform
-//         Eigen::VectorXd q0 = kuka_model->home_configuration();
+//         Eigen::VectorXd q0 = q_random + 0.2*kuka_model->random_configuration();
 //         auto start = high_resolution_clock::now();
 //         Eigen::VectorXd q_solution = RML::inverse_kinematics(kuka_model, source_link_name, target_link_name, Hst_desired, q0);
 //         auto stop = high_resolution_clock::now();
@@ -147,12 +184,28 @@ TEST_CASE ("Test inverse kinematics simple", "[Kinematics]") {
 //         // Compute the forward kinematics for the solution
 //         Eigen::Transform<double, 3, Eigen::Affine> Hst_solution;
 //         Hst_solution = RML::forward_kinematics(kuka_model, q_solution, source_link_name, target_link_name);
+
+//         // Compute the euler angles for current
+//         Eigen::Matrix<double, 3, 3> Rst_solution = Hst_solution.linear();
+
+//         // Compute the euler angles for desired
+//         Eigen::Matrix<double, 3, 3> Rst_desired = Hst_desired.linear();
+
+//         Eigen::Matrix<double, 3, 3> R_error = Rst_desired * Rst_solution.transpose();
+//         double orientation_error = (Eigen::Matrix<double, 3, 3>::Identity() - R_error).diagonal().sum();
+
 //         // Check that the solution is close to the desired transform
 //         std::cout << "Hst_desired.translation(): " << Hst_desired.translation().transpose() << std::endl;
 //         std::cout << "Hst_solution.translation(): " << Hst_solution.translation().transpose() << std::endl;
 //         std::cout << "Hst_desired [r,p,y]: " << Hst_desired.linear().eulerAngles(0,1,2).transpose() << std::endl;
 //         std::cout << "Hst_solution [r,p,y]: " << Hst_solution.linear().eulerAngles(0,1,2).transpose() << std::endl;
+//         std::cout << "q_random: " << q_random.transpose() << std::endl;
+//         std::cout << "q0: " << q0.transpose() << std::endl;
+//         std::cout << "q_solution: " << q_solution.transpose() << std::endl;
 
 //         REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
+//         REQUIRE(orientation_error < 1e-1);
 //     }
 // }
+
+

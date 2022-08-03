@@ -30,7 +30,7 @@ This is a lightweight C++ library for modelling robots defined using a [URDF](ht
 - [Catch2](https://github.com/catchorg/Catch2)
 - [Boost](https://www.boost.org/)
 - [autodiff](https://github.com/autodiff/autodiff)
-- [ifopt](https://github.com/ethz-adrl/ifopt)
+- [ifopt](https://github.com/ethz-adrl/ifopt) with MA57 solver from https://www.hsl.rl.ac.uk/ipopt/
 - [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)
 
 ### 2. Build with cmake
