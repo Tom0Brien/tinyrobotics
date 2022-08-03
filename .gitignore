@@ -12,3 +12,4 @@ _deps
 data\*
 build\*
 **/build
+.vscode\*
