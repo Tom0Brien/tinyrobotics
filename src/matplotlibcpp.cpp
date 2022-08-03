@@ -52,6 +52,7 @@
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <iostream>
 
 #include "matplotlibcpp.hpp"
 
@@ -348,15 +349,15 @@ bool plot(const Eigen::Ref<const Eigen::MatrixXd>& x_raw,
           const std::map<std::string, std::string>& keywords) {
   initPython();
 
-//   CHECK(x_raw.cols() == 1 || x_raw.rows() == 1);
-//   CHECK(y_raw.cols() == 1 || y_raw.rows() == 1);
+  assert(x_raw.cols() == 1 || x_raw.rows() == 1);
+  assert(y_raw.cols() == 1 || y_raw.rows() == 1);
 
   Eigen::Map<const Eigen::VectorXd> x(
       x_raw.data(), x_raw.rows() == 1 ? x_raw.cols() : x_raw.rows());
   Eigen::Map<const Eigen::VectorXd> y(
       y_raw.data(), y_raw.rows() == 1 ? y_raw.cols() : y_raw.rows());
 
-//   CHECK(x.size() == y.size());
+  assert(x.size() == y.size());
 
   // using python lists
   PyObject* xlist = PyList_New(x.size());
@@ -401,8 +402,8 @@ bool plot(const Eigen::Ref<const Eigen::MatrixXd>& x_raw,
           const std::string& s) {
   initPython();
 
-//   CHECK(x_raw.cols() == 1 || x_raw.rows() == 1);
-//   CHECK(y_raw.cols() == 1 || y_raw.rows() == 1);
+  assert(x_raw.cols() == 1 || x_raw.rows() == 1);
+  assert(y_raw.cols() == 1 || y_raw.rows() == 1);
 
   Eigen::Map<const Eigen::VectorXd> x(
       x_raw.data(), x_raw.rows() == 1 ? x_raw.cols() : x_raw.rows());
@@ -446,7 +447,7 @@ bool labelPlot(const std::string& name,
   initPython();
 
   assert(x_raw.cols() == 1 || x_raw.rows() == 1);
-//   CHECK(y_raw.cols() == 1 || y_raw.rows() == 1);
+  assert(y_raw.cols() == 1 || y_raw.rows() == 1);
 
   Eigen::Map<const Eigen::VectorXd> x(
       x_raw.data(), x_raw.rows() == 1 ? x_raw.cols() : x_raw.rows());
@@ -466,8 +467,8 @@ bool labelPlot(const std::string& name,
     PyObject* f_xi = PyFloat_FromDouble(x(i));
     PyObject* f_yi = PyFloat_FromDouble(y(i));
     if (!f_xi || !f_yi) {
-    //   VLOG(1) << "MPL: value could not be converted to PyFloat:" << x(i) << ", "
-    //           << y(i);
+      std::cout << "MPL: value could not be converted to PyFloat:" << x(i) << ", "
+              << y(i) << std::endl;
       continue;
     }
     PyList_SetItem(xlist, i, PyFloat_FromDouble(x(i)));
