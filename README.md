@@ -8,11 +8,14 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
 ## Features
 - URDF parsing
 - Forward Kinematics
+- Inverse Kinematics with [Ipopt](https://coin-or.github.io/Ipopt/) interface [ifopt](https://github.com/ethz-adrl/ifopt)
 - Automatic differentiation support with [autodiff](https://github.com/autodiff/autodiff)
 - Plotting with [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)
+
+
 ### TODO: 
-- Inverse Kinematics with [Ipopt](https://coin-or.github.io/Ipopt/) interface [ifopt](https://github.com/ethz-adrl/ifopt)
 - Geometric Jacobians
+- Centre of mass
 - Dynamics:
    - Full model dynamics
    - Holonomic reduction
