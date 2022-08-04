@@ -10,8 +10,9 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
 - Forward Kinematics
 - Automatic differentiation support with [autodiff](https://github.com/autodiff/autodiff)
 - Plotting with [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)
-### TODO: 
 - Inverse Kinematics with [Ipopt](https://coin-or.github.io/Ipopt/) interface [ifopt](https://github.com/ethz-adrl/ifopt)
+
+### TODO: 
 - Geometric Jacobians
 - Dynamics:
    - Full model dynamics
