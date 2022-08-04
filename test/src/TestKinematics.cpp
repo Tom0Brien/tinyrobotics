@@ -88,7 +88,7 @@ using namespace ifopt;
 #include <chrono>
 using namespace std::chrono;
 
-TEST_CASE ("Test autodiff jacobian", "[InverseKinematics]") {
+TEST_CASE ("Test autodiff jacobian", "[ForwardKinematics]") {
     // 1. define the problem
     Problem nlp;
     nlp.AddVariableSet  (std::make_shared<ExVariables>());
@@ -114,6 +114,29 @@ TEST_CASE ("Test autodiff jacobian", "[InverseKinematics]") {
     assert(1.0-eps < x(0) && x(0) < 1.0+eps);
     assert(0.0-eps < x(1) && x(1) < 0.0+eps);
 }
+
+TEST_CASE("Test centre of mass calculations for simple model", "[ForwardKinematics]") {
+    // Create a configuration for the robot
+    Eigen::VectorXd q = robot_model->home_configuration();
+    q << 1, 2, 3, 4;
+    // Compute the centre of mass of robot with respect to the ground
+    std::string source_link_name = "ground";
+    Eigen::Vector3d com = RML::centre_of_mass(robot_model, q, source_link_name);
+    // Check that the centre of mass is correct
+    Eigen::Vector3d com_expected;
+    com_expected << 0.9230, 0, 2.2055;
+    REQUIRE(com.isApprox(com_expected, 1e-4));
+
+    // Create another configuration for the robot
+    q << 4, 3, 2, 1;
+    // Compute the centre of mass of robot with respect to the ground
+    com = RML::centre_of_mass(robot_model, q, source_link_name);
+    // Check that the centre of mass is correct
+    com_expected << 4.2188, 0, 2.9845;
+    REQUIRE(com.isApprox(com_expected, 1e-4));
+}
+
+
 
 TEST_CASE ("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
     const int ITERATIONS = 25;
@@ -208,5 +231,6 @@ TEST_CASE ("Test inverse kinematics Kuka", "[Kinematics]") {
         REQUIRE(orientation_error < 1e-1);
     }
 }
+
 
 

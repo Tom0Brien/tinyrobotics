@@ -180,16 +180,36 @@ namespace RML {
             return Jv;
         }
 
-        // /**
-        //  * @brief Computes the centre of mass expressed in source link frame.
-        //  *
-        //  * @param source_link_id The link from which the centre of mass position is computed.
-        //  * @param q The configuration vector of the robot model.
-        //  *
-        //  * @return The centre of mass position expressed in source link frame.
-        //  */
-        // Eigen::Matrix<Scalar, 3, 1> centre_of_mass(int source_link_id,
-        //                                            const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q) const;
+        /**
+         * @brief Computes the centre of mass expressed in source link frame.
+         * @param model The robot model.
+         * @param q The configuration vector of the robot model.
+         * @param source_link_name The link from which the centre of mass position is computed.
+         *
+         * @return The centre of mass position expressed in source link frame.
+         */
+        template <typename Scalar>
+        Eigen::Matrix<Scalar, 3, 1> centre_of_mass(std::shared_ptr<RobotModel<Scalar>> model,
+            const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
+            std::string& source_link_name) {
+
+            // Assert the configuration vector is valid
+            assert(q.size() == model->n_q);
+
+            // For each link in the model, compute the transform from the source link to the CoM of the link
+            Scalar total_mass = 0;
+            Eigen::Matrix<Scalar, 3, 1> rISs = Eigen::Matrix<Scalar, 3, 1>::Zero();
+            for (auto link = model->links.begin(); link != model->links.end(); link++) {
+                // Compute the transform from the source link to the CoM of the link
+                Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = forward_kinematics_com(model, q, source_link_name, link->second->name);
+                // Compute the centre of mass of the link
+                rISs = rISs + Hsc.translation() * link->second->mass;
+                // Add the links mass to the total mass
+                total_mass += link->second->mass;
+            }
+            // Compute the centre of mass  from the source link
+            return rISs/total_mass;
+        }
 
 }  //namespace RML
 

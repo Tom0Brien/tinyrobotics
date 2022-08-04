@@ -36,7 +36,7 @@ namespace RML {
         Eigen::Matrix<Scalar, 6, 1> inertia = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
         /// @brief The links mass [kg].
-        double mass = 0;
+        Scalar mass = 0;
 
         /// @brief The links parent link.
         std::shared_ptr<Link<Scalar>> parent_link = nullptr;
