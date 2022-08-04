@@ -80,7 +80,7 @@ namespace RML {
     };
 
     /**
-     * @brief Defines the constraints for the IK problem
+     * @brief Defines the constraints for the IK problem (not currently used)
      * @param
      */
     template <typename Scalar>
@@ -278,14 +278,14 @@ namespace RML {
             nlp.AddVariableSet  (std::make_shared<IKVariables<double>>("configuration_vector", model, q0));
             // nlp.AddConstraintSet(std::make_shared<IKConstraint<double>>());
             nlp.AddCostSet      (std::make_shared<IKCost<double, autodiff::dual>>("IK_cost", autodiff_model, source_link_name, target_link_name, desired_pose, q0));
-            // nlp.PrintCurrent();
-
+ 
             // 2. Choose solver and options
             IpoptSolver ipopt;
             ipopt.SetOption("linear_solver", "ma57");
             ipopt.SetOption("jacobian_approximation", "exact");
             ipopt.SetOption("max_iter", 1000);
             ipopt.SetOption("tol", 1e-6);
+            ipopt.SetOption("print_level", 0);
             
             // 3. Solve
             ipopt.Solve(nlp);
