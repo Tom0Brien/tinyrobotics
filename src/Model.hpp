@@ -129,30 +129,31 @@ namespace RML {
             model->find_base(parent_link_tree);
 
             return model;
+            return model;
         }
 
         /**
          * @brief Initialize the link tree of the robot model.
          *
          */
-        void init_link_tree(map<string, string>& parent_link_tree) {
+        void init_link_tree(std::map<std::string, std::string>& parent_link_tree) {
             // Set count to zero
             int joint_q_index = 0;
             n_q = 0;
 
             for (auto joint = joints.begin(); joint != joints.end(); joint++) {
 
-                string parent_link_name = joint->second->parent_link_name;
-                string child_link_name = joint->second->child_link_name;
+                std::string parent_link_name = joint->second->parent_link_name;
+                std::string child_link_name = joint->second->child_link_name;
 
                 if (parent_link_name.empty()){
-                    ostringstream error_msg;
+                    std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Joint [" << joint->first
                             << "] is missing a parent link specification.";
                     throw std::runtime_error(error_msg.str());
                 }
                 if (child_link_name.empty()) {
-                    ostringstream error_msg;
+                    std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Joint [" << joint->first
                             << "] is missing a child link specification.";
                     throw std::runtime_error(error_msg.str());
@@ -160,7 +161,7 @@ namespace RML {
 
                 auto child_link = get_link(child_link_name);
                 if (child_link == nullptr) {
-                    ostringstream error_msg;
+                    std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Child link [" << child_link_name
                             << "] of joint [" <<  joint->first << "] not found";
                     throw std::runtime_error(error_msg.str());
@@ -168,7 +169,7 @@ namespace RML {
 
                 auto parent_link = get_link(parent_link_name);
                 if (parent_link == nullptr) {
-                    ostringstream error_msg;
+                    std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Parent link [" << parent_link_name
                             << "] of joint [" <<  joint->first << "] not found";
                     throw std::runtime_error(error_msg.str());
@@ -205,14 +206,14 @@ namespace RML {
          * @brief Find the base link of the robot model.
          *
          */
-        void find_base(const map<string, string> &parent_link_tree) {
+        void find_base(const std::map<std::string, std::string> &parent_link_tree) {
             for (auto l=links.begin(); l!=links.end(); l++) {
                 auto parent = parent_link_tree.find(l->first);
                 if (parent == parent_link_tree.end()) {
                     if (base_link == nullptr) {
                         base_link = get_link(l->first);
                     } else {
-                        ostringstream error_msg;
+                        std::ostringstream error_msg;
                         error_msg << "Error! Multiple base links found: (" << base_link->name
                                 << ") and (" + l->first + ")!";
                         throw std::runtime_error(error_msg.str());
@@ -278,7 +279,7 @@ namespace RML {
          */
         void show_details() {
             int spacing = 25;
-            cout << "| ************************************************ Robot Model Details ************************************************ |" << endl;
+            std::cout << "| ************************************************ Robot Model Details ************************************************ |" << std::endl;
             std::cout << "Name : " << name << std::endl;
             std::cout << "No. of links : " << n_links << std::endl;
             std::cout << "No. of joints : " << n_joints << std::endl;
@@ -292,12 +293,10 @@ namespace RML {
             "Parent Name" << std::setw(spacing) <<
             "Children Names" << std::endl;
             for (auto& link : this->get_links()) {
-
                 std::string children_names = "";
                 for (auto& child_link : link->child_joints) {
                     children_names += child_link->name + " ";
                 }
-
                 if(link->joint != nullptr) {
                     std::cout << link->id << std::setw(spacing) <<
                     link->name << std::setw(spacing) <<
