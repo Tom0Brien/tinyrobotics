@@ -2,12 +2,12 @@
 #include "catch2/catch.hpp"
 #include <string>
 
-#include "../../src/RobotModel.hpp"
+#include "../../src/Model.hpp"
 #include "../../src/ForwardKinematics.hpp"
 #include "../../src/InverseKinematics.hpp"
 
 // Load the robot model from a URDF file
-std::shared_ptr<RML::RobotModel<double>> robot_model = RML::RobotModel<double>::from_urdf("data/urdfs/simple.urdf");
+std::shared_ptr<RML::Model<double>> robot_model = RML::Model<double>::from_urdf("data/urdfs/simple.urdf");
 
 TEST_CASE("Test forward kinematics", "[ForwardKinematics]"){
     // Compute FK for a given configuration
@@ -168,7 +168,7 @@ TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKine
 }
 
 TEST_CASE("Test geometric_jacobian calculations for nugus model", "[ForwardKinematics]") {
-    // std::shared_ptr<RML::RobotModel<double>> nugus_model = RML::RobotModel<double>::from_urdf("data/urdfs/nugus.urdf");
+    // std::shared_ptr<RML::Model<double>> nugus_model = RML::Model<double>::from_urdf("data/urdfs/nugus.urdf");
     // // Create a configuration for the robot
     // Eigen::VectorXd q = nugus_model->home_configuration();
     // nugus_model->show_details();
@@ -193,7 +193,7 @@ TEST_CASE("Test geometric_jacobian calculations for nugus model", "[ForwardKinem
 
 TEST_CASE ("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
     const int ITERATIONS = 25;
-    std::shared_ptr<RML::RobotModel<double>> nugus_model = RML::RobotModel<double>::from_urdf("data/urdfs/nugus.urdf");
+    std::shared_ptr<RML::Model<double>> nugus_model = RML::Model<double>::from_urdf("data/urdfs/nugus.urdf");
     double total_time = 0;
     for(int i = 0; i < ITERATIONS; ++i){
         // Make a random configuration
@@ -204,7 +204,7 @@ TEST_CASE ("Test inverse kinematics simple with initial conditions close to solu
         std::string source_link_name = "torso";
         Hst_desired = RML::forward_kinematics(nugus_model, q_random, source_link_name, target_link_name);
         // Compute the inverse kinematics for the random desired transform
-        Eigen::VectorXd q0 = q_random + 0.1*nugus_model->random_configuration();
+        Eigen::VectorXd q0 = q_random + 0.05*nugus_model->random_configuration();
         auto start = high_resolution_clock::now();
         Eigen::VectorXd q_solution = RML::inverse_kinematics(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
         auto stop = high_resolution_clock::now();
@@ -229,6 +229,7 @@ TEST_CASE ("Test inverse kinematics simple with initial conditions close to solu
         // std::cout << "Hst_solution.translation(): " << Hst_solution.translation().transpose() << std::endl;
         // std::cout << "Hst_desired [r,p,y]: " << Hst_desired.linear().eulerAngles(0,1,2).transpose() << std::endl;
         // std::cout << "Hst_solution [r,p,y]: " << Hst_solution.linear().eulerAngles(0,1,2).transpose() << std::endl;
+        // std::cout << "orientation_error:  " << orientation_error << std::endl;
         // std::cout << "q_random: " << q_random.transpose() << std::endl;
         // std::cout << "q0: " << q0.transpose() << std::endl;
         // std::cout << "q_solution: " << q_solution.transpose() << std::endl;
@@ -236,12 +237,12 @@ TEST_CASE ("Test inverse kinematics simple with initial conditions close to solu
         REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
         REQUIRE(orientation_error < 1e-1);
     }
-    // std::cout << "Average duration [ms]: " << total_time/ITERATIONS << std::endl;
+    std::cout << "Average duration [ms]: " << total_time/ITERATIONS << std::endl;
 }
 
 TEST_CASE ("Test inverse kinematics Kuka", "[Kinematics]") {
     const int ITERATIONS = 25;
-    std::shared_ptr<RML::RobotModel<double>> kuka_model = RML::RobotModel<double>::from_urdf("data/urdfs/kuka.urdf");
+    std::shared_ptr<RML::Model<double>> kuka_model = RML::Model<double>::from_urdf("data/urdfs/kuka.urdf");
 
     for(int i = 0; i < ITERATIONS; ++i){
         // Make a random configuration

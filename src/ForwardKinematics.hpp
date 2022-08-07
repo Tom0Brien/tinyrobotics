@@ -11,7 +11,7 @@
 #include <autodiff/forward/real.hpp>
 #include <autodiff/forward/real/eigen.hpp>
 
-#include "RobotModel.hpp"
+#include "Model.hpp"
 #include "txml.h"
 
 using namespace autodiff;
@@ -27,7 +27,7 @@ namespace RML {
          * @return The transform between the two links.
          */
         template <typename Scalar>
-        Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const std::shared_ptr<RobotModel<Scalar>> model,
+        Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const std::shared_ptr<Model<Scalar>> model,
             const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q, const std::string& source_link_name, const std::string& target_link_name) {
             std::shared_ptr<Link<Scalar>> current_link = model->get_link(source_link_name);
 
@@ -51,7 +51,7 @@ namespace RML {
          * @return The transform between the two links.
          */
         template <typename Scalar>
-        Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const std::shared_ptr<RobotModel<Scalar>> model,
+        Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const std::shared_ptr<Model<Scalar>> model,
             const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q, const std::string& target_link_name) {
 
             // Assert the configuration vector is valid
@@ -100,7 +100,7 @@ namespace RML {
          * @return The transform between the two links.
          */
         template <typename Scalar>
-        Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(std::shared_ptr<RobotModel<Scalar>> model,
+        Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(std::shared_ptr<Model<Scalar>> model,
             const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q, std::string& source_link_name, std::string& target_link_name) {
             // Assert the configuration vector is valid
             // assert(q.size() == model->n_q); TODO: FIX THIS FOR AUTODIFF
@@ -124,7 +124,7 @@ namespace RML {
          * @return The configuration vector of the robot model which achieves the desired pose.
          */
         template <typename Scalar>
-        inline Eigen::Matrix<Scalar, Eigen::Dynamic, 1> position(std::shared_ptr<RobotModel<Scalar>> model,
+        inline Eigen::Matrix<Scalar, Eigen::Dynamic, 1> position(std::shared_ptr<Model<Scalar>> model,
                     const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
                     std::string& source_link_name,
                     std::string& target_link_name) {
@@ -142,7 +142,7 @@ namespace RML {
          * @return The rotation matrix between the source and target link
          */
         template <typename Scalar>
-        inline Eigen::Matrix<Scalar,3, 3> orientation(std::shared_ptr<RobotModel<Scalar>> model,
+        inline Eigen::Matrix<Scalar,3, 3> orientation(std::shared_ptr<Model<Scalar>> model,
                     const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
                     std::string& source_link_name,
                     std::string& target_link_name) {
@@ -160,7 +160,7 @@ namespace RML {
          */
         template <typename Scalar>
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jv(
-            std::shared_ptr<RobotModel<Scalar>> model,
+            std::shared_ptr<Model<Scalar>> model,
             Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
             std::string& source_link_name,
             std::string& target_link_name) {
@@ -170,7 +170,7 @@ namespace RML {
 
             // Cast q and model to autodiff type
             Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> q_real(q); // the input vector q
-            std::shared_ptr<RML::RobotModel<autodiff::real>> autodiff_model;
+            std::shared_ptr<RML::Model<autodiff::real>> autodiff_model;
             autodiff_model = model->template cast<autodiff::real>();
             // The output vector F = f(x) evaluated together with Jacobian matrix below
             Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> F;
@@ -189,7 +189,7 @@ namespace RML {
          */
         template <typename Scalar>
         Eigen::Matrix<Scalar, 6, Eigen::Dynamic> geometric_jacobian(
-            std::shared_ptr<RobotModel<Scalar>> model,
+            std::shared_ptr<Model<Scalar>> model,
             Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
             std::string& target_link_name) {
 
@@ -243,7 +243,7 @@ namespace RML {
          * @return The centre of mass position expressed in source link frame.
          */
         template <typename Scalar>
-        Eigen::Matrix<Scalar, 3, 1> centre_of_mass(std::shared_ptr<RobotModel<Scalar>> model,
+        Eigen::Matrix<Scalar, 3, 1> centre_of_mass(std::shared_ptr<Model<Scalar>> model,
             const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
             std::string& source_link_name) {
 

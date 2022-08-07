@@ -14,7 +14,7 @@
 #include <ifopt/ipopt_solver.h>
 
 
-#include "RobotModel.hpp"
+#include "Model.hpp"
 #include "ForwardKinematics.hpp"
 #include "Common.hpp"
 #include "txml.h"
@@ -36,7 +36,7 @@ namespace RML {
          * @brief Every variable set has a name, here "var_set1". this allows the constraints
          * and costs to define values and Jacobians specifically w.r.t this variable set.
          */
-        IKVariables(const std::string& name, std::shared_ptr<RobotModel<Scalar>> _model, Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q0) : VariableSet(_model->n_q, name)
+        IKVariables(const std::string& name, std::shared_ptr<Model<Scalar>> _model, Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q0) : VariableSet(_model->n_q, name)
         {
             // the initial values where the NLP starts iterating from
             q.resize(_model->n_q);
@@ -144,7 +144,7 @@ namespace RML {
         public:
         IKCost() : IKCost("IK_cost") {}
         IKCost(const std::string& name,
-            std::shared_ptr<RobotModel<AutoDiffType>> _model,
+            std::shared_ptr<Model<AutoDiffType>> _model,
             std::string& _source_link_name,
             std::string& _target_link_name,
             const Eigen::Transform<Scalar, 3, Eigen::Affine>& _desired_pose,
@@ -156,8 +156,8 @@ namespace RML {
             q0 = _q0;
         }
 
-        /// @brief The RobotModel used in the IK problem.
-        std::shared_ptr<RobotModel<AutoDiffType>> model;
+        /// @brief The Model used in the IK problem.
+        std::shared_ptr<Model<AutoDiffType>> model;
 
         /// @brief The name of the source link.
         std::string source_link_name;
@@ -181,7 +181,7 @@ namespace RML {
          * @return The configuration vector of the robot model which achieves the desired pose.
          */
         static inline Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> cost(const Eigen::Matrix<AutoDiffType, Eigen::Dynamic, 1>& q,
-                    const std::shared_ptr<RobotModel<AutoDiffType>> model,
+                    const std::shared_ptr<Model<AutoDiffType>> model,
                     const std::string& source_link_name,
                     const std::string& target_link_name,
                     const Eigen::Transform<Scalar, 3, Eigen::Affine> Hst_desired,
@@ -209,8 +209,8 @@ namespace RML {
             // Quadratic cost function q^T*W*q + (k(q) - x*)^TK*(l(q) - x*)))
             Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> W = Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic>::Identity(model->n_q, model->n_q);
             Eigen::Matrix<AutoDiffType, 3, 3> K = Eigen::Matrix<AutoDiffType, 3, 3>::Identity();
-            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> cost = ((Hst_current.translation() - Hst_desired.translation()).transpose() * 50 * K * (Hst_current.translation() - Hst_desired.translation()))
-            + (q - q0).transpose() * 1e-1 * W * (q - q0) + o_error.transpose() * 10 * o_error;
+            Eigen::Matrix<AutoDiffType, Eigen::Dynamic, Eigen::Dynamic> cost = ((Hst_current.translation() - Hst_desired.translation()).transpose() * 10 * K * (Hst_current.translation() - Hst_desired.translation()))
+            + (q - q0).transpose() * 1e-1 * W * (q - q0) + o_error.transpose() * 100 * o_error;
             return cost;
         }
 
@@ -263,14 +263,14 @@ namespace RML {
      * @return The configuration vector of the robot model which achieves the desired pose.
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, Eigen::Dynamic, 1> inverse_kinematics(std::shared_ptr<RobotModel<Scalar>> model,
+    Eigen::Matrix<Scalar, Eigen::Dynamic, 1> inverse_kinematics(std::shared_ptr<Model<Scalar>> model,
         std::string& source_link_name,
         std::string& target_link_name,
         const Eigen::Transform<Scalar, 3, Eigen::Affine>& desired_pose,
         Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q0) {
 
             // Cast model to autodiff type
-            std::shared_ptr<RML::RobotModel<autodiff::dual>> autodiff_model;
+            std::shared_ptr<RML::Model<autodiff::dual>> autodiff_model;
             autodiff_model = model->template cast<autodiff::dual>();
 
             // 1. Define the problem
@@ -282,6 +282,9 @@ namespace RML {
             // 2. Choose solver and options
             IpoptSolver ipopt;
             ipopt.SetOption("linear_solver", "ma57");
+            ipopt.SetOption("ma57_automatic_scaling", "no");
+            ipopt.SetOption("linear_scaling_on_demand", "no");
+            ipopt.SetOption("mu_strategy", "adaptive");
             ipopt.SetOption("jacobian_approximation", "exact");
             ipopt.SetOption("max_iter", 1000);
             ipopt.SetOption("tol", 1e-6);

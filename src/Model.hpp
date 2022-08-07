@@ -1,5 +1,5 @@
-#ifndef RML_ROBOTMODEL_HPP
-#define RML_ROBOTMODEL_HPP
+#ifndef RML_MODEL_HPP
+#define RML_MODEL_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -22,7 +22,7 @@ namespace RML {
      * @param Scalar The scalar type for the robot model
      */
     template <typename Scalar>
-    class RobotModel {
+    class Model {
 
         public:
 
@@ -51,12 +51,12 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
         /**
-         * @brief Construct a new RobotModel object from URDF file description.
+         * @brief Construct a new Model object from URDF file description.
          * @param xml_string The XML string of the URDF file.
          */
-        static std::shared_ptr<RobotModel<Scalar>> from_urdf(const std::string& path_to_urdf) {
+        static std::shared_ptr<Model<Scalar>> from_urdf(const std::string& path_to_urdf) {
 
-            std::shared_ptr<RobotModel<Scalar>> model = std::make_shared<RobotModel<Scalar>>();
+            std::shared_ptr<Model<Scalar>> model = std::make_shared<Model<Scalar>>();
             // Parse the URDF file into a string
             std::ifstream input_file(path_to_urdf);
             if (!input_file.is_open()) {
@@ -339,9 +339,9 @@ namespace RML {
          *
          */
         template<typename NewScalar>
-        std::shared_ptr<RobotModel<NewScalar>> cast() {
-            std::shared_ptr<RobotModel<NewScalar>> new_model;
-            new_model = std::make_shared<RobotModel<NewScalar>>();
+        std::shared_ptr<Model<NewScalar>> cast() {
+            std::shared_ptr<Model<NewScalar>> new_model;
+            new_model = std::make_shared<Model<NewScalar>>();
             new_model->name = name;
             new_model->n_links = n_links;
             new_model->n_joints = n_joints;

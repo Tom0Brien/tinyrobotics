@@ -2,14 +2,14 @@
 #include "catch2/catch.hpp"
 #include <string>
 
-#include "../../src/RobotModel.hpp"
+#include "../../src/Model.hpp"
 
-TEST_CASE ("Load a model with inertial information", "[RobotModel]") {
+TEST_CASE ("Load a model with inertial information", "[Model]") {
     // Create a robot model
-    std::shared_ptr<RML::RobotModel<double>> robot_model;
+    std::shared_ptr<RML::Model<double>> robot_model;
 
     // Load the robot model from a URDF file
-    robot_model = RML::RobotModel<double>::from_urdf("data/urdfs/simple.urdf");
+    robot_model = RML::Model<double>::from_urdf("data/urdfs/simple.urdf");
 
     CHECK(robot_model->name == "compass_gait");
 
@@ -65,15 +65,15 @@ TEST_CASE ("Load a model with inertial information", "[RobotModel]") {
 
 };
 
-TEST_CASE ("Cast a RobotModel from double to float", "[RobotModel]") {
+TEST_CASE ("Cast a Model from double to float", "[Model]") {
     // Create a robot model
-    std::shared_ptr<RML::RobotModel<double>> robot_model_double;
+    std::shared_ptr<RML::Model<double>> robot_model_double;
 
     // Load the robot model from a URDF file
-    robot_model_double = RML::RobotModel<double>::from_urdf("data/urdfs/simple.urdf");
+    robot_model_double = RML::Model<double>::from_urdf("data/urdfs/simple.urdf");
 
     // Cast the model to a different type
-    std::shared_ptr<RML::RobotModel<float>> robot_model_float = robot_model_double->template cast<float>();
+    std::shared_ptr<RML::Model<float>> robot_model_float = robot_model_double->template cast<float>();
 
     CHECK(robot_model_float->name == "compass_gait");
 
@@ -133,15 +133,15 @@ TEST_CASE ("Cast a RobotModel from double to float", "[RobotModel]") {
 // #include <autodiff/forward/real/eigen.hpp>
 // using namespace autodiff;
 
-// TEST_CASE ("Cast a RobotModel from double to autodiff::real", "[RobotModel]") {
+// TEST_CASE ("Cast a Model from double to autodiff::real", "[Model]") {
 //     // Create a robot model
-//     std::shared_ptr<RML::RobotModel<double>> robot_model_double;
+//     std::shared_ptr<RML::Model<double>> robot_model_double;
 
 //     // Load the robot model from a URDF file
-//     robot_model_double = RML::RobotModel<double>::from_urdf("data/urdfs/simple.urdf");
+//     robot_model_double = RML::Model<double>::from_urdf("data/urdfs/simple.urdf");
 
 //     // Cast the model to a different type
-//     std::shared_ptr<RML::RobotModel<autodiff::real>> autodiff_model;
+//     std::shared_ptr<RML::Model<autodiff::real>> autodiff_model;
 //     autodiff_model = robot_model_double->template cast<autodiff::real>();
 
 //     CHECK(autodiff_model->name == "compass_gait");
@@ -201,15 +201,15 @@ TEST_CASE ("Cast a RobotModel from double to float", "[RobotModel]") {
 #include <autodiff/forward/dual.hpp>
 #include <autodiff/forward/dual/eigen.hpp>
 
-TEST_CASE ("Cast a RobotModel from double to autodiff::dual", "[RobotModel]") {
+TEST_CASE ("Cast a Model from double to autodiff::dual", "[Model]") {
     // Create a robot model
-    std::shared_ptr<RML::RobotModel<double>> robot_model_double;
+    std::shared_ptr<RML::Model<double>> robot_model_double;
 
     // Load the robot model from a URDF file
-    robot_model_double = RML::RobotModel<double>::from_urdf("data/urdfs/simple.urdf");
+    robot_model_double = RML::Model<double>::from_urdf("data/urdfs/simple.urdf");
 
     // Cast the model to a different type
-    std::shared_ptr<RML::RobotModel<autodiff::dual>> autodiff_model;
+    std::shared_ptr<RML::Model<autodiff::dual>> autodiff_model;
     autodiff_model = robot_model_double->template cast<autodiff::dual>();
 
     CHECK(autodiff_model->name == "compass_gait");

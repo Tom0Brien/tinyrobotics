@@ -9,7 +9,7 @@
 #include <sstream>
 #include <map>
 
-#include "RobotModel.hpp"
+#include "Model.hpp"
 #include "ForwardKinematics.hpp"
 
 #include "autodiff/forward/real.hpp"
@@ -45,12 +45,12 @@ namespace RML {
     // };
 
     // /**
-    //  * @brief Construct a new RobotModel object from URDF file description.
+    //  * @brief Construct a new Model object from URDF file description.
     //  * @param model The robot model.
     //  * @param q The joint configuration of the robot.
     //  */
     // template <typename Scalar>
-    // void compute_dynamics(std::shared_ptr<RobotModel<Scalar>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q) {
+    // void compute_dynamics(std::shared_ptr<Model<Scalar>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q) {
     //     // Create Dynamics object for the model
     //     std::shared_ptr<Dynamics<Scalar>> dynamics = std::make_shared<Dynamics<Scalar>>();
 
@@ -61,7 +61,7 @@ namespace RML {
     //     // Cast q to autodiff::real
     //     Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> q_real(q);
     //     // Cast model to autodiff::real
-    //     std::shared_ptr<RobotModel<autodiff::real>> model_real = model->template cast<autodiff::real>();
+    //     std::shared_ptr<Model<autodiff::real>> model_real = model->template cast<autodiff::real>();
     //     // Create over parametrised system
     //     for (auto link = model_real->links.begin(); link != model_real->links.end(); link++) {
     //         // Compute FK to centre of mass
@@ -116,7 +116,7 @@ namespace RML {
     //  * @param fc The holonomic constraints.
     //  * @return The mass matrix of the robot model.
     //  */
-    // holonomic_reduction(std::shared_ptr<RobotModel<Scalar>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q){
+    // holonomic_reduction(std::shared_ptr<Model<Scalar>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q){
     //     // Cast q and model to autodiff type
     //     VectorXreal q_real(q); // the input vector q
 
