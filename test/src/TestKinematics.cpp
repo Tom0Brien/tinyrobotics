@@ -7,7 +7,7 @@
 #include "catch2/catch.hpp"
 
 // Load the robot model from a URDF file
-std::shared_ptr<RML::Model<double>> robot_model = RML::Model<double>::from_urdf("data/urdfs/simple.urdf");
+std::shared_ptr<RML::Model<double, 4>> robot_model = RML::Model<double, 4>::from_urdf("data/urdfs/simple.urdf");
 
 TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
     // Compute FK for a given configuration
@@ -170,9 +170,9 @@ TEST_CASE("Test geometric_jacobian calculations for nugus model", "[ForwardKinem
 
 
 TEST_CASE("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
-    const int ITERATIONS                            = 25;
-    std::shared_ptr<RML::Model<double>> nugus_model = RML::Model<double>::from_urdf("data/urdfs/nugus.urdf");
-    double total_time                               = 0;
+    const int ITERATIONS                                = 25;
+    std::shared_ptr<RML::Model<double, 20>> nugus_model = RML::Model<double, 20>::from_urdf("data/urdfs/nugus.urdf");
+    double total_time                                   = 0;
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
         Eigen::VectorXd q_random = nugus_model->random_configuration();
@@ -185,7 +185,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
         Eigen::VectorXd q0 = q_random + 0.05 * nugus_model->random_configuration();
         auto start         = high_resolution_clock::now();
         Eigen::VectorXd q_solution =
-            RML::inverse_kinematics(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
+            RML::inverse_kinematics<double, 20>(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
         auto stop     = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
         total_time += duration.count();
@@ -220,8 +220,8 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
 }
 
 TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
-    const int ITERATIONS                           = 25;
-    std::shared_ptr<RML::Model<double>> kuka_model = RML::Model<double>::from_urdf("data/urdfs/kuka.urdf");
+    const int ITERATIONS                              = 25;
+    std::shared_ptr<RML::Model<double, 7>> kuka_model = RML::Model<double, 7>::from_urdf("data/urdfs/kuka.urdf");
 
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
@@ -235,7 +235,7 @@ TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
         Eigen::VectorXd q0 = q_random + 0.1 * kuka_model->random_configuration();
         auto start         = high_resolution_clock::now();
         Eigen::VectorXd q_solution =
-            RML::inverse_kinematics(kuka_model, source_link_name, target_link_name, Hst_desired, q0);
+            RML::inverse_kinematics<double, 7>(kuka_model, source_link_name, target_link_name, Hst_desired, q0);
         auto stop     = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
         // std::cout << "Duration milliseconds: " << duration.count() << std::endl;
@@ -256,7 +256,8 @@ TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
         // std::cout << "Hst_desired.translation(): " << Hst_desired.translation().transpose() << std::endl;
         // std::cout << "Hst_solution.translation(): " << Hst_solution.translation().transpose() << std::endl;
         // std::cout << "Hst_desired [r,p,y]: " << Hst_desired.linear().eulerAngles(0,1,2).transpose() << std::endl;
-        // std::cout << "Hst_solution [r,p,y]: " << Hst_solution.linear().eulerAngles(0,1,2).transpose() << std::endl;
+        // std::cout << "Hst_solution [r,p,y]: " << Hst_solution.linear().eulerAngles(0,1,2).transpose() <<
+        // std::endl;
         // std::cout << "q_random: " << q_random.transpose() << std::endl;
         // std::cout << "q0: " << q0.transpose() << std::endl;
         // std::cout << "q_solution: " << q_solution.transpose() << std::endl;

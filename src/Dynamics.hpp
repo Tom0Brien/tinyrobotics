@@ -17,7 +17,7 @@ using namespace autodiff;
 
 namespace RML {
 
-    // template <typename Scalar>
+    // template <typename Scalar, int nq>
     // struct Dynamics {
 
     //     /// @brief The mass matrix of the model
@@ -48,8 +48,9 @@ namespace RML {
     //  * @param model The robot model.
     //  * @param q The joint configuration of the robot.
     //  */
-    // template <typename Scalar>
-    // void compute_dynamics(std::shared_ptr<Model<Scalar>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q) {
+    // template <typename Scalar, int nq>
+    // void compute_dynamics(std::shared_ptr<Model<Scalar, nq>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>&
+    // q) {
     //     // Create Dynamics object for the model
     //     std::shared_ptr<Dynamics<Scalar>> dynamics = std::make_shared<Dynamics<Scalar>>();
 
@@ -120,7 +121,7 @@ namespace RML {
     //  * @param fc The holonomic constraints.
     //  * @return The mass matrix of the robot model.
     //  */
-    // holonomic_reduction(std::shared_ptr<Model<Scalar>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q){
+    // holonomic_reduction(std::shared_ptr<Model<Scalar, nq>> model, const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q){
     //     // Cast q and model to autodiff type
     //     VectorXreal q_real(q); // the input vector q
 

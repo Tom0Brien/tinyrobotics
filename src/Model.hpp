@@ -21,7 +21,7 @@ namespace RML {
      * @details
      * @param Scalar The scalar type for the robot model
      */
-    template <typename Scalar>
+    template <typename Scalar, int nq>
     class Model {
 
     public:
@@ -53,9 +53,9 @@ namespace RML {
          * @brief Construct a new Model object from URDF file description.
          * @param xml_string The XML string of the URDF file.
          */
-        static std::shared_ptr<Model<Scalar>> from_urdf(const std::string& path_to_urdf) {
+        static std::shared_ptr<Model<Scalar, nq>> from_urdf(const std::string& path_to_urdf) {
 
-            std::shared_ptr<Model<Scalar>> model = std::make_shared<Model<Scalar>>();
+            std::shared_ptr<Model<Scalar, nq>> model = std::make_shared<Model<Scalar, nq>>();
             // Parse the URDF file into a string
             std::ifstream input_file(path_to_urdf);
             if (!input_file.is_open()) {
@@ -311,9 +311,9 @@ namespace RML {
          * @brief Get a configuration vector for the robot model of all zeros.
          *
          */
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> home_configuration() const {
+        Eigen::Matrix<Scalar, nq, 1> home_configuration() const {
             assert(n_q > 0);
-            Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q(n_q);
+            Eigen::Matrix<Scalar, nq, 1> q(n_q);
             q.setZero();
             return q;
         }
@@ -322,9 +322,9 @@ namespace RML {
          * @brief Get a random configuration vector for the robot model.
          *
          */
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> random_configuration() const {
+        Eigen::Matrix<Scalar, nq, 1> random_configuration() const {
             assert(n_q > 0);
-            Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q(n_q);
+            Eigen::Matrix<Scalar, nq, 1> q(n_q);
             q.setRandom();
             q = M_PI * q;
             return q;
@@ -334,10 +334,10 @@ namespace RML {
          * @brief Cast to NewScalar type.
          *
          */
-        template <typename NewScalar>
-        std::shared_ptr<Model<NewScalar>> cast() {
-            std::shared_ptr<Model<NewScalar>> new_model;
-            new_model            = std::make_shared<Model<NewScalar>>();
+        template <typename NewScalar, int New_nq>
+        std::shared_ptr<Model<NewScalar, New_nq>> cast() {
+            std::shared_ptr<Model<NewScalar, New_nq>> new_model;
+            new_model            = std::make_shared<Model<NewScalar, New_nq>>();
             new_model->name      = name;
             new_model->n_links   = n_links;
             new_model->n_joints  = n_joints;

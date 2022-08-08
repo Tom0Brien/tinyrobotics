@@ -22,10 +22,10 @@ int main(int argc, char* argv[]) {
     using std::chrono::milliseconds;
 
     // Create a robot model
-    std::shared_ptr<RML::Model<double>> robot_model;
+    std::shared_ptr<RML::Model<double, 4>> robot_model;
 
     // Load the robot model from a URDF file
-    robot_model = RML::Model<double>::from_urdf("../data/urdfs/simple.urdf");
+    robot_model = RML::Model<double, 4>::from_urdf("../data/urdfs/simple.urdf");
 
     // Show details of the robot model
     robot_model->show_details();
