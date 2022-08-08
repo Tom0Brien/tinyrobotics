@@ -4,99 +4,6 @@
 #include "txml.h"
 
 namespace RML {
-
-    using std::atan2;
-    using std::cos;
-    using std::pow;
-    using std::sin;
-    using std::sqrt;
-
-    /**
-     * @brief Convert rotation matrix to euler angles Thetaxy = [Roll, Pitch, Yaw]
-     */
-    template <typename Scalar>
-    void rot2rpy(const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& Rxy,
-                 Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Thetaxy) {
-        assert(Rxy.rows() == 3);
-        assert(Rxy.cols() == 3);
-        Thetaxy.resize(3, 1);
-        Thetaxy << atan2(Rxy(2, 1), Rxy(2, 2)), atan2(-Rxy(2, 0), sqrt(pow(Rxy(2, 1), 2) + pow(Rxy(2, 2), 2))),
-            atan2(Rxy(1, 0), Rxy(0, 0));
-    }
-
-    /**
-     * @brief Convert rotation matrix to euler angles Thetaxy = [Roll, Pitch, Yaw]
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, Eigen::Dynamic, 1> rot2rpy(const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& Rxy) {
-        assert(Rxy.rows() == 3);
-        assert(Rxy.cols() == 3);
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> Thetaxy;
-        Thetaxy.resize(3, 1);
-        Thetaxy << std::atan2(Rxy(2, 1), Rxy(2, 2)),
-            std::atan2(-Rxy(2, 0), std::sqrt(pow(Rxy(2, 1), 2) + std::pow(Rxy(2, 2), 2))),
-            std::atan2(Rxy(1, 0), Rxy(0, 0));
-        return Thetaxy;
-    }
-
-    /**
-     * @brief Rotation matrix around x-axis
-     */
-    template <typename Scalar>
-    void rotx(const Scalar& x, Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& R) {
-        R.resize(3, 3);
-        R << 1, 0, 0, 0, cos(x), -sin(x), 0, sin(x), cos(x);
-    }
-
-    /**
-     * @brief Rotation matrix around y-axis
-     */
-    template <typename Scalar>
-    void roty(const Scalar& x, Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& R) {
-        R.resize(3, 3);
-        R << cos(x), 0, sin(x), 0, 1, 0, -sin(x), 0, cos(x);
-    }
-
-    /**
-     * @brief Rotation matrix around z-axis
-     */
-    template <typename Scalar>
-    void rotz(const Scalar& x, Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& R) {
-        R.resize(3, 3);
-        R << cos(x), -sin(x), 0, sin(x), cos(x), 0, 0, 0, 1;
-    }
-
-    /**
-     * @brief Convert euler angles Thetaxy = [Roll, Pitch, Yaw] to rotation matrix
-     */
-    template <typename Scalar>
-    void rpy2rot(const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Thetaxy,
-                 Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& Rxy) {
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Rx;
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Ry;
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Rz;
-        rotz(Thetaxy(2), Rz);
-        roty(Thetaxy(1), Ry);
-        rotx(Thetaxy(0), Rx);
-        Rxy.resize(3, 3);
-        Rxy = Rz * Ry * Rx;
-    }
-    /**
-     * @brief Convert euler angles Thetaxy = [Roll, Pitch, Yaw] to rotation matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> rpy2rot(
-        const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& Thetaxy) {
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Rx;
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Ry;
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Rz;
-        rotz(Thetaxy(2), Rz);
-        roty(Thetaxy(1), Ry);
-        rotx(Thetaxy(0), Rx);
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Rxy = Rz * Ry * Rx;
-        return Rxy;
-    }
-
     /**
      * @brief Get Eigen3 vector from the XML element.
      * @param xml The XML element
@@ -140,8 +47,10 @@ namespace RML {
     template <typename Scalar>
     Eigen::Matrix<Scalar, 3, 3> rot_from_string(const std::string& rotation_str) {
         Eigen::Matrix<Scalar, Eigen::Dynamic, 1> rpy = vec_from_string<Scalar>(rotation_str);
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> R;
-        R = rpy2rot(rpy);
+        Eigen::Matrix<Scalar, 3, 3> R;
+        R = Eigen::AngleAxis<Scalar>(rpy.x(), Eigen::Matrix<Scalar, 3, 1>::UnitX())
+            * Eigen::AngleAxis<Scalar>(rpy.y(), Eigen::Matrix<Scalar, 3, 1>::UnitY())
+            * Eigen::AngleAxis<Scalar>(rpy.z(), Eigen::Matrix<Scalar, 3, 1>::UnitZ());
         return R;
     }
 
