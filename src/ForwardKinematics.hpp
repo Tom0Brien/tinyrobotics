@@ -26,7 +26,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const std::shared_ptr<Model<Scalar, nq>> model,
-                                                                  const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
+                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& source_link_name,
                                                                   const std::string& target_link_name) {
         std::shared_ptr<Link<Scalar>> current_link = model->get_link(source_link_name);
@@ -52,7 +52,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const std::shared_ptr<Model<Scalar, nq>> model,
-                                                                  const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
+                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& target_link_name) {
 
         // Assert the configuration vector is valid
@@ -101,7 +101,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(std::shared_ptr<Model<Scalar, nq>> model,
-                                                                      const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
+                                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                       std::string& source_link_name,
                                                                       std::string& target_link_name) {
         // Assert the configuration vector is valid
@@ -127,13 +127,13 @@ namespace RML {
      * @return The configuration vector of the robot model which achieves the desired pose.
      */
     template <typename Scalar, int nq>
-    inline Eigen::Matrix<Scalar, Eigen::Dynamic, 1> position(std::shared_ptr<Model<Scalar, nq>> model,
-                                                             const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
-                                                             std::string& source_link_name,
-                                                             std::string& target_link_name) {
+    inline Eigen::Matrix<Scalar, 3, 1> position(std::shared_ptr<Model<Scalar, nq>> model,
+                                                const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                std::string& source_link_name,
+                                                std::string& target_link_name) {
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> rTSs(Hst.translation());
+        Eigen::Matrix<Scalar, 3, 1> rTSs(Hst.translation());
         return rTSs;
     }
 
@@ -148,7 +148,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     inline Eigen::Matrix<Scalar, 3, 3> orientation(std::shared_ptr<Model<Scalar, nq>> model,
-                                                   const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
+                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                    std::string& source_link_name,
                                                    std::string& target_link_name) {
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
@@ -165,20 +165,20 @@ namespace RML {
      * @return The translation component of the geometric Jacobian between two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jv(std::shared_ptr<Model<Scalar, nq>> model,
-                                                             Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
-                                                             std::string& source_link_name,
-                                                             std::string& target_link_name) {
+    Eigen::Matrix<Scalar, 3, nq> Jv(std::shared_ptr<Model<Scalar, nq>> model,
+                                    Eigen::Matrix<Scalar, nq, 1>& q,
+                                    std::string& source_link_name,
+                                    std::string& target_link_name) {
 
         // Assert the configuration vector is valid
         assert(q.size() == model->n_q);
 
         // Cast q and model to autodiff type
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> q_real(q);  // the input vector q
+        Eigen::Matrix<autodiff::real, nq, 1> q_real(q);  // the input vector q
         std::shared_ptr<RML::Model<autodiff::real, nq>> autodiff_model;
-        autodiff_model = model->template cast<autodiff::real, 4>();
+        autodiff_model = model->template cast<autodiff::real, nq>();
         // The output vector F = f(x) evaluated together with Jacobian matrix below
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> F;
+        Eigen::Matrix<autodiff::real, 3, 1> F;
         // Evaluate the output vector F and the Jacobian matrix dF/dx
         Eigen::MatrixXd Jv = jacobian(position<autodiff::real, nq>,
                                       wrt(q_real),
@@ -196,17 +196,11 @@ namespace RML {
      * @return The geometric jacobian between the base and the target link.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 6, Eigen::Dynamic> geometric_jacobian(std::shared_ptr<Model<Scalar, nq>> model,
-                                                                Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
-                                                                std::string& target_link_name) {
-
-        // Assert the configuration vector is valid
-        assert(q.size() == model->n_q);
-
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(std::shared_ptr<Model<Scalar, nq>> model,
+                                                    Eigen::Matrix<Scalar, nq, 1>& q,
+                                                    std::string& target_link_name) {
         // Setup the geometric jabobian matrix
-        Eigen::Matrix<Scalar, 6, Eigen::Dynamic> J;
-        J.resize(6, model->n_q);
-        J.setZero();
+        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
         // Start at the target link
         std::shared_ptr<Link<Scalar>> current_link = model->get_link(target_link_name);
@@ -215,26 +209,19 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> rTBb = position(model, q, model->base_link->name, target_link_name);
 
         while (current_link->name != model->base_link->name) {
-            // std::cout << "current_link->name: " << current_link->name << std::endl;
             if (current_link->joint != nullptr) {
+                // Compute the rotation matrix between base and link
+                Eigen::Transform<Scalar, 3, Eigen::Affine> Hbim1 =
+                    forward_kinematics(model, q, model->base_link->name, current_link->parent_link->name);
                 if (current_link->joint->type == JointType::PRISMATIC) {
-                    // Compute the rotation matrix between base and link
-                    Eigen::Matrix<Scalar, 3, 3> Rbim1 =
-                        orientation(model, q, model->base_link->name, current_link->parent_link->name);
-                    // Rotate the axis into the base frame
-                    Eigen::Matrix<Scalar, 3, 1> Jv                 = Rbim1 * current_link->joint->axis;
-                    J.block(0, current_link->joint->q_index, 3, 1) = Jv;
+                    J.block(0, current_link->joint->q_index, 3, 1) = Hbim1.linear() * current_link->joint->axis;
                     J.block(3, current_link->joint->q_index, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
                 }
                 else if (current_link->joint->type == JointType::REVOLUTE) {
-                    // Compute the rotation matrix between base and link
-                    Eigen::Transform<Scalar, 3, Eigen::Affine> Hbim1 =
-                        forward_kinematics(model, q, model->base_link->name, current_link->parent_link->name);
                     // Rotate the axis into the base frame
-                    Eigen::Matrix<Scalar, 3, 1> Jw                 = Hbim1.linear() * current_link->joint->axis;
-                    Eigen::Matrix<Scalar, 3, 1> Jv                 = Jw.cross(rTBb - Hbim1.translation());
-                    J.block(0, current_link->joint->q_index, 3, 1) = Jv;
-                    J.block(3, current_link->joint->q_index, 3, 1) = Jw;
+                    J.block(0, current_link->joint->q_index, 3, 1) =
+                        (Hbim1.linear() * current_link->joint->axis).cross(rTBb - Hbim1.translation());
+                    J.block(3, current_link->joint->q_index, 3, 1) = Hbim1.linear() * current_link->joint->axis;
                 }
             }
             // Move up the tree to parent
@@ -254,7 +241,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 3, 1> centre_of_mass(std::shared_ptr<Model<Scalar, nq>> model,
-                                               const Eigen::Matrix<Scalar, Eigen::Dynamic, 1>& q,
+                                               const Eigen::Matrix<Scalar, nq, 1>& q,
                                                std::string& source_link_name) {
 
         // Assert the configuration vector is valid

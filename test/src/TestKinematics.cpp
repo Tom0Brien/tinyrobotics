@@ -11,7 +11,7 @@ std::shared_ptr<RML::Model<double, 4>> robot_model = RML::Model<double, 4>::from
 
 TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
     // Compute FK for a given configuration
-    Eigen::VectorXd q = robot_model->home_configuration();
+    Eigen::Matrix<double, 4, 1> q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
 
     Eigen::Transform<double, 3, Eigen::Affine> Hst;
@@ -29,7 +29,7 @@ TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
 
 TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
     // Compute FK for a given configuration
-    Eigen::VectorXd q = robot_model->home_configuration();
+    Eigen::Matrix<double, 4, 1> q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
 
     Eigen::Transform<double, 3, Eigen::Affine> Hstc;
@@ -46,7 +46,7 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
 
 TEST_CASE("Test translation geometric jacobian", "[ForwardKinematics]") {
     // Compute the translation geometric jacobian of the left foot wrt the ground
-    Eigen::VectorXd q = robot_model->home_configuration();
+    Eigen::Matrix<double, 4, 1> q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
     std::string target_link_name = "left_foot";
     std::string source_link_name = "ground";
@@ -108,7 +108,7 @@ TEST_CASE("Test autodiff jacobian", "[ForwardKinematics]") {
 
 TEST_CASE("Test centre of mass calculations for simple model", "[ForwardKinematics]") {
     // Create a configuration for the robot
-    Eigen::VectorXd q = robot_model->home_configuration();
+    Eigen::Matrix<double, 4, 1> q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
     // Compute the centre of mass of robot with respect to the ground
     std::string source_link_name = "ground";
@@ -129,13 +129,13 @@ TEST_CASE("Test centre of mass calculations for simple model", "[ForwardKinemati
 
 TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKinematics]") {
     // Create a configuration for the robot
-    Eigen::VectorXd q = robot_model->home_configuration();
+    Eigen::Matrix<double, 4, 1> q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
     // Compute the geometric jacobian of robot with respect to the ground
-    std::string target_link_name                            = "left_foot";
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J = RML::geometric_jacobian(robot_model, q, target_link_name);
+    std::string target_link_name  = "left_foot";
+    Eigen::Matrix<double, 6, 4> J = RML::geometric_jacobian(robot_model, q, target_link_name);
     // Check that the geometric jacobian is correct
-    Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J_expected;
+    Eigen::Matrix<double, 6, 4> J_expected;
     J_expected.resize(6, 4);
     J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;
     REQUIRE(J.isApprox(J_expected, 1e-4));
@@ -151,7 +151,7 @@ TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKine
 TEST_CASE("Test geometric_jacobian calculations for nugus model", "[ForwardKinematics]") {
     // std::shared_ptr<RML::Model<double>> nugus_model = RML::Model<double>::from_urdf("data/urdfs/nugus.urdf");
     // // Create a configuration for the robot
-    // Eigen::VectorXd q = nugus_model->home_configuration();
+    // Eigen::Matrix<double, 4, 1> q = nugus_model->home_configuration();
     // nugus_model->show_details();
     // // q << 1, 2, 3, 4,5 ,6 ,7 ,8,9,10,11,12,13,14,15,16,17,18,19,20;
     // // Compute the geometric jacobian of robot with respect to the ground
@@ -175,16 +175,16 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
     double total_time                                   = 0;
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
-        Eigen::VectorXd q_random = nugus_model->random_configuration();
+        Eigen::Matrix<double, 20, 1> q_random = nugus_model->random_configuration();
         // Compute the forward kinematics for the random configuration
         Eigen::Transform<double, 3, Eigen::Affine> Hst_desired;
         std::string target_link_name = "left_foot";
         std::string source_link_name = "torso";
         Hst_desired = RML::forward_kinematics(nugus_model, q_random, source_link_name, target_link_name);
         // Compute the inverse kinematics for the random desired transform
-        Eigen::VectorXd q0 = q_random + 0.05 * nugus_model->random_configuration();
-        auto start         = high_resolution_clock::now();
-        Eigen::VectorXd q_solution =
+        Eigen::Matrix<double, 20, 1> q0 = q_random + 0.05 * nugus_model->random_configuration();
+        auto start                      = high_resolution_clock::now();
+        Eigen::Matrix<double, 20, 1> q_solution =
             RML::inverse_kinematics<double, 20>(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
         auto stop     = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
@@ -225,16 +225,16 @@ TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
 
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
-        Eigen::VectorXd q_random = kuka_model->random_configuration();
+        Eigen::Matrix<double, 7, 1> q_random = kuka_model->random_configuration();
         // Compute the forward kinematics for the random configuration
         Eigen::Transform<double, 3, Eigen::Affine> Hst_desired;
         std::string target_link_name = "kuka_arm_7_link";
         std::string source_link_name = "calib_kuka_arm_base_link";
         Hst_desired = RML::forward_kinematics(kuka_model, q_random, source_link_name, target_link_name);
         // Compute the inverse kinematics for the random desired transform
-        Eigen::VectorXd q0 = q_random + 0.1 * kuka_model->random_configuration();
-        auto start         = high_resolution_clock::now();
-        Eigen::VectorXd q_solution =
+        Eigen::Matrix<double, 7, 1> q0 = q_random + 0.1 * kuka_model->random_configuration();
+        auto start                     = high_resolution_clock::now();
+        Eigen::Matrix<double, 7, 1> q_solution =
             RML::inverse_kinematics<double, 7>(kuka_model, source_link_name, target_link_name, Hst_desired, q0);
         auto stop     = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
