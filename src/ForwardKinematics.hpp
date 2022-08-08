@@ -253,13 +253,13 @@ namespace RML {
             // For each link in the model, compute the transform from the source link to the CoM of the link
             Scalar total_mass = 0;
             Eigen::Matrix<Scalar, 3, 1> rISs = Eigen::Matrix<Scalar, 3, 1>::Zero();
-            for (auto link = model->links.begin(); link != model->links.end(); link++) {
+            for (auto link : model->links) {
                 // Compute the transform from the source link to the CoM of the link
-                Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = forward_kinematics_com(model, q, source_link_name, link->second->name);
+                Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = forward_kinematics_com(model, q, source_link_name, link->name);
                 // Compute the centre of mass of the link
-                rISs = rISs + Hsc.translation() * link->second->mass;
+                rISs = rISs + Hsc.translation() * link->mass;
                 // Add the links mass to the total mass
-                total_mass += link->second->mass;
+                total_mass += link->mass;
             }
             // Compute the centre of mass  from the source link
             return rISs/total_mass;

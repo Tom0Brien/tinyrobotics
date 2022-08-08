@@ -41,11 +41,11 @@ namespace RML {
         /// @brief The base link of the robot model.
         std::shared_ptr<Link<Scalar>> base_link = nullptr;
 
-        /// @brief Map of links in the robot model.
-        std::map<std::string, std::shared_ptr<Link<Scalar>>> links;
+        /// @brief Vector of links in the robot model.
+        std::vector<std::shared_ptr<Link<Scalar>>> links;
 
-        /// @brief Map of joints in the robot model.
-        std::map<std::string, std::shared_ptr<Joint<Scalar>>> joints;
+        /// @brief Vector of joints in the robot model.
+        std::vector<std::shared_ptr<Joint<Scalar>>> joints;
 
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
@@ -100,7 +100,7 @@ namespace RML {
                     error_msg << "Error! Duplicate links '" << link->name << "' found!";
                     throw std::runtime_error(error_msg.str());
                 } else {
-                    model->links[link->name] = link;
+                    model->links.push_back(link);
                     model->n_links++;
                 }
             }
@@ -119,7 +119,7 @@ namespace RML {
                     error_msg << "Error! Duplicate joints '" << joint->name << "' found!";
                     throw std::runtime_error(error_msg.str());
                 } else {
-                    model->joints[joint->name] = joint;
+                    model->joints.push_back(joint);
                     model->n_joints++;
                 }
             }
@@ -141,20 +141,20 @@ namespace RML {
             int joint_q_index = 0;
             n_q = 0;
 
-            for (auto joint = joints.begin(); joint != joints.end(); joint++) {
+            for (auto joint : joints) {
 
-                std::string parent_link_name = joint->second->parent_link_name;
-                std::string child_link_name = joint->second->child_link_name;
+                std::string parent_link_name = joint->parent_link_name;
+                std::string child_link_name = joint->child_link_name;
 
                 if (parent_link_name.empty()){
                     std::ostringstream error_msg;
-                    error_msg << "Error while constructing model! Joint [" << joint->first
+                    error_msg << "Error while constructing model! Joint [" << joint->name
                             << "] is missing a parent link specification.";
                     throw std::runtime_error(error_msg.str());
                 }
                 if (child_link_name.empty()) {
                     std::ostringstream error_msg;
-                    error_msg << "Error while constructing model! Joint [" << joint->first
+                    error_msg << "Error while constructing model! Joint [" << joint->name
                             << "] is missing a child link specification.";
                     throw std::runtime_error(error_msg.str());
                 }
@@ -163,7 +163,7 @@ namespace RML {
                 if (child_link == nullptr) {
                     std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Child link [" << child_link_name
-                            << "] of joint [" <<  joint->first << "] not found";
+                            << "] of joint [" <<  joint->name << "] not found";
                     throw std::runtime_error(error_msg.str());
                 }
 
@@ -171,21 +171,21 @@ namespace RML {
                 if (parent_link == nullptr) {
                     std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Parent link [" << parent_link_name
-                            << "] of joint [" <<  joint->first << "] not found";
+                            << "] of joint [" <<  joint->name << "] not found";
                     throw std::runtime_error(error_msg.str());
                 }
 
                 child_link->parent_link = parent_link;
-                child_link->joint = joint->second;
+                child_link->joint = joint;
 
-                parent_link->add_child_joint(joint->second);
+                parent_link->add_child_joint(joint);
                 parent_link->add_child_link(child_link);
 
                 parent_link_tree[child_link->name] = parent_link_name;
 
                 // If the joint is actuatable, add its configuration vector q_index
-                if(joint->second->type == JointType::REVOLUTE || joint->second->type == JointType::PRISMATIC) {
-                    joint->second->q_index = joint_q_index;
+                if(joint->type == JointType::REVOLUTE || joint->type == JointType::PRISMATIC) {
+                    joint->q_index = joint_q_index;
                     joint_q_index++;
                     n_q++;
                 }
@@ -193,11 +193,11 @@ namespace RML {
 
             // Assign IDs to the links and joints
             int id = 0;
-            for (auto link = links.begin(); link != links.end(); link++) {
-                if(link->second->joint != nullptr) {
-                    link->second->joint->id = id;
+            for (auto link : links) {
+                if(link->joint != nullptr) {
+                    link->joint->id = id;
                 }
-                link->second->id = id;
+                link->id = id;
                 id++;
             }
         }
@@ -207,15 +207,15 @@ namespace RML {
          *
          */
         void find_base(const std::map<std::string, std::string> &parent_link_tree) {
-            for (auto l=links.begin(); l!=links.end(); l++) {
-                auto parent = parent_link_tree.find(l->first);
+            for (auto link : links) {
+                auto parent = parent_link_tree.find(link->name);
                 if (parent == parent_link_tree.end()) {
                     if (base_link == nullptr) {
-                        base_link = get_link(l->first);
+                        base_link = get_link(link->name);
                     } else {
                         std::ostringstream error_msg;
                         error_msg << "Error! Multiple base links found: (" << base_link->name
-                                << ") and (" + l->first + ")!";
+                                << ") and (" + link->name + ")!";
                         throw std::runtime_error(error_msg.str());
                     }
                 }
@@ -230,11 +230,7 @@ namespace RML {
          *
          */
         const std::vector<std::shared_ptr<Link<Scalar>>> get_links() const {
-            std::vector<std::shared_ptr<Link<Scalar>>> linklist;
-            for (auto link = links.begin(); link != links.end(); link++) {
-                linklist.push_back(link->second);
-            }
-            return linklist;
+            return links;
         }
 
         /**
@@ -242,11 +238,13 @@ namespace RML {
          *
          */
         std::shared_ptr<Link<Scalar>> get_link(const std::string& name) {
-            if (links.find(name) == links.end()) {
-                return nullptr;
-            } else {
-                return links.find(name)->second;
+            for (auto link : links) {
+                if (link->name == name) {
+                    return link;
+                }
             }
+            // No link was found
+            return nullptr;
         }
 
         /**
@@ -254,11 +252,7 @@ namespace RML {
          *
          */
         const std::vector<std::shared_ptr<Joint<Scalar>>> get_joints() const {
-            std::vector<std::shared_ptr<Joint<Scalar>>> jointlist;
-            for (auto joint = joints.begin(); joint != joints.end(); joint++) {
-                jointlist.push_back(joint->second);
-            }
-            return jointlist;
+            return joints;
         }
 
         /**
@@ -266,11 +260,13 @@ namespace RML {
          *
          */
         std::shared_ptr<Joint<Scalar>> get_joint(const std::string& name) {
-            if (joints.find(name) == joints.end()) {
-                return nullptr;
-            } else {
-                return joints.find(name)->second;
+            for (auto joint : joints) { 
+                if (joint->name == name) {
+                    return joint;
+                }
             }
+            // No joint was found
+            return nullptr;
         }
 
         /**
@@ -307,7 +303,6 @@ namespace RML {
                     children_names <<  std::endl << std::endl;
                 }
             }
-            return;
         }
 
         /**
@@ -348,10 +343,10 @@ namespace RML {
             new_model->base_link = base_link->template cast<NewScalar>();
             new_model->gravity = gravity.template cast<NewScalar>();
             for (auto& link : links) {
-                new_model->links[link.first] = link.second->template cast<NewScalar>();
+                new_model->links.push_back(link->template cast<NewScalar>());
             }
             for (auto& joint : joints) {
-                new_model->joints[joint.first] = joint.second->template cast<NewScalar>();
+                new_model->joints.push_back(joint->template cast<NewScalar>());
             }
             std::map<std::string, std::string> parent_link_tree;
             new_model->init_link_tree(parent_link_tree);
