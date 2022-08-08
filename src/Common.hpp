@@ -4,6 +4,19 @@
 #include "txml.h"
 
 namespace RML {
+
+    /**
+     * @brief
+     *
+     */
+    template <typename Scalar>
+    Eigen::Transform<Scalar, 3, Eigen::Affine> inv(const Eigen::Transform<Scalar, 3, Eigen::Affine>& T) {
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Tinv = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Tinv.linear()                                   = T.linear().transpose();
+        Tinv.translation()                              = -T.linear().transpose() * T.translation();
+        return Tinv;
+    }
+
     /**
      * @brief Get Eigen3 vector from the XML element.
      * @param xml The XML element
