@@ -6,8 +6,10 @@
 namespace RML {
 
     /**
-     * @brief
-     *
+     * @brief Computes the inverse of a 4x4 homogeneous transformation matrix
+     * Much faster than actually inverting it since the computations are easy
+     * @param T The 4x4 homogeneous transformation matrix
+     * @return The 4x4 inverse homogeneous transformation matrix
      */
     template <typename Scalar>
     Eigen::Transform<Scalar, 3, Eigen::Affine> inv(const Eigen::Transform<Scalar, 3, Eigen::Affine>& T) {

@@ -33,7 +33,7 @@ namespace RML {
 
         // Build kinematic tree from source {s} to base {b} frame
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hbs = forward_kinematics(model, q, source_link_name);
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsb = Hbs.inverse();
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsb = RML::inv(Hbs);
 
         // Build kinematic tree from base {b} to target {t} frame
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hbt = forward_kinematics(model, q, target_link_name);
@@ -80,15 +80,15 @@ namespace RML {
                 // Eigen::Matrix<Scalar, 3, 1> axis = ;
                 H.translation() = current_link->joint->axis * q_current;
             }
-            Htb = Htb * H.inverse();
+            Htb = Htb * RML::inv(H);
             // Apply inverse joint transform as we are going back up tree
-            Htb = Htb * current_link->joint->parent_transform.inverse();
+            Htb = Htb * RML::inv(current_link->joint->parent_transform);
             // Move up the tree to parent
             current_link = current_link->parent_link;
         }
 
-        // Return transform from base {b} to target {t} : Hbt = Htb.inverse()
-        return Htb.inverse();
+        // Return transform from base {b} to target {t}
+        return RML::inv(Htb);
     }
 
     /**
