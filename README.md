@@ -30,7 +30,6 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
 ### 1. Install Dependencies
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [Catch2](https://github.com/catchorg/Catch2)
-- [Boost](https://www.boost.org/)
 - [autodiff](https://github.com/autodiff/autodiff)
 - [ifopt](https://github.com/ethz-adrl/ifopt) with MA57 solver from https://www.hsl.rl.ac.uk/ipopt/
 - [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)

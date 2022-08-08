@@ -1,9 +1,6 @@
 #ifndef RML_COMMON_HPP
 #define RML_COMMON_HPP
 
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-
 #include "txml.h"
 
 namespace RML {
@@ -108,18 +105,16 @@ namespace RML {
     template <typename Scalar>
     Eigen::Matrix<Scalar, 3, 1> vec_from_string(const std::string& vector_str) {
         Eigen::Matrix<Scalar, 3, 1> vec;
-        std::vector<std::string> pieces;
         std::vector<Scalar> values;
-        boost::split(pieces, vector_str, boost::is_any_of(" "));
-        for (unsigned int i = 0; i < pieces.size(); ++i) {
-            if (pieces[i] != "") {
-                try {
-                    values.push_back(boost::lexical_cast<Scalar>(pieces[i].c_str()));
-                }
-                catch (boost::bad_lexical_cast& e) {
-                    throw std::runtime_error("Error not able to parse component (" + pieces[i]
-                                             + ") to a Scalar (while parsing a vector value)");
-                }
+        std::istringstream ss(vector_str);
+        std::string vector_element;
+        while (ss >> vector_element) {
+            try {
+                values.push_back(std::stod(vector_element));
+            }
+            catch (std::invalid_argument& e) {
+                throw std::runtime_error("Error not able to parse component (" + vector_element
+                                         + ") to a Scalar (while parsing a vector value)");
             }
         }
 

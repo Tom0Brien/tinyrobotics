@@ -19,14 +19,12 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 find_package(Catch2 2.13 REQUIRED)
-find_package(Boost 1.74 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(autodiff REQUIRED)
 find_package(ifopt REQUIRED)
 find_package(matplotlib_cpp REQUIRED)
 
 include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${Boost_INCLUDE_DIR})
 
 # Target names
 set(TARGET_LIB common)
@@ -34,7 +32,7 @@ set(TARGET_BIN ${PROJECT_NAME})
 set(TARGET_TEST tests)
 
 # Libraries
-set(LIBS ${Boost_LIBRARIES} Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt
+set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt
          matplotlib_cpp::matplotlib_cpp)
 
 # Source files

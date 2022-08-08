@@ -3,9 +3,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "Common.hpp"
 #include "Joint.hpp"
@@ -79,9 +76,9 @@ namespace RML {
                 if (mass_xml != nullptr) {
                     if (mass_xml->Attribute("value") != nullptr) {
                         try {
-                            link->mass = boost::lexical_cast<double>(mass_xml->Attribute("value"));
+                            link->mass = std::stod(mass_xml->Attribute("value"));
                         }
-                        catch (boost::bad_lexical_cast& e) {
+                        catch (std::invalid_argument& e) {
                             std::ostringstream error_msg;
                             error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
                                       << "': inertial mass [" << mass_xml->Attribute("value")
@@ -111,15 +108,15 @@ namespace RML {
                     && inertia_xml->Attribute("iyy") && inertia_xml->Attribute("iyz")
                     && inertia_xml->Attribute("izz")) {
                     try {
-                        inertia(0)    = boost::lexical_cast<double>(inertia_xml->Attribute("ixx"));
-                        inertia(1)    = boost::lexical_cast<double>(inertia_xml->Attribute("iyy"));
-                        inertia(2)    = boost::lexical_cast<double>(inertia_xml->Attribute("izz"));
-                        inertia(3)    = boost::lexical_cast<double>(inertia_xml->Attribute("iyz"));
-                        inertia(4)    = boost::lexical_cast<double>(inertia_xml->Attribute("ixz"));
-                        inertia(5)    = boost::lexical_cast<double>(inertia_xml->Attribute("ixy"));
+                        inertia(0)    = std::stod(inertia_xml->Attribute("ixx"));
+                        inertia(1)    = std::stod(inertia_xml->Attribute("iyy"));
+                        inertia(2)    = std::stod(inertia_xml->Attribute("izz"));
+                        inertia(3)    = std::stod(inertia_xml->Attribute("iyz"));
+                        inertia(4)    = std::stod(inertia_xml->Attribute("ixz"));
+                        inertia(5)    = std::stod(inertia_xml->Attribute("ixy"));
                         link->inertia = inertia;
                     }
-                    catch (boost::bad_lexical_cast& e) {
+                    catch (std::invalid_argument& e) {
                         std::ostringstream error_msg;
                         error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
                                   << "Inertial: one of the inertia elements is not a valid double:"
