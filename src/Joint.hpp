@@ -4,8 +4,8 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "txml.h"
 #include "Common.hpp"
+#include "txml.h"
 
 namespace RML {
 
@@ -36,13 +36,15 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> axis = Eigen::Matrix<Scalar, 3, 1>::Zero();
 
         /// @brief The transform to the parent link
-        Eigen::Transform<Scalar, 3, Eigen::Affine> parent_transform = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Eigen::Transform<Scalar, 3, Eigen::Affine> parent_transform =
+            Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
 
         /// @brief The parent link name
         std::string parent_link_name = "";
 
         /// @brief The transform to the child link
-        Eigen::Transform<Scalar, 3, Eigen::Affine> child_transform = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Eigen::Transform<Scalar, 3, Eigen::Affine> child_transform =
+            Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
 
         /// @brief The child link name
         std::string child_link_name = "";
@@ -53,35 +55,36 @@ namespace RML {
          * @param xml The XML element containing the joint description
          */
         static std::shared_ptr<Joint<Scalar>> fromXml(TiXmlElement* xml) {
-            std::shared_ptr<Joint<Scalar>> joint= std::make_shared<Joint>();
+            std::shared_ptr<Joint<Scalar>> joint = std::make_shared<Joint>();
 
-            const char *name = xml->Attribute("name");
+            const char* name = xml->Attribute("name");
             if (name != NULL) {
-                joint->name = std::string(name);;
-            } else {
+                joint->name = std::string(name);
+                ;
+            }
+            else {
                 std::ostringstream error_msg;
                 error_msg << "Error while parsing model: unnamed joint found!";
                 throw std::runtime_error(error_msg.str());
             }
 
-            TiXmlElement *origin_xml = xml->FirstChildElement("origin");
+            TiXmlElement* origin_xml = xml->FirstChildElement("origin");
             if (origin_xml != NULL) {
-                    joint->parent_transform = transform_from_xml<Scalar>(origin_xml);
+                joint->parent_transform = transform_from_xml<Scalar>(origin_xml);
             }
 
-            TiXmlElement *parent_xml = xml->FirstChildElement("parent");
+            TiXmlElement* parent_xml = xml->FirstChildElement("parent");
             if (parent_xml != NULL) {
-                const char *pname = parent_xml->Attribute("link");
+                const char* pname = parent_xml->Attribute("link");
                 if (pname != NULL) {
                     joint->parent_link_name = std::string(pname);
                 }
                 // if no parent link name specified. this might be the root node
             }
 
-            TiXmlElement *child_xml = xml->FirstChildElement("child");
-            if (child_xml)
-            {
-                const char *pname = child_xml->Attribute("link");
+            TiXmlElement* child_xml = xml->FirstChildElement("child");
+            if (child_xml) {
+                const char* pname = child_xml->Attribute("link");
                 if (pname != NULL) {
                     joint->child_link_name = std::string(pname);
                 }
@@ -90,8 +93,7 @@ namespace RML {
             const char* type_char = xml->Attribute("type");
             if (type_char == NULL) {
                 std::ostringstream error_msg;
-                error_msg << "Error! Joint " << joint->name
-                        <<" has no type, check to see if it's a reference.";
+                error_msg << "Error! Joint " << joint->name << " has no type, check to see if it's a reference.";
                 throw std::runtime_error(error_msg.str());
             }
 
@@ -110,21 +112,20 @@ namespace RML {
                 joint->type = JointType::FIXED;
             else {
                 std::ostringstream error_msg;
-                error_msg << "Error! Joint '" << joint->name
-                        <<"' has unknown type (" << type_str << ")!";
+                error_msg << "Error! Joint '" << joint->name << "' has unknown type (" << type_str << ")!";
                 throw std::runtime_error(error_msg.str());
             }
 
-            if (joint->type != JointType::FLOATING && joint->type != JointType::FIXED)
-            {
-                TiXmlElement *axis_xml = xml->FirstChildElement("axis");
+            if (joint->type != JointType::FLOATING && joint->type != JointType::FIXED) {
+                TiXmlElement* axis_xml = xml->FirstChildElement("axis");
                 if (axis_xml == NULL) {
                     Eigen::Matrix<Scalar, 3, 1> default_axis;
                     default_axis << 1, 0, 0;
                     joint->axis = default_axis;
-                } else {
-                    const char *xyz_char = axis_xml->Attribute("xyz");
-                    if (xyz_char != NULL){
+                }
+                else {
+                    const char* xyz_char = axis_xml->Attribute("xyz");
+                    if (xyz_char != NULL) {
                         joint->axis = vec_from_string<Scalar>(std::string(xyz_char));
                     }
                 }
@@ -164,18 +165,17 @@ namespace RML {
         template <typename NewScalar>
         std::shared_ptr<Joint<NewScalar>> cast() const {
             std::shared_ptr<Joint<NewScalar>> new_joint = std::make_shared<Joint<NewScalar>>();
-            new_joint->id = id;
-            new_joint->q_index = q_index;
-            new_joint->name = name;
-            new_joint->type = type;
-            new_joint->axis = axis.template cast<NewScalar>();
-            new_joint->parent_transform = parent_transform.template cast<NewScalar>();
-            new_joint->parent_link_name = parent_link_name;
-            new_joint->child_transform = child_transform.template cast<NewScalar>();
-            new_joint->child_link_name = child_link_name;
+            new_joint->id                               = id;
+            new_joint->q_index                          = q_index;
+            new_joint->name                             = name;
+            new_joint->type                             = type;
+            new_joint->axis                             = axis.template cast<NewScalar>();
+            new_joint->parent_transform                 = parent_transform.template cast<NewScalar>();
+            new_joint->parent_link_name                 = parent_link_name;
+            new_joint->child_transform                  = child_transform.template cast<NewScalar>();
+            new_joint->child_link_name                  = child_link_name;
             return new_joint;
         }
-
     };
 }  // namespace RML
 

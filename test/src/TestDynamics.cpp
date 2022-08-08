@@ -1,12 +1,11 @@
 #define CATCH_DYNAMICS
-#include "catch2/catch.hpp"
-#include <string>
-
-#include "../../src/Model.hpp"
-#include "../../src/Dynamics.hpp"
-
 #include <autodiff/forward/real.hpp>
 #include <autodiff/forward/real/eigen.hpp>
+#include <string>
+
+#include "../../src/Dynamics.hpp"
+#include "../../src/Model.hpp"
+#include "catch2/catch.hpp"
 using namespace autodiff;
 
 TEST_CASE("Test dynamics", "[Dynamics]"){

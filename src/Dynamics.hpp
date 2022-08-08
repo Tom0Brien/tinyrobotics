@@ -5,13 +5,12 @@
 #include <Eigen/Geometry>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <sstream>
-#include <map>
 
-#include "Model.hpp"
 #include "ForwardKinematics.hpp"
-
+#include "Model.hpp"
 #include "autodiff/forward/real.hpp"
 #include "autodiff/forward/real/eigen.hpp"
 using namespace autodiff;
@@ -65,31 +64,36 @@ namespace RML {
     //     // Create over parametrised system
     //     for (auto link = model_real->links.begin(); link != model_real->links.end(); link++) {
     //         // Compute FK to centre of mass
-    //         Eigen::Transform<autodiff::real, 3, Eigen::Affine> Hbm = forward_kinematics_com(model_real, q_real, model_real->base_link->name, link->second->name);
-    //         Eigen::Matrix<autodiff::real, 3, 1> rMBb = Hbm.translation();
+    //         Eigen::Transform<autodiff::real, 3, Eigen::Affine> Hbm = forward_kinematics_com(model_real, q_real,
+    //         model_real->base_link->name, link->second->name); Eigen::Matrix<autodiff::real, 3, 1> rMBb =
+    //         Hbm.translation();
     //         // Add links contribution to potential energy m*g*h
     //         dynamics->V = dynamics->V - link->second->mass * model->gravity.transpose() * rMBb.cast<Scalar>();
     //         if(link->second->joint->type == RML::JointType::REVOLUTE) {
     //             // Add to mass matrix
     //             // M.conservativeResizeLike(Eigen::Matrix<Scalar, M.rows() + 3, M.rows() + 3>::Zero());
-    //             // M.block(M.rows() - 3, M.cols() - 3, 3, 3) = link->second->mass * Eigen::Matrix<Scalar, 3, 3>::Identity();
+    //             // M.block(M.rows() - 3, M.cols() - 3, 3, 3) = link->second->mass * Eigen::Matrix<Scalar, 3,
+    //             3>::Identity();
     //             // Add inertia to J matrix TODO: Probably need to actually load inertia information
     //             // J.resize(J.rows() + 1, J.cols() + 1);
     //             // J.block(J.rows() - 1, J.cols() - 1, 1, 1) = Eigen::Matrix<Scalar, 3, 3>::Zero();
     //         } else if (link->second->joint->type == RML::JointType::FIXED) {
     //             // Add to mass matrix
     //             // M.resize(M.rows() + 3, M.cols() + 3);
-    //             // M.block(M.rows() - 3, M.cols() - 3, 3, 3) = link->second->mass * Eigen::Matrix<Scalar, 3, 3>::Identity();
+    //             // M.block(M.rows() - 3, M.cols() - 3, 3, 3) = link->second->mass * Eigen::Matrix<Scalar, 3,
+    //             3>::Identity();
     //             // // Add inertia to J matrix
     //             // J.resize(J.rows() + 1, J.cols() + 1);
-    //             // J.block(J.rows() - 1, J.cols() - 1, 1, 1) = Eigen::Matrix<Scalar, 3, 3>::Zero(); // TODO: Probably need to actually load inertia information
+    //             // J.block(J.rows() - 1, J.cols() - 1, 1, 1) = Eigen::Matrix<Scalar, 3, 3>::Zero(); // TODO: Probably
+    //             need to actually load inertia information
     //             // // Add constraint to holonomic constraints
     //             // fc.resize(fc.rows() + 3);
     //             // fc.block(fc.rows() - 3, 1, 3, 1) = rMBb;
     //         } else if (link->second->joint->type == RML::JointType::PRISMATIC){
     //             // Add inertia to J matrix
     //             // J.resize(J.rows() + 1, J.cols() + 1);
-    //             // J.block(J.rows() - 1, J.cols() - 1, 1, 1) = Eigen::Matrix<Scalar, 3, 3>::Zero(); // TODO: Probably need to actually load inertia information
+    //             // J.block(J.rows() - 1, J.cols() - 1, 1, 1) = Eigen::Matrix<Scalar, 3, 3>::Zero(); // TODO: Probably
+    //             need to actually load inertia information
     //         }
 
     //         // Print M
@@ -127,6 +131,6 @@ namespace RML {
     // }
 
 
-}  //namespace RML
+}  // namespace RML
 
 #endif

@@ -4,11 +4,11 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <sstream>
-#include <map>
-#include <iomanip>
 
 #include "Joint.hpp"
 #include "Link.hpp"
@@ -24,8 +24,7 @@ namespace RML {
     template <typename Scalar>
     class Model {
 
-        public:
-
+    public:
         /// @brief The name of the robot model.
         std::string name = "";
 
@@ -76,49 +75,55 @@ namespace RML {
                 throw std::runtime_error(error_msg);
             }
 
-            TiXmlElement *robot_xml = xml_doc.RootElement();
+            TiXmlElement* robot_xml = xml_doc.RootElement();
             if (robot_xml == nullptr || robot_xml->ValueStr() != "robot") {
                 std::string error_msg = "Error! Could not find the <robot> element in the xml file";
                 throw std::runtime_error(error_msg);
             }
 
             // ************************ Add the name to the model ************************
-            const char *name = robot_xml->Attribute("name");
-            if (name != nullptr){
+            const char* name = robot_xml->Attribute("name");
+            if (name != nullptr) {
                 model->name = std::string(name);
-            } else {
-                std::string error_msg = "No name given for the robot. Please add a name attribute to the robot element!";
+            }
+            else {
+                std::string error_msg =
+                    "No name given for the robot. Please add a name attribute to the robot element!";
                 throw std::runtime_error(error_msg);
             }
 
             // ************************ Add the links to the model ************************
-            for (TiXmlElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr; link_xml = link_xml->NextSiblingElement("link")) {
-            auto link = Link<Scalar>::fromXml(link_xml);
+            for (TiXmlElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr;
+                 link_xml               = link_xml->NextSiblingElement("link")) {
+                auto link = Link<Scalar>::fromXml(link_xml);
 
                 if (model->get_link(link->name) != nullptr) {
                     std::ostringstream error_msg;
                     error_msg << "Error! Duplicate links '" << link->name << "' found!";
                     throw std::runtime_error(error_msg.str());
-                } else {
+                }
+                else {
                     model->links.push_back(link);
                     model->n_links++;
                 }
             }
 
-            if (model->links.size() == 0){
+            if (model->links.size() == 0) {
                 std::string error_msg = "Error! No link elements found in the urdf file.";
                 throw std::runtime_error(error_msg);
             }
 
             // ************************ Add the joints to the model ************************
-            for (TiXmlElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr; joint_xml = joint_xml->NextSiblingElement("joint")) {
+            for (TiXmlElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr;
+                 joint_xml               = joint_xml->NextSiblingElement("joint")) {
                 auto joint = Joint<Scalar>::fromXml(joint_xml);
 
                 if (model->get_joint(joint->name) != nullptr) {
                     std::ostringstream error_msg;
                     error_msg << "Error! Duplicate joints '" << joint->name << "' found!";
                     throw std::runtime_error(error_msg.str());
-                } else {
+                }
+                else {
                     model->joints.push_back(joint);
                     model->n_joints++;
                 }
@@ -139,44 +144,44 @@ namespace RML {
         void init_link_tree(std::map<std::string, std::string>& parent_link_tree) {
             // Set count to zero
             int joint_q_index = 0;
-            n_q = 0;
+            n_q               = 0;
 
             for (auto joint : joints) {
 
                 std::string parent_link_name = joint->parent_link_name;
-                std::string child_link_name = joint->child_link_name;
+                std::string child_link_name  = joint->child_link_name;
 
-                if (parent_link_name.empty()){
+                if (parent_link_name.empty()) {
                     std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Joint [" << joint->name
-                            << "] is missing a parent link specification.";
+                              << "] is missing a parent link specification.";
                     throw std::runtime_error(error_msg.str());
                 }
                 if (child_link_name.empty()) {
                     std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Joint [" << joint->name
-                            << "] is missing a child link specification.";
+                              << "] is missing a child link specification.";
                     throw std::runtime_error(error_msg.str());
                 }
 
                 auto child_link = get_link(child_link_name);
                 if (child_link == nullptr) {
                     std::ostringstream error_msg;
-                    error_msg << "Error while constructing model! Child link [" << child_link_name
-                            << "] of joint [" <<  joint->name << "] not found";
+                    error_msg << "Error while constructing model! Child link [" << child_link_name << "] of joint ["
+                              << joint->name << "] not found";
                     throw std::runtime_error(error_msg.str());
                 }
 
                 auto parent_link = get_link(parent_link_name);
                 if (parent_link == nullptr) {
                     std::ostringstream error_msg;
-                    error_msg << "Error while constructing model! Parent link [" << parent_link_name
-                            << "] of joint [" <<  joint->name << "] not found";
+                    error_msg << "Error while constructing model! Parent link [" << parent_link_name << "] of joint ["
+                              << joint->name << "] not found";
                     throw std::runtime_error(error_msg.str());
                 }
 
                 child_link->parent_link = parent_link;
-                child_link->joint = joint;
+                child_link->joint       = joint;
 
                 parent_link->add_child_joint(joint);
                 parent_link->add_child_link(child_link);
@@ -184,7 +189,7 @@ namespace RML {
                 parent_link_tree[child_link->name] = parent_link_name;
 
                 // If the joint is actuatable, add its configuration vector q_index
-                if(joint->type == JointType::REVOLUTE || joint->type == JointType::PRISMATIC) {
+                if (joint->type == JointType::REVOLUTE || joint->type == JointType::PRISMATIC) {
                     joint->q_index = joint_q_index;
                     joint_q_index++;
                     n_q++;
@@ -194,7 +199,7 @@ namespace RML {
             // Assign IDs to the links and joints
             int id = 0;
             for (auto link : links) {
-                if(link->joint != nullptr) {
+                if (link->joint != nullptr) {
                     link->joint->id = id;
                 }
                 link->id = id;
@@ -206,16 +211,17 @@ namespace RML {
          * @brief Find the base link of the robot model.
          *
          */
-        void find_base(const std::map<std::string, std::string> &parent_link_tree) {
+        void find_base(const std::map<std::string, std::string>& parent_link_tree) {
             for (auto link : links) {
                 auto parent = parent_link_tree.find(link->name);
                 if (parent == parent_link_tree.end()) {
                     if (base_link == nullptr) {
                         base_link = get_link(link->name);
-                    } else {
+                    }
+                    else {
                         std::ostringstream error_msg;
                         error_msg << "Error! Multiple base links found: (" << base_link->name
-                                << ") and (" + link->name + ")!";
+                                  << ") and (" + link->name + ")!";
                         throw std::runtime_error(error_msg.str());
                     }
                 }
@@ -260,7 +266,7 @@ namespace RML {
          *
          */
         std::shared_ptr<Joint<Scalar>> get_joint(const std::string& name) {
-            for (auto joint : joints) { 
+            for (auto joint : joints) {
                 if (joint->name == name) {
                     return joint;
                 }
@@ -275,32 +281,28 @@ namespace RML {
          */
         void show_details() {
             int spacing = 25;
-            std::cout << "| ************************************************ Robot Model Details ************************************************ |" << std::endl;
+            std::cout << "| ************************************************ Robot Model Details "
+                         "************************************************ |"
+                      << std::endl;
             std::cout << "Name : " << name << std::endl;
             std::cout << "No. of links : " << n_links << std::endl;
             std::cout << "No. of joints : " << n_joints << std::endl;
             std::cout << "No. of actuatable joints : " << n_q << std::endl;
             std::cout << "Base link name : " << base_link->name << std::endl;
-            std::cout << "Index" << std::setw(spacing) <<
-            "Link Name" << std::setw(spacing) <<
-            "Joint Name" << std::setw(15) <<
-            "Joint Index" << std::setw(15) <<
-            "Joint Type" << std::setw(spacing) <<
-            "Parent Name" << std::setw(spacing) <<
-            "Children Names" << std::endl;
+            std::cout << "Index" << std::setw(spacing) << "Link Name" << std::setw(spacing) << "Joint Name"
+                      << std::setw(15) << "Joint Index" << std::setw(15) << "Joint Type" << std::setw(spacing)
+                      << "Parent Name" << std::setw(spacing) << "Children Names" << std::endl;
             for (auto& link : this->get_links()) {
                 std::string children_names = "";
                 for (auto& child_link : link->child_joints) {
                     children_names += child_link->name + " ";
                 }
-                if(link->joint != nullptr) {
-                    std::cout << link->id << std::setw(spacing) <<
-                    link->name << std::setw(spacing) <<
-                    link->joint->name << std::setw(15) <<
-                    link->joint->q_index << std::setw(15) <<
-                    int(link->joint->type) <<  std::setw(spacing) <<
-                    link->parent_link->name <<  std::setw(spacing+15) <<
-                    children_names <<  std::endl << std::endl;
+                if (link->joint != nullptr) {
+                    std::cout << link->id << std::setw(spacing) << link->name << std::setw(spacing) << link->joint->name
+                              << std::setw(15) << link->joint->q_index << std::setw(15) << int(link->joint->type)
+                              << std::setw(spacing) << link->parent_link->name << std::setw(spacing + 15)
+                              << children_names << std::endl
+                              << std::endl;
                 }
             }
         }
@@ -324,7 +326,7 @@ namespace RML {
             assert(n_q > 0);
             Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q(n_q);
             q.setRandom();
-            q =  M_PI*q;
+            q = M_PI * q;
             return q;
         }
 
@@ -332,16 +334,16 @@ namespace RML {
          * @brief Cast to NewScalar type.
          *
          */
-        template<typename NewScalar>
+        template <typename NewScalar>
         std::shared_ptr<Model<NewScalar>> cast() {
             std::shared_ptr<Model<NewScalar>> new_model;
-            new_model = std::make_shared<Model<NewScalar>>();
-            new_model->name = name;
-            new_model->n_links = n_links;
-            new_model->n_joints = n_joints;
-            new_model->n_q = n_q;
+            new_model            = std::make_shared<Model<NewScalar>>();
+            new_model->name      = name;
+            new_model->n_links   = n_links;
+            new_model->n_joints  = n_joints;
+            new_model->n_q       = n_q;
             new_model->base_link = base_link->template cast<NewScalar>();
-            new_model->gravity = gravity.template cast<NewScalar>();
+            new_model->gravity   = gravity.template cast<NewScalar>();
             for (auto& link : links) {
                 new_model->links.push_back(link->template cast<NewScalar>());
             }
@@ -354,6 +356,6 @@ namespace RML {
             return new_model;
         }
     };
-}  //namespace RML
+}  // namespace RML
 
 #endif

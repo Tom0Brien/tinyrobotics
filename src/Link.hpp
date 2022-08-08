@@ -7,8 +7,8 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "Joint.hpp"
 #include "Common.hpp"
+#include "Joint.hpp"
 
 namespace RML {
 
@@ -30,7 +30,8 @@ namespace RML {
         std::shared_ptr<Joint<Scalar>> joint = nullptr;
 
         /// @brief The links centre of mass.
-        Eigen::Transform<Scalar, 3, Eigen::Affine> centre_of_mass = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Eigen::Transform<Scalar, 3, Eigen::Affine> centre_of_mass =
+            Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
 
         /// @brief The links inertia matrix [kg m^2].
         Eigen::Matrix<Scalar, 6, 1> inertia = Eigen::Matrix<Scalar, 6, 1>::Zero();
@@ -51,91 +52,98 @@ namespace RML {
          * @brief Construct a new Link from a URDF file description.
          * @param xml The XML element containing the link description
          */
-        static std::shared_ptr<Link<Scalar>> fromXml(TiXmlElement *xml) {
+        static std::shared_ptr<Link<Scalar>> fromXml(TiXmlElement* xml) {
 
             std::shared_ptr<Link<Scalar>> link = std::make_shared<Link<Scalar>>();
 
-            const char *name_char = xml->Attribute("name");
+            const char* name_char = xml->Attribute("name");
             if (name_char != nullptr) {
                 link->name = std::string(name_char);
-            } else {
+            }
+            else {
                 std::ostringstream error_msg;
                 error_msg << "Error! Link without a name attribute detected!";
                 throw std::runtime_error(error_msg.str());
             }
 
 
-            TiXmlElement *i = xml->FirstChildElement("inertial");
+            TiXmlElement* i = xml->FirstChildElement("inertial");
             if (i != nullptr) {
                 // ************************ Add the centre of mass to the link ************************
-                TiXmlElement *o = i->FirstChildElement("origin");
+                TiXmlElement* o = i->FirstChildElement("origin");
                 if (o != nullptr) {
                     link->centre_of_mass = transform_from_xml<Scalar>(o);
                 }
                 // ************************ Add the mass to the link ************************
-                TiXmlElement *mass_xml = i->FirstChildElement("mass");
+                TiXmlElement* mass_xml = i->FirstChildElement("mass");
                 if (mass_xml != nullptr) {
                     if (mass_xml->Attribute("value") != nullptr) {
                         try {
                             link->mass = boost::lexical_cast<double>(mass_xml->Attribute("value"));
-                        } catch (boost::bad_lexical_cast &e) {
+                        }
+                        catch (boost::bad_lexical_cast& e) {
                             std::ostringstream error_msg;
                             error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
-                                    << "': inertial mass [" << mass_xml->Attribute("value")
-                                    << "] is not a valid double: " << e.what() << "!";
+                                      << "': inertial mass [" << mass_xml->Attribute("value")
+                                      << "] is not a valid double: " << e.what() << "!";
                             throw std::runtime_error(error_msg.str());
                         }
-                    } else {
+                    }
+                    else {
                         std::ostringstream error_msg;
                         error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
-                                << "' <mass> element must have a value attribute!";
+                                  << "' <mass> element must have a value attribute!";
                         throw std::runtime_error(error_msg.str());
                     }
-                } else {
+                }
+                else {
                     std::ostringstream error_msg;
                     error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
-                            << "' inertial element must have a <mass> element!";
+                              << "' inertial element must have a <mass> element!";
                     throw std::runtime_error(error_msg.str());
                 }
             }
             // ************************ Add the inertia to the link ************************
-            TiXmlElement *inertia_xml = i->FirstChildElement("inertia");
+            TiXmlElement* inertia_xml = i->FirstChildElement("inertia");
             if (inertia_xml != nullptr) {
                 Eigen::Matrix<Scalar, 6, 1> inertia;
-                if (inertia_xml->Attribute("ixx") && inertia_xml->Attribute("ixy") && inertia_xml->Attribute("ixz") &&
-                    inertia_xml->Attribute("iyy") && inertia_xml->Attribute("iyz") &&
-                    inertia_xml->Attribute("izz")) {
+                if (inertia_xml->Attribute("ixx") && inertia_xml->Attribute("ixy") && inertia_xml->Attribute("ixz")
+                    && inertia_xml->Attribute("iyy") && inertia_xml->Attribute("iyz")
+                    && inertia_xml->Attribute("izz")) {
                     try {
-                        inertia(0) = boost::lexical_cast<double>(inertia_xml->Attribute("ixx"));
-                        inertia(1) = boost::lexical_cast<double>(inertia_xml->Attribute("iyy"));
-                        inertia(2) = boost::lexical_cast<double>(inertia_xml->Attribute("izz"));
-                        inertia(3) = boost::lexical_cast<double>(inertia_xml->Attribute("iyz"));
-                        inertia(4) = boost::lexical_cast<double>(inertia_xml->Attribute("ixz"));
-                        inertia(5) = boost::lexical_cast<double>(inertia_xml->Attribute("ixy"));
+                        inertia(0)    = boost::lexical_cast<double>(inertia_xml->Attribute("ixx"));
+                        inertia(1)    = boost::lexical_cast<double>(inertia_xml->Attribute("iyy"));
+                        inertia(2)    = boost::lexical_cast<double>(inertia_xml->Attribute("izz"));
+                        inertia(3)    = boost::lexical_cast<double>(inertia_xml->Attribute("iyz"));
+                        inertia(4)    = boost::lexical_cast<double>(inertia_xml->Attribute("ixz"));
+                        inertia(5)    = boost::lexical_cast<double>(inertia_xml->Attribute("ixy"));
                         link->inertia = inertia;
-                    } catch (boost::bad_lexical_cast &e) {
+                    }
+                    catch (boost::bad_lexical_cast& e) {
                         std::ostringstream error_msg;
                         error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
-                                << "Inertial: one of the inertia elements is not a valid double:"
-                                << " ixx [" << inertia_xml->Attribute("ixx") << "]"
-                                << " ixy [" << inertia_xml->Attribute("ixy") << "]"
-                                << " ixz [" << inertia_xml->Attribute("ixz") << "]"
-                                << " iyy [" << inertia_xml->Attribute("iyy") << "]"
-                                << " iyz [" << inertia_xml->Attribute("iyz") << "]"
-                                << " izz [" << inertia_xml->Attribute("izz") << "]\n\n"
-                                << e.what();
+                                  << "Inertial: one of the inertia elements is not a valid double:"
+                                  << " ixx [" << inertia_xml->Attribute("ixx") << "]"
+                                  << " ixy [" << inertia_xml->Attribute("ixy") << "]"
+                                  << " ixz [" << inertia_xml->Attribute("ixz") << "]"
+                                  << " iyy [" << inertia_xml->Attribute("iyy") << "]"
+                                  << " iyz [" << inertia_xml->Attribute("iyz") << "]"
+                                  << " izz [" << inertia_xml->Attribute("izz") << "]\n\n"
+                                  << e.what();
                         throw std::runtime_error(error_msg.str());
                     }
-                } else {
+                }
+                else {
                     std::ostringstream error_msg;
                     error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
-                            << "' <inertia> element must have ixx,ixy,ixz,iyy,iyz,izz attributes!";
+                              << "' <inertia> element must have ixx,ixy,ixz,iyy,iyz,izz attributes!";
                     throw std::runtime_error(error_msg.str());
                 }
-            } else {
+            }
+            else {
                 std::ostringstream error_msg;
                 error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
-                        << "' inertial element must have a <inertia> element!";
+                          << "' inertial element must have a <inertia> element!";
                 throw std::runtime_error(error_msg.str());
             }
 
@@ -147,9 +155,9 @@ namespace RML {
          * @param xml The XML element containing the link description
          * @return The name of the link's parent link.
          */
-        const char* get_parent_link_name(TiXmlElement *c) {
+        const char* get_parent_link_name(TiXmlElement* c) {
             TiXmlElement* e = c->Parent()->ToElement();
-            while(e->Parent() != nullptr) {
+            while (e->Parent() != nullptr) {
                 if (e->ValueStr() == "link") {
                     break;
                 }
@@ -177,17 +185,17 @@ namespace RML {
         /**
          * @brief Cast to NewScalar type
          */
-        template<typename NewScalar>
+        template <typename NewScalar>
         std::shared_ptr<Link<NewScalar>> cast() {
             std::shared_ptr<Link<NewScalar>> new_link = std::make_shared<Link<NewScalar>>();
-            new_link->name = name;
-            new_link->id = id;
-            new_link->centre_of_mass = centre_of_mass.template cast<NewScalar>();
-            new_link->mass = mass;
-            new_link->inertia = inertia.template cast<NewScalar>();
+            new_link->name                            = name;
+            new_link->id                              = id;
+            new_link->centre_of_mass                  = centre_of_mass.template cast<NewScalar>();
+            new_link->mass                            = mass;
+            new_link->inertia                         = inertia.template cast<NewScalar>();
             return new_link;
         }
     };
-}  //namespace RML
+}  // namespace RML
 
 #endif

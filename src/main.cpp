@@ -1,11 +1,12 @@
-#include <cstdlib>
-#include <cassert>
-#include <string>
-#include <filesystem>
-#include <iostream>
-#include <chrono>
 #include <autodiff/forward/real.hpp>
 #include <autodiff/forward/real/eigen.hpp>
+#include <cassert>
+#include <chrono>
+#include <cstdlib>
+#include <filesystem>
+#include <iostream>
+#include <string>
+
 #include "matplotlibcpp.h"
 
 using namespace autodiff;
@@ -13,13 +14,12 @@ using namespace autodiff;
 #include "Model.hpp"
 
 
-int main(int argc, char* argv [])
-{
-    using std::chrono::high_resolution_clock;
-    using std::chrono::duration_cast;
+int main(int argc, char* argv[]) {
     using std::chrono::duration;
-    using std::chrono::milliseconds;
+    using std::chrono::duration_cast;
+    using std::chrono::high_resolution_clock;
     using std::chrono::microseconds;
+    using std::chrono::milliseconds;
 
     // Create a robot model
     std::shared_ptr<RML::Model<double>> robot_model;
@@ -33,10 +33,10 @@ int main(int argc, char* argv [])
     // Create a random configuration
     Eigen::VectorXd q_random = robot_model->random_configuration();
     // Plot the configuration
-    namespace plt = matplotlibcpp;
-    std::vector<double> y = RML::eigen_to_vec<double>(q_random);
-    plt::plot(y, y);
-    plt::show();
+    // namespace plt = matplotlibcpp;
+    // std::vector<double> y = RML::eigen_to_vec<double>(q_random);
+    // plt::plot(y, y);
+    // plt::show();
 
     return EXIT_SUCCESS;
 }
