@@ -1,15 +1,23 @@
 #define CATCH_KINEMATICS
+#include <ifopt/ipopt_solver.h>
+#include <ifopt/problem.h>
 #include <string>
 
 #include "../../src/ForwardKinematics.hpp"
 #include "../../src/InverseKinematics.hpp"
 #include "../../src/Model.hpp"
 #include "catch2/catch.hpp"
+#include "test_vars_constr_cost.h"
+
+using namespace ifopt;
+#include <chrono>
+using namespace std::chrono;
 
 // Load the robot model from a URDF file
 std::shared_ptr<RML::Model<double, 4>> robot_model = RML::Model<double, 4>::from_urdf("data/urdfs/simple.urdf");
 
 TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
+    auto start = high_resolution_clock::now();
     // Compute FK for a given configuration
     Eigen::Matrix<double, 4, 1> q = robot_model->home_configuration();
     q << 1, 2, 3, 4;
@@ -18,7 +26,9 @@ TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
     std::string target_link_name = "left_foot";
     std::string source_link_name = "ground";
     Hst                          = RML::forward_kinematics(robot_model, q, source_link_name, target_link_name);
-
+    auto stop                    = high_resolution_clock::now();
+    auto duration                = duration_cast<microseconds>(stop - start);
+    std::cout << "FK time: " << duration.count() << "us" << std::endl;
     // Check that the transform is correct
 
     Eigen::Matrix<double, 4, 4> Hst_expected;
@@ -69,15 +79,6 @@ TEST_CASE("Test translation geometric jacobian", "[ForwardKinematics]") {
     CHECK(Jv(1, 3) - J_expected(1, 3) < 1e-8);
     CHECK(Jv(2, 3) - J_expected(2, 3) < 1e-8);
 };
-
-#include <ifopt/ipopt_solver.h>
-#include <ifopt/problem.h>
-
-#include "test_vars_constr_cost.h"
-
-using namespace ifopt;
-#include <chrono>
-using namespace std::chrono;
 
 TEST_CASE("Test autodiff jacobian", "[ForwardKinematics]") {
     // 1. define the problem
