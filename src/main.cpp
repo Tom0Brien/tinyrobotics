@@ -22,7 +22,8 @@ int main(int argc, char* argv[]) {
     using std::chrono::milliseconds;
 
     // Create a robot model
-    RML::Model<double, 4> robot_model = RML::Model<double, 4>::from_urdf("../data/urdfs/simple.urdf");
+    std::string path_to_urdf = "../data/urdfs/simple.urdf";
+    auto robot_model         = RML::from_urdf<double, 4>(path_to_urdf);
 
     // Show details of the robot model
     robot_model.show_details();

@@ -50,94 +50,6 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
         /**
-         * @brief Construct a new Model object from URDF file description.
-         * @param xml_string The XML string of the URDF file.
-         */
-        static Model<Scalar, nq> from_urdf(const std::string& path_to_urdf) {
-
-            Model<Scalar, nq> model = Model<Scalar, nq>();
-            // Parse the URDF file into a string
-            std::ifstream input_file(path_to_urdf);
-            if (!input_file.is_open()) {
-                std::cerr << "Could not open the file - '" << path_to_urdf << "'" << std::endl;
-                exit(EXIT_FAILURE);
-            }
-
-            std::string urdf_string =
-                std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
-
-            TiXmlDocument xml_doc;
-            xml_doc.Parse(urdf_string.c_str());
-
-            if (xml_doc.Error()) {
-                std::string error_msg = xml_doc.ErrorDesc();
-                xml_doc.ClearError();
-                throw std::runtime_error(error_msg);
-            }
-
-            TiXmlElement* robot_xml = xml_doc.RootElement();
-            if (robot_xml == nullptr || robot_xml->ValueStr() != "robot") {
-                std::string error_msg = "Error! Could not find the <robot> element in the xml file";
-                throw std::runtime_error(error_msg);
-            }
-
-            // ************************ Add the name to the model ************************
-            const char* name = robot_xml->Attribute("name");
-            if (name != nullptr) {
-                model.name = std::string(name);
-            }
-            else {
-                std::string error_msg =
-                    "No name given for the robot. Please add a name attribute to the robot element!";
-                throw std::runtime_error(error_msg);
-            }
-
-            // ************************ Add the links to the model ************************
-            for (TiXmlElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr;
-                 link_xml               = link_xml->NextSiblingElement("link")) {
-                auto link = Link<Scalar>::fromXml(link_xml);
-
-                if (model.get_link(link->name) != nullptr) {
-                    std::ostringstream error_msg;
-                    error_msg << "Error! Duplicate links '" << link->name << "' found!";
-                    throw std::runtime_error(error_msg.str());
-                }
-                else {
-                    model.links.push_back(link);
-                    model.n_links++;
-                }
-            }
-
-            if (model.links.size() == 0) {
-                std::string error_msg = "Error! No link elements found in the urdf file.";
-                throw std::runtime_error(error_msg);
-            }
-
-            // ************************ Add the joints to the model ************************
-            for (TiXmlElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr;
-                 joint_xml               = joint_xml->NextSiblingElement("joint")) {
-                auto joint = Joint<Scalar>::fromXml(joint_xml);
-
-                if (model.get_joint(joint->name) != nullptr) {
-                    std::ostringstream error_msg;
-                    error_msg << "Error! Duplicate joints '" << joint->name << "' found!";
-                    throw std::runtime_error(error_msg.str());
-                }
-                else {
-                    model.joints.push_back(joint);
-                    model.n_joints++;
-                }
-            }
-
-            std::map<std::string, std::string> parent_link_tree;
-            model.init_link_tree(parent_link_tree);
-            model.find_base(parent_link_tree);
-
-            return model;
-            return model;
-        }
-
-        /**
          * @brief Initialize the link tree of the robot model.
          *
          */
@@ -355,6 +267,93 @@ namespace RML {
             return new_model;
         }
     };
+
+    /**
+     * @brief Construct a new Model object from URDF file description.
+     * @param xml_string The XML string of the URDF file.
+     */
+    template <typename Scalar, int nq>
+    static Model<Scalar, nq> from_urdf(const std::string& path_to_urdf) {
+
+        Model<Scalar, nq> model = Model<Scalar, nq>();
+        // Parse the URDF file into a string
+        std::ifstream input_file(path_to_urdf);
+        if (!input_file.is_open()) {
+            std::cerr << "Could not open the file - '" << path_to_urdf << "'" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        std::string urdf_string =
+            std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+
+        TiXmlDocument xml_doc;
+        xml_doc.Parse(urdf_string.c_str());
+
+        if (xml_doc.Error()) {
+            std::string error_msg = xml_doc.ErrorDesc();
+            xml_doc.ClearError();
+            throw std::runtime_error(error_msg);
+        }
+
+        TiXmlElement* robot_xml = xml_doc.RootElement();
+        if (robot_xml == nullptr || robot_xml->ValueStr() != "robot") {
+            std::string error_msg = "Error! Could not find the <robot> element in the xml file";
+            throw std::runtime_error(error_msg);
+        }
+
+        // ************************ Add the name to the model ************************
+        const char* name = robot_xml->Attribute("name");
+        if (name != nullptr) {
+            model.name = std::string(name);
+        }
+        else {
+            std::string error_msg = "No name given for the robot. Please add a name attribute to the robot element!";
+            throw std::runtime_error(error_msg);
+        }
+
+        // ************************ Add the links to the model ************************
+        for (TiXmlElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr;
+             link_xml               = link_xml->NextSiblingElement("link")) {
+            auto link = Link<Scalar>::fromXml(link_xml);
+
+            if (model.get_link(link->name) != nullptr) {
+                std::ostringstream error_msg;
+                error_msg << "Error! Duplicate links '" << link->name << "' found!";
+                throw std::runtime_error(error_msg.str());
+            }
+            else {
+                model.links.push_back(link);
+                model.n_links++;
+            }
+        }
+
+        if (model.links.size() == 0) {
+            std::string error_msg = "Error! No link elements found in the urdf file.";
+            throw std::runtime_error(error_msg);
+        }
+
+        // ************************ Add the joints to the model ************************
+        for (TiXmlElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr;
+             joint_xml               = joint_xml->NextSiblingElement("joint")) {
+            auto joint = Joint<Scalar>::fromXml(joint_xml);
+
+            if (model.get_joint(joint->name) != nullptr) {
+                std::ostringstream error_msg;
+                error_msg << "Error! Duplicate joints '" << joint->name << "' found!";
+                throw std::runtime_error(error_msg.str());
+            }
+            else {
+                model.joints.push_back(joint);
+                model.n_joints++;
+            }
+        }
+
+        std::map<std::string, std::string> parent_link_tree;
+        model.init_link_tree(parent_link_tree);
+        model.find_base(parent_link_tree);
+
+        return model;
+    }
 }  // namespace RML
 
 #endif
