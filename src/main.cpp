@@ -22,16 +22,13 @@ int main(int argc, char* argv[]) {
     using std::chrono::milliseconds;
 
     // Create a robot model
-    std::shared_ptr<RML::Model<double, 4>> robot_model;
-
-    // Load the robot model from a URDF file
-    robot_model = RML::Model<double, 4>::from_urdf("../data/urdfs/simple.urdf");
+    RML::Model<double, 4> robot_model = RML::Model<double, 4>::from_urdf("../data/urdfs/simple.urdf");
 
     // Show details of the robot model
-    robot_model->show_details();
+    robot_model.show_details();
 
     // Create a random configuration
-    Eigen::VectorXd q_random = robot_model->random_configuration();
+    Eigen::VectorXd q_random = robot_model.random_configuration();
     // Plot the configuration
     // namespace plt = matplotlibcpp;
     // std::vector<double> y = RML::eigen_to_vec<double>(q_random);

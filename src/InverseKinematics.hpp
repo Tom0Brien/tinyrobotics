@@ -31,10 +31,10 @@ namespace RML {
          * @brief Every variable set has a name, here "var_set1". this allows the constraints
          * and costs to define values and Jacobians specifically w.r.t this variable set.
          */
-        IKVariables(const std::string& name, std::shared_ptr<Model<Scalar, nq>> _model, Eigen::Matrix<Scalar, nq, 1> q0)
-            : VariableSet(_model->n_q, name) {
+        IKVariables(const std::string& name, Model<Scalar, nq>& _model, Eigen::Matrix<Scalar, nq, 1> q0)
+            : VariableSet(_model.n_q, name) {
             // the initial values where the NLP starts iterating from
-            q.resize(_model->n_q);
+            q.resize(_model.n_q);
             q = q0;
         }
 
@@ -132,7 +132,7 @@ namespace RML {
     public:
         IKCost() : IKCost("IK_cost") {}
         IKCost(const std::string& name,
-               std::shared_ptr<Model<AutoDiffType, nq>> _model,
+               Model<AutoDiffType, nq>& _model,
                std::string& _source_link_name,
                std::string& _target_link_name,
                const Eigen::Transform<Scalar, 3, Eigen::Affine>& _desired_pose,
@@ -146,7 +146,7 @@ namespace RML {
         }
 
         /// @brief The Model used in the IK problem.
-        std::shared_ptr<Model<AutoDiffType, nq>> model;
+        Model<AutoDiffType, nq> model;
 
         /// @brief The name of the source link.
         std::string source_link_name;
@@ -171,7 +171,7 @@ namespace RML {
          */
         static inline Eigen::Matrix<AutoDiffType, 1, 1> cost(
             const Eigen::Matrix<AutoDiffType, nq, 1>& q,
-            const std::shared_ptr<Model<AutoDiffType, nq>> model,
+            const Model<AutoDiffType, nq>& model,
             const std::string& source_link_name,
             const std::string& target_link_name,
             const Eigen::Transform<Scalar, 3, Eigen::Affine> Hst_desired,
@@ -193,9 +193,8 @@ namespace RML {
             Eigen::Matrix<AutoDiffType, nq, 1> q_diff = q - q0;
 
             // Quadratic cost function q^T*W*q + (k(q) - x*)^TK*(l(q) - x*)))
-            Eigen::Matrix<AutoDiffType, nq, nq> W =
-                Eigen::Matrix<AutoDiffType, nq, nq>::Identity(model->n_q, model->n_q);
-            Eigen::Matrix<AutoDiffType, 3, 3> K = Eigen::Matrix<AutoDiffType, 3, 3>::Identity();
+            Eigen::Matrix<AutoDiffType, nq, nq> W = Eigen::Matrix<AutoDiffType, nq, nq>::Identity(model.n_q, model.n_q);
+            Eigen::Matrix<AutoDiffType, 3, 3> K   = Eigen::Matrix<AutoDiffType, 3, 3>::Identity();
 
             // Compute the cost function
             Eigen::Matrix<AutoDiffType, 1, 1> cost =
@@ -243,7 +242,7 @@ namespace RML {
 
                 // Fill the Jacobian block
                 jac.resize(J.rows(), J.cols());
-                for (int i = 0; i < model->n_q; i++) {
+                for (int i = 0; i < model.n_q; i++) {
                     jac.coeffRef(0, i) = J(0, i);
                 }
             }
@@ -260,15 +259,15 @@ namespace RML {
      * @return The configuration vector of the robot model which achieves the desired pose.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, 1> inverse_kinematics(std::shared_ptr<Model<Scalar, nq>> model,
+    Eigen::Matrix<Scalar, nq, 1> inverse_kinematics(Model<Scalar, nq>& model,
                                                     std::string& source_link_name,
                                                     std::string& target_link_name,
                                                     const Eigen::Transform<Scalar, 3, Eigen::Affine>& desired_pose,
                                                     Eigen::Matrix<Scalar, nq, 1> q0) {
 
         // Cast model to autodiff type
-        std::shared_ptr<RML::Model<autodiff::dual, nq>> autodiff_model;
-        autodiff_model = model->template cast<autodiff::dual, nq>();
+        RML::Model<autodiff::dual, nq> autodiff_model;
+        autodiff_model = model.template cast<autodiff::dual, nq>();
 
         // 1. Define the problem
         ifopt::Problem nlp;

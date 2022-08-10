@@ -53,9 +53,9 @@ namespace RML {
          * @brief Construct a new Model object from URDF file description.
          * @param xml_string The XML string of the URDF file.
          */
-        static std::shared_ptr<Model<Scalar, nq>> from_urdf(const std::string& path_to_urdf) {
+        static Model<Scalar, nq> from_urdf(const std::string& path_to_urdf) {
 
-            std::shared_ptr<Model<Scalar, nq>> model = std::make_shared<Model<Scalar, nq>>();
+            Model<Scalar, nq> model = Model<Scalar, nq>();
             // Parse the URDF file into a string
             std::ifstream input_file(path_to_urdf);
             if (!input_file.is_open()) {
@@ -84,7 +84,7 @@ namespace RML {
             // ************************ Add the name to the model ************************
             const char* name = robot_xml->Attribute("name");
             if (name != nullptr) {
-                model->name = std::string(name);
+                model.name = std::string(name);
             }
             else {
                 std::string error_msg =
@@ -97,18 +97,18 @@ namespace RML {
                  link_xml               = link_xml->NextSiblingElement("link")) {
                 auto link = Link<Scalar>::fromXml(link_xml);
 
-                if (model->get_link(link->name) != nullptr) {
+                if (model.get_link(link->name) != nullptr) {
                     std::ostringstream error_msg;
                     error_msg << "Error! Duplicate links '" << link->name << "' found!";
                     throw std::runtime_error(error_msg.str());
                 }
                 else {
-                    model->links.push_back(link);
-                    model->n_links++;
+                    model.links.push_back(link);
+                    model.n_links++;
                 }
             }
 
-            if (model->links.size() == 0) {
+            if (model.links.size() == 0) {
                 std::string error_msg = "Error! No link elements found in the urdf file.";
                 throw std::runtime_error(error_msg);
             }
@@ -118,20 +118,20 @@ namespace RML {
                  joint_xml               = joint_xml->NextSiblingElement("joint")) {
                 auto joint = Joint<Scalar>::fromXml(joint_xml);
 
-                if (model->get_joint(joint->name) != nullptr) {
+                if (model.get_joint(joint->name) != nullptr) {
                     std::ostringstream error_msg;
                     error_msg << "Error! Duplicate joints '" << joint->name << "' found!";
                     throw std::runtime_error(error_msg.str());
                 }
                 else {
-                    model->joints.push_back(joint);
-                    model->n_joints++;
+                    model.joints.push_back(joint);
+                    model.n_joints++;
                 }
             }
 
             std::map<std::string, std::string> parent_link_tree;
-            model->init_link_tree(parent_link_tree);
-            model->find_base(parent_link_tree);
+            model.init_link_tree(parent_link_tree);
+            model.find_base(parent_link_tree);
 
             return model;
             return model;
@@ -243,7 +243,7 @@ namespace RML {
          * @brief Get a link in the robot model.
          *
          */
-        std::shared_ptr<Link<Scalar>> get_link(const std::string& name) {
+        std::shared_ptr<Link<Scalar>> get_link(const std::string& name) const {
             for (auto link : links) {
                 if (link->name == name) {
                     return link;
@@ -335,24 +335,23 @@ namespace RML {
          *
          */
         template <typename NewScalar, int New_nq>
-        std::shared_ptr<Model<NewScalar, New_nq>> cast() {
-            std::shared_ptr<Model<NewScalar, New_nq>> new_model;
-            new_model            = std::make_shared<Model<NewScalar, New_nq>>();
-            new_model->name      = name;
-            new_model->n_links   = n_links;
-            new_model->n_joints  = n_joints;
-            new_model->n_q       = n_q;
-            new_model->base_link = base_link->template cast<NewScalar>();
-            new_model->gravity   = gravity.template cast<NewScalar>();
+        Model<NewScalar, New_nq> cast() {
+            Model<NewScalar, New_nq> new_model = Model<NewScalar, New_nq>();
+            new_model.name                     = name;
+            new_model.n_links                  = n_links;
+            new_model.n_joints                 = n_joints;
+            new_model.n_q                      = n_q;
+            new_model.base_link                = base_link->template cast<NewScalar>();
+            new_model.gravity                  = gravity.template cast<NewScalar>();
             for (auto& link : links) {
-                new_model->links.push_back(link->template cast<NewScalar>());
+                new_model.links.push_back(link->template cast<NewScalar>());
             }
             for (auto& joint : joints) {
-                new_model->joints.push_back(joint->template cast<NewScalar>());
+                new_model.joints.push_back(joint->template cast<NewScalar>());
             }
             std::map<std::string, std::string> parent_link_tree;
-            new_model->init_link_tree(parent_link_tree);
-            // new_model->find_base(parent_link_tree);
+            new_model.init_link_tree(parent_link_tree);
+            // new_model.find_base(parent_link_tree);
             return new_model;
         }
     };
