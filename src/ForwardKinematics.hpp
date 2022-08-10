@@ -54,9 +54,6 @@ namespace RML {
     Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& target_link_name) {
-
-        // Assert the configuration vector is valid
-
         std::shared_ptr<Link<Scalar>> current_link = model.get_link(target_link_name);
 
         // Check if the link is within the kinematic tree
@@ -77,7 +74,6 @@ namespace RML {
             else if (current_link->joint->type == JointType::PRISMATIC) {
                 Scalar q_current = q(current_link->joint->q_index);
                 // Translate by q_current along axis
-                // Eigen::Matrix<Scalar, 3, 1> axis = ;
                 H.translation() = current_link->joint->axis * q_current;
             }
             Htb = Htb * RML::inv(H);

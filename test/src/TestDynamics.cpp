@@ -8,17 +8,14 @@
 #include "catch2/catch.hpp"
 using namespace autodiff;
 
-TEST_CASE("Test dynamics", "[Dynamics]"){
+TEST_CASE("Test dynamics", "[Dynamics]") {
     // Create a robot model
-    // std::shared_ptr<RML::Model<double>> robot_model;
+    auto robot_model = RML::from_urdf<double, 4>("data/urdfs/simple.urdf");
 
-    // // Load the robot model from a URDF file
-    // robot_model = RML::Model<double>::from_urdf("data/urdfs/simple.urdf");
+    // Create a random configuration
+    Eigen::Matrix<double, 4, 1> q_random;
+    q_random << 1, 2, 3, 4;
 
-    // // Compute FK for a given configuration
-    // Eigen::VectorXd q = robot_model->home_configuration();
-    // q << 1, 2, 3, 4;
-
-    // // Compute the dynamics
-    // RML::compute_dynamics(robot_model, q);
+    // Compute the dynamics
+    RML::compute_dynamics(robot_model, q_random);
 };

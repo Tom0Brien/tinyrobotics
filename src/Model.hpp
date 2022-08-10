@@ -49,6 +49,15 @@ namespace RML {
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
+        /// @brief The mass matrix of the robot model.
+        Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero();
+
+        /// @brief The coriolis matrix of the robot model.
+        Eigen::Matrix<Scalar, nq, nq> C = Eigen::Matrix<Scalar, nq, nq>::Zero();
+
+        /// @brief The gravity torque of the robot model.
+        Eigen::Matrix<Scalar, nq, 1> g = Eigen::Matrix<Scalar, nq, 1>::Zero();
+
         /**
          * @brief Initialize the link tree of the robot model.
          *
