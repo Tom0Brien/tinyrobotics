@@ -123,10 +123,10 @@ namespace RML {
      * @return The configuration vector of the robot model which achieves the desired pose.
      */
     template <typename Scalar, int nq>
-    inline Eigen::Matrix<Scalar, 3, 1> position(Model<Scalar, nq>& model,
-                                                const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                std::string& source_link_name,
-                                                std::string& target_link_name) {
+    Eigen::Matrix<Scalar, 3, 1> position(Model<Scalar, nq>& model,
+                                         const Eigen::Matrix<Scalar, nq, 1>& q,
+                                         std::string& source_link_name,
+                                         std::string& target_link_name) {
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
         Eigen::Matrix<Scalar, 3, 1> rTSs(Hst.translation());
@@ -143,10 +143,10 @@ namespace RML {
      * @return The rotation matrix between the source and target link
      */
     template <typename Scalar, int nq>
-    inline Eigen::Matrix<Scalar, 3, 3> orientation(Model<Scalar, nq>& model,
-                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                   std::string& source_link_name,
-                                                   std::string& target_link_name) {
+    Eigen::Matrix<Scalar, 3, 3> orientation(Model<Scalar, nq>& model,
+                                            const Eigen::Matrix<Scalar, nq, 1>& q,
+                                            std::string& source_link_name,
+                                            std::string& target_link_name) {
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
         return Hst.linear();

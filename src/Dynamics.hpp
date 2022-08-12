@@ -18,85 +18,35 @@ using namespace autodiff;
 namespace RML {
 
     /**
-     * @brief Constraint function for holonomic constraints.
+     * @brief Creates a vector of holonomic constraints.
      * @param q The joint configuration of the robot.
      * @return The constraint function for holonomic constraints.
      */
-    Eigen::Matrix<autodiff::real, Eigen::Dynamic, Eigen::Dynamic> fc_function(
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1>& fc) {
-        auto fc_ = fc;
-        return fc_;
-    }
-
-    /**
-     * @brief Eliminates holonomic constraints from the dynamic equations of motion via the appropriate selection
-     * of generalised coordinates.
-     * @param model The robot model.
-     * @param q_real The joint configuration of the robot.
-     * @param fc The holonomic constraints.
-     * @return The mass matrix of the robot model.
-     */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> holonomic_reduction(
+    Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> fc_function(
         Model<Scalar, nq>& model,
-        Eigen::Matrix<autodiff::real, nq, 1>& q_real,
+        const Eigen::Matrix<Scalar, nq, 1>& q,
         Eigen::Matrix<autodiff::real, Eigen::Dynamic, Eigen::Dynamic>& M,
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1>& fc) {
-        // Compute the jacobian of the constraints
-        VectorXreal F;  // the output vector F = f(x) evaluated together with Jacobian matrix below
-
-        std::cout << "fc = " << std::endl << fc << std::endl;
-        Eigen::MatrixXd dfcdqh = jacobian(fc_function, wrt(q_real), at(fc), F);
-        // std::cout << "dfcdqh = " << std::endl << dfcdqh << std::endl;
-        // std::cout << "F = " << std::endl << F << std::endl;
-
-        int n = q_real.rows();
-
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mh =
-            Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n);
-        // Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Reduction;
-        // Reduction.resize(nq + dfcdqh.rows(), dfcdqh.cols());
-        // Reduction.block(0, 0, nq, dfcdqh.cols()) =
-        //     Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Identity(nq, nq);
-        // Reduction.block(nq, 0, dfcdqh.rows(), dfcdqh.cols()) = dfcdqh.template cast<Scalar>();
-        // std::cout << "Reduction = " << std::endl << Reduction << std::endl;
-
-        // Mh = Reduction.transpose() * M * Reduction;
-        // std::cout << "Mh = " << std::endl << Mh << std::endl;
-        return Mh;
-    }
-
-    /**
-     * @brief Construct a new Model object from URDF file description.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
-     */
-    template <typename Scalar, int nq>
-    void compute_dynamics(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        autodiff::real& V) {
 
         std::vector<Scalar> Mp;
         std::vector<Scalar> Jp;
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> fc;
-        Scalar V = 0;
-
-        // Cast to autodiff::real
-        Eigen::Matrix<autodiff::real, nq, 1> q_real(q);
-        Model<autodiff::real, nq> model_real = model.template cast<autodiff::real, nq>();
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> fc;
 
         // Create over parametrised system
         for (auto link : model.links) {
             // Compute FK to centre of mass
             Eigen::Transform<autodiff::real, 3, Eigen::Affine> Hbm =
-                forward_kinematics_com<autodiff::real, nq>(model_real, q_real, model_real.base_link->name, link->name);
+                forward_kinematics_com<autodiff::real, nq>(model, q, model.base_link->name, link->name);
             Eigen::Matrix<autodiff::real, 3, 1> rMBb = Hbm.translation();
 
-            // // Add links contribution to potential energy m*g*h
-            V = V - link->mass * model.gravity.transpose() * rMBb.cast<Scalar>();
+            // Add links contribution to potential energy m*g*h
+            V -= link->mass * model.gravity.transpose() * rMBb;
 
             if (link->joint != nullptr && link->joint->type == RML::JointType::REVOLUTE) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link->mass, link->mass, link->mass});
-                // Add inertia to J matrix TODO: Probably need to actually load inertia information
+                // Add inertia to J matrix TODO: Need to figure out inertia contribution
                 Jp.insert(Jp.end(), {0});
                 // Add to constraint vector
                 fc.conservativeResize(fc.rows() + 3);
@@ -110,12 +60,11 @@ namespace RML {
                 fc.tail(3) = rMBb;
             }
             else if (link->joint != nullptr && link->joint->type == RML::JointType::PRISMATIC) {
-                // Add inertia to J matrix TODO: Probably need to actually load inertia information
+                // Add inertia to J matrix TODO: Need to figure out inertia contribution
                 Jp.insert(Jp.end(), {0});
             }
         }
         // Compute reduced system
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, Eigen::Dynamic> M;
         M.resize(Mp.size() + Jp.size(), Mp.size() + Jp.size());
         M.setZero();
         for (int i = 0; i < Jp.size(); i++) {
@@ -124,11 +73,70 @@ namespace RML {
         for (int i = 0; i < Mp.size(); i++) {
             M(Jp.size() + i, Jp.size() + i) = Mp[i];
         }
+        return fc;
+    }
 
-        auto Mh = holonomic_reduction(model, q_real, M, fc);
+    /**
+     * @brief Eliminates holonomic constraints from the dynamic equations of motion via the appropriate selection
+     * of generalised coordinates.
+     * @param model The robot model.
+     * @param q_real The joint configuration of the robot.
+     * @param fc The holonomic constraints.
+     * @return The mass matrix of the robot model.
+     */
+    template <typename Scalar, int nq>
+    void holonomic_reduction(Model<Scalar, nq>& model,
+                             Eigen::Matrix<Scalar, nq, 1>& q_real,
+                             Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& M,
+                             const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& dfcdqh) {
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mh =
+            Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(nq, nq);
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Q;
+        Q.resize(nq + dfcdqh.rows(), dfcdqh.cols());
+        Q.block(0, 0, nq, dfcdqh.cols()) = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Identity(nq, nq);
+        Q.block(nq, 0, dfcdqh.rows(), dfcdqh.cols()) = dfcdqh.template cast<Scalar>();
+        Mh                                           = Q.transpose() * M * Q;
+        M.resize(nq, nq);
+        M = Mh;
+    }
+
+    /**
+     * @brief Compute the mass matrix, coriolis and gravity matrices of the robot model.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     */
+    template <typename Scalar, int nq>
+    void compute_dynamics(Model<Scalar, nq>& model,
+                          const Eigen::Matrix<Scalar, nq, 1>& q,
+                          Eigen::Matrix<Scalar, nq, nq>& Mh,
+                          Eigen::Matrix<Scalar, nq, nq>& Ch,
+                          Eigen::Matrix<Scalar, nq, 1>& g,
+                          Scalar& Vh) {
+        // Create the mass matrix, inertia matrix, constraint vector and potential energy matrices
+        Eigen::Matrix<autodiff::real, Eigen::Dynamic, Eigen::Dynamic> M;
+        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> fc;
+        autodiff::real V = 0;
+
+        // Cast to autodiff::real type
+        Eigen::Matrix<autodiff::real, nq, 1> q_real(q);
+        RML::Model<autodiff::real, nq> autodiff_model = model.template cast<autodiff::real, nq>();
+
+        // Compute the holonomic constraint vector and its jacobian
+        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> F;
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> dfcdqh =
+            jacobian(fc_function<autodiff::real, nq>, wrt(q_real), at(autodiff_model, q_real, M, V), F);
+
+        // Compute the mass matrix via holonomic constraint elimination
+        holonomic_reduction<autodiff::real, nq>(autodiff_model, q_real, M, dfcdqh);
+
+        // TODO:  Compute the coriolis
+        Ch.setZero();
+        // TODO: Compute the gravity torque vector
+        g.setZero();
+        // Cast back to Scalar
+        Mh = M.template cast<Scalar>();
+        Vh = val(V);
     };
-
-
 }  // namespace RML
 
 #endif
