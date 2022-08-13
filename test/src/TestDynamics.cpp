@@ -11,10 +11,10 @@ using namespace autodiff;
 
 TEST_CASE("Test dynamics", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = RML::from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = RML::from_urdf<double>("data/urdfs/simple.urdf");
 
     // Create a random configuration
-    Eigen::Matrix<double, 4, 1> q_random = robot_model.home_configuration();
+    auto q_random = robot_model.home_configuration<4>();
     // Compute the dynamics
     auto start                    = std::chrono::high_resolution_clock::now();
     Eigen::Matrix<double, 4, 4> M = Eigen::Matrix<double, 4, 4>::Zero();

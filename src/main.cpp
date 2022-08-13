@@ -23,13 +23,13 @@ int main(int argc, char* argv[]) {
 
     // Create a robot model
     std::string path_to_urdf = "../data/urdfs/simple.urdf";
-    auto robot_model         = RML::from_urdf<double, 4>(path_to_urdf);
+    auto robot_model         = RML::from_urdf<double>(path_to_urdf);
 
     // Show details of the robot model
     robot_model.show_details();
 
     // Create a random configuration
-    Eigen::VectorXd q_random = robot_model.random_configuration();
+    Eigen::Matrix<double, 20, 1> q_random = robot_model.random_configuration<20>();
     // Plot the configuration
     // namespace plt = matplotlibcpp;
     // std::vector<double> y = RML::eigen_to_vec<double>(q_random);

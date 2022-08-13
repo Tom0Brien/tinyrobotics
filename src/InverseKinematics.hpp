@@ -31,7 +31,7 @@ namespace RML {
          * @brief Every variable set has a name, here "var_set1". this allows the constraints
          * and costs to define values and Jacobians specifically w.r.t this variable set.
          */
-        IKVariables(const std::string& name, Model<Scalar, nq>& _model, Eigen::Matrix<Scalar, nq, 1> q0)
+        IKVariables(const std::string& name, Model<Scalar>& _model, Eigen::Matrix<Scalar, nq, 1> q0)
             : VariableSet(_model.n_q, name) {
             // the initial values where the NLP starts iterating from
             q.resize(_model.n_q);
@@ -132,7 +132,7 @@ namespace RML {
     public:
         IKCost() : IKCost("IK_cost") {}
         IKCost(const std::string& name,
-               Model<AutoDiffType, nq>& _model,
+               Model<AutoDiffType>& _model,
                std::string& _source_link_name,
                std::string& _target_link_name,
                const Eigen::Transform<Scalar, 3, Eigen::Affine>& _desired_pose,
@@ -146,7 +146,7 @@ namespace RML {
         }
 
         /// @brief The Model used in the IK problem.
-        Model<AutoDiffType, nq> model;
+        Model<AutoDiffType> model;
 
         /// @brief The name of the source link.
         std::string source_link_name;
@@ -171,7 +171,7 @@ namespace RML {
          */
         static inline Eigen::Matrix<AutoDiffType, 1, 1> cost(
             const Eigen::Matrix<AutoDiffType, nq, 1>& q,
-            const Model<AutoDiffType, nq>& model,
+            const Model<AutoDiffType>& model,
             const std::string& source_link_name,
             const std::string& target_link_name,
             const Eigen::Transform<Scalar, 3, Eigen::Affine> Hst_desired,
@@ -259,15 +259,14 @@ namespace RML {
      * @return The configuration vector of the robot model which achieves the desired pose.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, 1> inverse_kinematics(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, nq, 1> inverse_kinematics(Model<Scalar>& model,
                                                     std::string& source_link_name,
                                                     std::string& target_link_name,
                                                     const Eigen::Transform<Scalar, 3, Eigen::Affine>& desired_pose,
                                                     Eigen::Matrix<Scalar, nq, 1> q0) {
 
         // Cast model to autodiff type
-        RML::Model<autodiff::dual, nq> autodiff_model;
-        autodiff_model = model.template cast<autodiff::dual, nq>();
+        RML::Model<autodiff::dual> autodiff_model = model.template cast<autodiff::dual>();
 
         // 1. Define the problem
         ifopt::Problem nlp;

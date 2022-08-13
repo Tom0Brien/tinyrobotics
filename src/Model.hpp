@@ -21,7 +21,7 @@ namespace RML {
      * @details
      * @param Scalar The scalar type for the robot model
      */
-    template <typename Scalar, int nq>
+    template <typename Scalar>
     class Model {
 
     public:
@@ -49,14 +49,14 @@ namespace RML {
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
-        /// @brief The mass matrix of the robot model.
-        Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero();
+        // /// @brief The mass matrix of the robot model.
+        // Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
-        /// @brief The coriolis matrix of the robot model.
-        Eigen::Matrix<Scalar, nq, nq> C = Eigen::Matrix<Scalar, nq, nq>::Zero();
+        // /// @brief The coriolis matrix of the robot model.
+        // Eigen::Matrix<Scalar, nq, nq> C = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
-        /// @brief The gravity torque of the robot model.
-        Eigen::Matrix<Scalar, nq, 1> g = Eigen::Matrix<Scalar, nq, 1>::Zero();
+        // /// @brief The gravity torque of the robot model.
+        // Eigen::Matrix<Scalar, nq, 1> g = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /**
          * @brief Initialize the link tree of the robot model.
@@ -232,6 +232,7 @@ namespace RML {
          * @brief Get a configuration vector for the robot model of all zeros.
          *
          */
+        template <int nq>
         Eigen::Matrix<Scalar, nq, 1> home_configuration() const {
             assert(n_q > 0);
             Eigen::Matrix<Scalar, nq, 1> q(n_q);
@@ -243,6 +244,7 @@ namespace RML {
          * @brief Get a random configuration vector for the robot model.
          *
          */
+        template <int nq>
         Eigen::Matrix<Scalar, nq, 1> random_configuration() const {
             assert(n_q > 0);
             Eigen::Matrix<Scalar, nq, 1> q(n_q);
@@ -255,15 +257,15 @@ namespace RML {
          * @brief Cast to NewScalar type.
          *
          */
-        template <typename NewScalar, int New_nq>
-        Model<NewScalar, New_nq> cast() {
-            Model<NewScalar, New_nq> new_model = Model<NewScalar, New_nq>();
-            new_model.name                     = name;
-            new_model.n_links                  = n_links;
-            new_model.n_joints                 = n_joints;
-            new_model.n_q                      = n_q;
-            new_model.base_link                = base_link->template cast<NewScalar>();
-            new_model.gravity                  = gravity.template cast<NewScalar>();
+        template <typename NewScalar>
+        Model<NewScalar> cast() {
+            Model<NewScalar> new_model = Model<NewScalar>();
+            new_model.name             = name;
+            new_model.n_links          = n_links;
+            new_model.n_joints         = n_joints;
+            new_model.n_q              = n_q;
+            new_model.base_link        = base_link->template cast<NewScalar>();
+            new_model.gravity          = gravity.template cast<NewScalar>();
             for (auto& link : links) {
                 new_model.links.push_back(link->template cast<NewScalar>());
             }
@@ -281,10 +283,10 @@ namespace RML {
      * @brief Construct a new Model object from URDF file description.
      * @param xml_string The XML string of the URDF file.
      */
-    template <typename Scalar, int nq>
-    static Model<Scalar, nq> from_urdf(const std::string& path_to_urdf) {
+    template <typename Scalar>
+    static Model<Scalar> from_urdf(const std::string& path_to_urdf) {
 
-        Model<Scalar, nq> model = Model<Scalar, nq>();
+        Model<Scalar> model = Model<Scalar>();
         // Parse the URDF file into a string
         std::ifstream input_file(path_to_urdf);
         if (!input_file.is_open()) {

@@ -24,7 +24,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> fc_function(
-        Model<Scalar, nq>& model,
+        Model<Scalar>& model,
         const Eigen::Matrix<Scalar, nq, 1>& q,
         Eigen::Matrix<autodiff::real, Eigen::Dynamic, Eigen::Dynamic>& M,
         autodiff::real& V) {
@@ -85,7 +85,7 @@ namespace RML {
      * @return The mass matrix of the robot model.
      */
     template <typename Scalar, int nq>
-    void holonomic_reduction(Model<Scalar, nq>& model,
+    void holonomic_reduction(Model<Scalar>& model,
                              Eigen::Matrix<Scalar, nq, 1>& q_real,
                              Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& M,
                              const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& dfcdqh) {
@@ -106,7 +106,7 @@ namespace RML {
      * @param q The joint configuration of the robot.
      */
     template <typename Scalar, int nq>
-    void compute_dynamics(Model<Scalar, nq>& model,
+    void compute_dynamics(Model<Scalar>& model,
                           const Eigen::Matrix<Scalar, nq, 1>& q,
                           Eigen::Matrix<Scalar, nq, nq>& Mh,
                           Eigen::Matrix<Scalar, nq, nq>& Ch,
@@ -119,7 +119,7 @@ namespace RML {
 
         // Cast to autodiff::real type
         Eigen::Matrix<autodiff::real, nq, 1> q_real(q);
-        RML::Model<autodiff::real, nq> autodiff_model = model.template cast<autodiff::real, nq>();
+        RML::Model<autodiff::real> autodiff_model = model.template cast<autodiff::real>();
 
         // Compute the holonomic constraint vector and its jacobian
         Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> F;
