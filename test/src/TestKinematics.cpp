@@ -7,7 +7,6 @@
 #include "../../include/InverseKinematics.hpp"
 #include "../../include/Model.hpp"
 #include "catch2/catch.hpp"
-#include "test_vars_constr_cost.h"
 
 using namespace ifopt;
 #include <chrono>
@@ -79,33 +78,6 @@ TEST_CASE("Test translation geometric jacobian", "[ForwardKinematics]") {
     CHECK(Jv(1, 3) - J_expected(1, 3) < 1e-8);
     CHECK(Jv(2, 3) - J_expected(2, 3) < 1e-8);
 };
-
-TEST_CASE("Test autodiff jacobian", "[ForwardKinematics]") {
-    // 1. define the problem
-    Problem nlp;
-    nlp.AddVariableSet(std::make_shared<ExVariables>());
-    nlp.AddConstraintSet(std::make_shared<ExConstraint>());
-    nlp.AddCostSet(std::make_shared<ExCost>());
-
-    // 2. choose solver and options
-    IpoptSolver ipopt;
-    ipopt.SetOption("linear_solver", "ma57");
-    ipopt.SetOption("jacobian_approximation", "exact");
-    ipopt.SetOption("print_level", 0);
-    // 3 . solve
-    auto start = high_resolution_clock::now();
-    ipopt.Solve(nlp);
-    auto stop     = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-    // std::cout << "Duration [ms]: " << duration.count() << std::endl;
-    Eigen::VectorXd x = nlp.GetOptVariables()->GetValues();
-    // std::cout << x.transpose() << std::endl;
-
-    // 4. test if solution correct
-    double eps = 1e-5;  // double precision
-    assert(1.0 - eps < x(0) && x(0) < 1.0 + eps);
-    assert(0.0 - eps < x(1) && x(1) < 0.0 + eps);
-}
 
 TEST_CASE("Test centre of mass calculations for simple model", "[ForwardKinematics]") {
     // Create a configuration for the robot
