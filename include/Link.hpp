@@ -19,11 +19,11 @@ namespace RML {
         /// @brief Name of the link
         std::string name = "";
 
-        /// @brief Unique ID of the link
-        int id = -1;
+        /// @brief The index of the link in the model link vector
+        int link_idx = -1;
 
-        /// @brief The links joint.
-        std::shared_ptr<Joint<Scalar>> joint = nullptr;
+        /// @brief The index of links joint in the model joint vector
+        int joint_idx = -1;
 
         /// @brief The links centre of mass.
         Eigen::Transform<Scalar, 3, Eigen::Affine> centre_of_mass =
@@ -35,58 +35,45 @@ namespace RML {
         /// @brief The links mass [kg].
         Scalar mass = 0;
 
-        /// @brief The links parent link.
-        std::shared_ptr<Link<Scalar>> parent_link = nullptr;
+        /// @brief The index of the links parent link in the models link vector
+        int parent_link_idx = -1;
 
-        /// @brief The list of child links.
-        std::vector<std::shared_ptr<Link<Scalar>>> child_links;
+        /// @brief The list of child link indices in the models link vector.
+        std::vector<int> child_links;
 
-        /// @brief The list of child joints.
-        std::vector<std::shared_ptr<Joint<Scalar>>> child_joints;
-
-        /**
-         * @brief Get the name of the link's parent link.
-         * @param xml The XML element containing the link description
-         * @return The name of the link's parent link.
-         */
-        const char* get_parent_link_name(tinyxml2::XMLElement* c) {
-            tinyxml2::XMLElement* e = c->Parent()->ToElement();
-            while (e->Parent() != nullptr) {
-                if (e->Value() == "link") {
-                    break;
-                }
-                e = e->Parent()->ToElement();
-            }
-            return e->Attribute("name");
-        }
+        /// @brief The list of child joint indices in the models joint vector.
+        std::vector<int> child_joints;
 
         /**
-         * @brief Add child link
+         * @brief Add child link index
          *
          */
-
-        void add_child_link(const std::shared_ptr<Link<Scalar>> child_link) {
-            this->child_links.push_back(child_link);
+        void add_child_link_idx(const int child_link_idx) {
+            this->child_links.push_back(child_link_idx);
         }
 
         /**
-         * @brief Add child joint
+         * @brief Add child joint index
          */
-        void add_child_joint(const std::shared_ptr<Joint<Scalar>> child_joint) {
-            this->child_joints.push_back(child_joint);
+        void add_child_joint_idx(const int child_joint_idx) {
+            this->child_joints.push_back(child_joint_idx);
         }
 
         /**
          * @brief Cast to NewScalar type
          */
         template <typename NewScalar>
-        std::shared_ptr<Link<NewScalar>> cast() {
-            std::shared_ptr<Link<NewScalar>> new_link = std::make_shared<Link<NewScalar>>();
-            new_link->name                            = name;
-            new_link->id                              = id;
-            new_link->centre_of_mass                  = centre_of_mass.template cast<NewScalar>();
-            new_link->mass                            = mass;
-            new_link->inertia                         = inertia.template cast<NewScalar>();
+        Link<NewScalar> cast() {
+            Link<NewScalar> new_link = Link<NewScalar>();
+            new_link.name            = name;
+            new_link.link_idx        = link_idx;
+            new_link.joint_idx       = joint_idx;
+            new_link.centre_of_mass  = centre_of_mass.template cast<NewScalar>();
+            new_link.mass            = mass;
+            new_link.inertia         = inertia.template cast<NewScalar>();
+            new_link.parent_link_idx = parent_link_idx;
+            new_link.child_links     = child_links;
+            new_link.child_joints    = child_joints;
             return new_link;
         }
     };

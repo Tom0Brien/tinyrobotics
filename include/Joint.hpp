@@ -18,11 +18,11 @@ namespace RML {
     template <typename Scalar>
     struct Joint {
 
-        /// @brief The unique ID of the joint
-        int id;
+        /// @brief The index of the joint in the model joint vector
+        int joint_idx = -1;
 
-        /// @brief The q_index of the joint
-        int q_index = -1;
+        /// @brief The index of the joint in the models configuration vector
+        int q_idx = -1;
 
         /// @brief The name of the joint
         std::string name = "";
@@ -37,31 +37,31 @@ namespace RML {
         Eigen::Transform<Scalar, 3, Eigen::Affine> parent_transform =
             Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
 
-        /// @brief The parent link name
-        std::string parent_link_name = "";
-
         /// @brief The transform to the child link
         Eigen::Transform<Scalar, 3, Eigen::Affine> child_transform =
             Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+
+        /// @brief The parent link name
+        std::string parent_link_name = "";
 
         /// @brief The child link name
         std::string child_link_name = "";
 
         /**
-         * @brief Cast to NewScalar type
+         * @brief Casts to NewScalar type
          */
         template <typename NewScalar>
-        std::shared_ptr<Joint<NewScalar>> cast() const {
-            std::shared_ptr<Joint<NewScalar>> new_joint = std::make_shared<Joint<NewScalar>>();
-            new_joint->id                               = id;
-            new_joint->q_index                          = q_index;
-            new_joint->name                             = name;
-            new_joint->type                             = type;
-            new_joint->axis                             = axis.template cast<NewScalar>();
-            new_joint->parent_transform                 = parent_transform.template cast<NewScalar>();
-            new_joint->parent_link_name                 = parent_link_name;
-            new_joint->child_transform                  = child_transform.template cast<NewScalar>();
-            new_joint->child_link_name                  = child_link_name;
+        Joint<NewScalar> cast() const {
+            Joint<NewScalar> new_joint = Joint<NewScalar>();
+            new_joint.joint_idx        = joint_idx;
+            new_joint.q_idx            = q_idx;
+            new_joint.name             = name;
+            new_joint.type             = type;
+            new_joint.axis             = axis.template cast<NewScalar>();
+            new_joint.parent_transform = parent_transform.template cast<NewScalar>();
+            new_joint.child_transform  = child_transform.template cast<NewScalar>();
+            new_joint.parent_link_name = parent_link_name;
+            new_joint.child_link_name  = child_link_name;
             return new_joint;
         }
     };

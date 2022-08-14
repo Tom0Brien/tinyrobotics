@@ -81,18 +81,34 @@ namespace RML {
     }
 
     /**
+     * @brief Get the name of the link's parent link.
+     * @param xml The XML element containing the link description
+     * @return The name of the link's parent link.
+     */
+    inline const char* get_parent_link_name(tinyxml2::XMLElement* c) {
+        tinyxml2::XMLElement* e = c->Parent()->ToElement();
+        while (e->Parent() != nullptr) {
+            if (e->Value() == "link") {
+                break;
+            }
+            e = e->Parent()->ToElement();
+        }
+        return e->Attribute("name");
+    }
+
+    /**
      * @brief Construct a Link from a URDF xml element.
      * @param xml The XML element containing the link description
      * @return The Link object
      */
     template <typename Scalar>
-    static std::shared_ptr<Link<Scalar>> link_from_xml(tinyxml2::XMLElement* xml) {
-
-        std::shared_ptr<Link<Scalar>> link = std::make_shared<Link<Scalar>>();
+    Link<Scalar> link_from_xml(tinyxml2::XMLElement* xml) {
+        // Create the link object
+        Link<Scalar> link = Link<Scalar>();
 
         const char* name_char = xml->Attribute("name");
         if (name_char != nullptr) {
-            link->name = std::string(name_char);
+            link.name = std::string(name_char);
         }
         else {
             std::ostringstream error_msg;
@@ -105,33 +121,32 @@ namespace RML {
             // ************************ Add the centre of mass to the link ************************
             tinyxml2::XMLElement* o = i->FirstChildElement("origin");
             if (o != nullptr) {
-                link->centre_of_mass = transform_from_xml<Scalar>(o);
+                link.centre_of_mass = transform_from_xml<Scalar>(o);
             }
             // ************************ Add the mass to the link ************************
             tinyxml2::XMLElement* mass_xml = i->FirstChildElement("mass");
             if (mass_xml != nullptr) {
                 if (mass_xml->Attribute("value") != nullptr) {
                     try {
-                        link->mass = std::stod(mass_xml->Attribute("value"));
+                        link.mass = std::stod(mass_xml->Attribute("value"));
                     }
                     catch (std::invalid_argument& e) {
                         std::ostringstream error_msg;
-                        error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
-                                  << "': inertial mass [" << mass_xml->Attribute("value")
-                                  << "] is not a valid double: " << e.what() << "!";
+                        error_msg << "Error while parsing link '" << get_parent_link_name(i) << "': inertial mass ["
+                                  << mass_xml->Attribute("value") << "] is not a valid double: " << e.what() << "!";
                         throw std::runtime_error(error_msg.str());
                     }
                 }
                 else {
                     std::ostringstream error_msg;
-                    error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
+                    error_msg << "Error while parsing link '" << get_parent_link_name(i)
                               << "' <mass> element must have a value attribute!";
                     throw std::runtime_error(error_msg.str());
                 }
             }
             else {
                 std::ostringstream error_msg;
-                error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
+                error_msg << "Error while parsing link '" << get_parent_link_name(i)
                           << "' inertial element must have a <mass> element!";
                 throw std::runtime_error(error_msg.str());
             }
@@ -143,17 +158,17 @@ namespace RML {
             if (inertia_xml->Attribute("ixx") && inertia_xml->Attribute("ixy") && inertia_xml->Attribute("ixz")
                 && inertia_xml->Attribute("iyy") && inertia_xml->Attribute("iyz") && inertia_xml->Attribute("izz")) {
                 try {
-                    inertia(0)    = std::stod(inertia_xml->Attribute("ixx"));
-                    inertia(1)    = std::stod(inertia_xml->Attribute("iyy"));
-                    inertia(2)    = std::stod(inertia_xml->Attribute("izz"));
-                    inertia(3)    = std::stod(inertia_xml->Attribute("iyz"));
-                    inertia(4)    = std::stod(inertia_xml->Attribute("ixz"));
-                    inertia(5)    = std::stod(inertia_xml->Attribute("ixy"));
-                    link->inertia = inertia;
+                    inertia(0)   = std::stod(inertia_xml->Attribute("ixx"));
+                    inertia(1)   = std::stod(inertia_xml->Attribute("iyy"));
+                    inertia(2)   = std::stod(inertia_xml->Attribute("izz"));
+                    inertia(3)   = std::stod(inertia_xml->Attribute("iyz"));
+                    inertia(4)   = std::stod(inertia_xml->Attribute("ixz"));
+                    inertia(5)   = std::stod(inertia_xml->Attribute("ixy"));
+                    link.inertia = inertia;
                 }
                 catch (std::invalid_argument& e) {
                     std::ostringstream error_msg;
-                    error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
+                    error_msg << "Error while parsing link '" << get_parent_link_name(i)
                               << "Inertial: one of the inertia elements is not a valid double:"
                               << " ixx [" << inertia_xml->Attribute("ixx") << "]"
                               << " ixy [" << inertia_xml->Attribute("ixy") << "]"
@@ -167,14 +182,14 @@ namespace RML {
             }
             else {
                 std::ostringstream error_msg;
-                error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
+                error_msg << "Error while parsing link '" << get_parent_link_name(i)
                           << "' <inertia> element must have ixx,ixy,ixz,iyy,iyz,izz attributes!";
                 throw std::runtime_error(error_msg.str());
             }
         }
         else {
             std::ostringstream error_msg;
-            error_msg << "Error while parsing link '" << link->get_parent_link_name(i)
+            error_msg << "Error while parsing link '" << get_parent_link_name(i)
                       << "' inertial element must have a <inertia> element!";
             throw std::runtime_error(error_msg.str());
         }
@@ -188,12 +203,12 @@ namespace RML {
      * @return The Joint object
      */
     template <typename Scalar>
-    static std::shared_ptr<Joint<Scalar>> joint_from_xml(tinyxml2::XMLElement* xml) {
-        std::shared_ptr<Joint<Scalar>> joint = std::make_shared<Joint<Scalar>>();
+    Joint<Scalar> joint_from_xml(tinyxml2::XMLElement* xml) {
+        Joint<Scalar> joint = Joint<Scalar>();
 
         const char* name = xml->Attribute("name");
         if (name != nullptr) {
-            joint->name = std::string(name);
+            joint.name = std::string(name);
         }
         else {
             std::ostringstream error_msg;
@@ -203,14 +218,14 @@ namespace RML {
 
         tinyxml2::XMLElement* origin_xml = xml->FirstChildElement("origin");
         if (origin_xml != nullptr) {
-            joint->parent_transform = transform_from_xml<Scalar>(origin_xml);
+            joint.parent_transform = transform_from_xml<Scalar>(origin_xml);
         }
 
         tinyxml2::XMLElement* parent_xml = xml->FirstChildElement("parent");
         if (parent_xml != nullptr) {
             const char* pname = parent_xml->Attribute("link");
             if (pname != nullptr) {
-                joint->parent_link_name = std::string(pname);
+                joint.parent_link_name = std::string(pname);
             }
             // if no parent link name specified. this might be the root node
         }
@@ -219,80 +234,80 @@ namespace RML {
         if (child_xml) {
             const char* pname = child_xml->Attribute("link");
             if (pname != nullptr) {
-                joint->child_link_name = std::string(pname);
+                joint.child_link_name = std::string(pname);
             }
         }
 
         const char* type_char = xml->Attribute("type");
         if (type_char == nullptr) {
             std::ostringstream error_msg;
-            error_msg << "Error! Joint " << joint->name << " has no type, check to see if it's a reference.";
+            error_msg << "Error! Joint " << joint.name << " has no type, check to see if it's a reference.";
             throw std::runtime_error(error_msg.str());
         }
 
         std::string type_str = type_char;
         if (type_str == "planar") {
-            joint->type = JointType::PLANAR;
+            joint.type = JointType::PLANAR;
         }
         else if (type_str == "floating") {
-            joint->type = JointType::FLOATING;
+            joint.type = JointType::FLOATING;
         }
         else if (type_str == "revolute") {
-            joint->type = JointType::REVOLUTE;
+            joint.type = JointType::REVOLUTE;
         }
         else if (type_str == "continuous") {
-            joint->type = JointType::CONTINUOUS;
+            joint.type = JointType::CONTINUOUS;
         }
         else if (type_str == "prismatic") {
-            joint->type = JointType::PRISMATIC;
+            joint.type = JointType::PRISMATIC;
         }
         else if (type_str == "fixed") {
-            joint->type = JointType::FIXED;
+            joint.type = JointType::FIXED;
         }
         else {
             std::ostringstream error_msg;
-            error_msg << "Error! Joint '" << joint->name << "' has unknown type (" << type_str << ")!";
+            error_msg << "Error! Joint '" << joint.name << "' has unknown type (" << type_str << ")!";
             throw std::runtime_error(error_msg.str());
         }
 
-        if (joint->type != JointType::FLOATING && joint->type != JointType::FIXED) {
+        if (joint.type != JointType::FLOATING && joint.type != JointType::FIXED) {
             tinyxml2::XMLElement* axis_xml = xml->FirstChildElement("axis");
             if (axis_xml == nullptr) {
                 Eigen::Matrix<Scalar, 3, 1> default_axis;
                 default_axis << 1, 0, 0;
-                joint->axis = default_axis;
+                joint.axis = default_axis;
             }
             else {
                 const char* xyz_char = axis_xml->Attribute("xyz");
                 if (xyz_char != nullptr) {
-                    joint->axis = vec_from_string<Scalar>(std::string(xyz_char));
+                    joint.axis = vec_from_string<Scalar>(std::string(xyz_char));
                 }
             }
         }
 
         // tinyxml2::XMLElement *prop_xml = xml->FirstChildElement("dynamics");
         // if (prop_xml != nullptr) {
-        //     joint->dynamics = JointDynamics::fromXml(prop_xml);
+        //     joint.dynamics = JointDynamics::fromXml(prop_xml);
         // }
 
         // tinyxml2::XMLElement *limit_xml = xml->FirstChildElement("limit");
         // if (limit_xml != nullptr) {
-        //     joint->limits = JointLimits::fromXml(limit_xml);
+        //     joint.limits = JointLimits::fromXml(limit_xml);
         // }
 
         // tinyxml2::XMLElement *safety_xml = xml->FirstChildElement("safety_controller");
         // if (safety_xml != nullptr) {
-        //     joint->safety = JointSafety::fromXml(safety_xml);
+        //     joint.safety = JointSafety::fromXml(safety_xml);
         // }
 
         // tinyxml2::XMLElement *calibration_xml = xml->FirstChildElement("calibration");
         // if (calibration_xml != nullptr) {
-        //     joint->calibration = JointCalibration::fromXml(calibration_xml);
+        //     joint.calibration = JointCalibration::fromXml(calibration_xml);
         // }
 
         // tinyxml2::XMLElement *mimic_xml = xml->FirstChildElement("mimic");
         // if (mimic_xml != nullptr) {
-        //     joint->mimic = JointMimic::fromXml(mimic_xml);
+        //     joint.mimic = JointMimic::fromXml(mimic_xml);
         // }
 
         return joint;
@@ -346,16 +361,17 @@ namespace RML {
         // ************************ Add the links to the model ************************
         for (tinyxml2::XMLElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr;
              link_xml                       = link_xml->NextSiblingElement("link")) {
-            auto link = link_from_xml<Scalar>(link_xml);
-
-            if (model.get_link(link->name) != nullptr) {
+            Link<Scalar> link = link_from_xml<Scalar>(link_xml);
+            if (model.get_link(link.name).link_idx != -1) {
                 std::ostringstream error_msg;
-                error_msg << "Error! Duplicate links '" << link->name << "' found!";
+                error_msg << "Error! Duplicate links '" << link.name << "' found!";
                 throw std::runtime_error(error_msg.str());
             }
             else {
+                // Assign the link index
+                link.link_idx = model.links.size();
+                // Add the link to the model
                 model.links.push_back(link);
-                model.n_links++;
             }
         }
 
@@ -369,20 +385,23 @@ namespace RML {
              joint_xml                       = joint_xml->NextSiblingElement("joint")) {
             auto joint = joint_from_xml<Scalar>(joint_xml);
 
-            if (model.get_joint(joint->name) != nullptr) {
+            if (model.get_joint(joint.name).joint_idx != -1) {
                 std::ostringstream error_msg;
-                error_msg << "Error! Duplicate joints '" << joint->name << "' found!";
+                error_msg << "Error! Duplicate joints '" << joint.name << "' found!";
                 throw std::runtime_error(error_msg.str());
             }
             else {
+                // Assign the joint index
+                joint.joint_idx = model.joints.size();
                 model.joints.push_back(joint);
-                model.n_joints++;
             }
         }
 
         std::map<std::string, std::string> parent_link_tree;
         model.init_link_tree(parent_link_tree);
         model.find_base(parent_link_tree);
+        model.n_joints = model.joints.size();
+        model.n_links  = model.links.size();
 
         return model;
     }

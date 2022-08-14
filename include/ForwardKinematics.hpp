@@ -42,7 +42,7 @@ namespace RML {
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& source_link_name,
                                                                   const std::string& target_link_name) {
-        std::shared_ptr<Link<Scalar>> current_link = model.get_link(source_link_name);
+        Link<Scalar> current_link = model.get_link(source_link_name);
 
         // Build kinematic tree from source {s} to base {b} frame
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hbs = forward_kinematics(model, q, source_link_name);
@@ -67,33 +67,36 @@ namespace RML {
     Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar>& model,
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& target_link_name) {
-        std::shared_ptr<Link<Scalar>> current_link = model.get_link(target_link_name);
+
+        // Get the target link
+        Link<Scalar> current_link = model.get_link(target_link_name);
 
         // Check if the link is within the kinematic tree
-        if (current_link == nullptr) {
+        if (current_link.joint_idx == -1) {
             std::string error_msg = "Error: Link " + target_link_name + " not found.";
             throw std::runtime_error(error_msg);
         }
 
         // Build kinematic tree from target_link {t} to base {b}
         Eigen::Transform<Scalar, 3, Eigen::Affine> Htb = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
-        while (current_link->name != model.base_link->name) {
+        while (current_link.name != model.links[model.base_link_idx].name) {
             Eigen::Transform<Scalar, 3, Eigen::Affine> H = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
-            if (current_link->joint->type == JointType::REVOLUTE) {
-                Scalar q_current = q(current_link->joint->q_index);
+            auto current_joint                           = model.joints[current_link.joint_idx];
+            if (current_joint.type == JointType::REVOLUTE) {
+                Scalar q_current = q(current_joint.q_idx);
                 // Rotate by q_current around axis
-                H.linear() = Eigen::AngleAxis<Scalar>(q_current, current_link->joint->axis).toRotationMatrix();
+                H.linear() = Eigen::AngleAxis<Scalar>(q_current, current_joint.axis).toRotationMatrix();
             }
-            else if (current_link->joint->type == JointType::PRISMATIC) {
-                Scalar q_current = q(current_link->joint->q_index);
+            else if (current_joint.type == JointType::PRISMATIC) {
+                Scalar q_current = q(current_joint.q_idx);
                 // Translate by q_current along axis
-                H.translation() = current_link->joint->axis * q_current;
+                H.translation() = current_joint.axis * q_current;
             }
             Htb = Htb * RML::inv(H);
             // Apply inverse joint transform as we are going back up tree
-            Htb = Htb * RML::inv(current_link->joint->parent_transform);
+            Htb = Htb * RML::inv(current_joint.parent_transform);
             // Move up the tree to parent
-            current_link = current_link->parent_link;
+            current_link = model.links[current_link.parent_link_idx];
         }
 
         // Return transform from base {b} to target {t}
@@ -121,7 +124,7 @@ namespace RML {
             forward_kinematics(model, q, source_link_name, target_link_name);
 
         // Compute forward kinematics from source {s} to CoM {c}
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = Hst * model.get_link(target_link_name)->centre_of_mass;
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = Hst * model.get_link(target_link_name).centre_of_mass;
 
         // Return transform from source {s} to CoM {c}
         return Hsc;
@@ -223,14 +226,14 @@ namespace RML {
                 Eigen::Transform<Scalar, 3, Eigen::Affine> Hbim1 =
                     forward_kinematics(model, q, model.base_link->name, current_link->parent_link->name);
                 if (current_link->joint->type == JointType::PRISMATIC) {
-                    J.block(0, current_link->joint->q_index, 3, 1) = Hbim1.linear() * current_link->joint->axis;
-                    J.block(3, current_link->joint->q_index, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
+                    J.block(0, current_link->joint->q_idx, 3, 1) = Hbim1.linear() * current_link->joint->axis;
+                    J.block(3, current_link->joint->q_idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
                 }
                 else if (current_link->joint->type == JointType::REVOLUTE) {
                     // Rotate the axis into the base frame
-                    J.block(0, current_link->joint->q_index, 3, 1) =
+                    J.block(0, current_link->joint->q_idx, 3, 1) =
                         (Hbim1.linear() * current_link->joint->axis).cross(rTBb - Hbim1.translation());
-                    J.block(3, current_link->joint->q_index, 3, 1) = Hbim1.linear() * current_link->joint->axis;
+                    J.block(3, current_link->joint->q_idx, 3, 1) = Hbim1.linear() * current_link->joint->axis;
                 }
             }
             // Move up the tree to parent
