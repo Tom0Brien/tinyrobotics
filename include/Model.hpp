@@ -9,10 +9,10 @@
 #include <map>
 #include <memory>
 #include <sstream>
+#include <tinyxml2.h>
 
 #include "Joint.hpp"
 #include "Link.hpp"
-#include "txml.h"
 
 namespace RML {
 
@@ -297,17 +297,18 @@ namespace RML {
         std::string urdf_string =
             std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 
-        TiXmlDocument xml_doc;
+        tinyxml2::XMLDocument xml_doc;
         xml_doc.Parse(urdf_string.c_str());
 
         if (xml_doc.Error()) {
-            std::string error_msg = xml_doc.ErrorDesc();
+            std::string error_msg = xml_doc.ErrorStr();
             xml_doc.ClearError();
             throw std::runtime_error(error_msg);
         }
 
-        TiXmlElement* robot_xml = xml_doc.RootElement();
-        if (robot_xml == nullptr || robot_xml->ValueStr() != "robot") {
+        tinyxml2::XMLElement* robot_xml = xml_doc.RootElement();
+        if (std::string(robot_xml->Value()) != "robot") {
+            std::cout << "robot_xml->Value() = " << robot_xml->Value() << std::endl;
             std::string error_msg = "Error! Could not find the <robot> element in the xml file";
             throw std::runtime_error(error_msg);
         }
@@ -323,8 +324,8 @@ namespace RML {
         }
 
         // ************************ Add the links to the model ************************
-        for (TiXmlElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr;
-             link_xml               = link_xml->NextSiblingElement("link")) {
+        for (tinyxml2::XMLElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr;
+             link_xml                       = link_xml->NextSiblingElement("link")) {
             auto link = Link<Scalar>::fromXml(link_xml);
 
             if (model.get_link(link->name) != nullptr) {
@@ -344,8 +345,8 @@ namespace RML {
         }
 
         // ************************ Add the joints to the model ************************
-        for (TiXmlElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr;
-             joint_xml               = joint_xml->NextSiblingElement("joint")) {
+        for (tinyxml2::XMLElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr;
+             joint_xml                       = joint_xml->NextSiblingElement("joint")) {
             auto joint = Joint<Scalar>::fromXml(joint_xml);
 
             if (model.get_joint(joint->name) != nullptr) {

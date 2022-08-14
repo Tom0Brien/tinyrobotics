@@ -49,7 +49,7 @@ namespace RML {
          * @brief Construct a new Link from a URDF file description.
          * @param xml The XML element containing the link description
          */
-        static std::shared_ptr<Link<Scalar>> fromXml(TiXmlElement* xml) {
+        static std::shared_ptr<Link<Scalar>> fromXml(tinyxml2::XMLElement* xml) {
 
             std::shared_ptr<Link<Scalar>> link = std::make_shared<Link<Scalar>>();
 
@@ -64,15 +64,15 @@ namespace RML {
             }
 
 
-            TiXmlElement* i = xml->FirstChildElement("inertial");
+            tinyxml2::XMLElement* i = xml->FirstChildElement("inertial");
             if (i != nullptr) {
                 // ************************ Add the centre of mass to the link ************************
-                TiXmlElement* o = i->FirstChildElement("origin");
+                tinyxml2::XMLElement* o = i->FirstChildElement("origin");
                 if (o != nullptr) {
                     link->centre_of_mass = transform_from_xml<Scalar>(o);
                 }
                 // ************************ Add the mass to the link ************************
-                TiXmlElement* mass_xml = i->FirstChildElement("mass");
+                tinyxml2::XMLElement* mass_xml = i->FirstChildElement("mass");
                 if (mass_xml != nullptr) {
                     if (mass_xml->Attribute("value") != nullptr) {
                         try {
@@ -101,7 +101,7 @@ namespace RML {
                 }
             }
             // ************************ Add the inertia to the link ************************
-            TiXmlElement* inertia_xml = i->FirstChildElement("inertia");
+            tinyxml2::XMLElement* inertia_xml = i->FirstChildElement("inertia");
             if (inertia_xml != nullptr) {
                 Eigen::Matrix<Scalar, 6, 1> inertia;
                 if (inertia_xml->Attribute("ixx") && inertia_xml->Attribute("ixy") && inertia_xml->Attribute("ixz")
@@ -152,10 +152,10 @@ namespace RML {
          * @param xml The XML element containing the link description
          * @return The name of the link's parent link.
          */
-        const char* get_parent_link_name(TiXmlElement* c) {
-            TiXmlElement* e = c->Parent()->ToElement();
+        const char* get_parent_link_name(tinyxml2::XMLElement* c) {
+            tinyxml2::XMLElement* e = c->Parent()->ToElement();
             while (e->Parent() != nullptr) {
-                if (e->ValueStr() == "link") {
+                if (e->Value() == "link") {
                     break;
                 }
                 e = e->Parent()->ToElement();

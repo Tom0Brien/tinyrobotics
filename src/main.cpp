@@ -11,7 +11,7 @@
 
 using namespace autodiff;
 
-#include "Model.hpp"
+#include "../include/Model.hpp"
 
 
 int main(int argc, char* argv[]) {

@@ -1,7 +1,7 @@
 #ifndef RML_COMMON_HPP
 #define RML_COMMON_HPP
 
-#include "txml.h"
+#include <tinyxml2.h>
 
 namespace RML {
 
@@ -75,7 +75,7 @@ namespace RML {
      * @return The transform
      */
     template <typename Scalar>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> transform_from_xml(TiXmlElement* xml) {
+    Eigen::Transform<Scalar, 3, Eigen::Affine> transform_from_xml(tinyxml2::XMLElement* xml) {
         Eigen::Transform<Scalar, 3, Eigen::Affine> t;
         t.setIdentity();
         if (xml) {

@@ -3,9 +3,9 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <tinyxml2.h>
 
 #include "Common.hpp"
-#include "txml.h"
 
 namespace RML {
 
@@ -54,7 +54,7 @@ namespace RML {
          * @details
          * @param xml The XML element containing the joint description
          */
-        static std::shared_ptr<Joint<Scalar>> fromXml(TiXmlElement* xml) {
+        static std::shared_ptr<Joint<Scalar>> fromXml(tinyxml2::XMLElement* xml) {
             std::shared_ptr<Joint<Scalar>> joint = std::make_shared<Joint>();
 
             const char* name = xml->Attribute("name");
@@ -68,12 +68,12 @@ namespace RML {
                 throw std::runtime_error(error_msg.str());
             }
 
-            TiXmlElement* origin_xml = xml->FirstChildElement("origin");
+            tinyxml2::XMLElement* origin_xml = xml->FirstChildElement("origin");
             if (origin_xml != NULL) {
                 joint->parent_transform = transform_from_xml<Scalar>(origin_xml);
             }
 
-            TiXmlElement* parent_xml = xml->FirstChildElement("parent");
+            tinyxml2::XMLElement* parent_xml = xml->FirstChildElement("parent");
             if (parent_xml != NULL) {
                 const char* pname = parent_xml->Attribute("link");
                 if (pname != NULL) {
@@ -82,7 +82,7 @@ namespace RML {
                 // if no parent link name specified. this might be the root node
             }
 
-            TiXmlElement* child_xml = xml->FirstChildElement("child");
+            tinyxml2::XMLElement* child_xml = xml->FirstChildElement("child");
             if (child_xml) {
                 const char* pname = child_xml->Attribute("link");
                 if (pname != NULL) {
@@ -117,7 +117,7 @@ namespace RML {
             }
 
             if (joint->type != JointType::FLOATING && joint->type != JointType::FIXED) {
-                TiXmlElement* axis_xml = xml->FirstChildElement("axis");
+                tinyxml2::XMLElement* axis_xml = xml->FirstChildElement("axis");
                 if (axis_xml == NULL) {
                     Eigen::Matrix<Scalar, 3, 1> default_axis;
                     default_axis << 1, 0, 0;
@@ -131,27 +131,27 @@ namespace RML {
                 }
             }
 
-            // TiXmlElement *prop_xml = xml->FirstChildElement("dynamics");
+            // tinyxml2::XMLElement *prop_xml = xml->FirstChildElement("dynamics");
             // if (prop_xml != NULL) {
             //     joint->dynamics = JointDynamics::fromXml(prop_xml);
             // }
 
-            // TiXmlElement *limit_xml = xml->FirstChildElement("limit");
+            // tinyxml2::XMLElement *limit_xml = xml->FirstChildElement("limit");
             // if (limit_xml != NULL) {
             //     joint->limits = JointLimits::fromXml(limit_xml);
             // }
 
-            // TiXmlElement *safety_xml = xml->FirstChildElement("safety_controller");
+            // tinyxml2::XMLElement *safety_xml = xml->FirstChildElement("safety_controller");
             // if (safety_xml != NULL) {
             //     joint->safety = JointSafety::fromXml(safety_xml);
             // }
 
-            // TiXmlElement *calibration_xml = xml->FirstChildElement("calibration");
+            // tinyxml2::XMLElement *calibration_xml = xml->FirstChildElement("calibration");
             // if (calibration_xml != NULL) {
             //     joint->calibration = JointCalibration::fromXml(calibration_xml);
             // }
 
-            // TiXmlElement *mimic_xml = xml->FirstChildElement("mimic");
+            // tinyxml2::XMLElement *mimic_xml = xml->FirstChildElement("mimic");
             // if (mimic_xml != NULL) {
             //     joint->mimic = JointMimic::fromXml(mimic_xml);
             // }

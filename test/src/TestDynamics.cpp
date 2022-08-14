@@ -4,8 +4,8 @@
 #include <chrono>
 #include <string>
 
-#include "../../src/Dynamics.hpp"
-#include "../../src/Model.hpp"
+#include "../../include/Dynamics.hpp"
+#include "../../include/Model.hpp"
 #include "catch2/catch.hpp"
 using namespace autodiff;
 

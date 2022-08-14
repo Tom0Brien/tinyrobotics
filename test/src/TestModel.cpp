@@ -3,7 +3,7 @@
 #include <autodiff/forward/dual/eigen.hpp>
 #include <string>
 
-#include "../../src/Model.hpp"
+#include "../../include/Model.hpp"
 #include "catch2/catch.hpp"
 
 TEST_CASE("Load a model with inertial information", "[Model]") {

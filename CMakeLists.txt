@@ -23,8 +23,9 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(autodiff REQUIRED)
 find_package(ifopt REQUIRED)
 find_package(matplotlib_cpp REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
-include_directories(${EIGEN3_INCLUDE_DIR})
+include_directories(${EIGEN3_INCLUDE_DIR} ${TinyXML2_INCLUDE_DIRS})
 
 # Target names
 set(TARGET_LIB common)
@@ -33,7 +34,7 @@ set(TARGET_TEST tests)
 
 # Libraries
 set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt
-         matplotlib_cpp::matplotlib_cpp)
+         matplotlib_cpp::matplotlib_cpp tinyxml2::tinyxml2)
 
 # Source files
 
@@ -56,7 +57,7 @@ file(GLOB SRC_TEST CONFIGURE_DEPENDS ${DIR_TEST_SRC}/*.cpp ${DIR_TEST_SRC}/*.h
 
 # Static library
 if(SRC_LIB)
-  add_library(${TARGET_LIB} ${SRC_LIB})
+  add_library(${TARGET_LIB} ${SRC_LIB} INTERFACE)
 endif()
 
 # Application

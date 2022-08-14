@@ -3,9 +3,9 @@
 #include <ifopt/problem.h>
 #include <string>
 
-#include "../../src/ForwardKinematics.hpp"
-#include "../../src/InverseKinematics.hpp"
-#include "../../src/Model.hpp"
+#include "../../include/ForwardKinematics.hpp"
+#include "../../include/InverseKinematics.hpp"
+#include "../../include/Model.hpp"
 #include "catch2/catch.hpp"
 #include "test_vars_constr_cost.h"
 
