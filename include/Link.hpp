@@ -4,7 +4,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "Common.hpp"
 #include "Joint.hpp"
 
 namespace RML {

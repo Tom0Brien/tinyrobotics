@@ -8,7 +8,6 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
 - Forward Kinematics
 - Inverse Kinematics with [Ipopt](https://coin-or.github.io/Ipopt/) interface [ifopt](https://github.com/ethz-adrl/ifopt)
 - Automatic differentiation support with [autodiff](https://github.com/autodiff/autodiff)
-- Plotting with [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)
 
 ### TODO: 
 - Geometric Jacobians
@@ -25,7 +24,6 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
 - [TinyXML2](https://github.com/leethomason/tinyxml2)
 - [autodiff](https://github.com/autodiff/autodiff)
 - [ifopt](https://github.com/ethz-adrl/ifopt) with MA57 solver from https://www.hsl.rl.ac.uk/ipopt/
-- [matplotlib-cpp](https://github.com/lava/matplotlib-cpp)
 
 ### 2. Build with cmake
   ```bash

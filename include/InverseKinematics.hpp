@@ -13,7 +13,6 @@
 #include <memory>
 #include <sstream>
 
-#include "Common.hpp"
 #include "ForwardKinematics.hpp"
 #include "Model.hpp"
 

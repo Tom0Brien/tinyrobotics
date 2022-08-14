@@ -5,8 +5,6 @@
 #include <Eigen/Geometry>
 #include <tinyxml2.h>
 
-#include "Common.hpp"
-
 namespace RML {
 
     /// @brief The types of joints

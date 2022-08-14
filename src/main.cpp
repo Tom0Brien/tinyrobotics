@@ -7,13 +7,8 @@
 #include <iostream>
 #include <string>
 
-#include "matplotlibcpp.h"
-
-using namespace autodiff;
-
 #include "../include/Model.hpp"
 #include "../include/UrdfParser.hpp"
-
 
 int main(int argc, char* argv[]) {
     using std::chrono::duration;
@@ -31,11 +26,6 @@ int main(int argc, char* argv[]) {
 
     // Create a random configuration
     Eigen::Matrix<double, 20, 1> q_random = robot_model.random_configuration<20>();
-    // Plot the configuration
-    // namespace plt = matplotlibcpp;
-    // std::vector<double> y = RML::eigen_to_vec<double>(q_random);
-    // plt::plot(y, y);
-    // plt::show();
 
     return EXIT_SUCCESS;
 }

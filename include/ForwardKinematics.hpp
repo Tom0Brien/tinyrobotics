@@ -16,6 +16,20 @@
 namespace RML {
 
     /**
+     * @brief Computes the inverse of a 4x4 homogeneous transformation matrix
+     * Much faster than actually inverting it since the computations are easy
+     * @param T The 4x4 homogeneous transformation matrix
+     * @return The 4x4 inverse homogeneous transformation matrix
+     */
+    template <typename Scalar>
+    Eigen::Transform<Scalar, 3, Eigen::Affine> inv(const Eigen::Transform<Scalar, 3, Eigen::Affine>& T) {
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Tinv = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Tinv.linear()                                   = T.linear().transpose();
+        Tinv.translation()                              = -T.linear().transpose() * T.translation();
+        return Tinv;
+    }
+
+    /**
      * @brief Computes the transform between two links.
      * @param model The robot model.
      * @param q The joint configuration of the robot.
