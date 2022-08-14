@@ -5,13 +5,13 @@
 #include <string>
 
 #include "../../include/Dynamics.hpp"
-#include "../../include/Model.hpp"
+#include "../../include/UrdfParser.hpp"
 #include "catch2/catch.hpp"
 using namespace autodiff;
 
 TEST_CASE("Test dynamics", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = RML::from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
     // Create a random configuration
     auto q_random = robot_model.home_configuration<4>();

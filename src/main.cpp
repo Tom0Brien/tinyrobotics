@@ -12,6 +12,7 @@
 using namespace autodiff;
 
 #include "../include/Model.hpp"
+#include "../include/UrdfParser.hpp"
 
 
 int main(int argc, char* argv[]) {
@@ -23,7 +24,7 @@ int main(int argc, char* argv[]) {
 
     // Create a robot model
     std::string path_to_urdf = "../data/urdfs/simple.urdf";
-    auto robot_model         = RML::from_urdf<double>(path_to_urdf);
+    auto robot_model         = RML::model_from_urdf<double>(path_to_urdf);
 
     // Show details of the robot model
     robot_model.show_details();

@@ -5,7 +5,7 @@
 
 #include "../../include/ForwardKinematics.hpp"
 #include "../../include/InverseKinematics.hpp"
-#include "../../include/Model.hpp"
+#include "../../include/UrdfParser.hpp"
 #include "catch2/catch.hpp"
 
 using namespace ifopt;
@@ -13,7 +13,7 @@ using namespace ifopt;
 using namespace std::chrono;
 
 // Load the robot model from a URDF file
-auto robot_model = RML::from_urdf<double>("data/urdfs/simple.urdf");
+auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
 TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
     auto start = high_resolution_clock::now();
@@ -144,7 +144,7 @@ TEST_CASE("Test geometric_jacobian calculations for nugus model", "[ForwardKinem
 
 TEST_CASE("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
     const int ITERATIONS = 25;
-    auto nugus_model     = RML::from_urdf<double>("data/urdfs/nugus.urdf");
+    auto nugus_model     = RML::model_from_urdf<double>("data/urdfs/nugus.urdf");
     double total_time    = 0;
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
@@ -194,7 +194,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
 
 TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
     const int ITERATIONS = 25;
-    auto kuka_model      = RML::from_urdf<double>("data/urdfs/kuka.urdf");
+    auto kuka_model      = RML::model_from_urdf<double>("data/urdfs/kuka.urdf");
 
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration

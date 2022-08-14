@@ -3,12 +3,12 @@
 #include <autodiff/forward/dual/eigen.hpp>
 #include <string>
 
-#include "../../include/Model.hpp"
+#include "../../include/UrdfParser.hpp"
 #include "catch2/catch.hpp"
 
 TEST_CASE("Load a model with inertial information", "[Model]") {
     // Create a robot model
-    auto robot_model = RML::from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
     CHECK(robot_model.name == "compass_gait");
 
@@ -73,13 +73,13 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 
 TEST_CASE("Create a Model of autodiff type", "[Model]") {
     // Create a robot model
-    auto robot_model = RML::from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
     CHECK(robot_model.name == "compass_gait");
 }
 
 TEST_CASE("Cast a Model from double to float", "[Model]") {
     // Create a robot model
-    auto robot_model_double = RML::from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model_double = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
     // Cast the model to a different type
     RML::Model<float> robot_model_float = robot_model_double.template cast<float>();
@@ -224,7 +224,7 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
 
 TEST_CASE("Cast a Model from double to autodiff::dual", "[Model]") {
     // Create a robot model
-    auto robot_model_double = RML::from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model_double = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
     // Cast the model to a different type
     RML::Model<autodiff::dual> autodiff_model = robot_model_double.template cast<autodiff::dual>();
