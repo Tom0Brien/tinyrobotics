@@ -154,17 +154,20 @@ namespace RML {
         // ************************ Add the inertia to the link ************************
         tinyxml2::XMLElement* inertia_xml = i->FirstChildElement("inertia");
         if (inertia_xml != nullptr) {
-            Eigen::Matrix<Scalar, 6, 1> inertia;
+            Eigen::Matrix<Scalar, 3, 3> inertia;
             if (inertia_xml->Attribute("ixx") && inertia_xml->Attribute("ixy") && inertia_xml->Attribute("ixz")
                 && inertia_xml->Attribute("iyy") && inertia_xml->Attribute("iyz") && inertia_xml->Attribute("izz")) {
                 try {
-                    inertia(0)   = std::stod(inertia_xml->Attribute("ixx"));
-                    inertia(1)   = std::stod(inertia_xml->Attribute("iyy"));
-                    inertia(2)   = std::stod(inertia_xml->Attribute("izz"));
-                    inertia(3)   = std::stod(inertia_xml->Attribute("iyz"));
-                    inertia(4)   = std::stod(inertia_xml->Attribute("ixz"));
-                    inertia(5)   = std::stod(inertia_xml->Attribute("ixy"));
-                    link.inertia = inertia;
+                    inertia(0, 0) = std::stod(inertia_xml->Attribute("ixx"));
+                    inertia(0, 1) = std::stod(inertia_xml->Attribute("ixy"));
+                    inertia(0, 2) = std::stod(inertia_xml->Attribute("ixz"));
+                    inertia(1, 0) = std::stod(inertia_xml->Attribute("ixy"));
+                    inertia(1, 1) = std::stod(inertia_xml->Attribute("iyy"));
+                    inertia(1, 2) = std::stod(inertia_xml->Attribute("iyz"));
+                    inertia(2, 0) = std::stod(inertia_xml->Attribute("ixz"));
+                    inertia(2, 1) = std::stod(inertia_xml->Attribute("iyz"));
+                    inertia(2, 2) = std::stod(inertia_xml->Attribute("izz"));
+                    link.inertia  = inertia;
                 }
                 catch (std::invalid_argument& e) {
                     std::ostringstream error_msg;

@@ -19,13 +19,13 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
     CHECK(robot_model.get_link("ground").name == "ground");
     CHECK(robot_model.get_link("ground").mass == 0);
     CHECK(robot_model.get_parent_link("ground").name == "world");
-    CHECK(robot_model.get_link("ground").inertia == Eigen::Matrix<double, 6, 1>::Zero());
+    CHECK(robot_model.get_link("ground").inertia == Eigen::Matrix<double, 3, 3>::Zero());
     CHECK(robot_model.get_link("ground").centre_of_mass.matrix()
           == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
     CHECK(robot_model.get_link("body").name == "body");
     CHECK(robot_model.get_link("body").mass == 10.0);
     CHECK(robot_model.get_parent_link("body").name == "floating_base_z");
-    CHECK(robot_model.get_link("body").inertia == Eigen::Matrix<double, 6, 1>::Zero());
+    CHECK(robot_model.get_link("body").inertia == Eigen::Matrix<double, 3, 3>::Zero());
     CHECK(robot_model.get_link("body").centre_of_mass.matrix()
           == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
     CHECK(robot_model.get_link("body").child_links.size() == 2);
@@ -86,14 +86,14 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
     CHECK(robot_model_float.get_link("ground").name == "ground");
     CHECK(robot_model_float.get_link("ground").mass == 0);
     CHECK(robot_model_float.get_parent_link("ground").name == "world");
-    CHECK(robot_model_float.get_link("ground").inertia == Eigen::Matrix<float, 6, 1>::Zero());
+    CHECK(robot_model_float.get_link("ground").inertia == Eigen::Matrix<float, 3, 3>::Zero());
     CHECK(robot_model_float.get_link("ground").centre_of_mass.matrix()
           == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
 
     CHECK(robot_model_float.get_link("body").name == "body");
     CHECK(robot_model_float.get_link("body").mass == 10.0);
     CHECK(robot_model_float.get_parent_link("body").name == "floating_base_z");
-    CHECK(robot_model_float.get_link("body").inertia == Eigen::Matrix<float, 6, 1>::Zero());
+    CHECK(robot_model_float.get_link("body").inertia == Eigen::Matrix<float, 3, 3>::Zero());
     CHECK(robot_model_float.get_link("body").centre_of_mass.matrix()
           == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
     CHECK(robot_model_float.get_link("body").child_links.size() == 2);
@@ -150,14 +150,14 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
     CHECK(autodiff_model.get_link("ground").mass == 0);
     CHECK(autodiff_model.get_link("ground").mass == 0.0);
     CHECK(autodiff_model.get_parent_link("ground").name == "world");
-    CHECK(autodiff_model.get_link("ground").inertia == Eigen::Matrix<autodiff::real, 6, 1>::Zero());
+    CHECK(autodiff_model.get_link("ground").inertia == Eigen::Matrix<autodiff::real, 3, 3>::Zero());
     CHECK(autodiff_model.get_link("ground").centre_of_mass.matrix()
           == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
 
     CHECK(autodiff_model.get_link("body").name == "body");
     CHECK(autodiff_model.get_link("body").mass == 10.0);
     CHECK(autodiff_model.get_parent_link("body").name == "floating_base_z");
-    CHECK(autodiff_model.get_link("body").inertia == Eigen::Matrix<autodiff::real, 6, 1>::Zero());
+    CHECK(autodiff_model.get_link("body").inertia == Eigen::Matrix<autodiff::real, 3, 3>::Zero());
     CHECK(autodiff_model.get_link("body").centre_of_mass.matrix()
           == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
     CHECK(autodiff_model.get_link("body").child_links.size() == 2);

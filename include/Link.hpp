@@ -30,7 +30,7 @@ namespace RML {
             Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
 
         /// @brief The links inertia matrix [kg m^2].
-        Eigen::Matrix<Scalar, 6, 1> inertia = Eigen::Matrix<Scalar, 6, 1>::Zero();
+        Eigen::Matrix<Scalar, 3, 3> inertia = Eigen::Matrix<Scalar, 3, 3>::Zero();
 
         /// @brief The links mass [kg].
         Scalar mass = 0;

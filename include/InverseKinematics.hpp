@@ -285,7 +285,7 @@ namespace RML {
         ipopt.SetOption("mu_strategy", "adaptive");
         ipopt.SetOption("jacobian_approximation", "exact");
         ipopt.SetOption("max_iter", 1000);
-        ipopt.SetOption("tol", 1e-6);
+        ipopt.SetOption("tol", 1e-3);
         ipopt.SetOption("print_level", 0);
 
         // 3. Solve

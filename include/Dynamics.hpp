@@ -137,6 +137,35 @@ namespace RML {
         Mh = M.template cast<Scalar>();
         Vh = val(V);
     };
+
+    /**
+     * @brief Compute the mass matrix, coriolis and gravity matrices of the robot model.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        // Create the mass matrix, inertia matrix, constraint vector and potential energy matrices
+        Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero(nq, nq);
+        Eigen::Matrix<Scalar, 6, 6> Mi;
+        // Get the base link from the model
+        auto base_link = model.links[model.base_link_idx];
+        for (int i = 0; i < model.n_links; i++) {
+            Mi.setZero();
+            // Compute the rotation between the ith link and the base
+            Eigen::Matrix<Scalar, 3, 3> R0i = rotation(model, q, base_link.name, model.links[i].name);
+            // Insert the mass of the link into the top 3 diagonals
+            Mi.block(0, 0, 3, 3) = model.links[i].mass * Eigen::Matrix<Scalar, 3, 3>::Identity();
+            // Insert the inertia of the link into the bottom 3 diagonals
+            Mi.block(3, 3, 3, 3) = R0i * model.links[i].inertia * R0i.transpose();
+            // Compute the geometric jacobian of the links center of mass with respect to the base
+            Eigen::Matrix<Scalar, 6, nq> Jci = geometric_jacobian_com(model, q, model.links[i].name);
+            // Compute the contribution to the mass matrix of the link
+            M += Jci.transpose() * Mi * Jci;
+        }
+        return M;
+    }
+
 }  // namespace RML
 
 #endif
