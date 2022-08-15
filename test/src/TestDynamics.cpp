@@ -41,7 +41,7 @@ TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
 
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    // std::cout << "Dynamics computation took " << duration.count() << " microseconds" << std::endl;
+    std::cout << "Mass Matrix computation took " << duration.count() << " microseconds" << std::endl;
 
     // Check that the mass matrix is correct
     Eigen::Matrix<double, 4, 4> M_expected;
@@ -57,9 +57,11 @@ TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
     // Create a random configuration
     Eigen::Matrix<double, 7, 1> q = kuka_model.home_configuration<7>();
     // Compute the dynamics
-    auto start = std::chrono::high_resolution_clock::now();
-    // Eigen::Matrix<double, 4, 4> M = Eigen::Matrix<double, 4, 4>::Zero();
-    auto M = RML::mass_matrix(kuka_model, q);
+    auto start    = std::chrono::high_resolution_clock::now();
+    auto M        = RML::mass_matrix(kuka_model, q);
+    auto stop     = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    // std::cout << "Mass Matrix computation took " << duration.count() << " microseconds" << std::endl;
 
     // Check that the mass matrix is correct
     Eigen::Matrix<double, 7, 7> M_expected;

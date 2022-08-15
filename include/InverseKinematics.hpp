@@ -287,6 +287,7 @@ namespace RML {
         ipopt.SetOption("max_iter", 1000);
         ipopt.SetOption("tol", 1e-3);
         ipopt.SetOption("print_level", 0);
+        ipopt.SetOption("sb", "yes");
 
         // 3. Solve
         ipopt.Solve(nlp);
