@@ -150,8 +150,7 @@ namespace RML {
     }
 
     /**
-     * @brief Computes the orientation of the target link in the source link frame expressed in euler angles. [roll,
-     * pitch, yaw]
+     * @brief Computes the rotation matrix to the target link in the source link frame
      * @param model The robot model.
      * @param q The joint configuration of the robot.
      * @param source_link_name {s} The link from which the transform is computed.
@@ -159,10 +158,10 @@ namespace RML {
      * @return The rotation matrix between the source and target link
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 3> orientation(Model<Scalar>& model,
-                                            const Eigen::Matrix<Scalar, nq, 1>& q,
-                                            std::string& source_link_name,
-                                            std::string& target_link_name) {
+    Eigen::Matrix<Scalar, 3, 3> rotation(Model<Scalar>& model,
+                                         const Eigen::Matrix<Scalar, nq, 1>& q,
+                                         std::string& source_link_name,
+                                         std::string& target_link_name) {
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
         return Hst.linear();
@@ -208,7 +207,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar>& model,
-                                                    Eigen::Matrix<Scalar, nq, 1>& q,
+                                                    const Eigen::Matrix<Scalar, nq, 1>& q,
                                                     std::string& target_link_name) {
         // Initialize the geometric jabobian matrix with zeros
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
@@ -238,6 +237,55 @@ namespace RML {
                 else if (current_joint.type == JointType::REVOLUTE) {
                     // Rotate the axis into the base frame
                     J.block(0, current_joint.q_idx, 3, 1) = (zIBb).cross(rTBb - rIBb);
+                    J.block(3, current_joint.q_idx, 3, 1) = zIBb;
+                }
+            }
+            // Move up the tree to parent towards the base
+            current_link = model.links[current_link.parent_link_idx];
+        }
+        return J;
+    }
+
+    /**
+     * @brief Computes the geometric Jacobian between the base and the target link centre of mass
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param target_link_name {n} The link to which the transform is computed.
+     * @return The geometric jacobian between the base and the target link.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian_com(Model<Scalar>& model,
+                                                        const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                        std::string& target_link_name) {
+        // Initialize the geometric jabobian matrix with zeros
+        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
+
+        // Get the target link from the model
+        Link<Scalar> current_link = model.get_link(target_link_name);
+
+        // Get the base link from the model
+        auto base_link = model.links[model.base_link_idx];
+
+        // Compute the displacement of the target link {t} in the base link frame {b}
+        Eigen::Matrix<Scalar, 3, 1> rTcBb =
+            forward_kinematics_com(model, q, base_link.name, target_link_name).translation();
+
+        while (current_link.name != model.links[model.base_link_idx].name) {
+            auto current_joint = model.joints[current_link.joint_idx];
+            if (current_joint.q_idx != -1) {
+                // Compute the transform between base {b} and the current link {i}
+                auto Hbi = forward_kinematics(model, q, base_link.name, current_link.name);
+                // Axis of the current joint rotated into the base frame {b}
+                auto zIBb = Hbi.linear() * current_joint.axis;
+                // Compute the displacement of the current link {i} from the base link frame {b}
+                auto rIBb = Hbi.translation();
+                if (current_joint.type == JointType::PRISMATIC) {
+                    J.block(0, current_joint.q_idx, 3, 1) = zIBb;
+                    J.block(3, current_joint.q_idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
+                }
+                else if (current_joint.type == JointType::REVOLUTE) {
+                    // Rotate the axis into the base frame
+                    J.block(0, current_joint.q_idx, 3, 1) = (zIBb).cross(rTcBb - rIBb);
                     J.block(3, current_joint.q_idx, 3, 1) = zIBb;
                 }
             }

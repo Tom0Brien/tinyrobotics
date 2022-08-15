@@ -119,6 +119,19 @@ TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKine
     REQUIRE(J.isApprox(J_expected, 1e-4));
 }
 
+TEST_CASE("Test geometric_jacobian_com calculations for simple model", "[ForwardKinematics]") {
+    // Create a configuration for the robot
+    auto q = robot_model.home_configuration<4>();
+    q << 1, 2, 3, 4;
+    // Compute the geometric jacobian of robot with respect to the ground
+    std::string target_link_name  = "left_foot";
+    Eigen::Matrix<double, 6, 4> J = RML::geometric_jacobian_com(robot_model, q, target_link_name);
+    // Check that the geometric jacobian is correct
+    Eigen::Matrix<double, 6, 4> J_expected;
+    J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;
+    REQUIRE(J.isApprox(J_expected, 1e-4));
+}
+
 TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinematics]") {
 
     auto kuka_model = RML::model_from_urdf<double>("data/urdfs/kuka.urdf");
@@ -171,7 +184,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
         Eigen::Matrix<double, 3, 3> R_error = Rst_desired * Rst_solution.transpose();
         double orientation_error            = (Eigen::Matrix<double, 3, 3>::Identity() - R_error).diagonal().sum();
 
-        // Check that the solution is close to the desired transform
+        // // Check that the solution is close to the desired transform
         // std::cout << "Hst_desired.translation(): " << Hst_desired.translation().transpose() << std::endl;
         // std::cout << "Hst_solution.translation(): " << Hst_solution.translation().transpose() << std::endl;
         // std::cout << "Hst_desired [r,p,y]: " << Hst_desired.linear().eulerAngles(0,1,2).transpose() << std::endl;
@@ -183,7 +196,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
         // std::cout << "q_solution: " << q_solution.transpose() << std::endl;
 
         REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
-        REQUIRE(orientation_error < 1e-1);
+        REQUIRE(orientation_error < 1e-2);
     }
     std::cout << "Average duration [ms]: " << total_time / ITERATIONS << std::endl;
 }
@@ -232,6 +245,6 @@ TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
         // std::cout << "q_solution: " << q_solution.transpose() << std::endl;
 
         REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
-        REQUIRE(orientation_error < 1e-1);
+        REQUIRE(orientation_error < 1e-2);
     }
 }
