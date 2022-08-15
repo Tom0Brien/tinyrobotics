@@ -72,7 +72,7 @@ namespace RML {
         Link<Scalar> current_link = model.get_link(target_link_name);
 
         // Check if the link is within the kinematic tree
-        if (current_link.joint_idx == -1) {
+        if (current_link.link_idx == -1) {
             std::string error_msg = "Error: Link " + target_link_name + " not found.";
             throw std::runtime_error(error_msg);
         }
@@ -203,43 +203,47 @@ namespace RML {
      * @brief Computes the geometric Jacobian between the base and the target link
      * @param model The robot model.
      * @param q The joint configuration of the robot.
-     * @param source_link_name {s} The link from which the transform is computed.
-     * @param target_link_name {t} The link to which the transform is computed.
+     * @param target_link_name {n} The link to which the transform is computed.
      * @return The geometric jacobian between the base and the target link.
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar>& model,
                                                     Eigen::Matrix<Scalar, nq, 1>& q,
                                                     std::string& target_link_name) {
-        // Setup the geometric jabobian matrix
+        // Initialize the geometric jabobian matrix with zeros
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
-        // Start at the target link
-        std::shared_ptr<Link<Scalar>> current_link = model.get_link(target_link_name);
+        // Get the target link from the model
+        Link<Scalar> current_link = model.get_link(target_link_name);
 
-        // Compute the displacement of the target link in the base link frame
-        Eigen::Matrix<Scalar, 3, 1> rTBb = position(model, q, model.base_link->name, target_link_name);
+        // Get the base link from the model
+        auto base_link = model.links[model.base_link_idx];
 
-        while (current_link->name != model.base_link->name) {
-            if (current_link->joint != nullptr) {
-                // Compute the rotation matrix between base and link
-                Eigen::Transform<Scalar, 3, Eigen::Affine> Hbim1 =
-                    forward_kinematics(model, q, model.base_link->name, current_link->parent_link->name);
-                if (current_link->joint->type == JointType::PRISMATIC) {
-                    J.block(0, current_link->joint->q_idx, 3, 1) = Hbim1.linear() * current_link->joint->axis;
-                    J.block(3, current_link->joint->q_idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
+        // Compute the displacement of the target link {t} in the base link frame {b}
+        Eigen::Matrix<Scalar, 3, 1> rTBb = position(model, q, base_link.name, target_link_name);
+
+        while (current_link.name != model.links[model.base_link_idx].name) {
+            auto current_joint = model.joints[current_link.joint_idx];
+            if (current_joint.q_idx != -1) {
+                // Compute the transform between base {b} and the current link {i}
+                auto Hbi = forward_kinematics(model, q, base_link.name, current_link.name);
+                // Axis of the current joint rotated into the base frame {b}
+                auto zIBb = Hbi.linear() * current_joint.axis;
+                // Compute the displacement of the current link {i} from the base link frame {b}
+                auto rIBb = Hbi.translation();
+                if (current_joint.type == JointType::PRISMATIC) {
+                    J.block(0, current_joint.q_idx, 3, 1) = zIBb;
+                    J.block(3, current_joint.q_idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
                 }
-                else if (current_link->joint->type == JointType::REVOLUTE) {
+                else if (current_joint.type == JointType::REVOLUTE) {
                     // Rotate the axis into the base frame
-                    J.block(0, current_link->joint->q_idx, 3, 1) =
-                        (Hbim1.linear() * current_link->joint->axis).cross(rTBb - Hbim1.translation());
-                    J.block(3, current_link->joint->q_idx, 3, 1) = Hbim1.linear() * current_link->joint->axis;
+                    J.block(0, current_joint.q_idx, 3, 1) = (zIBb).cross(rTBb - rIBb);
+                    J.block(3, current_joint.q_idx, 3, 1) = zIBb;
                 }
             }
-            // Move up the tree to parent
-            current_link = current_link->parent_link;
+            // Move up the tree to parent towards the base
+            current_link = model.links[current_link.parent_link_idx];
         }
-
         return J;
     }
 

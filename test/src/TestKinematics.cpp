@@ -100,59 +100,53 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
 //     REQUIRE(com.isApprox(com_expected, 1e-4));
 // }
 
-// TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKinematics]") {
-//     // Create a configuration for the robot
-//     auto q = robot_model.home_configuration<4>();
-//     q << 1, 2, 3, 4;
-//     // Compute the geometric jacobian of robot with respect to the ground
-//     std::string target_link_name  = "left_foot";
-//     Eigen::Matrix<double, 6, 4> J = RML::geometric_jacobian(robot_model, q, target_link_name);
-//     // Check that the geometric jacobian is correct
-//     Eigen::Matrix<double, 6, 4> J_expected;
-//     J_expected.resize(6, 4);
-//     J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;
-//     REQUIRE(J.isApprox(J_expected, 1e-4));
+TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKinematics]") {
+    // Create a configuration for the robot
+    auto q = robot_model.home_configuration<4>();
+    q << 1, 2, 3, 4;
+    // Compute the geometric jacobian of robot with respect to the ground
+    std::string target_link_name  = "left_foot";
+    Eigen::Matrix<double, 6, 4> J = RML::geometric_jacobian(robot_model, q, target_link_name);
+    // Check that the geometric jacobian is correct
+    Eigen::Matrix<double, 6, 4> J_expected;
+    J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;
+    REQUIRE(J.isApprox(J_expected, 1e-4));
+    // Test for another target link
+    target_link_name = "right_foot";
+    J                = RML::geometric_jacobian(robot_model, q, target_link_name);
+    // Check that the geometric jacobian is correct
+    J_expected << 1.0, 0, 0, -0.6536, 0, 0, 0, 0, 0, 1.0, 0, -0.7568, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0;
+    REQUIRE(J.isApprox(J_expected, 1e-4));
+}
 
-//     // Test for another target link
-//     target_link_name = "right_foot";
-//     J                = RML::geometric_jacobian(robot_model, q, target_link_name);
-//     // Check that the geometric jacobian is correct
-//     J_expected << 1.0, 0, 0, -0.6536, 0, 0, 0, 0, 0, 1.0, 0, -0.7568, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0;
-//     REQUIRE(J.isApprox(J_expected, 1e-4));
-// }
+TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinematics]") {
 
-// TEST_CASE("Test geometric_jacobian calculations for nugus model", "[ForwardKinematics]") {
-//     // <RML::Model<double>> ngus_model = RML::Model<double>::from_urdf("data/urdfs/nugus.urdf");
-//     // // Create a configuration for the robot
-//     // Eigen::Matrix<double, 4, 1> q = nugus_model.home_configuration();
-//     // nugus_model.show_details();
-//     // // q << 1, 2, 3, 4,5 ,6 ,7 ,8,9,10,11,12,13,14,15,16,17,18,19,20;
-//     // // Compute the geometric jacobian of robot with respect to the ground
-//     // std::string target_link_name = "left_ankle";
-//     // Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J = RML::geometric_jacobian(nugus_model, q,
-//     // target_link_name); std::cout << "J: " << std::endl << J << std::endl; Check that the geometric jacobian is
-//     // correct Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> J_expected; J_expected.resize(6, 4); J_expected
-//     // << 1.0, 0, -0.9899924966, 0,
-//     //               0, 0, 0, 0,
-//     //               0, 1.0, 0.14112, 0,
-//     //               0, 0, 0, 0,
-//     //               0, 0, -1.0, 0,
-//     //               0, 0, 0, 0;
-//     // REQUIRE(J.isApprox(J_expected, 1e-4));
-// }
-
+    auto kuka_model = RML::model_from_urdf<double>("data/urdfs/kuka.urdf");
+    // Create a configuration for the robot
+    auto q = kuka_model.home_configuration<7>();
+    q << 1, 2, 3, 4, 5, 6, 7;
+    // Compute the geometric jacobian of robot with respect to the ground
+    std::string target_link_name = "kuka_arm_7_link";
+    auto J                       = RML::geometric_jacobian(kuka_model, q, target_link_name);
+    // Check that the geometric jacobian is correct
+    Eigen::Matrix<double, 6, 7> J_expected;
+    J_expected << 0.2175, -0.1519, -0.3056, -0.2059, -0.0038, 0.0767, 0, -0.1046, -0.2365, 0.1816, -0.3988, -0.0209,
+        -0.0128, 0, -0.0000, -0.2395, 0.0269, 0.1212, 0.0049, 0.0058, 0, 0.0000, 0.8415, -0.4913, 0.8648, 0.2425,
+        0.1763, -0.0337, 0.0000, -0.5403, -0.7651, -0.4855, 0.1801, 0.9581, 0.2352, 1.0000, -0.0000, -0.4161, -0.1283,
+        0.9533, -0.2258, 0.9714;
+    REQUIRE(J.isApprox(J_expected, 1e-4));
+}
 
 TEST_CASE("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
     const int ITERATIONS = 25;
     auto nugus_model     = RML::model_from_urdf<double>("data/urdfs/nugus.urdf");
-    nugus_model.show_details();
-    double total_time = 0;
+    double total_time    = 0;
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
         auto q_random = nugus_model.random_configuration<20>();
         // Compute the forward kinematics for the random configuration
         Eigen::Transform<double, 3, Eigen::Affine> Hst_desired;
-        std::string target_link_name = "left_foot";
+        std::string target_link_name = "torso";
         std::string source_link_name = "left_hip_yaw";
         Hst_desired = RML::forward_kinematics(nugus_model, q_random, source_link_name, target_link_name);
         // Compute the inverse kinematics for the random desired transform
