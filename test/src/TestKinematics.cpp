@@ -27,7 +27,7 @@ TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
     Hst                          = RML::forward_kinematics(robot_model, q, source_link_name, target_link_name);
     auto stop                    = high_resolution_clock::now();
     auto duration                = duration_cast<microseconds>(stop - start);
-    std::cout << "FK time: " << duration.count() << "us" << std::endl;
+    std::cout << "Forward Kinematics computation took " << duration.count() << " microseconds" << std::endl;
     // Check that the transform is correct
 
     Eigen::Matrix<double, 4, 4> Hst_expected;
@@ -168,7 +168,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
         Eigen::Matrix<double, 20, 1> q_solution =
             RML::inverse_kinematics<double, 20>(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
         auto stop     = high_resolution_clock::now();
-        auto duration = duration_cast<milliseconds>(stop - start);
+        auto duration = duration_cast<microseconds>(stop - start);
         total_time += duration.count();
         // std::cout << "Duration [ms]: " << duration.count() << std::endl;
         // Compute the forward kinematics for the solution
@@ -198,7 +198,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
         REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
         REQUIRE(orientation_error < 1e-2);
     }
-    std::cout << "Average duration [ms]: " << total_time / ITERATIONS << std::endl;
+    std::cout << "Inverse Kinematics computation took " << total_time / ITERATIONS << " microseconds" << std::endl;
 }
 
 TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {

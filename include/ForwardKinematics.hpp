@@ -42,14 +42,37 @@ namespace RML {
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& source_link_name,
                                                                   const std::string& target_link_name) {
-        Link<Scalar> current_link = model.get_link(source_link_name);
-
         // Build kinematic tree from source {s} to base {b} frame
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hbs = forward_kinematics(model, q, source_link_name);
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hsb = RML::inv(Hbs);
 
         // Build kinematic tree from base {b} to target {t} frame
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hbt = forward_kinematics(model, q, target_link_name);
+
+        // Compute transform between source {s} and target {t} frames
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = Hsb * Hbt;
+        return Hst;
+    }
+
+    /**
+     * @brief Computes the transform between two links.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param source_link_idx {s} The link from which the transform is computed.
+     * @param target_link_idx {t} The link to which the transform is computed.
+     * @return The transform between the two links.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar>& model,
+                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                  const int& source_link_idx,
+                                                                  const int& target_link_idx) {
+        // Build kinematic tree from source {s} to base {b} frame
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hbs = forward_kinematics(model, q, source_link_idx);
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsb = RML::inv(Hbs);
+
+        // Build kinematic tree from base {b} to target {t} frame
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hbt = forward_kinematics(model, q, target_link_idx);
 
         // Compute transform between source {s} and target {t} frames
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = Hsb * Hbt;
@@ -74,6 +97,53 @@ namespace RML {
         // Check if the link is within the kinematic tree
         if (current_link.link_idx == -1) {
             std::string error_msg = "Error: Link " + target_link_name + " not found.";
+            throw std::runtime_error(error_msg);
+        }
+
+        // Build kinematic tree from target_link {t} to base {b}
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Htb = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        while (current_link.name != model.links[model.base_link_idx].name) {
+            Eigen::Transform<Scalar, 3, Eigen::Affine> H = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+            auto current_joint                           = model.joints[current_link.joint_idx];
+            if (current_joint.type == JointType::REVOLUTE) {
+                Scalar q_current = q(current_joint.q_idx);
+                // Rotate by q_current around axis
+                H.linear() = Eigen::AngleAxis<Scalar>(q_current, current_joint.axis).toRotationMatrix();
+            }
+            else if (current_joint.type == JointType::PRISMATIC) {
+                Scalar q_current = q(current_joint.q_idx);
+                // Translate by q_current along axis
+                H.translation() = current_joint.axis * q_current;
+            }
+            Htb = Htb * RML::inv(H);
+            // Apply inverse joint transform as we are going back up tree
+            Htb = Htb * RML::inv(current_joint.parent_transform);
+            // Move up the tree to parent
+            current_link = model.links[current_link.parent_link_idx];
+        }
+
+        // Return transform from base {b} to target {t}
+        return RML::inv(Htb);
+    }
+
+    /**
+     * @brief Computes the transform between base link to target.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param target_link_idx {s} The idx of the link to which the transform is computed.
+     * @return The transform between the base and the target link
+     */
+    template <typename Scalar, int nq>
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar>& model,
+                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                  const int& target_link_idx) {
+
+        // Get the target link
+        Link<Scalar> current_link = model.links[target_link_idx];
+
+        // Check if the link is within the kinematic tree
+        if (current_link.link_idx == -1) {
+            std::string error_msg = "Error: Link " + std::to_string(target_link_idx) + " not found.";
             throw std::runtime_error(error_msg);
         }
 
