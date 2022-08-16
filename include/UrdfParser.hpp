@@ -8,8 +8,8 @@
 namespace RML {
 
     /**
-     * @brief Get Eigen3 vector from the XML element description.
-     * @param xml The XML element
+     * @brief Get Eigen3 vector from a URDF vector element.
+     * @param vector_str The vector string
      * @return A 3x1 Eigen3 vector
      */
     template <typename Scalar>
@@ -43,8 +43,8 @@ namespace RML {
     }
 
     /**
-     * @brief Get Eigen3 rotation from the XML element description.
-     * @param xml The XML element
+     * @brief Get Eigen3 rotation from a URDF rpy string
+     * @param rotation_str The rpy string
      * @return A 3x3 Eigen3 rotation matrix
      */
     template <typename Scalar>
@@ -58,7 +58,7 @@ namespace RML {
     }
 
     /**
-     * @brief Get the Eigen3 transform from the XML element.
+     * @brief Get the Eigen3 transform from a URDF xml element.
      * @param xml The XML element
      * @return A Eigen3 affine transform
      */
@@ -88,7 +88,7 @@ namespace RML {
     inline const char* get_parent_link_name(tinyxml2::XMLElement* c) {
         tinyxml2::XMLElement* e = c->Parent()->ToElement();
         while (e->Parent() != nullptr) {
-            if (e->Value() == "link") {
+            if (std::strcmp(e->Value(), "link") == 0) {
                 break;
             }
             e = e->Parent()->ToElement();
