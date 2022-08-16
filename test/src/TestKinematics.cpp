@@ -15,24 +15,38 @@ using namespace std::chrono;
 // Load the robot model from a URDF file
 auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
-TEST_CASE("Test forward kinematics", "[ForwardKinematics]") {
-    auto start = high_resolution_clock::now();
+TEST_CASE("Test forward kinematics with link names", "[ForwardKinematics]") {
     // Compute FK for a given configuration
     auto q = robot_model.home_configuration<4>();
     q << 1, 2, 3, 4;
-
     Eigen::Transform<double, 3, Eigen::Affine> Hst;
-    std::string target_link_name = "left_foot";
-    std::string source_link_name = "ground";
-    Hst                          = RML::forward_kinematics(robot_model, q, source_link_name, target_link_name);
-    auto stop                    = high_resolution_clock::now();
-    auto duration                = duration_cast<microseconds>(stop - start);
-    std::cout << "Forward Kinematics computation took " << duration.count() << " microseconds" << std::endl;
+    std::string source_link_idx = "ground";
+    std::string target_link_idx = "left_foot";
+    auto start                  = high_resolution_clock::now();
+    Hst                         = RML::forward_kinematics(robot_model, q, 0, 6);
+    auto stop                   = high_resolution_clock::now();
+    auto duration               = duration_cast<microseconds>(stop - start);
     // Check that the transform is correct
-
     Eigen::Matrix<double, 4, 4> Hst_expected;
     Hst_expected << -0.9900, 0, -0.1411, 1.1411, 0, 1.0000, 0, 0, 0.1411, 0, -0.9900, 2.9900, 0, 0, 0, 1.0000;
+    REQUIRE(Hst.matrix().isApprox(Hst_expected, 1e-4));
+};
 
+TEST_CASE("Test forward kinematics with link idx", "[ForwardKinematics]") {
+    // Compute FK for a given configuration
+    auto q = robot_model.home_configuration<4>();
+    q << 1, 2, 3, 4;
+    Eigen::Transform<double, 3, Eigen::Affine> Hst;
+    int target_link_idx = 0;
+    int source_link_idx = 6;
+    auto start          = high_resolution_clock::now();
+    Hst                 = RML::forward_kinematics(robot_model, q, 0, 6);
+    auto stop           = high_resolution_clock::now();
+    auto duration       = duration_cast<microseconds>(stop - start);
+    std::cout << "Forward Kinematics computation took " << duration.count() << " microseconds" << std::endl;
+    // Check that the transform is correct
+    Eigen::Matrix<double, 4, 4> Hst_expected;
+    Hst_expected << -0.9900, 0, -0.1411, 1.1411, 0, 1.0000, 0, 0, 0.1411, 0, -0.9900, 2.9900, 0, 0, 0, 1.0000;
     REQUIRE(Hst.matrix().isApprox(Hst_expected, 1e-4));
 };
 
@@ -40,16 +54,13 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
     // Compute FK for a given configuration
     auto q = robot_model.home_configuration<4>();
     q << 1, 2, 3, 4;
-
     Eigen::Transform<double, 3, Eigen::Affine> Hstc;
     std::string target_link_name = "left_leg";
     std::string source_link_name = "ground";
     Hstc                         = RML::forward_kinematics_com(robot_model, q, source_link_name, target_link_name);
-
     // Check that the transform is correct
     Eigen::Matrix<double, 4, 4> Hstc_expected;
     Hstc_expected << -0.9900, 0, -0.1411, 1.0706, 0, 1, 0, 0, 0.1411, 0, -0.9900, 2.4950, 0, 0, 0, 1;
-
     REQUIRE(Hstc.matrix().isApprox(Hstc_expected, 1e-4));
 }
 
@@ -63,7 +74,7 @@ TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKine
     Eigen::Matrix<double, 6, 4> J = RML::geometric_jacobian(robot_model, q, target_link_name);
     auto stop                     = high_resolution_clock::now();
     auto duration                 = duration_cast<microseconds>(stop - start);
-    std::cout << "Geometric jacobian computation took " << duration.count() << " microseconds" << std::endl;
+    std::cout << "Geometric Jacobian computation took " << duration.count() << " microseconds" << std::endl;
     // Check that the geometric jacobian is correct
     Eigen::Matrix<double, 6, 4> J_expected;
     J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;

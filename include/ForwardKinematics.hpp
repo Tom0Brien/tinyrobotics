@@ -142,8 +142,8 @@ namespace RML {
     template <typename Scalar, int nq>
     Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar>& model,
                                                                       const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                      std::string& source_link_name,
-                                                                      std::string& target_link_name) {
+                                                                      const std::string& source_link_name,
+                                                                      const std::string& target_link_name) {
         // Assert the configuration vector is valid
         // assert(q.size() == model.n_q); TODO: FIX THIS FOR AUTODIFF
 
@@ -153,6 +153,32 @@ namespace RML {
 
         // Compute forward kinematics from source {s} to CoM {c}
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = Hst * model.get_link(target_link_name).centre_of_mass;
+
+        // Return transform from source {s} to CoM {c}
+        return Hsc;
+    }
+
+    /**
+     * @brief Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param source_link_name {s} The link from which the transform is computed.
+     * @param target_link_name {t} The link to which the transform is computed.
+     * @return The transform between the two links.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar>& model,
+                                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                      const int source_link_idx,
+                                                                      const int target_link_idx) {
+        // Assert the configuration vector is valid
+        // assert(q.size() == model.n_q); TODO: FIX THIS FOR AUTODIFF
+
+        // Compute forward kinematics from source {b} to target {t}
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = forward_kinematics(model, q, source_link_idx, target_link_idx);
+
+        // Compute forward kinematics from source {s} to CoM {c}
+        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = Hst * model.links[target_link_idx].centre_of_mass;
 
         // Return transform from source {s} to CoM {c}
         return Hsc;

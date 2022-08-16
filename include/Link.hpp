@@ -69,7 +69,7 @@ namespace RML {
             new_link.link_idx        = link_idx;
             new_link.joint_idx       = joint_idx;
             new_link.centre_of_mass  = centre_of_mass.template cast<NewScalar>();
-            new_link.mass            = mass;
+            new_link.mass            = NewScalar(mass);
             new_link.inertia         = inertia.template cast<NewScalar>();
             new_link.parent_link_idx = parent_link_idx;
             new_link.child_links     = child_links;

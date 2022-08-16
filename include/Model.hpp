@@ -43,6 +43,18 @@ namespace RML {
         /// @brief Gravity torque vector.
         Eigen::Matrix<Scalar, Eigen::Dynamic, 1> g;
 
+        /// @brief The kinetic co-energy.
+        Scalar T = 0;
+
+        /// @brief The potential energy.
+        Scalar V = 0;
+
+        /// @brief The hamiltonian (total energy).
+        Scalar H = 0;
+
+        /// @brief Vector of forward kinematics results.
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Affine>> FK;
+
         /**
          * @brief Resize all matrices to the given size.
          * @param n The size to resize all matrices to.
@@ -55,6 +67,28 @@ namespace RML {
             M.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
             C.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
             g.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+        }
+
+        /**
+         * @brief Cast to NewScalar type.
+         */
+        template <typename NewScalar>
+        Results<NewScalar> cast() {
+            Results<NewScalar> new_res;
+            new_res.q   = q.template cast<NewScalar>();
+            new_res.dq  = dq.template cast<NewScalar>();
+            new_res.ddq = ddq.template cast<NewScalar>();
+            new_res.tau = tau.template cast<NewScalar>();
+            new_res.M   = M.template cast<NewScalar>();
+            new_res.C   = C.template cast<NewScalar>();
+            new_res.g   = g.template cast<NewScalar>();
+            new_res.T   = NewScalar(T);
+            new_res.V   = NewScalar(V);
+            new_res.H   = NewScalar(H);
+            for (int i = 0; i < FK.size(); i++) {
+                new_res.FK[i] = FK[i].template cast<NewScalar>();
+            }
+            return new_res;
         }
     };
 
@@ -83,10 +117,10 @@ namespace RML {
         int base_link_idx = -1;
 
         /// @brief Vector of links in the robot model.
-        std::vector<Link<Scalar>> links;
+        std::vector<Link<Scalar>> links = {};
 
         /// @brief Vector of joints in the robot model.
-        std::vector<Joint<Scalar>> joints;
+        std::vector<Joint<Scalar>> joints = {};
 
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
@@ -341,6 +375,7 @@ namespace RML {
             for (auto& link : links) {
                 new_model.links.push_back(link.template cast<NewScalar>());
             }
+            new_model.results = results.template cast<NewScalar>();
             return new_model;
         }
     };

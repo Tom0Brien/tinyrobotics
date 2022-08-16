@@ -147,8 +147,12 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     void mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
-        // Reset the mass matrix
+        // Update the model with the current joint configuration
+        model.results.q = q;
+        // Reset the mass matrix and potential energy
         model.results.M.setZero();
+        model.results.V = 0;
+
         Eigen::Matrix<Scalar, 6, 6> Mi;
         // Get the base link from the model
         auto base_link = model.links[model.base_link_idx];
@@ -164,6 +168,11 @@ namespace RML {
             Eigen::Matrix<Scalar, 6, nq> Jci = geometric_jacobian_com(model, q, model.links[i].name);
             // Compute the contribution to the mass matrix of the link
             model.results.M += Jci.transpose() * Mi * Jci;
+            // Compute the contribution to the potential energy of the link
+            Eigen::Transform<Scalar, 3, Eigen::Affine> Hbi_c =
+                forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
+            Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
+            model.results.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
         }
     }
     /**
@@ -176,8 +185,79 @@ namespace RML {
     void coriolis_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Compute the mass matrix
         mass_matrix<Scalar, nq>(model, q);
+        // TODO: Compute the coriolis matrix
+    }
 
-        // Compute the coriolis matrix
+    /**
+     * @brief Compute the gravity matrix of the robot model.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     */
+    template <typename Scalar, int nq>
+    void gravity_torque(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        // Compute the mass matrix
+        mass_matrix<Scalar, nq>(model, q);
+        // TODO: Compute the gravity matrix
+    }
+
+    /**
+     * @brief Compute the kinetic_energy of the robot model.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     */
+    template <typename Scalar, int nq>
+    void kinetic_energy(Model<Scalar>& model,
+                        const Eigen::Matrix<Scalar, nq, 1>& q,
+                        const Eigen::Matrix<Scalar, nq, 1>& dq) {
+        // Update the model with the current joint configuration and velocity
+        model.results.q  = q;
+        model.results.dq = dq;
+        // Compute the mass matrix
+        mass_matrix<Scalar, nq>(model, q);
+        // Compute the kinetic energy
+        model.results.T = 0.5 * model.results.dq.transpose() * model.results.M * model.results.dq;
+    }
+
+    /**
+     * @brief Compute the potential_energy of the robot model.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     */
+    template <typename Scalar, int nq>
+    void potential_energy(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        // Update the model with the current joint configuration
+        model.results.q = q;
+        // Reset the potential energy
+        model.results.V = 0;
+        // Compute the potential energy
+        for (int i = 0; i < model.n_links; i++) {
+            // Compute the contribution to the potential energy of the link
+            Eigen::Transform<Scalar, 3, Eigen::Affine> Hbi_c =
+                forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
+            Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
+            model.results.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
+        }
+    }
+
+    /**
+     * @brief Compute the hamiltonian of the robot model.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param dq The joint velocity of the robot.
+     */
+    template <typename Scalar, int nq>
+    void hamiltonian(Model<Scalar>& model,
+                     const Eigen::Matrix<Scalar, nq, 1>& q,
+                     const Eigen::Matrix<Scalar, nq, 1>& dq) {
+        // Update the model with the current joint configuration and velocity
+        model.results.q  = q;
+        model.results.dq = dq;
+        // Compute the kinetic energy
+        kinetic_energy<Scalar, nq>(model, q, dq);
+        // Compute the potential energy
+        potential_energy<Scalar, nq>(model, q);
+        // Compute the hamiltonian
+        model.results.H = model.results.T + model.results.V;
     }
 
 }  // namespace RML
