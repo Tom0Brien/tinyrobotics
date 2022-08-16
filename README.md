@@ -1,20 +1,24 @@
 Robot Modelling Library (RML)
 ===========
 
-This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) for modelling robots defined by a [URDF](http://wiki.ros.org/urdf) (Universal Robot Descriptor File).
+This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) for modelling robots defined by a [URDF](http://wiki.ros.org/urdf) (Unified Robot Description Format).
 
 ## Features
 - URDF parsing
+- C++ templated
 - Forward Kinematics
-- Inverse Kinematics with [Ipopt](https://coin-or.github.io/Ipopt/) interface [ifopt](https://github.com/ethz-adrl/ifopt)
-- Automatic differentiation support with [autodiff](https://github.com/autodiff/autodiff)
-
-### TODO: 
+- Inverse Kinematics (with [Ipopt](https://coin-or.github.io/Ipopt/) interface [ifopt](https://github.com/ethz-adrl/ifopt))
 - Geometric Jacobians
+- Centre of mass position 
+- Automatic differentiation with [autodiff](https://github.com/autodiff/autodiff)
+
+### In Development:
+- Analytical Jacobians
+- Analytical Derivatives
 - Dynamics
 - ODE solver
 - URDF visualizer
-- Documentation/Examples
+- Documentation & Examples
 
 ## Install
 
