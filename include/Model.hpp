@@ -17,6 +17,48 @@
 namespace RML {
 
     /**
+     * @brief A struct for storing the results of model algorithms.
+     */
+    template <typename Scalar>
+    struct Results {
+
+        /// @brief Joint configuration.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q;
+
+        /// @brief Joint velocity.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dq;
+
+        /// @brief Joint acceleration.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> ddq;
+
+        /// @brief Joint torque.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> tau;
+
+        /// @brief Mass matrix.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> M;
+
+        /// @brief Coriolis matrix.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> C;
+
+        /// @brief Gravity torque vector.
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> g;
+
+        /**
+         * @brief Resize all matrices to the given size.
+         * @param n The size to resize all matrices to.
+         */
+        void resize(int n) {
+            q.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            dq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            ddq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            tau.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            M.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
+            C.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
+            g.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+        }
+    };
+
+    /**
      * @brief Represents a robot model.
      * @details
      * @param Scalar The scalar type for the robot model
@@ -49,14 +91,8 @@ namespace RML {
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
-        // /// @brief The mass matrix of the robot model.
-        // Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero();
-
-        // /// @brief The coriolis matrix of the robot model.
-        // Eigen::Matrix<Scalar, nq, nq> C = Eigen::Matrix<Scalar, nq, nq>::Zero();
-
-        // /// @brief The gravity torque of the robot model.
-        // Eigen::Matrix<Scalar, nq, 1> g = Eigen::Matrix<Scalar, nq, 1>::Zero();
+        /// @brief Stores the results of the models algorithms.
+        Results<Scalar> results;
 
         /**
          * @brief Initialize the link tree of the robot model.

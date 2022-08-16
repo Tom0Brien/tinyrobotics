@@ -37,17 +37,17 @@ TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Compute the dynamics
     auto start = std::chrono::high_resolution_clock::now();
     // Eigen::Matrix<double, 4, 4> M = Eigen::Matrix<double, 4, 4>::Zero();
-    auto M = RML::mass_matrix(robot_model, q);
+    RML::mass_matrix(robot_model, q);
 
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Mass Matrix computation took " << duration.count() << " microseconds" << std::endl;
-
+    std::cout << "M: " << std::endl << robot_model.results.M << std::endl;
     // Check that the mass matrix is correct
     Eigen::Matrix<double, 4, 4> M_expected;
     M_expected << 20, 0, 2.5, 2.5, 0, 20, 0, 0, 2.5, 0, 1.25108, 0, 2.5, 0, 0, 1.25;
 
-    REQUIRE(M.isApprox(M_expected, 1e-4));
+    REQUIRE(robot_model.results.M.isApprox(M_expected, 1e-4));
 };
 
 TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
@@ -57,8 +57,8 @@ TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
     // Create a random configuration
     Eigen::Matrix<double, 7, 1> q = kuka_model.home_configuration<7>();
     // Compute the dynamics
-    auto start    = std::chrono::high_resolution_clock::now();
-    auto M        = RML::mass_matrix(kuka_model, q);
+    auto start = std::chrono::high_resolution_clock::now();
+    RML::mass_matrix(kuka_model, q);
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     // std::cout << "Mass Matrix computation took " << duration.count() << " microseconds" << std::endl;
@@ -69,5 +69,5 @@ TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
         0.0072, 0.0402, 0.0072, -0.0186, 0.0008, 0, 0, -0.0186, -1.9636, -0.0186, 0.9620, -0.0130, -0.0730, 0, 0.0008,
         0.0290, 0.0008, -0.0130, 0.0008, 0, 0, 0, 0.1354, 0, -0.0730, 0, 0.0122, 0, 0, 0, 0, 0, 0, 0, 0;
 
-    REQUIRE(M.isApprox(M_expected, 1e-4));
+    REQUIRE(kuka_model.results.M.isApprox(M_expected, 1e-4));
 };

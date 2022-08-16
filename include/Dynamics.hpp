@@ -141,14 +141,14 @@ namespace RML {
     // };
 
     /**
-     * @brief Compute the mass matrix, coriolis and gravity matrices of the robot model.
+     * @brief Compute the mass matrix of the robot model.
      * @param model The robot model.
      * @param q The joint configuration of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
-        // Create the mass matrix, inertia matrix, constraint vector and potential energy matrices
-        Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero(nq, nq);
+    void mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        // Reset the mass matrix
+        model.results.M.setZero();
         Eigen::Matrix<Scalar, 6, 6> Mi;
         // Get the base link from the model
         auto base_link = model.links[model.base_link_idx];
@@ -163,9 +163,21 @@ namespace RML {
             // Compute the geometric jacobian of the links center of mass with respect to the base
             Eigen::Matrix<Scalar, 6, nq> Jci = geometric_jacobian_com(model, q, model.links[i].name);
             // Compute the contribution to the mass matrix of the link
-            M += Jci.transpose() * Mi * Jci;
+            model.results.M += Jci.transpose() * Mi * Jci;
         }
-        return M;
+    }
+    /**
+     *
+     * @brief Compute the coriolis matrix model.
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     */
+    template <typename Scalar, int nq>
+    void coriolis_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        // Compute the mass matrix
+        mass_matrix<Scalar, nq>(model, q);
+
+        // Compute the coriolis matrix
     }
 
 }  // namespace RML

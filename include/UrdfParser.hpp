@@ -406,6 +406,9 @@ namespace RML {
         model.n_joints = model.joints.size();
         model.n_links  = model.links.size();
 
+        // Resize the results structure with number of actuatable joints
+        model.results.resize(model.n_q);
+
         return model;
     }
 }  // namespace RML
