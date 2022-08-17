@@ -17,7 +17,6 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
 - Analytical Derivatives
 - Dynamics
 - ODE solver
-- URDF visualizer
 - Documentation & Examples
 
 ## Install
