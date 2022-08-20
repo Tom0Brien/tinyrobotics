@@ -26,7 +26,7 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
 - [Catch2](https://github.com/catchorg/Catch2)
 - [TinyXML2](https://github.com/leethomason/tinyxml2)
 - [autodiff](https://github.com/autodiff/autodiff)
-- [ifopt](https://github.com/ethz-adrl/ifopt) with MA57 solver from https://www.hsl.rl.ac.uk/ipopt/
+- [ifopt](https://github.com/ethz-adrl/ifopt)
 
 ### 2. Build with cmake
   ```bash
