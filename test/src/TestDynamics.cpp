@@ -1,8 +1,10 @@
 #define CATCH_DYNAMICS
+#include <Eigen/Dense>
 #include <autodiff/forward/real.hpp>
 #include <autodiff/forward/real/eigen.hpp>
 #include <chrono>
 #include <string>
+#include <unsupported/Eigen/AutoDiff>
 
 #include "../../include/Dynamics.hpp"
 #include "../../include/UrdfParser.hpp"
@@ -63,17 +65,40 @@ TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
     REQUIRE(kuka_model.results.M.isApprox(M_expected, 1e-4));
 };
 
-TEST_CASE("Test kinetic, potential and hamiltonian computation for simple model", "[Dynamics]") {
+TEST_CASE("Test kinetic, potential and total energy computation for simple model", "[Dynamics]") {
     // Create a robot model
     auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
     // Create a random configuration
     Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration<4>();
+    q << 1, 2, 3, 4;
     Eigen::Matrix<double, 4, 1> dq;
     dq << 1, 2, 3, 4;
     // Compute the kinetic, potential and hamiltonian
-    RML::hamiltonian(robot_model, q, dq);
+    RML::total_energy(robot_model, q, dq);
     // Check that the kinetic, potential and hamiltonian are correct
     REQUIRE(robot_model.results.T - 83.1250 < 1e-2);
-    REQUIRE(robot_model.results.V - -49.0500 < 1e-2);
-    REQUIRE(robot_model.results.H - 34.0750 < 1e-2);
+    REQUIRE(robot_model.results.V - 432.7102 < 1e-2);
+    REQUIRE(robot_model.results.H - 515.8352 < 1e-2);
+};
+
+TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
+    // Create a robot model
+    auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
+    // Create a random configuration
+    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration<4>();
+    q << 1, 2, 3, 4;
+    Eigen::Matrix<double, 4, 1> p;
+    p << 1, 2, 3, 4;
+    Eigen::Matrix<double, 4, 1> u = robot_model.home_configuration<4>();
+    u << 1, 2, 3, 4;
+    // Compute the kinetic, potential and hamiltonian
+    auto start = std::chrono::high_resolution_clock::now();
+    RML::hamiltonian_dynamics(robot_model, q, p, u);
+    auto stop     = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Hamiltonian Dynamics computation took " << duration.count() << " microseconds"
+              << std::endl;  // Check that the hamiltonian dynamics are correct
+    Eigen::Matrix<double, 8, 1> dx_dt_expected;
+    dx_dt_expected << 1.0111, 0.5284, 4.2528, 5.3216, 1.0000, -194.2000, -7.5397, 28.1456;
+    REQUIRE(robot_model.results.dx_dt.isApprox(dx_dt_expected, 1e-4));
 };
