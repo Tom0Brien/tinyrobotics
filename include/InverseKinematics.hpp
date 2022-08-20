@@ -279,9 +279,6 @@ namespace RML {
 
         // 2. Choose solver and options
         ifopt::IpoptSolver ipopt;
-        ipopt.SetOption("linear_solver", "ma57");
-        ipopt.SetOption("ma57_automatic_scaling", "no");
-        ipopt.SetOption("linear_scaling_on_demand", "no");
         ipopt.SetOption("mu_strategy", "adaptive");
         ipopt.SetOption("jacobian_approximation", "exact");
         ipopt.SetOption("max_iter", 1000);
