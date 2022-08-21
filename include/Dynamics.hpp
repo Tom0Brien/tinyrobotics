@@ -149,7 +149,7 @@ namespace RML {
      * @param q The joint configuration of the robot.
      */
     template <typename Scalar, int nq>
-    void mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+    Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
         model.results.resize(nq);
         // Update the model with the current joint configuration
         model.results.q = q;
@@ -178,6 +178,7 @@ namespace RML {
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
             model.results.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
         }
+        return model.results.M;
     }
 
     /**
@@ -267,7 +268,7 @@ namespace RML {
         // Update the model with the current joint configuration and velocity
         model.results.q = q;
         model.results.p = p;
-        // Compute the kinetic energy and potential energy
+        // Compute the mass matrix
         mass_matrix<Scalar, nq>(model, q);
         // Compute the total energy
         Eigen::Matrix<Scalar, nq, nq> Minv = model.results.M.inverse();
@@ -285,13 +286,13 @@ namespace RML {
      * @param p The momentum vector
      * @param u The input vector.
      */
-    template <typename Scalar, int nq, int ni>
+    template <typename Scalar, int nq, int np, int ni>
     void hamiltonian_dynamics(Model<Scalar>& model,
                               const Eigen::Matrix<Scalar, nq, 1>& q,
-                              const Eigen::Matrix<Scalar, nq, 1>& p,
+                              const Eigen::Matrix<Scalar, np, 1>& p,
                               const Eigen::Matrix<Scalar, ni, 1>& u) {
         // Number of states
-        const int nx = 2 * nq;
+        const int nx = nq + np;
         // Cast to autodiff type for automatic differentiation
         Eigen::Matrix<autodiff::real, nq, 1> q_ad(q);  // the input vector q
         Eigen::Matrix<autodiff::real, nq, 1> p_ad(p);  // the input vector p
@@ -299,24 +300,26 @@ namespace RML {
 
         // Compute the jacobian of the hamiltonian wrt q and p
         Eigen::Matrix<autodiff::real, 1, 1> H_ad;
+
         Eigen::Matrix<Scalar, 1, nq> dH_dq =
             autodiff::jacobian(hamiltonian<autodiff::real, nq>, wrt(q_ad), at(model_ad, q_ad, p_ad), H_ad);
-        Eigen::Matrix<Scalar, 1, nq> dH_dp = (model_ad.results.Minv * p_ad).template cast<Scalar>();
+
+        Eigen::Matrix<Scalar, 1, np> dH_dp = (model_ad.results.Minv * p_ad).template cast<Scalar>();
 
         // Create the interconnection matrix
         Eigen::Matrix<Scalar, nx, nx> J = Eigen::Matrix<Scalar, nx, nx>::Zero();
-        J.block(0, nq, nq, nq)          = Eigen::Matrix<Scalar, nq, nq>::Identity();
+        J.block(0, nq, np, np)          = Eigen::Matrix<Scalar, nq, nq>::Identity();
         J.block(nq, 0, nq, nq)          = -1 * Eigen::Matrix<Scalar, nq, nq>::Identity();
-        J.block(nq, nq, nq, nq)         = model.results.Dp;
+        J.block(nq, nq, np, np)         = model.results.Dp;
 
         // Stack the jacobians
         Eigen::Matrix<Scalar, nx, 1> dH = Eigen::Matrix<Scalar, nx, 1>::Zero();
         dH.block(0, 0, nq, 1)           = dH_dq.transpose();
-        dH.block(nq, 0, nq, 1)          = dH_dp.transpose();
+        dH.block(nq, 0, np, 1)          = dH_dp.transpose();
 
         // Compute dx_dt
         Eigen::Matrix<Scalar, nx, ni> G    = Eigen::Matrix<Scalar, nx, ni>::Zero();
-        G.block(nq, 0, nq, nq)             = model.results.Gp;
+        G.block(nq, 0, np, np)             = model.results.Gp;
         Eigen::Matrix<Scalar, nx, 1> dx_dt = J * dH + G * u;
 
         // Store the result
