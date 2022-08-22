@@ -1,0 +1,455 @@
+<?xml version="1.0" ?>
+
+<robot name="compass_gait">
+
+  <!-- world -->
+  <link name="world">
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+
+  <!-- ground -->
+  <!-- just for visualization, it is welded to world -->
+
+  <link name="ground">
+
+    <visual>
+      <origin xyz="0 0 -.25" rpy="0 0.0524 0"/>
+      <geometry>
+        <box size="8 4 .5" />
+      </geometry>
+      <material name="black">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+
+      <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+
+  </link>
+
+  <joint name="ground_rotation" type="fixed">
+
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="ground"/>
+    <axis xyz="0 0 1"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+
+  </joint>
+
+  <!-- floating base for hip x -->
+
+  <link name="floating_base_x">
+
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+
+  </link>
+
+  <joint name="floating_base_x" type="prismatic">
+
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="ground"/>
+    <child link="floating_base_x"/>
+    <axis xyz="1 0 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+
+  </joint>
+
+  <!-- floating base for hip y -->
+
+  <link name="floating_base_y">
+
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+  <joint name="floating_base_y" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="floating_base_x"/>
+    <child link="floating_base_y"/>
+    <axis xyz="0 1 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+  </joint>
+
+  <!-- floating base for hip z -->
+
+  <link name="floating_base_z">
+
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+  <joint name="floating_base_z" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="floating_base_y"/>
+    <child link="floating_base_z"/>
+    <axis xyz="0 0 1"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+  </joint>
+
+  <!-- floating base roll -->
+
+  <link name="floating_base_roll">
+
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+  <joint name="floating_base_roll" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="floating_base_z"/>
+    <child link="floating_base_roll"/>
+    <axis xyz="1 0 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+  </joint>
+
+  <!-- floating base pitch -->
+
+  <link name="floating_base_pitch">
+
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+  <joint name="floating_base_pitch" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="floating_base_roll"/>
+    <child link="floating_base_pitch"/>
+    <axis xyz="0 1 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+  </joint>
+
+  <!-- floating base yaw -->
+
+  <link name="floating_base_yaw">
+
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+  <joint name="floating_base_yaw" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="floating_base_pitch"/>
+    <child link="floating_base_yaw"/>
+    <axis xyz="0 0 1"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+  </joint>
+
+
+
+<!-- hip -->
+
+  <link name="body">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="10"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <sphere radius=".1"/>
+      </geometry>
+      <material name="mat">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+  <joint name="hip_joint" type="fixed">
+
+    <parent link="floating_base_yaw" />
+    <child link="body" />
+    <origin xyz="0 0 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+
+  </joint>
+
+  <!-- left leg -->
+
+  <link name="left_leg">
+
+    <inertial>
+      <origin xyz="0 0 -0.5"/>
+      <mass value="5"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 -0.5"/>
+      <geometry>
+        <sphere radius=".05"/>
+      </geometry>
+      <material name="mat">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 -.5" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="1" radius=".01"/>
+      </geometry>
+      <material name="mat">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+  <joint name="left_hip_pitch" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="body"/>
+    <child link="left_leg"/>
+    <axis xyz="0 -1 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+
+  </joint>
+
+  <!-- Left foot -->
+
+  <link name="left_foot">
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+  <joint name="left_foot_fixed" type="fixed">
+
+    <parent link="left_leg"/>
+    <child link="left_foot"/>
+    <origin xyz="0 0 -1"/>
+    <axis xyz="0 0 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+      
+  </joint>
+
+  
+
+  <!-- right leg -->
+
+  <link name="right_leg">
+
+    <inertial>
+      <origin xyz="0 0 -.5" rpy="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 -.5" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius=".05"/>
+      </geometry>
+      <material name="mat">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 -.5" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="1" radius=".01"/>
+      </geometry>
+      <material name="mat">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+  <joint name="right_hip_pitch" type="revolute">
+    <parent link="body"/>
+    <child link="right_leg"/>
+    <axis xyz="0 -1 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+  </joint>
+
+  <!-- Right foot -->
+
+  <link name="right_foot">
+    <origin xyz="0 0 0"/>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
+
+  <joint name="right_foot_fixed" type="fixed">
+
+    <parent link="right_leg"/>
+    <child link="right_foot"/>
+    <origin xyz="0 0 -1"/>
+    <axis xyz="0 0 0"/>
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="100"
+      velocity="100" />
+      
+  </joint>
+
+</robot>

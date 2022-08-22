@@ -2,6 +2,7 @@
 #define RML_DYNAMICS_HPP
 
 #include <Eigen/Core>
+#include <Eigen/Dense>
 #include <Eigen/Geometry>
 #include <autodiff/forward/real.hpp>
 #include <autodiff/forward/real/eigen.hpp>
@@ -270,10 +271,12 @@ namespace RML {
         model.results.p = p;
         // Compute the mass matrix
         mass_matrix<Scalar, nq>(model, q);
-        // Compute the total energy
-        Eigen::Matrix<Scalar, nq, nq> Minv = model.results.M.inverse();
+        // Calculate the inverse of M: Mx = b
+        Eigen::Matrix<Scalar, nq, nq> b    = Eigen::Matrix<Scalar, nq, nq>::Identity();
+        Eigen::Matrix<Scalar, nq, nq> Minv = model.results.M.ldlt().solve(b);
         model.results.Minv                 = Minv;
         Eigen::Matrix<Scalar, 1, 1> V(model.results.V);
+        // Compute the total energy
         Eigen::Matrix<Scalar, 1, 1> H = 0.5 * p.transpose() * Minv * p + V;
         return H;
     }
@@ -303,7 +306,6 @@ namespace RML {
 
         Eigen::Matrix<Scalar, 1, nq> dH_dq =
             autodiff::jacobian(hamiltonian<autodiff::real, nq>, wrt(q_ad), at(model_ad, q_ad, p_ad), H_ad);
-
         Eigen::Matrix<Scalar, 1, np> dH_dp = (model_ad.results.Minv * p_ad).template cast<Scalar>();
 
         // Create the interconnection matrix
