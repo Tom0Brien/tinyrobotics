@@ -36,7 +36,7 @@ set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt tinyxml2::tinyxml2)
 
 # Source files
 
-set(DIR_SRC src)
+set(DIR_SRC examples)
 set(DIR_TEST_SRC test/src)
 
 # Application
@@ -59,7 +59,7 @@ if(SRC_LIB)
 endif()
 
 # Application
-add_executable(${TARGET_BIN} src/main.cpp)
+add_executable(${TARGET_BIN} examples/main.cpp)
 if(SRC_LIB)
   target_link_libraries(${TARGET_BIN} ${TARGET_LIB})
 endif()
