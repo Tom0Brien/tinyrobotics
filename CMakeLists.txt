@@ -24,8 +24,11 @@ find_package(autodiff REQUIRED)
 find_package(ifopt REQUIRED)
 find_package(TinyXML2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
+find_package(matplotlib_cpp REQUIRED)
+find_package(PythonLibs REQUIRED)
 
-include_directories(${EIGEN3_INCLUDE_DIR} ${TinyXML2_INCLUDE_DIRS})
+include_directories(${EIGEN3_INCLUDE_DIR} ${TinyXML2_INCLUDE_DIRS}
+                    ${PYTHON_INCLUDE_DIRS})
 
 # Target names
 set(TARGET_LIB common)
@@ -33,8 +36,14 @@ set(TARGET_BIN ${PROJECT_NAME})
 set(TARGET_TEST tests)
 
 # Libraries
-set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt tinyxml2::tinyxml2
-         nlohmann_json::nlohmann_json)
+set(LIBS
+    Eigen3::Eigen
+    autodiff::autodiff
+    ifopt::ifopt_ipopt
+    tinyxml2::tinyxml2
+    nlohmann_json::nlohmann_json
+    matplotlib_cpp::matplotlib_cpp
+    ${PYTHON_LIBRARIES})
 
 # Source files
 

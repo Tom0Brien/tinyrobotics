@@ -44,8 +44,7 @@ TEST_CASE("Test integration routine for simple model with euler integration", "[
     double dt = 0.1;
 
     // Run solver
-    std::vector<Eigen::Matrix<double, 8, 1>> x_history;
-    x_history = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::EULER());
+    auto results = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::EULER());
 
     // Print the result
     // std::cout << "xk = \n" << x_history[0] << std::endl;
@@ -67,13 +66,12 @@ TEST_CASE("Test integration routine for simple model with symplectic euler integ
     double dt = 0.01;
 
     // Run solver
-    std::vector<Eigen::Matrix<double, 8, 1>> x_history;
-    x_history = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::SYMPLECTIC_EULER());
+    auto results = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::SYMPLECTIC_EULER());
 
     // Print the result
     // std::cout << "xk = \n" << x_history[0] << std::endl;
     // std::cout << "xk = \n" << x_history[50] << std::endl;
     // std::cout << "xk = \n" << x_history[1000] << std::endl;
     // Save the results
-    RML::save_history(robot_model, x_history);
+    RML::save_history(robot_model, results.x_history);
 }

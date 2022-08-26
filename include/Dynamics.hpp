@@ -290,10 +290,10 @@ namespace RML {
      * @param u The input vector.
      */
     template <typename Scalar, int nq, int np, int ni>
-    void hamiltonian_dynamics(Model<Scalar>& model,
-                              const Eigen::Matrix<Scalar, nq, 1>& q,
-                              const Eigen::Matrix<Scalar, np, 1>& p,
-                              const Eigen::Matrix<Scalar, ni, 1>& u) {
+    Eigen::Matrix<Scalar, nq + np, 1> hamiltonian_dynamics(Model<Scalar>& model,
+                                                           const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                           const Eigen::Matrix<Scalar, np, 1>& p,
+                                                           const Eigen::Matrix<Scalar, ni, 1>& u) {
         // Number of states
         const int nx = nq + np;
         // Cast to autodiff type for automatic differentiation
@@ -326,6 +326,7 @@ namespace RML {
 
         // Store the result
         model.results.dx_dt = dx_dt;
+        return dx_dt;
     }
 
 }  // namespace RML

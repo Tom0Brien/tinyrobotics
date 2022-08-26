@@ -7,6 +7,7 @@
 
 #include "Dynamics.hpp"
 #include "Model.hpp"
+#include "matplotlibcpp.h"
 
 namespace RML {
 
@@ -14,9 +15,16 @@ namespace RML {
     namespace IntegrationMethod {
         struct EULER {};
         struct SYMPLECTIC_EULER {};
+        struct RK4 {};
     };  // namespace IntegrationMethod
 
-    // enum struct IntegrationMethod { EULER, SYMPLECTIC_EULER };
+    // @brief Struct for solver results
+    template <typename Scalar, int nq, int np, int ni>
+    struct SolverResults {
+        std::vector<Eigen::Matrix<Scalar, nq + np, 1>> x_history;
+        std::vector<Eigen::Matrix<Scalar, ni, 1>> u_history;
+        std::vector<Scalar> time;
+    };
 
     /**
      * @brief Perform a euler integration step.
@@ -88,6 +96,43 @@ namespace RML {
     }
 
     /**
+     * @brief Perform a runge-kutta 4th order integration step.
+     * @param model The robot model.
+     * @param qkm1 The previous joint configuration.
+     * @param pkm1 The previous momentum.
+     * @param dt The time step.
+     * @return The next time steps configuration and momentum [qk; pk].
+     */
+    template <typename Scalar, int nq, int np, int ni>
+    Eigen::Matrix<Scalar, nq + np, 1> integration_step(Model<Scalar>& model,
+                                                       const Eigen::Matrix<Scalar, nq, 1>& qkm1,
+                                                       const Eigen::Matrix<Scalar, np, 1>& pkm1,
+                                                       const Eigen::Matrix<Scalar, ni, 1>& ukm1,
+                                                       const float& dt,
+                                                       const IntegrationMethod::RK4&) {
+        Eigen::Matrix<Scalar, nq + np, 1> k1, k2, k3, k4, xk;
+
+        // Compute the mass matrix, which can be used for q update
+        k1 = hamiltonian_dynamics(model, qkm1, pkm1, ukm1);
+        k2 = hamiltonian_dynamics(model,
+                                  Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k1.head(nq)),
+                                  Eigen::Matrix<Scalar, nq, 1>(pkm1 + 0.5 * dt * k1.tail(np)),
+                                  ukm1);
+        k3 = hamiltonian_dynamics(model,
+                                  Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k2.head(nq)),
+                                  Eigen::Matrix<Scalar, np, 1>(pkm1 + 0.5 * dt * k2.tail(np)),
+                                  ukm1);
+        k4 = hamiltonian_dynamics(model,
+                                  Eigen::Matrix<Scalar, nq, 1>(qkm1 + dt * k3.head(nq)),
+                                  Eigen::Matrix<Scalar, np, 1>(pkm1 + dt * k3.tail(np)),
+                                  ukm1);
+        // Store the new state
+        xk << qkm1 + dt / 6 * (k1.head(nq) + 2 * k2.head(nq) + 2 * k3.head(nq) + k4.head(nq)),
+            pkm1 + dt / 6 * (k1.tail(np) + 2 * k2.tail(np) + 2 * k3.tail(np) + k4.tail(np));
+        return xk;
+    }
+
+    /**
      * @brief Save the history of the simulation output as a json file for urdf-visualizer.
      * @param model The robot model.
      * @param x_history The simulation history.
@@ -120,15 +165,15 @@ namespace RML {
      * @return A vector of states of the robot integrated over the time span.
      */
     template <typename Scalar, int nq, int np, int ni, typename... Args>
-    std::vector<Eigen::Matrix<Scalar, nq + np, 1>> solver(Model<Scalar>& model,
-                                                          Eigen::Matrix<Scalar, nq, 1> qk,
-                                                          Eigen::Matrix<Scalar, np, 1> pk,
-                                                          Eigen::Matrix<Scalar, ni, 1> u,
-                                                          const Eigen::Matrix<Scalar, 2, 1>& tspan,
-                                                          const float& dt,
-                                                          const Args&... params) {
-        // Create a vector of states for the robot dynamics integrated over the time span.
-        std::vector<Eigen::Matrix<Scalar, nq + np, 1>> x_history;
+    SolverResults<Scalar, nq, np, ni> solver(Model<Scalar>& model,
+                                             Eigen::Matrix<Scalar, nq, 1> qk,
+                                             Eigen::Matrix<Scalar, np, 1> pk,
+                                             Eigen::Matrix<Scalar, ni, 1> u,
+                                             const Eigen::Matrix<Scalar, 2, 1>& tspan,
+                                             const float& dt,
+                                             const Args&... params) {
+        // Create a struct for solver results
+        SolverResults<Scalar, nq, np, ni> results;
 
         // Ensure that the time span is valid
         if (tspan(0) >= tspan(1)) {
@@ -144,16 +189,80 @@ namespace RML {
         for (int k = 0; k < n_steps; k++) {
             // Compute the current time
             const float t = tspan(0) + k * dt;
+            results.time.push_back(t);
             // TODO: Compute the control input
             // u = controller(model,qk,pk,t);
+            results.u_history.push_back(u);
             // Perform the integration step
-            x_history.push_back(integration_step(model, qk, pk, u, dt, params...));
+            results.x_history.push_back(integration_step(model, qk, pk, u, dt, params...));
             // Update the initial state for the next integration step
-            qk = x_history.back().head(nq);
-            pk = x_history.back().tail(np);
+            qk = results.x_history.back().head(nq);
+            pk = results.x_history.back().tail(np);
         }
-        return x_history;
+        return results;
     }
+
+
+    /**
+     * @brief Plot the results of a simulation.
+     * @param results The results of the simulation.
+     */
+    template <typename Scalar, int nq, int np, int ni>
+    void plot_results(const SolverResults<Scalar, nq, np, ni>& results) {
+        // Plot the generalised coordinates against time
+        for (int i = 0; i < nq; i++) {
+            std::vector<Scalar> x;
+            // Add the results of the states to the vector x
+            for (int j = 0; j < results.x_history.size(); j++) {
+                x.push_back(results.x_history[j](i));
+            }
+            // Plot the results
+            matplotlibcpp::suptitle("Simulation Results");
+            matplotlibcpp::subplot2grid(nq, 3, i, 0);
+            matplotlibcpp::plot(results.time, x);
+            matplotlibcpp::title("Generalised Coordinate q" + std::to_string(i));
+            matplotlibcpp::xlabel("Time [s]");
+            matplotlibcpp::ylabel("q" + std::to_string(i));
+            matplotlibcpp::grid(true);
+            matplotlibcpp::show(false);
+        }
+
+        // Plot the generalised momentum against time
+        for (int i = 0; i < np; i++) {
+            std::vector<Scalar> x;
+            // Add the results of the states to the vector x
+            for (int j = 0; j < results.x_history.size(); j++) {
+                x.push_back(results.x_history[j](nq + i));
+            }
+            // Plot the results
+            matplotlibcpp::subplot2grid(nq, 3, i, 1);
+            matplotlibcpp::plot(results.time, x);
+            matplotlibcpp::title("Generalised Momentum q" + std::to_string(i));
+            matplotlibcpp::xlabel("Time [s]");
+            matplotlibcpp::ylabel("p" + std::to_string(i));
+            matplotlibcpp::grid(true);
+            matplotlibcpp::show(false);
+        }
+
+        // Plot the inputs against time
+        for (int i = 0; i < ni; i++) {
+            std::vector<Scalar> u;
+            // Add the results of the states to the vector x2
+            for (int j = 0; j < results.u_history.size(); j++) {
+                u.push_back(results.u_history[j](i));
+            }
+            // Plot the results
+            matplotlibcpp::subplot2grid(nq, 3, i, 2);
+            matplotlibcpp::plot(results.time, u);
+            matplotlibcpp::title("Input u" + std::to_string(i));
+            matplotlibcpp::xlabel("Time [s]");
+            matplotlibcpp::ylabel("u" + std::to_string(i));
+            matplotlibcpp::grid(true);
+            matplotlibcpp::show(false);
+        }
+        matplotlibcpp::show(true);
+    }
+
 }  // namespace RML
 
 
