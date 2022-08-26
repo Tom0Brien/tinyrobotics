@@ -5,6 +5,7 @@
 #include <cstdlib>
 // #include <filesystem>
 #include <iostream>
+#include <nlohmann/json.hpp>
 #include <string>
 
 #include "../include/Dynamics.hpp"
@@ -20,32 +21,28 @@ int main(int argc, char* argv[]) {
     using std::chrono::milliseconds;
 
     // Create a robot model
-    std::string path_to_urdf = "../data/urdfs/test_compass_gait_floating_hip.urdf";
+    std::string path_to_urdf = "../data/urdfs/panda_arm.urdf";
     auto robot_model         = RML::model_from_urdf<double>(path_to_urdf);
 
     // Show details of the robot model
     robot_model.show_details();
 
-    // Create a random configuration
-    Eigen::Matrix<double, 8, 1> q0 = robot_model.home_configuration<8>();
-    // Compute the mass matrix
-    RML::mass_matrix(robot_model, q0);
+    Eigen::Matrix<double, 7, 1> q0 = robot_model.home_configuration<7>();
+    Eigen::Matrix<double, 7, 1> p0 = Eigen::Matrix<double, 7, 1>::Zero();
+    // p0 << 0, 1, 0, 0;
+    Eigen::Matrix<double, 7, 1> u0 = Eigen::Matrix<double, 7, 1>::Zero();
+    Eigen::Matrix<double, 2, 1> tspan;
+    tspan << 0.0, 10.0;
+    double dt = 0.1;
 
-    // Print mass matrix
-    std::cout << "Mass Matrix:" << std::endl;
-    std::cout << robot_model.results.M << std::endl;
+    // Run solver
+    std::vector<Eigen::Matrix<double, 14, 1>> x_history;
+    x_history = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::EULER());
 
-    Eigen::Matrix<double, 8, 1> p0 = Eigen::Matrix<double, 8, 1>::Zero();
-    Eigen::Matrix<double, 8, 1> u0 = Eigen::Matrix<double, 8, 1>::Zero();
-    double dt                      = 0.1;
+    std::cout << "xk = \n" << x_history[50] << std::endl;
 
-    // Run a single step of euler integration
-    Eigen::Matrix<double, 8, 1> result;
-    RML::hamiltonian_dynamics(robot_model, q0, p0, u0);
-
-    // // Print the result
-    std::cout << "dxdt = \n" << robot_model.results.dx_dt << std::endl;
-
+    // Save the results
+    RML::save_history(robot_model, x_history);
 
     return EXIT_SUCCESS;
 }

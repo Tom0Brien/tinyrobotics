@@ -23,6 +23,7 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(autodiff REQUIRED)
 find_package(ifopt REQUIRED)
 find_package(TinyXML2 REQUIRED)
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 include_directories(${EIGEN3_INCLUDE_DIR} ${TinyXML2_INCLUDE_DIRS})
 
@@ -32,7 +33,8 @@ set(TARGET_BIN ${PROJECT_NAME})
 set(TARGET_TEST tests)
 
 # Libraries
-set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt tinyxml2::tinyxml2)
+set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt tinyxml2::tinyxml2
+         nlohmann_json::nlohmann_json)
 
 # Source files
 

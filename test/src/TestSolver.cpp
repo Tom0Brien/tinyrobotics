@@ -74,4 +74,6 @@ TEST_CASE("Test integration routine for simple model with symplectic euler integ
     // std::cout << "xk = \n" << x_history[0] << std::endl;
     // std::cout << "xk = \n" << x_history[50] << std::endl;
     // std::cout << "xk = \n" << x_history[1000] << std::endl;
+    // Save the results
+    RML::save_history(robot_model, x_history);
 }

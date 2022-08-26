@@ -3,6 +3,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <nlohmann/json.hpp>
 
 #include "Dynamics.hpp"
 #include "Model.hpp"
@@ -85,6 +86,28 @@ namespace RML {
         xk << qk, pk;
         return xk;
     }
+
+    /**
+     * @brief Save the history of the simulation output as a json file for urdf-visualizer.
+     * @param model The robot model.
+     * @param x_history The simulation history.
+     */
+    template <typename Scalar, int nx>
+    void save_history(Model<Scalar>& model, std::vector<Eigen::Matrix<Scalar, nx, 1>> x_history) {
+        nlohmann::json json_q_history;
+        // Loop through the simulation history and save the q values with joint names
+        for (int i = 0; i < x_history.size(); i++) {
+            for (auto joint : model.joints) {
+                if (joint.q_idx != -1) {
+                    json_q_history[std::to_string(i)][joint.name] = {x_history[i](joint.q_idx)};
+                }
+            }
+        }
+        // Write the json result to a file
+        std::ofstream o("test_joint_set.json");
+        o << std::setw(4) << json_q_history << std::endl;
+    }
+
 
     /**
      * @brief Solve ODE system of the form dx/dt = f(t,x)
