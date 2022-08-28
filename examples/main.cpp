@@ -28,9 +28,9 @@ int main(int argc, char* argv[]) {
     robot_model.show_details();
 
     Eigen::Matrix<double, 2, 1> q0;
-    q0 << 1, 2;
-    Eigen::Matrix<double, 2, 1> p0;
-    p0 << 3, 4;
+    q0 << 0, 0;
+    Eigen::Matrix<double, 2, 1> p0 = Eigen::Matrix<double, 2, 1>::Ones();
+    // p0 << 0, 1, 0, 0;
     Eigen::Matrix<double, 2, 1> u0 = Eigen::Matrix<double, 2, 1>::Zero();
     Eigen::Matrix<double, 2, 1> tspan;
     tspan << 0.0, 10.0;
