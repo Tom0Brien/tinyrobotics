@@ -31,7 +31,7 @@ namespace RML {
         /// @brief Joint acceleration.
         Eigen::Matrix<Scalar, Eigen::Dynamic, 1> ddq;
 
-        /// @brief Momentum
+        /// @brief Joint Momentum
         Eigen::Matrix<Scalar, Eigen::Dynamic, 1> p;
 
         /// @brief Joint torque.

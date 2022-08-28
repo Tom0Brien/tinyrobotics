@@ -25,9 +25,6 @@ TEST_CASE("Test single euler integration step for simple model", "[Dynamics]") {
     // Run a single step of euler integration
     Eigen::Matrix<double, 8, 1> result;
     result = RML::integration_step(robot_model, q0, p0, u0, dt, RML::IntegrationMethod::EULER());
-
-    // Print the result
-    std::cout << "xk = \n" << result << std::endl;
 }
 
 TEST_CASE("Test integration routine for simple model with euler integration", "[Dynamics]") {
@@ -46,10 +43,7 @@ TEST_CASE("Test integration routine for simple model with euler integration", "[
     // Run solver
     auto results = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::EULER());
 
-    // Print the result
-    // std::cout << "xk = \n" << x_history[0] << std::endl;
-    // std::cout << "xk = \n" << x_history[50] << std::endl;
-    // std::cout << "xk = \n" << x_history[100] << std::endl;
+    // TODO: Verify results
 }
 
 TEST_CASE("Test integration routine for simple model with symplectic euler integration", "[Dynamics]") {
@@ -68,10 +62,5 @@ TEST_CASE("Test integration routine for simple model with symplectic euler integ
     // Run solver
     auto results = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::SYMPLECTIC_EULER());
 
-    // Print the result
-    // std::cout << "xk = \n" << x_history[0] << std::endl;
-    // std::cout << "xk = \n" << x_history[50] << std::endl;
-    // std::cout << "xk = \n" << x_history[1000] << std::endl;
-    // Save the results
-    RML::save_history(robot_model, results.x_history);
+    // TODO: Verify results
 }

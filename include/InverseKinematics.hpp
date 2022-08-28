@@ -5,15 +5,10 @@
 #include <Eigen/Geometry>
 #include <autodiff/forward/dual.hpp>
 #include <autodiff/forward/dual/eigen.hpp>
-#include <fstream>
 #include <ifopt/ipopt_solver.h>
 #include <ifopt/problem.h>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <sstream>
 
-#include "ForwardKinematics.hpp"
+#include "Kinematics.hpp"
 #include "Model.hpp"
 
 namespace RML {
@@ -265,7 +260,6 @@ namespace RML {
 
         // Cast model to autodiff type
         RML::Model<autodiff::dual> autodiff_model = model.template cast<autodiff::dual>();
-
         // 1. Define the problem
         ifopt::Problem nlp;
         nlp.AddVariableSet(std::make_shared<IKVariables<double, nq>>("configuration_vector", model, q0));
@@ -276,7 +270,6 @@ namespace RML {
                                                                             target_link_name,
                                                                             desired_pose,
                                                                             q0));
-
         // 2. Choose solver and options
         ifopt::IpoptSolver ipopt;
         ipopt.SetOption("mu_strategy", "adaptive");
@@ -285,7 +278,6 @@ namespace RML {
         ipopt.SetOption("tol", 1e-3);
         ipopt.SetOption("print_level", 0);
         ipopt.SetOption("sb", "yes");
-
         // 3. Solve
         ipopt.Solve(nlp);
         Eigen::Matrix<Scalar, nq, 1> q = nlp.GetOptVariables()->GetValues();

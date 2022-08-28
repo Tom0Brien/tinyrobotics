@@ -5,11 +5,6 @@
 #include <Eigen/Geometry>
 #include <autodiff/forward/real.hpp>
 #include <autodiff/forward/real/eigen.hpp>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <sstream>
 
 #include "Math.hpp"
 #include "Model.hpp"
@@ -172,7 +167,7 @@ namespace RML {
                                                                       const int source_link_idx,
                                                                       const int target_link_idx) {
         // Assert the configuration vector is valid
-        // assert(q.size() == model.n_q); TODO: FIX THIS FOR AUTODIFF
+        assert(q.size() == model.n_q);
 
         // Compute forward kinematics from source {b} to target {t}
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = forward_kinematics(model, q, source_link_idx, target_link_idx);
@@ -237,37 +232,6 @@ namespace RML {
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
         return Hst.linear();
-    }
-
-    /**
-     * @brief Computes translation component of the geometric Jacobian between two links Jv.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
-     * @param source_link_name {s} The link from which the transform is computed.
-     * @param target_link_name {t} The link to which the transform is computed.
-     * @return The translation component of the geometric Jacobian between two links.
-     */
-    template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, nq> Jv(Model<Scalar>& model,
-                                    Eigen::Matrix<Scalar, nq, 1>& q,
-                                    std::string& source_link_name,
-                                    std::string& target_link_name) {
-
-        // Assert the configuration vector is valid
-        assert(q.size() == model.n_q);
-
-        // Cast q and model to autodiff type
-        Eigen::Matrix<autodiff::real, nq, 1> q_real(q);  // the input vector q
-        RML::Model<autodiff::real> autodiff_model;
-        autodiff_model = model.template cast<autodiff::real>();
-        // The output vector F = f(x) evaluated together with Jacobian matrix below
-        Eigen::Matrix<autodiff::real, 3, 1> F;
-        // Evaluate the output vector F and the Jacobian matrix dF/dx
-        Eigen::MatrixXd Jv = jacobian(position<autodiff::real, nq>,
-                                      wrt(q_real),
-                                      at(autodiff_model, q_real, source_link_name, target_link_name),
-                                      F);
-        return Jv;
     }
 
     /**

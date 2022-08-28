@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     double dt = 0.01;
 
     // Compute forward dynamics
-    RML::hamiltonian_dynamics(robot_model, q0, p0, u0);
+    RML::forward_dynamics(robot_model, q0, p0, u0);
     std::cout << "Forward dynamics computed" << std::endl;
     std::cout << "dx_dt: " << std::endl << robot_model.results.dx_dt << std::endl;
     RML::mass_matrix(robot_model, q0);
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     RML::save_history(robot_model, results.x_history);
 
     // Plot the results
-    RML::plot_results(results);
+    // RML::plot_results(results);
 
     return EXIT_SUCCESS;
 }

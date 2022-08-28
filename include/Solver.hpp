@@ -46,7 +46,7 @@ namespace RML {
         Eigen::Matrix<Scalar, nq + np, 1> xk;
 
         // Compute the dynamics of the system
-        hamiltonian_dynamics(model, qkm1, pkm1, ukm1);
+        forward_dynamics(model, qkm1, pkm1, ukm1);
 
         // Perform the q update: qk = qkm1 + dt*dqm1dt
         qk = qkm1 + dt * model.results.dx_dt.head(nq);
@@ -85,7 +85,7 @@ namespace RML {
         qk = qkm1 + dt * (Mkm1.inverse() * pkm1);
 
         // Compute the dynamics of the system with qk and pkm1 for p update
-        hamiltonian_dynamics(model, qk, pkm1, ukm1);
+        forward_dynamics(model, qk, pkm1, ukm1);
 
         // Perform the p update: pk = pkm1 + dt*dpm1dt
         pk = pkm1 + dt * model.results.dx_dt.tail(np);
@@ -113,19 +113,19 @@ namespace RML {
         Eigen::Matrix<Scalar, nq + np, 1> k1, k2, k3, k4, xk;
 
         // Compute the mass matrix, which can be used for q update
-        k1 = hamiltonian_dynamics(model, qkm1, pkm1, ukm1);
-        k2 = hamiltonian_dynamics(model,
-                                  Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k1.head(nq)),
-                                  Eigen::Matrix<Scalar, nq, 1>(pkm1 + 0.5 * dt * k1.tail(np)),
-                                  ukm1);
-        k3 = hamiltonian_dynamics(model,
-                                  Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k2.head(nq)),
-                                  Eigen::Matrix<Scalar, np, 1>(pkm1 + 0.5 * dt * k2.tail(np)),
-                                  ukm1);
-        k4 = hamiltonian_dynamics(model,
-                                  Eigen::Matrix<Scalar, nq, 1>(qkm1 + dt * k3.head(nq)),
-                                  Eigen::Matrix<Scalar, np, 1>(pkm1 + dt * k3.tail(np)),
-                                  ukm1);
+        k1 = forward_dynamics(model, qkm1, pkm1, ukm1);
+        k2 = forward_dynamics(model,
+                              Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k1.head(nq)),
+                              Eigen::Matrix<Scalar, nq, 1>(pkm1 + 0.5 * dt * k1.tail(np)),
+                              ukm1);
+        k3 = forward_dynamics(model,
+                              Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k2.head(nq)),
+                              Eigen::Matrix<Scalar, np, 1>(pkm1 + 0.5 * dt * k2.tail(np)),
+                              ukm1);
+        k4 = forward_dynamics(model,
+                              Eigen::Matrix<Scalar, nq, 1>(qkm1 + dt * k3.head(nq)),
+                              Eigen::Matrix<Scalar, np, 1>(pkm1 + dt * k3.tail(np)),
+                              ukm1);
         // Store the new state
         xk << qkm1 + dt / 6 * (k1.head(nq) + 2 * k2.head(nq) + 2 * k3.head(nq) + k4.head(nq)),
             pkm1 + dt / 6 * (k1.tail(np) + 2 * k2.tail(np) + 2 * k3.tail(np) + k4.tail(np));
