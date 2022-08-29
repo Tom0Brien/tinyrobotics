@@ -30,6 +30,23 @@ namespace RML {
         return S;
     }
 
+    /**
+     * @brief Computes an orthonormal basis for the null space of a matrix.
+     * @param A The matrix
+     * @return The orthonormal basis for the null space of A
+     */
+    template <typename Scalar>
+    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> null(
+        const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& A) {
+        Eigen::CompleteOrthogonalDecomposition<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> cod;
+        cod.compute(A);
+        // Find URV^T
+        Eigen::MatrixXd V          = cod.matrixZ().transpose();
+        Eigen::MatrixXd null_space = V.block(0, cod.rank(), V.rows(), V.cols() - cod.rank());
+        Eigen::MatrixXd P          = cod.colsPermutation();
+        null_space                 = P * null_space;
+        return null_space;
+    }
 
 }  // namespace RML
 

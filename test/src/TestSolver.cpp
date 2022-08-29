@@ -11,7 +11,7 @@
 #include "catch2/catch.hpp"
 
 
-TEST_CASE("Test single euler integration step for simple model", "[Dynamics]") {
+TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
     // Create a robot model
     auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
@@ -27,7 +27,7 @@ TEST_CASE("Test single euler integration step for simple model", "[Dynamics]") {
     result = RML::integration_step(robot_model, q0, p0, u0, dt, RML::IntegrationMethod::EULER());
 }
 
-TEST_CASE("Test integration routine for simple model with euler integration", "[Dynamics]") {
+TEST_CASE("Test integration routine for simple model with euler integration", "[Solver]") {
     // Create a robot model
     auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
@@ -46,7 +46,7 @@ TEST_CASE("Test integration routine for simple model with euler integration", "[
     // TODO: Verify results
 }
 
-TEST_CASE("Test integration routine for simple model with symplectic euler integration", "[Dynamics]") {
+TEST_CASE("Test integration routine for simple model with symplectic euler integration", "[Solver]") {
     // Create a robot model
     auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
 
