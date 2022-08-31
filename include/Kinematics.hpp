@@ -244,7 +244,7 @@ namespace RML {
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar>& model,
                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                    std::string& target_link_name) {
+                                                    const std::string& target_link_name) {
         // Initialize the geometric jabobian matrix with zeros
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
@@ -282,6 +282,36 @@ namespace RML {
     }
 
     /**
+     * @brief Computes the translational component of geometric Jacobian between the base and the target link
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param target_link_name {n} The link to which the transform is computed.
+     * @return The geometric jacobian between the base and the target link.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, 3, nq> Jv(Model<Scalar>& model,
+                                    const Eigen::Matrix<Scalar, nq, 1>& q,
+                                    const std::string& target_link_name) {
+        Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q, target_link_name);
+        return J.block(0, 0, 3, nq);
+    }
+
+    /**
+     * @brief Computes the rotational component of geometric Jacobian between the base and the target link
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param target_link_name {n} The link to which the transform is computed.
+     * @return The geometric jacobian between the base and the target link.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, 3, nq> Jw(Model<Scalar>& model,
+                                    const Eigen::Matrix<Scalar, nq, 1>& q,
+                                    const std::string& target_link_name) {
+        Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q, target_link_name);
+        return J.block(3, 0, 3, nq);
+    }
+
+    /**
      * @brief Computes the geometric Jacobian between the base and the target link centre of mass
      * @param model The robot model.
      * @param q The joint configuration of the robot.
@@ -291,7 +321,7 @@ namespace RML {
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 6, nq> geometric_jacobian_com(Model<Scalar>& model,
                                                         const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                        std::string& target_link_name) {
+                                                        const std::string& target_link_name) {
         // Initialize the geometric jabobian matrix with zeros
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
@@ -340,7 +370,7 @@ namespace RML {
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 3, 1> centre_of_mass(Model<Scalar>& model,
                                                const Eigen::Matrix<Scalar, nq, 1>& q,
-                                               std::string& source_link_name) {
+                                               const std::string& source_link_name) {
 
         // Assert the configuration vector is valid
         assert(q.size() == model.n_q);
