@@ -38,14 +38,19 @@ namespace RML {
     template <typename Scalar>
     Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> null(
         const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& A) {
-        Eigen::CompleteOrthogonalDecomposition<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> cod;
-        cod.compute(A);
-        // Find URV^T
-        Eigen::MatrixXd V          = cod.matrixZ().transpose();
-        Eigen::MatrixXd null_space = V.block(0, cod.rank(), V.rows(), V.cols() - cod.rank());
-        Eigen::MatrixXd P          = cod.colsPermutation();
-        null_space                 = P * null_space;
-        return null_space;
+        // Faster method but gives different results to MATLAB's null function
+        // Eigen::CompleteOrthogonalDecomposition<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> cod;
+        // cod.compute(A);
+        // // Find URV^T
+        // Eigen::MatrixXd V          = cod.matrixZ().transpose();
+        // Eigen::MatrixXd null_space = V.block(0, cod.rank(), V.rows(), V.cols() - cod.rank());
+        // Eigen::MatrixXd P          = cod.colsPermutation();
+        // null_space                 = P * null_space;
+
+        // Results in same results as MATLAB's null function
+        Eigen::FullPivLU<Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>> lu(A);
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> A_null_space = lu.kernel();
+        return A_null_space;
     }
 
 }  // namespace RML

@@ -39,9 +39,11 @@ namespace RML {
 
         /// @brief Mass matrix.
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> M;
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mr;
 
         /// @brief Inverse mass matrix.
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Minv;
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mrinv;
 
         /// @brief Coriolis matrix.
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> C;
@@ -51,9 +53,17 @@ namespace RML {
 
         /// @brief Input mapping matrix.
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gp;
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gr;
 
         /// @brief Damping matrix.
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dp;
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dr;
+
+        /// @brief Constraint jacobian
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jc;
+
+        /// @brief Constraint jacobian left annihilator
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jcp;
 
         /// @brief The kinetic co-energy.
         Scalar T = 0;
@@ -69,6 +79,12 @@ namespace RML {
 
         /// @brief Vector of forward kinematics results.
         std::vector<Eigen::Transform<Scalar, 3, Eigen::Affine>> FK = {};
+
+        /// @brief Number of reduced momentum states
+        int nr = 0;
+
+        /// @brief Vector of redundant momentum states
+        int nz = 0;
 
         /**
          * @brief Resize all matrices to the given size.
