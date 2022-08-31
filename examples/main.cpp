@@ -83,11 +83,16 @@ int main(int argc, char* argv[]) {
     // Compute hamiltonian with active constraints
     std::vector<std::string> active_constraints;
     active_constraints.push_back("left_foot");
-    RML::hamiltonian2(model, q0, p0, active_constraints);
+
+    // RML::hamiltonian2(model, q0, p0, active_constraints);
 
     // Compute forward dynamics with active constraints
+    auto start                       = high_resolution_clock::now();
     Eigen::Matrix<double, 8, 1> dxdt = RML::forward_dynamics(model, q0, p0, u0, active_constraints);
-
+    std::cout << "dxdt: " << std::endl << dxdt << std::endl;
+    auto end   = high_resolution_clock::now();
+    auto total = duration_cast<microseconds>(end - start);
+    std::cout << "Time: " << total.count() << " microseconds" << std::endl;
     // // Run solver
     // auto results = RML::solver(model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::RK4());
 

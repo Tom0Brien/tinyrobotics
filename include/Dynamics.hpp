@@ -63,13 +63,11 @@ namespace RML {
     void kinetic_energy(Model<Scalar>& model,
                         const Eigen::Matrix<Scalar, nq, 1>& q,
                         const Eigen::Matrix<Scalar, nq, 1>& dq) {
-        // Update the model with the current joint configuration and velocity
-        model.results.q  = q;
-        model.results.dq = dq;
+
         // Compute the mass matrix
         mass_matrix<Scalar, nq>(model, q);
         // Compute the kinetic energy
-        model.results.T = 0.5 * model.results.dq.transpose() * model.results.M * model.results.dq;
+        model.results.T = 0.5 * dq.transpose() * model.results.M * dq;
     }
 
     /**
@@ -79,8 +77,6 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     void potential_energy(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
-        // Update the model with the current joint configuration
-        model.results.q = q;
         // Reset the potential energy
         model.results.V = 0;
         // Compute the potential energy
@@ -103,9 +99,6 @@ namespace RML {
     Eigen::Matrix<Scalar, 1, 1> hamiltonian(Model<Scalar>& model,
                                             const Eigen::Matrix<Scalar, nq, 1>& q,
                                             const Eigen::Matrix<Scalar, nq, 1>& p) {
-        // Update the model with the current joint configuration and velocity
-        model.results.q = q;
-        model.results.p = p;
         // Compute the mass matrix and potential energy
         mass_matrix<Scalar, nq>(model, q);
 
@@ -178,16 +171,12 @@ namespace RML {
      * @param active_constraints The active set of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 1, 1> hamiltonian2(Model<Scalar>& model,
-                                             const Eigen::Matrix<Scalar, nq, 1>& q,
-                                             const Eigen::Matrix<Scalar, nq, 1>& p,
-                                             const std::vector<std::string>& active_constraints) {
-        // Update the model with the current joint configuration and velocity
-        model.results.q = q;
-        model.results.p = p;
-        // Compute the mass matrix and potential energy
+    Eigen::Matrix<Scalar, 1, 1> hamiltonian_with_constraints(Model<Scalar>& model,
+                                                             const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                             const Eigen::Matrix<Scalar, nq, 1>& p,
+                                                             const std::vector<std::string>& active_constraints) {
+        // Compute the mass matrix and potential energy for unconstrained dynamics
         mass_matrix<Scalar, nq>(model, q);
-
 
         // Compute the jacobian of the active constraints
         Eigen::Matrix<Scalar, Eigen::Dynamic, nq> Jc;
@@ -208,48 +197,36 @@ namespace RML {
         model.results.Jcp = Jcp;
 
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gr = Jcp.transpose() * model.results.Gp;
-        std::cout << "Gr.rows(): " << Gr.rows() << std::endl;
         model.results.Gr.resize(Gr.rows(), Gr.cols());
         model.results.Gr = Gr;
-        std::cout << "Gr: " << std::endl << Gr << std::endl;
 
         model.results.Dp.setZero();
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dr = Jcp.transpose() * model.results.Dp * Jcp;
         model.results.Dr.resize(Dr.rows(), Dr.cols());
         model.results.Dr = Dr;
-        std::cout << "Dr: " << std::endl << Dr << std::endl;
-
-        // auto Cr = Eigen::Matrix<Scalar, 2, 2>::Zero();
-        // std::cout << "Cr: " << std::endl << Cr << std::endl;
 
         auto Mr = Jcp.transpose() * model.results.M * Jcp;
         model.results.Mr.resize(Mr.rows(), Mr.cols());
         model.results.Mr = Mr;
-        std::cout << "Mr: " << std::endl << Mr << std::endl;
 
-        const int nz     = model.results.Gp.rows() - Gr.rows();
-        const int nr     = Mr.rows();
-        model.results.nz = nz;
-        model.results.nr = nr;
-        std::cout << "nz: " << nr << std::endl;
-        std::cout << "nr: " << nr << std::endl;
+        model.results.nz = model.results.Gp.rows() - Gr.rows();
+        model.results.nr = Mr.rows();
 
         // Compute the inverse of the mass matrix
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> b;
-        b.resize(nr, nr);
+        b.resize(model.results.nr, model.results.nr);
         b.setIdentity();
-
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mrinv = Mr.ldlt().solve(b);
-        model.results.Mrinv.resize(nr, nr);
+        model.results.Mrinv.resize(model.results.nr, model.results.nr);
         model.results.Mrinv = Mrinv;
 
-        // // Compute the kinetic energy
-        // auto pr         = p.tail(nr);
-        // model.results.T = Scalar(0.5 * pr.transpose() * Mrinv * pr);
+        // Compute the kinetic energy
+        auto pr         = p.tail(model.results.nr);
+        model.results.T = Scalar(0.5 * pr.transpose() * Mrinv * pr);
 
         // Compute the total energy
         Eigen::Matrix<Scalar, 1, 1> H = Eigen::Matrix<Scalar, 1, 1>(model.results.T + model.results.V);
-        std::cout << "H: " << H << std::endl;
+
         return H;
     }
 
@@ -268,48 +245,34 @@ namespace RML {
                                                        const Eigen::Matrix<Scalar, nq, 1>& p,
                                                        const Eigen::Matrix<Scalar, ni, 1>& u,
                                                        const std::vector<std::string>& active_constraints) {
-
-        // Number of states
-        const int nx = nq + nq;
         // Cast to autodiff type for automatic differentiation
-        Eigen::Matrix<autodiff::real, nq, 1> q_ad(q);  // the input vector q
-        Eigen::Matrix<autodiff::real, nq, 1> p_ad(p);  // the input vector p
+        Eigen::Matrix<autodiff::real, nq, 1> q_ad(q);
+        Eigen::Matrix<autodiff::real, nq, 1> p_ad(p);
         RML::Model<autodiff::real> model_ad = model.template cast<autodiff::real>();
 
         // Compute the jacobian of the hamiltonian wrt q and p
         Eigen::Matrix<autodiff::real, 1, 1> H_ad;
-
-        Eigen::Matrix<Scalar, 1, nq> dH_dq = autodiff::jacobian(hamiltonian2<autodiff::real, nq>,
+        Eigen::Matrix<Scalar, 1, nq> dH_dq = autodiff::jacobian(hamiltonian_with_constraints<autodiff::real, nq>,
                                                                 wrt(q_ad),
                                                                 at(model_ad, q_ad, p_ad, active_constraints),
                                                                 H_ad);
 
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> pr_ad = p_ad.tail(model.results.nr);
-        std::cout << "pr_ad: " << std::endl << pr_ad << std::endl;
-        std::cout << "model_ad.results.Mrinv: " << std::endl << model_ad.results.Mrinv << std::endl;
+        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> pr_ad = p_ad.tail(model_ad.results.nr);
         Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dH_dp = (model_ad.results.Mrinv * pr_ad).template cast<Scalar>();
-        std::cout << "dH_dp: " << std::endl << dH_dp << std::endl;
-        std::cout << "model_ad.results.Jcp: " << std::endl << model_ad.results.Jcp << std::endl;
 
-        std::cout << "Jcp: " << model_ad.results.Jcp << std::endl;
-
-
-        Eigen::Matrix<Scalar, nx, 1> dx_dt = Eigen::Matrix<Scalar, nx, 1>::Zero();
+        Eigen::Matrix<Scalar, nq + nq, 1> dx_dt = Eigen::Matrix<Scalar, nq + nq, 1>::Zero();
         // qdot
         dx_dt.block(0, 0, nq, 1) = (model_ad.results.Jcp * dH_dp).template cast<Scalar>();
-        // // // u (redundant coords)
 
-        // // // prdot
-
+        // prdot
         dx_dt.block(nq + model_ad.results.nz, 0, model_ad.results.nr, 1) =
             (-model_ad.results.Jcp.transpose() * dH_dq.transpose() - model_ad.results.Dr * dH_dp
              + model_ad.results.Gr * u)
                 .template cast<Scalar>();
 
-
         // Store the result
         model.results.dx_dt = dx_dt;
-        std::cout << "dx_dt: " << std::endl << dx_dt << std::endl;
+        // std::cout << "dx_dt: " << std::endl << dx_dt << std::endl;
         return dx_dt;
     }
 
@@ -372,7 +335,7 @@ namespace RML {
         M.setZero();
         auto stop     = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        std::cout << "Builindg M " << duration.count() << " microseconds" << std::endl;
+        // std::cout << "Builindg M " << duration.count() << " microseconds" << std::endl;
         for (int i = 0; i < Jp.size(); i++) {
             M(i, i) = Jp[i];
         }
