@@ -53,6 +53,42 @@ namespace RML {
         return A_null_space;
     }
 
+    /**
+     * @brief Computes the rotation matrix associated with rotation around the X-axis by theta
+     * @param theta The angle of rotation in radians
+     * @return The rotation matrix
+     */
+    template <typename Scalar>
+    Eigen::Matrix<Scalar, 3, 3> rotx(const Scalar& theta) {
+        Eigen::Matrix<Scalar, 3, 3> Rx;
+        Rx << 1, 0, 0, 0, cos(theta), -sin(theta), 0, sin(theta), cos(theta);
+        return Rx;
+    }
+
+    /**
+     * @brief Computes the rotation matrix associated with rotation around the Y-axis by theta
+     * @param theta The angle of rotation in radians
+     * @return The rotation matrix
+     */
+    template <typename Scalar>
+    Eigen::Matrix<Scalar, 3, 3> roty(const Scalar& theta) {
+        Eigen::Matrix<Scalar, 3, 3> Ry;
+        Ry << cos(theta), 0, sin(theta), 0, 1, 0, -sin(theta), 0, cos(theta);
+        return Ry;
+    }
+
+    /**
+     * @brief Computes the rotation matrix associated with rotation around the Z-axis by theta
+     * @param theta The angle of rotation in radians
+     * @return The rotation matrix
+     */
+    template <typename Scalar>
+    Eigen::Matrix<Scalar, 3, 3> rotz(const Scalar& theta) {
+        Eigen::Matrix<Scalar, 3, 3> Rz;
+        Rz << cos(theta), -sin(theta), 0, sin(theta), cos(theta), 0, 0, 0, 1;
+        return Rz;
+    }
+
 }  // namespace RML
 
 #endif
