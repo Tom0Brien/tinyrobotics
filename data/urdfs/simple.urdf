@@ -52,8 +52,8 @@
     <child link="ground"/>
     <axis xyz="0 0 1"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
 
@@ -85,8 +85,8 @@
     <child link="floating_base_x"/>
     <axis xyz="1 0 0"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
 
@@ -116,8 +116,8 @@
     <child link="floating_base_z"/>
     <axis xyz="0 0 1"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
   </joint>
@@ -155,8 +155,8 @@
     <child link="body" />
     <origin xyz="0 0 0"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
 
@@ -206,8 +206,8 @@
     <child link="left_leg"/>
     <axis xyz="0 -1 0"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
 
@@ -237,8 +237,8 @@
     <origin xyz="0 0 -1"/>
     <axis xyz="0 0 0"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
 
@@ -289,8 +289,8 @@
     <child link="right_leg"/>
     <axis xyz="0 -1 0"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
   </joint>
@@ -319,8 +319,8 @@
     <origin xyz="0 0 -1"/>
     <axis xyz="0 0 0"/>
     <limit
-      lower="-1.57"
-      upper="1.57"
+      lower="-100"
+      upper="100"
       effort="100"
       velocity="100" />
 
