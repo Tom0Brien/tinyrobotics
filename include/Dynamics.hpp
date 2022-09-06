@@ -18,17 +18,10 @@ namespace RML {
      * @param q The joint configuration of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
-        // Resize the results matices
-        if (model.data.M.rows() != nq) {
-            model.data.resize(nq);
-        }
-        // Update the model with the current joint configuration
-        model.data.q = q;
+    Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset the mass matrix and potential energy
         model.data.M.setZero();
         model.data.V = 0;
-
         Eigen::Matrix<Scalar, 6, 6> Mi;
         // Get the base link from the model
         auto base_link = model.links[model.base_link_idx];
@@ -60,7 +53,7 @@ namespace RML {
      * @param dq The joint velocity of the robot.
      */
     template <typename Scalar, int nq>
-    void kinetic_energy(Model<Scalar>& model,
+    void kinetic_energy(Model<Scalar, nq>& model,
                         const Eigen::Matrix<Scalar, nq, 1>& q,
                         const Eigen::Matrix<Scalar, nq, 1>& dq) {
 
@@ -76,7 +69,7 @@ namespace RML {
      * @param q The joint configuration of the robot.
      */
     template <typename Scalar, int nq>
-    void potential_energy(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+    void potential_energy(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset the potential energy
         model.data.V = 0;
         // Compute the potential energy
@@ -96,7 +89,7 @@ namespace RML {
      * @param p The joint velocity of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 1, 1> hamiltonian(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 1, 1> hamiltonian(Model<Scalar, nq>& model,
                                             const Eigen::Matrix<Scalar, nq, 1>& q,
                                             const Eigen::Matrix<Scalar, nq, 1>& p) {
         // Compute the mass matrix and potential energy
@@ -124,7 +117,7 @@ namespace RML {
      * @param u The input vector.
      */
     template <typename Scalar, int nq, int ni>
-    Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics_without_constraints(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics_without_constraints(Model<Scalar, nq>& model,
                                                                            const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                            const Eigen::Matrix<Scalar, nq, 1>& p,
                                                                            const Eigen::Matrix<Scalar, ni, 1>& u) {
@@ -133,13 +126,15 @@ namespace RML {
         // Cast to autodiff type for automatic differentiation
         Eigen::Matrix<autodiff::real, nq, 1> q_ad(q);  // the input vector q
         Eigen::Matrix<autodiff::real, nq, 1> p_ad(p);  // the input vector p
-        RML::Model<autodiff::real> model_ad = model.template cast<autodiff::real>();
+        auto model_ad = model.template cast<autodiff::real>();
 
         // Compute the jacobian of the hamiltonian wrt q and p
         Eigen::Matrix<autodiff::real, 1, 1> H_ad;
 
+
         Eigen::Matrix<Scalar, 1, nq> dH_dq =
             autodiff::jacobian(hamiltonian<autodiff::real, nq>, wrt(q_ad), at(model_ad, q_ad, p_ad), H_ad);
+
         Eigen::Matrix<Scalar, 1, nq> dH_dp = (model_ad.data.Minv * p_ad).template cast<Scalar>();
 
         // Create the interconnection and damping matrix
@@ -171,7 +166,7 @@ namespace RML {
      * @param active_constraints The active set of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 1, 1> hamiltonian_with_constraints(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 1, 1> hamiltonian_with_constraints(Model<Scalar, nq>& model,
                                                              const Eigen::Matrix<Scalar, nq, 1>& q,
                                                              const Eigen::Matrix<Scalar, nq, 1>& p,
                                                              const std::vector<std::string>& active_constraints) {
@@ -239,7 +234,7 @@ namespace RML {
      * @return The forward dynamics of the model.
      */
     template <typename Scalar, int nq, int ni>
-    Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics(Model<Scalar, nq>& model,
                                                        const Eigen::Matrix<Scalar, nq, 1>& q,
                                                        const Eigen::Matrix<Scalar, nq, 1>& p,
                                                        const Eigen::Matrix<Scalar, ni, 1>& u,
@@ -251,7 +246,7 @@ namespace RML {
         // Cast to autodiff type for automatic differentiation
         Eigen::Matrix<autodiff::real, nq, 1> q_ad(q);
         Eigen::Matrix<autodiff::real, nq, 1> p_ad(p);
-        RML::Model<autodiff::real> model_ad = model.template cast<autodiff::real>();
+        auto model_ad = model.template cast<autodiff::real>();
 
         // Compute the jacobian of the hamiltonian wrt q and p
         Eigen::Matrix<autodiff::real, 1, 1> H_ad;
@@ -288,7 +283,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, Eigen::Dynamic, 1> holonomic_constraints(
-        Model<Scalar>& model,
+        Model<Scalar, nq>& model,
         const Eigen::Matrix<Scalar, nq, 1>& q,
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& M,
         Scalar& V) {
@@ -356,7 +351,7 @@ namespace RML {
      * @return The mass matrix of the reduced system.
      */
     template <typename Scalar, int nq>
-    void holonomic_reduction(Model<Scalar>& model,
+    void holonomic_reduction(Model<Scalar, nq>& model,
                              Eigen::Matrix<Scalar, nq, 1>& q_real,
                              Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& M,
                              const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& dfcdqh) {
@@ -377,7 +372,7 @@ namespace RML {
      * @param q The joint configuration of the robot.
      */
     template <typename Scalar, int nq>
-    void compute_dynamics(Model<Scalar>& model,
+    void compute_dynamics(Model<Scalar, nq>& model,
                           const Eigen::Matrix<Scalar, nq, 1>& q,
                           Eigen::Matrix<Scalar, nq, nq>& Mh,
                           Eigen::Matrix<Scalar, nq, nq>& Ch,
@@ -390,7 +385,7 @@ namespace RML {
 
         // Cast to autodiff::real type
         Eigen::Matrix<autodiff::real, nq, 1> q_real(q);
-        RML::Model<autodiff::real> autodiff_model = model.template cast<autodiff::real>();
+        auto autodiff_model = model.template cast<autodiff::real>();
 
         // Compute the holonomic constraint vector and its jacobian
         Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> F;

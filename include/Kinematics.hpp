@@ -19,7 +19,7 @@ namespace RML {
      * @return The transform between the base and the target link
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const int& target_link_idx) {
 
@@ -66,7 +66,7 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& target_link_name) {
         // Get the target link
@@ -85,7 +85,7 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const std::string& source_link_name,
                                                                   const std::string& target_link_name) {
@@ -110,7 +110,7 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
                                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                   const int& source_link_idx,
                                                                   const int& target_link_idx) {
@@ -135,7 +135,7 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar, nq>& model,
                                                                       const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                       const std::string& source_link_name,
                                                                       const std::string& target_link_name) {
@@ -162,7 +162,7 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar, nq>& model,
                                                                       const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                       const int source_link_idx,
                                                                       const int target_link_idx) {
@@ -188,7 +188,7 @@ namespace RML {
      * @return The configuration vector of the robot model which achieves the desired pose.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 1> position(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 3, 1> position(Model<Scalar, nq>& model,
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          std::string& source_link_name,
                                          std::string& target_link_name) {
@@ -207,7 +207,7 @@ namespace RML {
      * @return The configuration vector of the robot model which achieves the desired pose.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 1> position(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 3, 1> position(Model<Scalar, nq>& model,
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          int& source_link_idx,
                                          int& target_link_idx) {
@@ -225,7 +225,7 @@ namespace RML {
      * @return The rotation matrix between the source and target link
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 3> rotation(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 3, 3> rotation(Model<Scalar, nq>& model,
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          std::string& source_link_name,
                                          std::string& target_link_name) {
@@ -242,7 +242,7 @@ namespace RML {
      * @return The geometric jacobian between the base and the target link.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar, nq>& model,
                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                                     const std::string& target_link_name) {
         // Initialize the geometric jabobian matrix with zeros
@@ -289,7 +289,7 @@ namespace RML {
      * @return The geometric jacobian between the base and the target link.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, nq> Jv(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 3, nq> Jv(Model<Scalar, nq>& model,
                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                     const std::string& target_link_name) {
         Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q, target_link_name);
@@ -304,7 +304,7 @@ namespace RML {
      * @return The geometric jacobian between the base and the target link.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, nq> Jw(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 3, nq> Jw(Model<Scalar, nq>& model,
                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                     const std::string& target_link_name) {
         Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q, target_link_name);
@@ -319,7 +319,7 @@ namespace RML {
      * @return The geometric jacobian between the base and the target link.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian_com(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian_com(Model<Scalar, nq>& model,
                                                         const Eigen::Matrix<Scalar, nq, 1>& q,
                                                         const std::string& target_link_name) {
         // Initialize the geometric jabobian matrix with zeros
@@ -368,7 +368,7 @@ namespace RML {
      * @return The centre of mass position expressed in source link frame.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 1> centre_of_mass(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, 3, 1> centre_of_mass(Model<Scalar, nq>& model,
                                                const Eigen::Matrix<Scalar, nq, 1>& q,
                                                const std::string& source_link_name) {
 

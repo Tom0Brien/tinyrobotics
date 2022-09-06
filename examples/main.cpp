@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 
     // Create a robot model
     std::string path_to_urdf = "../data/urdfs/simple.urdf";
-    auto model               = RML::model_from_urdf<double>(path_to_urdf);
+    auto model               = RML::model_from_urdf<double, 4>(path_to_urdf);
 
     // Show details of the robot model
     model.show_details();

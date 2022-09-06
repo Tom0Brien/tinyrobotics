@@ -11,10 +11,10 @@
 
 TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model = RML::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create a random configuration
-    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration<4>();
+    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
     // Compute the dynamics
     auto start = std::chrono::high_resolution_clock::now();
     RML::mass_matrix(robot_model, q);
@@ -31,9 +31,9 @@ TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
 
 TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
     // Create a robot model
-    auto kuka_model = RML::model_from_urdf<double>("data/urdfs/kuka.urdf");
+    auto kuka_model = RML::model_from_urdf<double, 7>("data/urdfs/kuka.urdf");
     // Create a random configuration
-    Eigen::Matrix<double, 7, 1> q = kuka_model.home_configuration<7>();
+    Eigen::Matrix<double, 7, 1> q = kuka_model.home_configuration();
     // Compute the mass matrix
     RML::mass_matrix(kuka_model, q);
     // Check that the mass matrix is correct
@@ -46,9 +46,9 @@ TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
 
 TEST_CASE("Test kinetic, potential and total energy computation for simple model", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model = RML::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
     // Create a random configuration
-    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration<4>();
+    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     Eigen::Matrix<double, 4, 1> p;
     p << 1, 2, 3, 4;
@@ -62,13 +62,13 @@ TEST_CASE("Test kinetic, potential and total energy computation for simple model
 
 TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
+    auto robot_model = RML::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
     // Create a random configuration
-    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration<4>();
+    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     Eigen::Matrix<double, 4, 1> p;
     p << 1, 2, 3, 4;
-    Eigen::Matrix<double, 4, 1> u = robot_model.home_configuration<4>();
+    Eigen::Matrix<double, 4, 1> u = robot_model.home_configuration();
     u << 1, 2, 3, 4;
     // Compute the kinetic, potential and hamiltonian
     auto start = std::chrono::high_resolution_clock::now();

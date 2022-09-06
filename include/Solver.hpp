@@ -47,7 +47,7 @@ namespace RML {
      * @return The next time steps joint configuration and momentum [qk; pk].
      */
     template <typename Scalar, int nq, int np, int ni>
-    Eigen::Matrix<Scalar, nq + np, 1> euler_step(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, nq + np, 1> euler_step(Model<Scalar, nq>& model,
                                                  const Eigen::Matrix<Scalar, nq, 1>& qkm1,
                                                  const Eigen::Matrix<Scalar, np, 1>& pkm1,
                                                  const Eigen::Matrix<Scalar, ni, 1>& ukm1,
@@ -77,7 +77,7 @@ namespace RML {
      * @return The next time steps configuration and momentum [qk; pk].
      */
     template <typename Scalar, int nq, int np, int ni>
-    Eigen::Matrix<Scalar, nq + np, 1> symplectic_euler_step(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, nq + np, 1> symplectic_euler_step(Model<Scalar, nq>& model,
                                                             const Eigen::Matrix<Scalar, nq, 1>& qkm1,
                                                             const Eigen::Matrix<Scalar, np, 1>& pkm1,
                                                             const Eigen::Matrix<Scalar, ni, 1>& ukm1,
@@ -110,7 +110,7 @@ namespace RML {
      * @return The next time steps configuration and momentum [qk; pk].
      */
     template <typename Scalar, int nq, int np, int ni>
-    Eigen::Matrix<Scalar, nq + np, 1> RK4(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, nq + np, 1> RK4(Model<Scalar, nq>& model,
                                           const Eigen::Matrix<Scalar, nq, 1>& qkm1,
                                           const Eigen::Matrix<Scalar, np, 1>& pkm1,
                                           const Eigen::Matrix<Scalar, ni, 1>& ukm1,
@@ -149,7 +149,7 @@ namespace RML {
      * @return The next time steps configuration and momentum [qk; pk].
      */
     template <typename Scalar, int nq, int np, int ni>
-    Eigen::Matrix<Scalar, nq + np, 1> integrate(Model<Scalar>& model,
+    Eigen::Matrix<Scalar, nq + np, 1> integrate(Model<Scalar, nq>& model,
                                                 const Eigen::Matrix<Scalar, nq, 1>& qkm1,
                                                 const Eigen::Matrix<Scalar, np, 1>& pkm1,
                                                 const Eigen::Matrix<Scalar, ni, 1>& ukm1,
@@ -172,8 +172,8 @@ namespace RML {
      * @param model The robot model.
      * @param x_history The simulation history.
      */
-    template <typename Scalar, int nx>
-    void save_history(Model<Scalar>& model, std::vector<Eigen::Matrix<Scalar, nx, 1>> x_history) {
+    template <typename Scalar, int nq>
+    void save_history(Model<Scalar, nq>& model, std::vector<Eigen::Matrix<Scalar, nq + nq, 1>> x_history) {
         nlohmann::json json_q_history;
         // Loop through the simulation history and save the q values with joint names
         for (int i = 0; i < x_history.size(); i++) {
@@ -200,7 +200,7 @@ namespace RML {
      * @return A vector of states of the robot integrated over the time span.
      */
     template <typename Scalar, int nq, int np, int ni, typename... IntMethod>
-    SolverResults<Scalar, nq, np, ni> solver(Model<Scalar>& model,
+    SolverResults<Scalar, nq, np, ni> solver(Model<Scalar, nq>& model,
                                              Eigen::Matrix<Scalar, nq, 1> qk,
                                              Eigen::Matrix<Scalar, np, 1> pk,
                                              Eigen::Matrix<Scalar, ni, 1> u,

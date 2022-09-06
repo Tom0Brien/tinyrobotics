@@ -321,10 +321,10 @@ namespace RML {
      * @param xml_string The XML string of the URDF file.
      * @return The URDF parsed Model object.
      */
-    template <typename Scalar>
-    static Model<Scalar> model_from_urdf(const std::string& path_to_urdf) {
+    template <typename Scalar, int nq>
+    static Model<Scalar, nq> model_from_urdf(const std::string& path_to_urdf) {
 
-        Model<Scalar> model = Model<Scalar>();
+        Model<Scalar, nq> model = Model<Scalar, nq>();
         // Parse the URDF file into a string
         std::ifstream input_file(path_to_urdf);
         if (!input_file.is_open()) {

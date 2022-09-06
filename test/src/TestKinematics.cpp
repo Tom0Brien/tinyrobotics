@@ -13,11 +13,11 @@ using namespace ifopt;
 using namespace std::chrono;
 
 // Load the robot model from a URDF file
-auto robot_model = RML::model_from_urdf<double>("data/urdfs/simple.urdf");
+auto robot_model = RML::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
 
 TEST_CASE("Test forward kinematics with link names", "[ForwardKinematics]") {
     // Compute FK for a given configuration
-    auto q = robot_model.home_configuration<4>();
+    auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     Eigen::Transform<double, 3, Eigen::Affine> Hst;
     std::string source_link_idx = "ground";
@@ -34,7 +34,7 @@ TEST_CASE("Test forward kinematics with link names", "[ForwardKinematics]") {
 
 TEST_CASE("Test forward kinematics with link idx", "[ForwardKinematics]") {
     // Compute FK for a given configuration
-    auto q = robot_model.home_configuration<4>();
+    auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     Eigen::Transform<double, 3, Eigen::Affine> Hst;
     int target_link_idx = 0;
@@ -52,7 +52,7 @@ TEST_CASE("Test forward kinematics with link idx", "[ForwardKinematics]") {
 
 TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
     // Compute FK for a given configuration
-    auto q = robot_model.home_configuration<4>();
+    auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     Eigen::Transform<double, 3, Eigen::Affine> Hstc;
     std::string target_link_name = "left_leg";
@@ -66,7 +66,7 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
 
 TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKinematics]") {
     // Create a configuration for the robot
-    auto q = robot_model.home_configuration<4>();
+    auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     // Compute the geometric jacobian of robot with respect to the ground
     std::string target_link_name  = "left_foot";
@@ -89,7 +89,7 @@ TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKine
 
 TEST_CASE("Test geometric_jacobian_com calculations for simple model", "[ForwardKinematics]") {
     // Create a configuration for the robot
-    auto q = robot_model.home_configuration<4>();
+    auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     // Compute the geometric jacobian of robot with respect to the ground
     std::string target_link_name  = "left_foot";
@@ -102,9 +102,9 @@ TEST_CASE("Test geometric_jacobian_com calculations for simple model", "[Forward
 
 TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinematics]") {
 
-    auto kuka_model = RML::model_from_urdf<double>("data/urdfs/kuka.urdf");
+    auto kuka_model = RML::model_from_urdf<double, 7>("data/urdfs/kuka.urdf");
     // Create a configuration for the robot
-    auto q = kuka_model.home_configuration<7>();
+    auto q = kuka_model.home_configuration();
     q << 1, 2, 3, 4, 5, 6, 7;
     // Compute the geometric jacobian of robot with respect to the ground
     std::string target_link_name = "kuka_arm_7_link";
@@ -120,18 +120,18 @@ TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinema
 
 TEST_CASE("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
     const int ITERATIONS = 25;
-    auto nugus_model     = RML::model_from_urdf<double>("data/urdfs/nugus.urdf");
+    auto nugus_model     = RML::model_from_urdf<double, 20>("data/urdfs/nugus.urdf");
     double total_time    = 0;
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
-        auto q_random = nugus_model.random_configuration<20>();
+        auto q_random = nugus_model.home_configuration();
         // Compute the forward kinematics for the random configuration
         Eigen::Transform<double, 3, Eigen::Affine> Hst_desired;
         std::string target_link_name = "torso";
         std::string source_link_name = "left_hip_yaw";
         Hst_desired = RML::forward_kinematics(nugus_model, q_random, source_link_name, target_link_name);
         // Compute the inverse kinematics for the random desired transform
-        auto q0    = q_random + 0.05 * nugus_model.random_configuration<20>();
+        auto q0    = q_random + 0.05 * nugus_model.random_configuration();
         auto start = high_resolution_clock::now();
         Eigen::Matrix<double, 20, 1> q_solution =
             RML::inverse_kinematics<double, 20>(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
@@ -171,18 +171,18 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
 
 TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
     const int ITERATIONS = 25;
-    auto kuka_model      = RML::model_from_urdf<double>("data/urdfs/kuka.urdf");
+    auto kuka_model      = RML::model_from_urdf<double, 7>("data/urdfs/kuka.urdf");
 
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
-        auto q_random = kuka_model.random_configuration<7>();
+        auto q_random = kuka_model.random_configuration();
         // Compute the forward kinematics for the random configuration
         Eigen::Transform<double, 3, Eigen::Affine> Hst_desired;
         std::string target_link_name = "kuka_arm_7_link";
         std::string source_link_name = "calib_kuka_arm_base_link";
         Hst_desired = RML::forward_kinematics(kuka_model, q_random, source_link_name, target_link_name);
         // Compute the inverse kinematics for the random desired transform
-        auto q0    = q_random + 0.1 * kuka_model.random_configuration<7>();
+        auto q0    = q_random + 0.1 * kuka_model.random_configuration();
         auto start = high_resolution_clock::now();
         Eigen::Matrix<double, 7, 1> q_solution =
             RML::inverse_kinematics<double, 7>(kuka_model, source_link_name, target_link_name, Hst_desired, q0);

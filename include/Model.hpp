@@ -21,7 +21,7 @@ namespace RML {
      * @details
      * @param Scalar The scalar type for the robot model
      */
-    template <typename Scalar>
+    template <typename Scalar, int nq>
     class Model {
 
     public:
@@ -50,7 +50,7 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
         /// @brief Stores the results of the models algorithms.
-        Data<Scalar> data;
+        Data<Scalar, nq> data;
 
         /**
          * @brief Initialize the link tree of the robot model.
@@ -259,7 +259,6 @@ namespace RML {
          * @brief Get a configuration vector for the robot model of all zeros.
          *
          */
-        template <int nq>
         Eigen::Matrix<Scalar, nq, 1> home_configuration() const {
             assert(n_q > 0);
             Eigen::Matrix<Scalar, nq, 1> q(n_q);
@@ -271,7 +270,6 @@ namespace RML {
          * @brief Get a random configuration vector for the robot model.
          *
          */
-        template <int nq>
         Eigen::Matrix<Scalar, nq, 1> random_configuration() const {
             assert(n_q > 0);
             Eigen::Matrix<Scalar, nq, 1> q(n_q);
@@ -285,14 +283,14 @@ namespace RML {
          *
          */
         template <typename NewScalar>
-        Model<NewScalar> cast() {
-            Model<NewScalar> new_model = Model<NewScalar>();
-            new_model.name             = name;
-            new_model.n_links          = n_links;
-            new_model.n_joints         = n_joints;
-            new_model.n_q              = n_q;
-            new_model.base_link_idx    = base_link_idx;
-            new_model.gravity          = gravity.template cast<NewScalar>();
+        Model<NewScalar, nq> cast() {
+            Model<NewScalar, nq> new_model = Model<NewScalar, nq>();
+            new_model.name                 = name;
+            new_model.n_links              = n_links;
+            new_model.n_joints             = n_joints;
+            new_model.n_q                  = n_q;
+            new_model.base_link_idx        = base_link_idx;
+            new_model.gravity              = gravity.template cast<NewScalar>();
             for (auto& joint : joints) {
                 new_model.joints.push_back(joint.template cast<NewScalar>());
             }

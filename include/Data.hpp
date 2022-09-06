@@ -9,44 +9,44 @@ namespace RML {
     /**
      * @brief A data struct for storing results of various model algorithms.
      */
-    template <typename Scalar>
+    template <typename Scalar, int nq>
     struct Data {
 
         /// @brief Joint configuration.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> q;
+        Eigen::Matrix<Scalar, nq, 1> q;
 
         /// @brief Joint velocity.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dq;
+        Eigen::Matrix<Scalar, nq, 1> dq;
 
         /// @brief Joint acceleration.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> ddq;
+        Eigen::Matrix<Scalar, nq, 1> ddq;
 
         /// @brief Joint Momentum
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> p;
+        Eigen::Matrix<Scalar, nq, 1> p;
 
         /// @brief Joint torque.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> tau;
+        Eigen::Matrix<Scalar, nq, 1> tau;
 
         /// @brief Mass matrix.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> M;
+        Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero();
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mr;
 
         /// @brief Inverse mass matrix.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Minv;
+        Eigen::Matrix<Scalar, nq, nq> Minv = Eigen::Matrix<Scalar, nq, nq>::Zero();
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mrinv;
 
         /// @brief Coriolis matrix.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> C;
+        Eigen::Matrix<Scalar, nq, nq> C = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
         /// @brief Gravity torque vector.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> g;
+        Eigen::Matrix<Scalar, nq, 1> g;
 
         /// @brief Input mapping matrix.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gp;
+        Eigen::Matrix<Scalar, nq, nq> Gp = Eigen::Matrix<Scalar, nq, nq>::Identity();
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gr;
 
         /// @brief Damping matrix.
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dp;
+        Eigen::Matrix<Scalar, nq, nq> Dp = Eigen::Matrix<Scalar, nq, nq>::Zero();
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dr;
 
         /// @brief Constraint jacobian
@@ -65,7 +65,7 @@ namespace RML {
         Scalar H = 0;
 
         /// @brief The dynamics dx_dt
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dx_dt;
+        Eigen::Matrix<Scalar, nq + nq, 1> dx_dt;
 
         /// @brief Vector of forward kinematics Data.
         std::vector<Eigen::Transform<Scalar, 3, Eigen::Affine>> FK = {};
@@ -81,26 +81,26 @@ namespace RML {
          * @param n The size to resize all matrices to.
          */
         void resize(int n) {
-            q.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            dq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            ddq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            p.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            tau.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            M.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            Minv.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            C.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            g.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            Gp.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Identity(n, n));
-            Dp.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            dx_dt.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n + n, 1));
+            // q.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            // dq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            // ddq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            // p.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            // tau.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            // M.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
+            // Minv.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
+            // C.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
+            // g.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
+            // Gp.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Identity(n, n));
+            // Dp.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
+            // dx_dt.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n + n, 1));
         }
 
         /**
          * @brief Cast to NewScalar type.
          */
         template <typename NewScalar>
-        Data<NewScalar> cast() {
-            Data<NewScalar> new_res;
+        Data<NewScalar, nq> cast() {
+            Data<NewScalar, nq> new_res;
             new_res.q     = q.template cast<NewScalar>();
             new_res.dq    = dq.template cast<NewScalar>();
             new_res.ddq   = ddq.template cast<NewScalar>();
