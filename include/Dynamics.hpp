@@ -20,14 +20,14 @@ namespace RML {
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Resize the results matices
-        if (model.results.M.rows() != nq) {
-            model.results.resize(nq);
+        if (model.data.M.rows() != nq) {
+            model.data.resize(nq);
         }
         // Update the model with the current joint configuration
-        model.results.q = q;
+        model.data.q = q;
         // Reset the mass matrix and potential energy
-        model.results.M.setZero();
-        model.results.V = 0;
+        model.data.M.setZero();
+        model.data.V = 0;
 
         Eigen::Matrix<Scalar, 6, 6> Mi;
         // Get the base link from the model
@@ -43,14 +43,14 @@ namespace RML {
             // Compute the geometric jacobian of the links center of mass with respect to the base
             Eigen::Matrix<Scalar, 6, nq> Jci = geometric_jacobian_com(model, q, model.links[i].name);
             // Compute the contribution to the mass matrix of the link
-            model.results.M += Jci.transpose() * Mi * Jci;
+            model.data.M += Jci.transpose() * Mi * Jci;
             // Compute the contribution to the potential energy of the link
             Eigen::Transform<Scalar, 3, Eigen::Affine> Hbi_c =
                 forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
-            model.results.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
+            model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
         }
-        return model.results.M;
+        return model.data.M;
     }
 
     /**
@@ -67,7 +67,7 @@ namespace RML {
         // Compute the mass matrix
         mass_matrix<Scalar, nq>(model, q);
         // Compute the kinetic energy
-        model.results.T = 0.5 * dq.transpose() * model.results.M * dq;
+        model.data.T = 0.5 * dq.transpose() * model.data.M * dq;
     }
 
     /**
@@ -78,14 +78,14 @@ namespace RML {
     template <typename Scalar, int nq>
     void potential_energy(Model<Scalar>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset the potential energy
-        model.results.V = 0;
+        model.data.V = 0;
         // Compute the potential energy
         for (int i = 0; i < model.n_links; i++) {
             // Compute the contribution to the potential energy of the link
             Eigen::Transform<Scalar, 3, Eigen::Affine> Hbi_c =
                 forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
-            model.results.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
+            model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
         }
     }
 
@@ -104,14 +104,14 @@ namespace RML {
 
         // Compute the inverse of the mass matrix
         Eigen::Matrix<Scalar, nq, nq> b    = Eigen::Matrix<Scalar, nq, nq>::Identity();
-        Eigen::Matrix<Scalar, nq, nq> Minv = model.results.M.ldlt().solve(b);
-        model.results.Minv                 = Minv;
+        Eigen::Matrix<Scalar, nq, nq> Minv = model.data.M.ldlt().solve(b);
+        model.data.Minv                    = Minv;
 
         // Compute the kinetic energy
-        model.results.T = Scalar(0.5 * p.transpose() * Minv * p);
+        model.data.T = Scalar(0.5 * p.transpose() * Minv * p);
 
         // Compute the total energy
-        Eigen::Matrix<Scalar, 1, 1> H = Eigen::Matrix<Scalar, 1, 1>(model.results.T + model.results.V);
+        Eigen::Matrix<Scalar, 1, 1> H = Eigen::Matrix<Scalar, 1, 1>(model.data.T + model.data.V);
         return H;
     }
 
@@ -140,13 +140,13 @@ namespace RML {
 
         Eigen::Matrix<Scalar, 1, nq> dH_dq =
             autodiff::jacobian(hamiltonian<autodiff::real, nq>, wrt(q_ad), at(model_ad, q_ad, p_ad), H_ad);
-        Eigen::Matrix<Scalar, 1, nq> dH_dp = (model_ad.results.Minv * p_ad).template cast<Scalar>();
+        Eigen::Matrix<Scalar, 1, nq> dH_dp = (model_ad.data.Minv * p_ad).template cast<Scalar>();
 
         // Create the interconnection and damping matrix
         Eigen::Matrix<Scalar, nx, nx> J = Eigen::Matrix<Scalar, nx, nx>::Zero();
         J.block(0, nq, nq, nq)          = Eigen::Matrix<Scalar, nq, nq>::Identity();
         J.block(nq, 0, nq, nq)          = -1 * Eigen::Matrix<Scalar, nq, nq>::Identity();
-        J.block(nq, nq, nq, nq)         = model.results.Dp;
+        J.block(nq, nq, nq, nq)         = model.data.Dp;
 
         // Stack the jacobians of the hamiltonian
         Eigen::Matrix<Scalar, nx, 1> dH = Eigen::Matrix<Scalar, nx, 1>::Zero();
@@ -155,11 +155,11 @@ namespace RML {
 
         // Compute the forward dynamics: dx_dt
         Eigen::Matrix<Scalar, nx, ni> G    = Eigen::Matrix<Scalar, nx, ni>::Zero();
-        G.block(nq, 0, nq, nq)             = model.results.Gp;
+        G.block(nq, 0, nq, nq)             = model.data.Gp;
         Eigen::Matrix<Scalar, nx, 1> dx_dt = J * dH + G * u;
 
         // Store the result
-        model.results.dx_dt = dx_dt;
+        model.data.dx_dt = dx_dt;
         return dx_dt;
     }
 
@@ -187,44 +187,44 @@ namespace RML {
             Jc.conservativeResize(Jc.rows() + Jci.rows(), nq);
             Jc.block(Jc.rows() - Jci.rows(), 0, Jci.rows(), Jci.cols()) = Jci;
         }
-        model.results.Jc.resize(Jc.rows(), Jc.cols());
-        model.results.Jc = Jc;
+        model.data.Jc.resize(Jc.rows(), Jc.cols());
+        model.data.Jc = Jc;
 
         // Compute the left annihilator of the jacobian of the active constraints
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jcp = RML::null<Scalar>(Jc);
-        model.results.Jcp.resize(Jcp.rows(), Jcp.cols());
-        model.results.Jcp = Jcp;
+        model.data.Jcp.resize(Jcp.rows(), Jcp.cols());
+        model.data.Jcp = Jcp;
 
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gr = Jcp.transpose() * model.results.Gp;
-        model.results.Gr.resize(Gr.rows(), Gr.cols());
-        model.results.Gr = Gr;
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gr = Jcp.transpose() * model.data.Gp;
+        model.data.Gr.resize(Gr.rows(), Gr.cols());
+        model.data.Gr = Gr;
 
-        model.results.Dp.setZero();
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dr = Jcp.transpose() * model.results.Dp * Jcp;
-        model.results.Dr.resize(Dr.rows(), Dr.cols());
-        model.results.Dr = Dr;
+        model.data.Dp.setZero();
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dr = Jcp.transpose() * model.data.Dp * Jcp;
+        model.data.Dr.resize(Dr.rows(), Dr.cols());
+        model.data.Dr = Dr;
 
-        auto Mr = Jcp.transpose() * model.results.M * Jcp;
-        model.results.Mr.resize(Mr.rows(), Mr.cols());
-        model.results.Mr = Mr;
+        auto Mr = Jcp.transpose() * model.data.M * Jcp;
+        model.data.Mr.resize(Mr.rows(), Mr.cols());
+        model.data.Mr = Mr;
 
-        model.results.nz = model.results.Gp.rows() - Gr.rows();
-        model.results.nr = Mr.rows();
+        model.data.nz = model.data.Gp.rows() - Gr.rows();
+        model.data.nr = Mr.rows();
 
         // Compute the inverse of the mass matrix
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> b;
-        b.resize(model.results.nr, model.results.nr);
+        b.resize(model.data.nr, model.data.nr);
         b.setIdentity();
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mrinv = Mr.ldlt().solve(b);
-        model.results.Mrinv.resize(model.results.nr, model.results.nr);
-        model.results.Mrinv = Mrinv;
+        model.data.Mrinv.resize(model.data.nr, model.data.nr);
+        model.data.Mrinv = Mrinv;
 
         // Compute the kinetic energy
-        auto pr         = p.tail(model.results.nr);
-        model.results.T = Scalar(0.5 * pr.transpose() * Mrinv * pr);
+        auto pr      = p.tail(model.data.nr);
+        model.data.T = Scalar(0.5 * pr.transpose() * Mrinv * pr);
 
         // Compute the total energy
-        Eigen::Matrix<Scalar, 1, 1> H = Eigen::Matrix<Scalar, 1, 1>(model.results.T + model.results.V);
+        Eigen::Matrix<Scalar, 1, 1> H = Eigen::Matrix<Scalar, 1, 1>(model.data.T + model.data.V);
 
         return H;
     }
@@ -260,21 +260,20 @@ namespace RML {
                                                                 at(model_ad, q_ad, p_ad, active_constraints),
                                                                 H_ad);
 
-        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> pr_ad = p_ad.tail(model_ad.results.nr);
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dH_dp = (model_ad.results.Mrinv * pr_ad).template cast<Scalar>();
+        Eigen::Matrix<autodiff::real, Eigen::Dynamic, 1> pr_ad = p_ad.tail(model_ad.data.nr);
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> dH_dp         = (model_ad.data.Mrinv * pr_ad).template cast<Scalar>();
 
         Eigen::Matrix<Scalar, nq + nq, 1> dx_dt = Eigen::Matrix<Scalar, nq + nq, 1>::Zero();
         // qdot
-        dx_dt.block(0, 0, nq, 1) = (model_ad.results.Jcp * dH_dp).template cast<Scalar>();
+        dx_dt.block(0, 0, nq, 1) = (model_ad.data.Jcp * dH_dp).template cast<Scalar>();
 
         // pdot
-        dx_dt.block(nq + model_ad.results.nz, 0, model_ad.results.nr, 1) =
-            (-model_ad.results.Jcp.transpose() * dH_dq.transpose() - model_ad.results.Dr * dH_dp
-             + model_ad.results.Gr * u)
+        dx_dt.block(nq + model_ad.data.nz, 0, model_ad.data.nr, 1) =
+            (-model_ad.data.Jcp.transpose() * dH_dq.transpose() - model_ad.data.Dr * dH_dp + model_ad.data.Gr * u)
                 .template cast<Scalar>();
 
         // Store the result
-        model.results.dx_dt = dx_dt;
+        model.data.dx_dt = dx_dt;
         return dx_dt;
     }
 

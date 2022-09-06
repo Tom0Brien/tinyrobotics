@@ -57,10 +57,10 @@ namespace RML {
         forward_dynamics(model, qkm1, pkm1, ukm1, active_constraints);
 
         // Perform the q update: qk = qkm1 + dt*dqm1dt
-        Eigen::Matrix<Scalar, nq, 1> qk = qkm1 + dt * model.results.dx_dt.head(nq);
+        Eigen::Matrix<Scalar, nq, 1> qk = qkm1 + dt * model.data.dx_dt.head(nq);
 
         // Perform the p update: pk = pkm1 + dt*dpm1dt
-        Eigen::Matrix<Scalar, np, 1> pk = pkm1 + dt * model.results.dx_dt.tail(np);
+        Eigen::Matrix<Scalar, np, 1> pk = pkm1 + dt * model.data.dx_dt.tail(np);
 
         // Store the new state
         Eigen::Matrix<Scalar, nq + np, 1> xk;
@@ -93,7 +93,7 @@ namespace RML {
         forward_dynamics(model, qk, pkm1, ukm1, active_constraints);
 
         // Perform the p update: pk = pkm1 + dt*dpm1dt
-        Eigen::Matrix<Scalar, np, 1> pk = pkm1 + dt * model.results.dx_dt.tail(np);
+        Eigen::Matrix<Scalar, np, 1> pk = pkm1 + dt * model.data.dx_dt.tail(np);
 
         // Store the new state
         Eigen::Matrix<Scalar, nq + np, 1> xk;
