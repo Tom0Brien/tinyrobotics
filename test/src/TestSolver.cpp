@@ -24,7 +24,7 @@ TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
 
     // Run a single step of euler integration
     Eigen::Matrix<double, 8, 1> result;
-    result = RML::integration_step(robot_model, q0, p0, u0, dt, RML::IntegrationMethod::EULER());
+    result = RML::euler_step(robot_model, q0, p0, u0, dt);
 }
 
 TEST_CASE("Test integration routine for simple model with euler integration", "[Solver]") {
@@ -41,7 +41,11 @@ TEST_CASE("Test integration routine for simple model with euler integration", "[
     double dt = 0.1;
 
     // Run solver
-    auto results = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::EULER());
+    RML::SolverParams<double> params;
+    params.dt                 = 0.1;
+    params.tspan              = std::pair<float, float>(0.0, 10.0);
+    params.integration_method = RML::IntegrationMethod::RK4;
+    auto results              = RML::solver(robot_model, q0, p0, u0, params);
 
     // TODO: Verify results
 }
@@ -60,7 +64,11 @@ TEST_CASE("Test integration routine for simple model with symplectic euler integ
     double dt = 0.01;
 
     // Run solver
-    auto results = RML::solver(robot_model, q0, p0, u0, tspan, dt, RML::IntegrationMethod::SYMPLECTIC_EULER());
+    RML::SolverParams<double> params;
+    params.dt                 = 0.1;
+    params.tspan              = std::pair<float, float>(0.0, 10.0);
+    params.integration_method = RML::IntegrationMethod::SYMPLECTIC_EULER;
+    auto results              = RML::solver(robot_model, q0, p0, u0, params);
 
     // TODO: Verify results
 }

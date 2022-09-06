@@ -12,13 +12,25 @@
 namespace RML {
 
     /// @brief The types of integration methods
-    namespace IntegrationMethod {
-        struct EULER {};
-        struct SYMPLECTIC_EULER {};
-        struct RK4 {};
-    };  // namespace IntegrationMethod
+    enum class IntegrationMethod { EULER, SYMPLECTIC_EULER, RK4 };  // namespace IntegrationMethod
 
-    // @brief Struct for solver results
+    /// @brief Struct for solver params
+    template <typename Scalar>
+    struct SolverParams {
+        /// @brief The time step
+        Scalar dt = 0.01;
+
+        /// @brief The number of iterations
+        std::pair<Scalar, Scalar> tspan = std::pair<Scalar, Scalar>(0, 10);
+
+        /// @brief The integration method
+        IntegrationMethod integration_method;
+
+        /// @brief The initial active constraints
+        std::vector<std::string> active_constraints = {};
+    };
+
+    /// @brief Struct for solver results
     template <typename Scalar, int nq, int np, int ni>
     struct SolverResults {
         std::vector<Eigen::Matrix<Scalar, nq + np, 1>> x_history;
@@ -35,26 +47,23 @@ namespace RML {
      * @return The next time steps joint configuration and momentum [qk; pk].
      */
     template <typename Scalar, int nq, int np, int ni>
-    Eigen::Matrix<Scalar, nq + np, 1> integration_step(Model<Scalar>& model,
-                                                       const Eigen::Matrix<Scalar, nq, 1>& qkm1,
-                                                       const Eigen::Matrix<Scalar, np, 1>& pkm1,
-                                                       const Eigen::Matrix<Scalar, ni, 1>& ukm1,
-                                                       const float& dt,
-                                                       const IntegrationMethod::EULER&) {
-        Eigen::Matrix<Scalar, nq, 1> qk;
-        Eigen::Matrix<Scalar, np, 1> pk;
-        Eigen::Matrix<Scalar, nq + np, 1> xk;
-
+    Eigen::Matrix<Scalar, nq + np, 1> euler_step(Model<Scalar>& model,
+                                                 const Eigen::Matrix<Scalar, nq, 1>& qkm1,
+                                                 const Eigen::Matrix<Scalar, np, 1>& pkm1,
+                                                 const Eigen::Matrix<Scalar, ni, 1>& ukm1,
+                                                 const float& dt,
+                                                 const std::vector<std::string> active_constraints = {}) {
         // Compute the dynamics of the system
-        forward_dynamics(model, qkm1, pkm1, ukm1);
+        forward_dynamics(model, qkm1, pkm1, ukm1, active_constraints);
 
         // Perform the q update: qk = qkm1 + dt*dqm1dt
-        qk = qkm1 + dt * model.results.dx_dt.head(nq);
+        Eigen::Matrix<Scalar, nq, 1> qk = qkm1 + dt * model.results.dx_dt.head(nq);
 
         // Perform the p update: pk = pkm1 + dt*dpm1dt
-        pk = pkm1 + dt * model.results.dx_dt.tail(np);
+        Eigen::Matrix<Scalar, np, 1> pk = pkm1 + dt * model.results.dx_dt.tail(np);
 
         // Store the new state
+        Eigen::Matrix<Scalar, nq + np, 1> xk;
         xk << qk, pk;
         return xk;
     }
@@ -68,29 +77,26 @@ namespace RML {
      * @return The next time steps configuration and momentum [qk; pk].
      */
     template <typename Scalar, int nq, int np, int ni>
-    Eigen::Matrix<Scalar, nq + np, 1> integration_step(Model<Scalar>& model,
-                                                       const Eigen::Matrix<Scalar, nq, 1>& qkm1,
-                                                       const Eigen::Matrix<Scalar, np, 1>& pkm1,
-                                                       const Eigen::Matrix<Scalar, ni, 1>& ukm1,
-                                                       const float& dt,
-                                                       const IntegrationMethod::SYMPLECTIC_EULER&) {
-        Eigen::Matrix<Scalar, nq, 1> qk;
-        Eigen::Matrix<Scalar, np, 1> pk;
-        Eigen::Matrix<Scalar, nq + np, 1> xk;
-
+    Eigen::Matrix<Scalar, nq + np, 1> symplectic_euler_step(Model<Scalar>& model,
+                                                            const Eigen::Matrix<Scalar, nq, 1>& qkm1,
+                                                            const Eigen::Matrix<Scalar, np, 1>& pkm1,
+                                                            const Eigen::Matrix<Scalar, ni, 1>& ukm1,
+                                                            const float& dt,
+                                                            const std::vector<std::string> active_constraints = {}) {
         // Compute the mass matrix, which can be used for q update
         Eigen::Matrix<Scalar, np, nq> Mkm1 = mass_matrix(model, qkm1);
 
         // Perform the q update: qk = qkm1 + dt*dqm1dt
-        qk = qkm1 + dt * (Mkm1.inverse() * pkm1);
+        Eigen::Matrix<Scalar, nq, 1> qk = qkm1 + dt * (Mkm1.inverse() * pkm1);
 
         // Compute the dynamics of the system with qk and pkm1 for p update
-        forward_dynamics(model, qk, pkm1, ukm1);
+        forward_dynamics(model, qk, pkm1, ukm1, active_constraints);
 
         // Perform the p update: pk = pkm1 + dt*dpm1dt
-        pk = pkm1 + dt * model.results.dx_dt.tail(np);
+        Eigen::Matrix<Scalar, np, 1> pk = pkm1 + dt * model.results.dx_dt.tail(np);
 
         // Store the new state
+        Eigen::Matrix<Scalar, nq + np, 1> xk;
         xk << qk, pk;
         return xk;
     }
@@ -104,33 +110,62 @@ namespace RML {
      * @return The next time steps configuration and momentum [qk; pk].
      */
     template <typename Scalar, int nq, int np, int ni>
-    Eigen::Matrix<Scalar, nq + np, 1> integration_step(Model<Scalar>& model,
-                                                       const Eigen::Matrix<Scalar, nq, 1>& qkm1,
-                                                       const Eigen::Matrix<Scalar, np, 1>& pkm1,
-                                                       const Eigen::Matrix<Scalar, ni, 1>& ukm1,
-                                                       const float& dt,
-                                                       const IntegrationMethod::RK4&) {
+    Eigen::Matrix<Scalar, nq + np, 1> RK4(Model<Scalar>& model,
+                                          const Eigen::Matrix<Scalar, nq, 1>& qkm1,
+                                          const Eigen::Matrix<Scalar, np, 1>& pkm1,
+                                          const Eigen::Matrix<Scalar, ni, 1>& ukm1,
+                                          const float& dt,
+                                          const std::vector<std::string> active_constraints = {}) {
         Eigen::Matrix<Scalar, nq + np, 1> k1, k2, k3, k4, xk;
-
         // Compute the mass matrix, which can be used for q update
-        k1 = forward_dynamics(model, qkm1, pkm1, ukm1);
+        k1 = forward_dynamics(model, qkm1, pkm1, ukm1, active_constraints);
         k2 = forward_dynamics(model,
                               Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k1.head(nq)),
                               Eigen::Matrix<Scalar, nq, 1>(pkm1 + 0.5 * dt * k1.tail(np)),
-                              ukm1);
+                              ukm1,
+                              active_constraints);
         k3 = forward_dynamics(model,
                               Eigen::Matrix<Scalar, nq, 1>(qkm1 + 0.5 * dt * k2.head(nq)),
                               Eigen::Matrix<Scalar, np, 1>(pkm1 + 0.5 * dt * k2.tail(np)),
-                              ukm1);
+                              ukm1,
+                              active_constraints);
         k4 = forward_dynamics(model,
                               Eigen::Matrix<Scalar, nq, 1>(qkm1 + dt * k3.head(nq)),
                               Eigen::Matrix<Scalar, np, 1>(pkm1 + dt * k3.tail(np)),
-                              ukm1);
+                              ukm1,
+                              active_constraints);
         // Store the new state
         xk << qkm1 + dt / 6 * (k1.head(nq) + 2 * k2.head(nq) + 2 * k3.head(nq) + k4.head(nq)),
             pkm1 + dt / 6 * (k1.tail(np) + 2 * k2.tail(np) + 2 * k3.tail(np) + k4.tail(np));
         return xk;
     }
+
+    /**
+     * @brief Perform an integration step.
+     * @param model The robot model.
+     * @param qkm1 The previous joint configuration.
+     * @param pkm1 The previous momentum.
+     * @param dt The time step.
+     * @return The next time steps configuration and momentum [qk; pk].
+     */
+    template <typename Scalar, int nq, int np, int ni>
+    Eigen::Matrix<Scalar, nq + np, 1> integrate(Model<Scalar>& model,
+                                                const Eigen::Matrix<Scalar, nq, 1>& qkm1,
+                                                const Eigen::Matrix<Scalar, np, 1>& pkm1,
+                                                const Eigen::Matrix<Scalar, ni, 1>& ukm1,
+                                                const float& dt,
+                                                const IntegrationMethod& integration_type,
+                                                const std::vector<std::string> active_constraints) {
+        // Perform the integration step based on the integration method
+        switch (integration_type) {
+            case IntegrationMethod::EULER: return euler_step(model, qkm1, pkm1, ukm1, dt, active_constraints);
+            case IntegrationMethod::SYMPLECTIC_EULER:
+                return symplectic_euler_step(model, qkm1, pkm1, ukm1, dt, active_constraints);
+            case IntegrationMethod::RK4: return RK4(model, qkm1, pkm1, ukm1, dt, active_constraints);
+            default: throw std::runtime_error("Unknown integration method.");
+        }
+    }
+
 
     /**
      * @brief Save the history of the simulation output as a json file for urdf-visualizer.
@@ -164,44 +199,42 @@ namespace RML {
      * @param integration_method The integration method to use.
      * @return A vector of states of the robot integrated over the time span.
      */
-    template <typename Scalar, int nq, int np, int ni, typename... Args>
+    template <typename Scalar, int nq, int np, int ni, typename... IntMethod>
     SolverResults<Scalar, nq, np, ni> solver(Model<Scalar>& model,
                                              Eigen::Matrix<Scalar, nq, 1> qk,
                                              Eigen::Matrix<Scalar, np, 1> pk,
                                              Eigen::Matrix<Scalar, ni, 1> u,
-                                             const Eigen::Matrix<Scalar, 2, 1>& tspan,
-                                             const float& dt,
-                                             const Args&... params) {
+                                             SolverParams<Scalar>& params) {
         // Create a struct for solver results
         SolverResults<Scalar, nq, np, ni> results;
 
         // Ensure that the time span is valid
-        if (tspan(0) >= tspan(1)) {
+        if (params.tspan.first >= params.tspan.second) {
             throw std::invalid_argument("The time span is invalid.");
         }
         // Ensure that the time step is valid
-        if (dt <= 0 || dt >= tspan(1) - tspan(0)) {
+        if (params.dt <= 0 || params.dt >= params.tspan.second - params.tspan.first) {
             throw std::invalid_argument("The time step is invalid.");
         }
 
         // For each time step in the time span, integrate the robot dynamics.
-        const int n_steps = (tspan(1) - tspan(0)) / dt + 2;
+        const int n_steps = (params.tspan.second - params.tspan.first) / params.dt + 2;
         for (int k = 0; k < n_steps; k++) {
             // Compute the current time
-            const float t = tspan(0) + k * dt;
+            const Scalar t = params.tspan.first + k * params.dt;
             results.time.push_back(t);
             // TODO: Compute the control input
             // u = controller(model,qk,pk,t);
             results.u_history.push_back(u);
             // Perform the integration step
-            results.x_history.push_back(integration_step(model, qk, pk, u, dt, params...));
+            results.x_history.push_back(
+                integrate(model, qk, pk, u, params.dt, params.integration_method, params.active_constraints));
             // Update the initial state for the next integration step
             qk = results.x_history.back().head(nq);
             pk = results.x_history.back().tail(np);
         }
         return results;
     }
-
 
     /**
      * @brief Plot the results of a simulation.
@@ -237,7 +270,7 @@ namespace RML {
             // Plot the results
             matplotlibcpp::subplot2grid(nq, 3, i, 1);
             matplotlibcpp::plot(results.time, x);
-            matplotlibcpp::title("Generalised Momentum q" + std::to_string(i));
+            matplotlibcpp::title("Generalised Momentum p" + std::to_string(i));
             matplotlibcpp::xlabel("Time [s]");
             matplotlibcpp::ylabel("p" + std::to_string(i));
             matplotlibcpp::grid(true);

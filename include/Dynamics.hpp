@@ -124,10 +124,10 @@ namespace RML {
      * @param u The input vector.
      */
     template <typename Scalar, int nq, int ni>
-    Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics(Model<Scalar>& model,
-                                                       const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                       const Eigen::Matrix<Scalar, nq, 1>& p,
-                                                       const Eigen::Matrix<Scalar, ni, 1>& u) {
+    Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics_without_constraints(Model<Scalar>& model,
+                                                                           const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                           const Eigen::Matrix<Scalar, nq, 1>& p,
+                                                                           const Eigen::Matrix<Scalar, ni, 1>& u) {
         // Number of states
         const int nx = nq + nq;
         // Cast to autodiff type for automatic differentiation
@@ -187,7 +187,6 @@ namespace RML {
             Jc.conservativeResize(Jc.rows() + Jci.rows(), nq);
             Jc.block(Jc.rows() - Jci.rows(), 0, Jci.rows(), Jci.cols()) = Jci;
         }
-
         model.results.Jc.resize(Jc.rows(), Jc.cols());
         model.results.Jc = Jc;
 
@@ -244,7 +243,11 @@ namespace RML {
                                                        const Eigen::Matrix<Scalar, nq, 1>& q,
                                                        const Eigen::Matrix<Scalar, nq, 1>& p,
                                                        const Eigen::Matrix<Scalar, ni, 1>& u,
-                                                       const std::vector<std::string>& active_constraints) {
+                                                       const std::vector<std::string>& active_constraints = {}) {
+        // If there are no active constraints, use the quicker forward dynamics
+        if (active_constraints.size() == 0) {
+            return forward_dynamics_without_constraints(model, q, p, u);
+        }
         // Cast to autodiff type for automatic differentiation
         Eigen::Matrix<autodiff::real, nq, 1> q_ad(q);
         Eigen::Matrix<autodiff::real, nq, 1> p_ad(p);
@@ -264,7 +267,7 @@ namespace RML {
         // qdot
         dx_dt.block(0, 0, nq, 1) = (model_ad.results.Jcp * dH_dp).template cast<Scalar>();
 
-        // prdot
+        // pdot
         dx_dt.block(nq + model_ad.results.nz, 0, model_ad.results.nr, 1) =
             (-model_ad.results.Jcp.transpose() * dH_dq.transpose() - model_ad.results.Dr * dH_dp
              + model_ad.results.Gr * u)
@@ -272,7 +275,6 @@ namespace RML {
 
         // Store the result
         model.results.dx_dt = dx_dt;
-        // std::cout << "dx_dt: " << std::endl << dx_dt << std::endl;
         return dx_dt;
     }
 
