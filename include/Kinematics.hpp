@@ -139,9 +139,6 @@ namespace RML {
                                                                       const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                       const std::string& source_link_name,
                                                                       const std::string& target_link_name) {
-        // Assert the configuration vector is valid
-        // assert(q.size() == model.n_q); TODO: FIX THIS FOR AUTODIFF
-
         // Compute forward kinematics from source {b} to target {t}
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
@@ -166,9 +163,6 @@ namespace RML {
                                                                       const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                       const int source_link_idx,
                                                                       const int target_link_idx) {
-        // Assert the configuration vector is valid
-        assert(q.size() == model.n_q);
-
         // Compute forward kinematics from source {b} to target {t}
         Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = forward_kinematics(model, q, source_link_idx, target_link_idx);
 
@@ -371,10 +365,6 @@ namespace RML {
     Eigen::Matrix<Scalar, 3, 1> centre_of_mass(Model<Scalar, nq>& model,
                                                const Eigen::Matrix<Scalar, nq, 1>& q,
                                                const std::string& source_link_name) {
-
-        // Assert the configuration vector is valid
-        assert(q.size() == model.n_q);
-
         // For each link in the model, compute the transform from the source link to the CoM of the link
         Scalar total_mass                = 0;
         Eigen::Matrix<Scalar, 3, 1> rISs = Eigen::Matrix<Scalar, 3, 1>::Zero();
