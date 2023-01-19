@@ -63,8 +63,8 @@ namespace RML {
      * @return A Eigen3 affine transform
      */
     template <typename Scalar>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> transform_from_xml(tinyxml2::XMLElement* xml) {
-        Eigen::Transform<Scalar, 3, Eigen::Affine> t;
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> transform_from_xml(tinyxml2::XMLElement* xml) {
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> t;
         t.setIdentity();
         if (xml) {
             const char* xyz_str = xml->Attribute("xyz");

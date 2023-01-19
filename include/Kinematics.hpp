@@ -19,9 +19,9 @@ namespace RML {
      * @return The transform between the base and the target link
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
-                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                  const int& target_link_idx) {
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics(const Model<Scalar, nq>& model,
+                                                                    const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                    const int& target_link_idx) {
 
         // Get the target link
         Link<Scalar> current_link = model.links[target_link_idx];
@@ -32,11 +32,16 @@ namespace RML {
             throw std::runtime_error(error_msg);
         }
 
+        // Return identity transform if the link is the base link
+        if (current_link.name == model.links[model.base_link_idx].name) {
+            return Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+        }
+
         // Build kinematic tree from target_link {t} to base {b}
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Htb = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Htb = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
         while (current_link.name != model.links[model.base_link_idx].name) {
-            Eigen::Transform<Scalar, 3, Eigen::Affine> H = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
-            auto current_joint                           = model.joints[current_link.joint_idx];
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> H = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+            auto current_joint                             = model.joints[current_link.joint_idx];
             if (current_joint.type == JointType::REVOLUTE) {
                 Scalar q_current = q(current_joint.q_idx);
                 // Rotate by q_current around axis
@@ -66,9 +71,9 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
-                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                  const std::string& target_link_name) {
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics(const Model<Scalar, nq>& model,
+                                                                    const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                    const std::string& target_link_name) {
         // Get the target link
         Link<Scalar> current_link = model.get_link(target_link_name);
 
@@ -85,19 +90,19 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
-                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                  const std::string& source_link_name,
-                                                                  const std::string& target_link_name) {
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics(const Model<Scalar, nq>& model,
+                                                                    const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                    const std::string& source_link_name,
+                                                                    const std::string& target_link_name) {
         // Build kinematic tree from source {s} to base {b} frame
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hbs = forward_kinematics(model, q, source_link_name);
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsb = RML::inv(Hbs);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbs = forward_kinematics(model, q, source_link_name);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsb = RML::inv(Hbs);
 
         // Build kinematic tree from base {b} to target {t} frame
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hbt = forward_kinematics(model, q, target_link_name);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbt = forward_kinematics(model, q, target_link_name);
 
         // Compute transform between source {s} and target {t} frames
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = Hsb * Hbt;
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst = Hsb * Hbt;
         return Hst;
     }
 
@@ -110,19 +115,19 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics(const Model<Scalar, nq>& model,
-                                                                  const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                  const int& source_link_idx,
-                                                                  const int& target_link_idx) {
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics(const Model<Scalar, nq>& model,
+                                                                    const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                    const int& source_link_idx,
+                                                                    const int& target_link_idx) {
         // Build kinematic tree from source {s} to base {b} frame
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hbs = forward_kinematics(model, q, source_link_idx);
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsb = RML::inv(Hbs);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbs = forward_kinematics(model, q, source_link_idx);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsb = RML::inv(Hbs);
 
         // Build kinematic tree from base {b} to target {t} frame
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hbt = forward_kinematics(model, q, target_link_idx);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbt = forward_kinematics(model, q, target_link_idx);
 
         // Compute transform between source {s} and target {t} frames
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = Hsb * Hbt;
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst = Hsb * Hbt;
         return Hst;
     }
 
@@ -135,16 +140,16 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar, nq>& model,
-                                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                      const std::string& source_link_name,
-                                                                      const std::string& target_link_name) {
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(Model<Scalar, nq>& model,
+                                                                        const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                        const std::string& source_link_name,
+                                                                        const std::string& target_link_name) {
         // Compute forward kinematics from source {b} to target {t}
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
 
         // Compute forward kinematics from source {s} to CoM {c}
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = Hst * model.get_link(target_link_name).centre_of_mass;
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = Hst * model.get_link(target_link_name).centre_of_mass;
 
         // Return transform from source {s} to CoM {c}
         return Hsc;
@@ -159,15 +164,16 @@ namespace RML {
      * @return The transform between the two links.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> forward_kinematics_com(Model<Scalar, nq>& model,
-                                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                      const int source_link_idx,
-                                                                      const int target_link_idx) {
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(Model<Scalar, nq>& model,
+                                                                        const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                        const int source_link_idx,
+                                                                        const int target_link_idx) {
         // Compute forward kinematics from source {b} to target {t}
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = forward_kinematics(model, q, source_link_idx, target_link_idx);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
+            forward_kinematics(model, q, source_link_idx, target_link_idx);
 
         // Compute forward kinematics from source {s} to CoM {c}
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc = Hst * model.links[target_link_idx].centre_of_mass;
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = Hst * model.links[target_link_idx].centre_of_mass;
 
         // Return transform from source {s} to CoM {c}
         return Hsc;
@@ -186,7 +192,7 @@ namespace RML {
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          std::string& source_link_name,
                                          std::string& target_link_name) {
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
         Eigen::Matrix<Scalar, 3, 1> rTSs(Hst.translation());
         return rTSs;
@@ -205,7 +211,8 @@ namespace RML {
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          int& source_link_idx,
                                          int& target_link_idx) {
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst = forward_kinematics(model, q, source_link_idx, target_link_idx);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
+            forward_kinematics(model, q, source_link_idx, target_link_idx);
         Eigen::Matrix<Scalar, 3, 1> rTSs(Hst.translation());
         return rTSs;
     }
@@ -223,7 +230,7 @@ namespace RML {
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          std::string& source_link_name,
                                          std::string& target_link_name) {
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Hst =
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
             forward_kinematics(model, q, source_link_name, target_link_name);
         return Hst.linear();
     }
@@ -370,7 +377,7 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> rISs = Eigen::Matrix<Scalar, 3, 1>::Zero();
         for (auto link : model.links) {
             // Compute the transform from the source link to the CoM of the link
-            Eigen::Transform<Scalar, 3, Eigen::Affine> Hsc =
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc =
                 forward_kinematics_com(model, q, source_link_name, link->name);
             // Compute the centre of mass of the link
             rISs = rISs + Hsc.translation() * link->mass;

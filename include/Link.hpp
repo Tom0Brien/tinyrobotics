@@ -26,8 +26,8 @@ namespace RML {
         int joint_idx = -1;
 
         /// @brief The links centre of mass.
-        Eigen::Transform<Scalar, 3, Eigen::Affine> centre_of_mass =
-            Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> centre_of_mass =
+            Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
         /// @brief The links inertia matrix [kg m^2].
         Eigen::Matrix<Scalar, 3, 3> inertia = Eigen::Matrix<Scalar, 3, 3>::Zero();

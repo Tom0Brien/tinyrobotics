@@ -68,7 +68,7 @@ namespace RML {
         Eigen::Matrix<Scalar, nq + nq, 1> dx_dt;
 
         /// @brief Vector of forward kinematics Data.
-        std::vector<Eigen::Transform<Scalar, 3, Eigen::Affine>> FK = {};
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> FK = {};
 
         /// @brief Number of reduced momentum states
         int nr = 0;

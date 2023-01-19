@@ -38,7 +38,7 @@ namespace RML {
             // Compute the contribution to the mass matrix of the link
             model.data.M += Jci.transpose() * Mi * Jci;
             // Compute the contribution to the potential energy of the link
-            Eigen::Transform<Scalar, 3, Eigen::Affine> Hbi_c =
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c =
                 forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
             model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
@@ -75,7 +75,7 @@ namespace RML {
         // Compute the potential energy
         for (int i = 0; i < model.n_links; i++) {
             // Compute the contribution to the potential energy of the link
-            Eigen::Transform<Scalar, 3, Eigen::Affine> Hbi_c =
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c =
                 forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
             model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
@@ -299,7 +299,7 @@ namespace RML {
         auto start = std::chrono::high_resolution_clock::now();
         for (auto link : model.links) {
             // Compute FK to centre of mass
-            Eigen::Transform<Scalar, 3, Eigen::Affine> Hbm =
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbm =
                 forward_kinematics_com<Scalar, nq>(model, q, base_link.name, link.name);
             Eigen::Matrix<Scalar, 3, 1> rMBb = Hbm.translation();
             // Add links contribution to potential energy m* g* h

@@ -128,7 +128,7 @@ namespace RML {
                Model<AutoDiffType, nq>& _model,
                std::string& _source_link_name,
                std::string& _target_link_name,
-               const Eigen::Transform<Scalar, 3, Eigen::Affine>& _desired_pose,
+               const Eigen::Transform<Scalar, 3, Eigen::Isometry>& _desired_pose,
                const Eigen::Matrix<Scalar, nq, 1>& _q0)
             : CostTerm(name) {
             model            = _model;
@@ -148,7 +148,7 @@ namespace RML {
         std::string target_link_name;
 
         /// @brief The desired pose of the target link in the source link frame.
-        Eigen::Transform<Scalar, 3, Eigen::Affine> desired_pose;
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> desired_pose;
 
         /// @brief The initial conditions for the IK solver.
         Eigen::Matrix<Scalar, nq, 1> q0;
@@ -167,10 +167,10 @@ namespace RML {
             const Model<AutoDiffType, nq>& model,
             const std::string& source_link_name,
             const std::string& target_link_name,
-            const Eigen::Transform<Scalar, 3, Eigen::Affine> Hst_desired,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst_desired,
             const Eigen::Matrix<AutoDiffType, nq, 1>& q0) {
             // Compute the forward kinematics from the source link to the target link using the current joint angles.
-            Eigen::Transform<AutoDiffType, 3, Eigen::Affine> Hst_current =
+            Eigen::Transform<AutoDiffType, 3, Eigen::Isometry> Hst_current =
                 forward_kinematics<AutoDiffType, nq>(model, q, source_link_name, target_link_name);
 
             // Compute the euler angles for current
@@ -255,7 +255,7 @@ namespace RML {
     Eigen::Matrix<Scalar, nq, 1> inverse_kinematics(Model<Scalar, nq>& model,
                                                     std::string& source_link_name,
                                                     std::string& target_link_name,
-                                                    const Eigen::Transform<Scalar, 3, Eigen::Affine>& desired_pose,
+                                                    const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
                                                     Eigen::Matrix<Scalar, nq, 1> q0) {
 
         // Cast model to autodiff type

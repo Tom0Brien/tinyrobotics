@@ -19,7 +19,7 @@ TEST_CASE("Test forward kinematics with link names", "[ForwardKinematics]") {
     // Compute FK for a given configuration
     auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
-    Eigen::Transform<double, 3, Eigen::Affine> Hst;
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst;
     std::string source_link_idx = "ground";
     std::string target_link_idx = "left_foot";
     auto start                  = high_resolution_clock::now();
@@ -36,7 +36,7 @@ TEST_CASE("Test forward kinematics with link idx", "[ForwardKinematics]") {
     // Compute FK for a given configuration
     auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
-    Eigen::Transform<double, 3, Eigen::Affine> Hst;
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst;
     int target_link_idx = 0;
     int source_link_idx = 6;
     auto start          = high_resolution_clock::now();
@@ -54,7 +54,7 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
     // Compute FK for a given configuration
     auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
-    Eigen::Transform<double, 3, Eigen::Affine> Hstc;
+    Eigen::Transform<double, 3, Eigen::Isometry> Hstc;
     std::string target_link_name = "left_leg";
     std::string source_link_name = "ground";
     Hstc                         = RML::forward_kinematics_com(robot_model, q, source_link_name, target_link_name);
@@ -126,7 +126,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
         // Make a random configuration
         auto q_random = nugus_model.home_configuration();
         // Compute the forward kinematics for the random configuration
-        Eigen::Transform<double, 3, Eigen::Affine> Hst_desired;
+        Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
         std::string target_link_name = "torso";
         std::string source_link_name = "left_hip_yaw";
         Hst_desired = RML::forward_kinematics(nugus_model, q_random, source_link_name, target_link_name);
@@ -140,7 +140,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
         total_time += duration.count();
         // std::cout << "Duration [ms]: " << duration.count() << std::endl;
         // Compute the forward kinematics for the solution
-        Eigen::Transform<double, 3, Eigen::Affine> Hst_solution;
+        Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
         Hst_solution = RML::forward_kinematics(nugus_model, q_solution, source_link_name, target_link_name);
 
         // Compute the euler angles for current
@@ -177,7 +177,7 @@ TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
         // Make a random configuration
         auto q_random = kuka_model.random_configuration();
         // Compute the forward kinematics for the random configuration
-        Eigen::Transform<double, 3, Eigen::Affine> Hst_desired;
+        Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
         std::string target_link_name = "kuka_arm_7_link";
         std::string source_link_name = "calib_kuka_arm_base_link";
         Hst_desired = RML::forward_kinematics(kuka_model, q_random, source_link_name, target_link_name);
@@ -190,7 +190,7 @@ TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
         auto duration = duration_cast<milliseconds>(stop - start);
         // std::cout << "Duration milliseconds: " << duration.count() << std::endl;
         // Compute the forward kinematics for the solution
-        Eigen::Transform<double, 3, Eigen::Affine> Hst_solution;
+        Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
         Hst_solution = RML::forward_kinematics(kuka_model, q_solution, source_link_name, target_link_name);
 
         // Compute the euler angles for current

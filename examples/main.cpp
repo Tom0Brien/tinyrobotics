@@ -78,52 +78,60 @@ Eigen::Matrix<double, 8, 1> impact_mapping(RML::Model<double, 4>& model,
 }
 
 int main(int argc, char* argv[]) {
-    // Create a robot model
-    std::string path_to_urdf = "../data/urdfs/simple.urdf";
-    auto model               = RML::model_from_urdf<double, 4>(path_to_urdf);
+    // // Create a robot model
+    // std::string path_to_urdf = "../data/urdfs/simple.urdf";
+    // auto model               = RML::model_from_urdf<double, 4>(path_to_urdf);
 
+    // // Show details of the robot model
+    // model.show_details();
+
+    // // Setup solver
+    // RML::SolverParams<double, 4> params;
+    // params.dt                 = 0.001;
+    // params.tspan              = std::pair<float, float>(0.0, 10.0);
+    // params.integration_method = RML::IntegrationMethod::RK4;
+    // params.active_constraints.push_back("left_foot");
+    // params.event_detection   = &eventDetection;
+    // params.event_is_terminal = true;
+
+    // // Run solver
+    // Eigen::Matrix<double, 4, 1> q0;
+    // q0 << -0.2170, 0.9762, 0.2187, -0.3234;
+
+    // Eigen::Matrix<double, 4, 1> p0;
+    // p0 << 0, 0, -16.9340, 1.8667;
+    // Eigen::Matrix<double, 4, 1> u0 = Eigen::Matrix<double, 4, 1>::Zero();
+    // auto results                   = RML::solver(model, q0, p0, u0, params);
+
+
+    // // Apply impact mapping
+    // Eigen::Matrix<double, 4, 1> q_minus = results.x_history.back().head(4);
+    // Eigen::Matrix<double, 4, 1> p_minus = results.x_history.back().tail(4);
+    // auto Ja                             = RML::Jv(model, q_minus, std::string("left_foot"));
+    // auto Jb                             = RML::Jv(model, q_minus, std::string("right_foot"));
+    // auto x_plus                         = impact_mapping(model, q_minus, p_minus, Ja, Jb);
+    // q0                                  = x_plus.head(4);
+    // p0                                  = x_plus.tail(4);
+    // swing_foot                          = "left_foot";
+    // planted_foot                        = "right_foot";
+    // params.active_constraints.clear();
+    // params.active_constraints.push_back("right_foot");
+    // auto results2 = RML::solver(model, q0, p0, u0, params);
+
+    // // Save the results
+    // RML::save_history(model, results.x_history);
+
+    // // Plot the results
+    // RML::plot_results(results);
+    // RML::plot_results(results2);
+
+    // Load in NUgus Model
+    std::string path_to_urdf = "../data/urdfs/nugus.urdf";
+    auto model               = RML::model_from_urdf<double, 20>(path_to_urdf);
     // Show details of the robot model
     model.show_details();
 
-    // Setup solver
-    RML::SolverParams<double, 4> params;
-    params.dt                 = 0.001;
-    params.tspan              = std::pair<float, float>(0.0, 10.0);
-    params.integration_method = RML::IntegrationMethod::RK4;
-    params.active_constraints.push_back("left_foot");
-    params.event_detection   = &eventDetection;
-    params.event_is_terminal = true;
-
-    // Run solver
-    Eigen::Matrix<double, 4, 1> q0;
-    q0 << -0.2170, 0.9762, 0.2187, -0.3234;
-
-    Eigen::Matrix<double, 4, 1> p0;
-    p0 << 0, 0, -16.9340, 1.8667;
-    Eigen::Matrix<double, 4, 1> u0 = Eigen::Matrix<double, 4, 1>::Zero();
-    auto results                   = RML::solver(model, q0, p0, u0, params);
-
-
-    // Apply impact mapping
-    Eigen::Matrix<double, 4, 1> q_minus = results.x_history.back().head(4);
-    Eigen::Matrix<double, 4, 1> p_minus = results.x_history.back().tail(4);
-    auto Ja                             = RML::Jv(model, q_minus, std::string("left_foot"));
-    auto Jb                             = RML::Jv(model, q_minus, std::string("right_foot"));
-    auto x_plus                         = impact_mapping(model, q_minus, p_minus, Ja, Jb);
-    q0                                  = x_plus.head(4);
-    p0                                  = x_plus.tail(4);
-    swing_foot                          = "left_foot";
-    planted_foot                        = "right_foot";
-    params.active_constraints.clear();
-    params.active_constraints.push_back("right_foot");
-    auto results2 = RML::solver(model, q0, p0, u0, params);
-
-    // Save the results
-    RML::save_history(model, results.x_history);
-
-    // Plot the results
-    RML::plot_results(results);
-    RML::plot_results(results2);
-
     return EXIT_SUCCESS;
+
+    // Write a sentence on control in robotics
 }

@@ -11,10 +11,10 @@ namespace RML {
      * @return The 4x4 inverse homogeneous transformation matrix
      */
     template <typename Scalar>
-    Eigen::Transform<Scalar, 3, Eigen::Affine> inv(const Eigen::Transform<Scalar, 3, Eigen::Affine>& T) {
-        Eigen::Transform<Scalar, 3, Eigen::Affine> Tinv = Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
-        Tinv.linear()                                   = T.linear().transpose();
-        Tinv.translation()                              = -T.linear().transpose() * T.translation();
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> inv(const Eigen::Transform<Scalar, 3, Eigen::Isometry>& T) {
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Tinv = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+        Tinv.linear()                                     = T.linear().transpose();
+        Tinv.translation()                                = -T.linear().transpose() * T.translation();
         return Tinv;
     }
 

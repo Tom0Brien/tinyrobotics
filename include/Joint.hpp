@@ -34,12 +34,12 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> axis = Eigen::Matrix<Scalar, 3, 1>::Zero();
 
         /// @brief The transform to the parent link
-        Eigen::Transform<Scalar, 3, Eigen::Affine> parent_transform =
-            Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> parent_transform =
+            Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
         /// @brief The transform to the child link
-        Eigen::Transform<Scalar, 3, Eigen::Affine> child_transform =
-            Eigen::Transform<Scalar, 3, Eigen::Affine>::Identity();
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> child_transform =
+            Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
         /// @brief The parent link name
         std::string parent_link_name = "";

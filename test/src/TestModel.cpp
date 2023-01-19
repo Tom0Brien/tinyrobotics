@@ -21,13 +21,13 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
     CHECK(robot_model.get_parent_link("ground").name == "world");
     CHECK(robot_model.get_link("ground").inertia == Eigen::Matrix<double, 3, 3>::Zero());
     CHECK(robot_model.get_link("ground").centre_of_mass.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model.get_link("body").name == "body");
     CHECK(robot_model.get_link("body").mass == 10.0);
     CHECK(robot_model.get_parent_link("body").name == "floating_base_z");
     CHECK(robot_model.get_link("body").inertia == Eigen::Matrix<double, 3, 3>::Zero());
     CHECK(robot_model.get_link("body").centre_of_mass.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model.get_link("body").child_links.size() == 2);
 
     // Check parsed fixed joint information
@@ -37,9 +37,9 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
     CHECK(robot_model.get_joint("hip_joint").child_link_name == "body");
     CHECK(robot_model.get_joint("hip_joint").axis == Eigen::Matrix<double, 3, 1>::Zero());
     CHECK(robot_model.get_joint("hip_joint").parent_transform.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model.get_joint("hip_joint").child_transform.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
 
     // Check parsed revolute joint information
     CHECK(robot_model.get_joint("left_hip_pitch").name == "left_hip_pitch");
@@ -48,9 +48,9 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
     CHECK(robot_model.get_joint("left_hip_pitch").child_link_name == "left_leg");
     CHECK(robot_model.get_joint("left_hip_pitch").axis == Eigen::Matrix<double, 3, 1>(0, -1, 0));
     CHECK(robot_model.get_joint("left_hip_pitch").parent_transform.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model.get_joint("left_hip_pitch").child_transform.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
 
     // Check parsed prismatic joint information
     CHECK(robot_model.get_joint("floating_base_x").name == "floating_base_x");
@@ -59,9 +59,9 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
     CHECK(robot_model.get_joint("floating_base_x").child_link_name == "floating_base_x");
     CHECK(robot_model.get_joint("floating_base_x").axis == Eigen::Matrix<double, 3, 1>(1, 0, 0));
     CHECK(robot_model.get_joint("floating_base_x").parent_transform.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model.get_joint("floating_base_x").child_transform.matrix()
-          == Eigen::Transform<double, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<double, 3, Eigen::Isometry>::Identity().matrix());
 };
 
 TEST_CASE("Create a Model of autodiff type", "[Model]") {
@@ -88,14 +88,14 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
     CHECK(robot_model_float.get_parent_link("ground").name == "world");
     CHECK(robot_model_float.get_link("ground").inertia == Eigen::Matrix<float, 3, 3>::Zero());
     CHECK(robot_model_float.get_link("ground").centre_of_mass.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
 
     CHECK(robot_model_float.get_link("body").name == "body");
     CHECK(robot_model_float.get_link("body").mass == 10.0);
     CHECK(robot_model_float.get_parent_link("body").name == "floating_base_z");
     CHECK(robot_model_float.get_link("body").inertia == Eigen::Matrix<float, 3, 3>::Zero());
     CHECK(robot_model_float.get_link("body").centre_of_mass.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model_float.get_link("body").child_links.size() == 2);
 
     // Check parsed fixed joint information
@@ -105,9 +105,9 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
     CHECK(robot_model_float.get_joint("hip_joint").child_link_name == "body");
     CHECK(robot_model_float.get_joint("hip_joint").axis == Eigen::Matrix<float, 3, 1>::Zero());
     CHECK(robot_model_float.get_joint("hip_joint").parent_transform.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model_float.get_joint("hip_joint").child_transform.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
 
     // Check parsed revolute joint information
     CHECK(robot_model_float.get_joint("left_hip_pitch").name == "left_hip_pitch");
@@ -116,9 +116,9 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
     CHECK(robot_model_float.get_joint("left_hip_pitch").child_link_name == "left_leg");
     CHECK(robot_model_float.get_joint("left_hip_pitch").axis == Eigen::Matrix<float, 3, 1>(0, -1, 0));
     CHECK(robot_model_float.get_joint("left_hip_pitch").parent_transform.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model_float.get_joint("left_hip_pitch").child_transform.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
 
     // Check parsed prismatic joint information
     CHECK(robot_model_float.get_joint("floating_base_x").name == "floating_base_x");
@@ -127,9 +127,9 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
     CHECK(robot_model_float.get_joint("floating_base_x").child_link_name == "floating_base_x");
     CHECK(robot_model_float.get_joint("floating_base_x").axis == Eigen::Matrix<float, 3, 1>(1, 0, 0));
     CHECK(robot_model_float.get_joint("floating_base_x").parent_transform.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(robot_model_float.get_joint("floating_base_x").child_transform.matrix()
-          == Eigen::Transform<float, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<float, 3, Eigen::Isometry>::Identity().matrix());
 };
 
 
@@ -152,14 +152,14 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
     CHECK(autodiff_model.get_parent_link("ground").name == "world");
     CHECK(autodiff_model.get_link("ground").inertia == Eigen::Matrix<autodiff::real, 3, 3>::Zero());
     CHECK(autodiff_model.get_link("ground").centre_of_mass.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
 
     CHECK(autodiff_model.get_link("body").name == "body");
     CHECK(autodiff_model.get_link("body").mass == 10.0);
     CHECK(autodiff_model.get_parent_link("body").name == "floating_base_z");
     CHECK(autodiff_model.get_link("body").inertia == Eigen::Matrix<autodiff::real, 3, 3>::Zero());
     CHECK(autodiff_model.get_link("body").centre_of_mass.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(autodiff_model.get_link("body").child_links.size() == 2);
 
     // Check parsed fixed joint information
@@ -169,9 +169,9 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
     CHECK(autodiff_model.get_joint("hip_joint").child_link_name == "body");
     CHECK(autodiff_model.get_joint("hip_joint").axis == Eigen::Matrix<autodiff::real, 3, 1>::Zero());
     CHECK(autodiff_model.get_joint("hip_joint").parent_transform.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(autodiff_model.get_joint("hip_joint").child_transform.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
 
     // Check parsed revolute joint information
     CHECK(autodiff_model.get_joint("left_hip_pitch").name == "left_hip_pitch");
@@ -180,9 +180,9 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
     CHECK(autodiff_model.get_joint("left_hip_pitch").child_link_name == "left_leg");
     CHECK(autodiff_model.get_joint("left_hip_pitch").axis == Eigen::Matrix<autodiff::real, 3, 1>(0, -1, 0));
     CHECK(autodiff_model.get_joint("left_hip_pitch").parent_transform.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(autodiff_model.get_joint("left_hip_pitch").child_transform.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
 
     // Check parsed prismatic joint information
     CHECK(autodiff_model.get_joint("floating_base_x").name == "floating_base_x");
@@ -191,7 +191,7 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
     CHECK(autodiff_model.get_joint("floating_base_x").child_link_name == "floating_base_x");
     CHECK(autodiff_model.get_joint("floating_base_x").axis == Eigen::Matrix<autodiff::real, 3, 1>(1, 0, 0));
     CHECK(autodiff_model.get_joint("floating_base_x").parent_transform.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
     CHECK(autodiff_model.get_joint("floating_base_x").child_transform.matrix()
-          == Eigen::Transform<autodiff::real, 3, Eigen::Affine>::Identity().matrix());
+          == Eigen::Transform<autodiff::real, 3, Eigen::Isometry>::Identity().matrix());
 };
