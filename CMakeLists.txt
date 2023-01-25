@@ -46,7 +46,6 @@ set(LIBS
     ${PYTHON_LIBRARIES})
 
 # Source files
-
 set(DIR_SRC examples)
 set(DIR_TEST_SRC test/src)
 
@@ -56,7 +55,7 @@ file(GLOB SRC_BIN CONFIGURE_DEPENDS ${DIR_SRC}/*.cpp ${DIR_SRC}/*.h
 
 # Static library
 set(SRC_LIB ${SRC_BIN})
-list(FILTER SRC_LIB EXCLUDE REGEX ".*main.cpp$")
+list(FILTER SRC_LIB EXCLUDE REGEX ".cpp$")
 
 # Unit tests
 file(GLOB SRC_TEST CONFIGURE_DEPENDS ${DIR_TEST_SRC}/*.cpp ${DIR_TEST_SRC}/*.h
@@ -69,12 +68,17 @@ if(SRC_LIB)
   add_library(${TARGET_LIB} ${SRC_LIB} INTERFACE)
 endif()
 
-# Application
-add_executable(${TARGET_BIN} examples/main.cpp)
-if(SRC_LIB)
-  target_link_libraries(${TARGET_BIN} ${TARGET_LIB})
-endif()
-target_link_libraries(${TARGET_BIN} ${LIBS})
+# Examples
+set(examples dynamics inverse_kinematics)
+
+foreach(example IN LISTS examples)
+  message(STATUS "${example}")
+  add_executable(${example} examples/${example}.cpp)
+  if(SRC_LIB)
+    target_link_libraries(${example} ${TARGET_LIB})
+  endif()
+  target_link_libraries(${example} ${LIBS})
+endforeach()
 
 # Unit tests
 add_executable(${TARGET_TEST} ${SRC_TEST})
