@@ -29,8 +29,9 @@ std::string world_frame  = "world";
 bool eventDetection(RML::Model<double, 4>& model, Eigen::Matrix<double, 4, 1>& q, Eigen::Matrix<double, 4, 1>& p) {
     // Get the position of the left foot
     Eigen::Matrix<double, 3, 1> right_foot_pos = RML::position(model, q, world_frame, swing_foot);
-    // Rotate into ground frame
-    Eigen::Matrix<double, 3, 3> Ry                    = RML::roty(-0.0524);
+    // Rotate into ground frame around y axis by -3 degrees
+    Eigen::Matrix<double, 3, 3> Ry =
+        Eigen::AngleAxisd(-3.0 * M_PI / 180.0, Eigen::Vector3d::UnitY()).toRotationMatrix();
     Eigen::Matrix<double, 3, 1> right_foot_pos_ground = Ry * right_foot_pos;
 
     Eigen::Matrix<double, 3, 1> swing_from_planted = RML::position(model, q, planted_foot, swing_foot);

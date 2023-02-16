@@ -38,55 +38,20 @@ namespace RML {
     template <typename Scalar>
     Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> null(
         const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& A) {
-        // Faster method but gives different results to MATLAB's null function
-        // Eigen::CompleteOrthogonalDecomposition<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> cod;
-        // cod.compute(A);
-        // // Find URV^T
-        // Eigen::MatrixXd V          = cod.matrixZ().transpose();
-        // Eigen::MatrixXd null_space = V.block(0, cod.rank(), V.rows(), V.cols() - cod.rank());
-        // Eigen::MatrixXd P          = cod.colsPermutation();
-        // null_space                 = P * null_space;
-
-        // Results in same results as MATLAB's null function
         Eigen::FullPivLU<Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>> lu(A);
         Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> A_null_space = lu.kernel();
         return A_null_space;
     }
 
     /**
-     * @brief Computes the rotation matrix associated with rotation around the X-axis by theta
-     * @param theta The angle of rotation in radians
-     * @return The rotation matrix
+     * @brief Computes the error between two quaternions
+     * @param q1 The first quaternion
+     * @param q2 The second quaternion
+     * @return The error between the two quaternions
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> rotx(const Scalar& theta) {
-        Eigen::Matrix<Scalar, 3, 3> Rx;
-        Rx << 1, 0, 0, 0, cos(theta), -sin(theta), 0, sin(theta), cos(theta);
-        return Rx;
-    }
-
-    /**
-     * @brief Computes the rotation matrix associated with rotation around the Y-axis by theta
-     * @param theta The angle of rotation in radians
-     * @return The rotation matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> roty(const Scalar& theta) {
-        Eigen::Matrix<Scalar, 3, 3> Ry;
-        Ry << cos(theta), 0, sin(theta), 0, 1, 0, -sin(theta), 0, cos(theta);
-        return Ry;
-    }
-
-    /**
-     * @brief Computes the rotation matrix associated with rotation around the Z-axis by theta
-     * @param theta The angle of rotation in radians
-     * @return The rotation matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> rotz(const Scalar& theta) {
-        Eigen::Matrix<Scalar, 3, 3> Rz;
-        Rz << cos(theta), -sin(theta), 0, sin(theta), cos(theta), 0, 0, 0, 1;
-        return Rz;
+    Scalar quaternion_error(const Eigen::Quaternion<Scalar>& q1, const Eigen::Quaternion<Scalar>& q2) {
+        return (q1.inverse() * q2).vec().norm();
     }
 
 }  // namespace RML
