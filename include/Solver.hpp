@@ -7,7 +7,6 @@
 
 #include "Dynamics.hpp"
 #include "Model.hpp"
-#include "matplotlibcpp.h"
 
 namespace RML {
 
@@ -192,7 +191,7 @@ namespace RML {
             }
         }
         // Write the json result to a file
-        std::ofstream o("test_joint_set.json");
+        std::ofstream o(model.name + "solver_history.json");
         o << std::setw(4) << json_q_history << std::endl;
     }
 
@@ -251,66 +250,6 @@ namespace RML {
             }
         }
         return results;
-    }
-
-    /**
-     * @brief Plot the results of a simulation.
-     * @param results The results of the simulation.
-     */
-    template <typename Scalar, int nq>
-    void plot_results(const SolverResults<Scalar, nq>& results) {
-        // Plot the generalised coordinates against time
-        for (int i = 0; i < nq; i++) {
-            std::vector<Scalar> x;
-            // Add the results of the states to the vector x
-            for (int j = 0; j < results.x_history.size(); j++) {
-                x.push_back(results.x_history[j](i));
-            }
-            // Plot the results
-            matplotlibcpp::suptitle("Simulation Results");
-            matplotlibcpp::subplot2grid(nq, 3, i, 0);
-            matplotlibcpp::plot(results.time, x);
-            matplotlibcpp::title("Generalised Coordinate q" + std::to_string(i));
-            matplotlibcpp::xlabel("Time [s]");
-            matplotlibcpp::ylabel("q" + std::to_string(i));
-            matplotlibcpp::grid(true);
-            matplotlibcpp::show(false);
-        }
-
-        // Plot the generalised momentum against time
-        for (int i = 0; i < nq; i++) {
-            std::vector<Scalar> x;
-            // Add the results of the states to the vector x
-            for (int j = 0; j < results.x_history.size(); j++) {
-                x.push_back(results.x_history[j](nq + i));
-            }
-            // Plot the results
-            matplotlibcpp::subplot2grid(nq, 3, i, 1);
-            matplotlibcpp::plot(results.time, x);
-            matplotlibcpp::title("Generalised Momentum p" + std::to_string(i));
-            matplotlibcpp::xlabel("Time [s]");
-            matplotlibcpp::ylabel("p" + std::to_string(i));
-            matplotlibcpp::grid(true);
-            matplotlibcpp::show(false);
-        }
-
-        // Plot the inputs against time
-        for (int i = 0; i < nq; i++) {
-            std::vector<Scalar> u;
-            // Add the results of the states to the vector x2
-            for (int j = 0; j < results.u_history.size(); j++) {
-                u.push_back(results.u_history[j](i));
-            }
-            // Plot the results
-            matplotlibcpp::subplot2grid(nq, 3, i, 2);
-            matplotlibcpp::plot(results.time, u);
-            matplotlibcpp::title("Input u" + std::to_string(i));
-            matplotlibcpp::xlabel("Time [s]");
-            matplotlibcpp::ylabel("u" + std::to_string(i));
-            matplotlibcpp::grid(true);
-            matplotlibcpp::show(false);
-        }
-        matplotlibcpp::show(true);
     }
 
 }  // namespace RML

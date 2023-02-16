@@ -3,7 +3,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <tinyxml2.h>
 
 namespace RML {
 

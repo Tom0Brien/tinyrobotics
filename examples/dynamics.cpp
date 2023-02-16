@@ -122,8 +122,5 @@ int main(int argc, char* argv[]) {
     // Save the results
     RML::save_history(model, results.x_history);
 
-    // Plot the results
-    RML::plot_results(results);
-    RML::plot_results(results2);
     return EXIT_SUCCESS;
 }

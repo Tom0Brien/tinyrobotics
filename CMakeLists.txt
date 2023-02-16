@@ -23,20 +23,12 @@ find_package(Catch2 2.13 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(autodiff REQUIRED)
 find_package(ifopt REQUIRED)
-find_package(TinyXML2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
-find_package(matplotlib_cpp REQUIRED)
-find_package(PythonLibs REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
 # Libraries
-set(LIBS
-    Eigen3::Eigen
-    autodiff::autodiff
-    ifopt::ifopt_ipopt
-    tinyxml2::tinyxml2
-    nlohmann_json::nlohmann_json
-    matplotlib_cpp::matplotlib_cpp
-    ${PYTHON_LIBRARIES})
+set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt
+         nlohmann_json::nlohmann_json tinyxml2::tinyxml2)
 
 # Target names
 set(TARGET_LIB EigenRoboticsLib)

@@ -9,7 +9,6 @@
 #include <map>
 #include <memory>
 #include <sstream>
-#include <tinyxml2.h>
 
 #include "Data.hpp"
 #include "Joint.hpp"
