@@ -185,15 +185,18 @@ namespace RML {
 
             Eigen::Matrix<AutoDiffType, nq, 1> q_diff = q - q0;
 
+            // TODO: Move hard-coded values to a param struct
             // Quadratic cost function q^T*W*q + (k(q) - x*)^TK*(l(q) - x*)))
-            Eigen::Matrix<AutoDiffType, nq, nq> W = Eigen::Matrix<AutoDiffType, nq, nq>::Identity(model.n_q, model.n_q);
-            Eigen::Matrix<AutoDiffType, 3, 3> K   = Eigen::Matrix<AutoDiffType, 3, 3>::Identity();
+            Eigen::Matrix<AutoDiffType, nq, nq> W =
+                1e-1 * Eigen::Matrix<AutoDiffType, nq, nq>::Identity(model.n_q, model.n_q);
+            Eigen::Matrix<AutoDiffType, 3, 3> K = 10 * Eigen::Matrix<AutoDiffType, 3, 3>::Identity();
+            Eigen::Matrix<AutoDiffType, 1, 1> O = 100 * Eigen::Matrix<AutoDiffType, 1, 1>::Identity();
 
             // Compute the cost function
             Eigen::Matrix<AutoDiffType, 1, 1> cost =
-                ((Hst_current.translation() - Hst_desired.translation()).transpose() * 10 * K
+                ((Hst_current.translation() - Hst_desired.translation()).transpose() * K
                  * (Hst_current.translation() - Hst_desired.translation()))
-                + (q - q0).transpose() * 1e-1 * W * (q - q0) + o_error.transpose() * 100 * o_error;
+                + (q - q0).transpose() * W * (q - q0) + o_error.transpose() * O * o_error;
 
             return cost;
         }
@@ -274,7 +277,7 @@ namespace RML {
         ifopt::IpoptSolver ipopt;
         ipopt.SetOption("mu_strategy", "adaptive");
         ipopt.SetOption("jacobian_approximation", "exact");
-        ipopt.SetOption("max_iter", 1000);
+        ipopt.SetOption("max_iter", 10000);
         ipopt.SetOption("tol", 1e-3);
         ipopt.SetOption("print_level", 0);
         ipopt.SetOption("sb", "yes");
