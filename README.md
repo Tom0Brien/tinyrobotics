@@ -1,4 +1,4 @@
-Robot Modelling Library (RML)
+EigenRobotics
 ===========
 
 This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) for modelling robots defined by a [URDF](http://wiki.ros.org/urdf) (Unified Robot Description Format).
@@ -37,3 +37,19 @@ This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/inde
   make
   sudo make install # copies files in this folder to /usr/local/*
   ```
+
+## Example
+The code below demonstrates how to load in a URDF model and compute the forward kinematics to a link.
+
+```c++
+// Create a robot model with 4 joints
+std::string path_to_urdf = "../data/urdfs/simple.urdf";
+const int n_joints       = 4;
+auto model               = RML::model_from_urdf<double, n_joints>(path_to_urdf);
+
+// Create a configuration vector of zeros
+auto q0 = model.home_configuration();
+
+// Compute the forward kinematics to the left foot at the home configuration
+auto H0 = RML::forward_kinematics(model, q0, "left_foot");
+```
