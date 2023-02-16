@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Set the project name
-project(RML)
+project(EigenRobotics VERSION 1.0)
 
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -18,6 +18,7 @@ endif()
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
+# Find required packages
 find_package(Catch2 2.13 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(autodiff REQUIRED)
@@ -26,14 +27,6 @@ find_package(TinyXML2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(matplotlib_cpp REQUIRED)
 find_package(PythonLibs REQUIRED)
-
-include_directories(${EIGEN3_INCLUDE_DIR} ${TinyXML2_INCLUDE_DIRS}
-                    ${PYTHON_INCLUDE_DIRS})
-
-# Target names
-set(TARGET_LIB common)
-set(TARGET_BIN ${PROJECT_NAME})
-set(TARGET_TEST tests)
 
 # Libraries
 set(LIBS
@@ -45,44 +38,37 @@ set(LIBS
     matplotlib_cpp::matplotlib_cpp
     ${PYTHON_LIBRARIES})
 
+# Target names
+set(TARGET_LIB EigenRoboticsLib)
+set(TARGET_BIN EigenRoboticsExecutable)
+set(TARGET_TEST EigenRoboticsTests)
+
 # Source files
-set(DIR_SRC examples)
-set(DIR_TEST_SRC test/src)
-
-# Application
-file(GLOB SRC_BIN CONFIGURE_DEPENDS ${DIR_SRC}/*.cpp ${DIR_SRC}/*.h
-     ${DIR_SRC}/*.hpp)
+file(GLOB SRC_FILES "include/*.hpp")
+message(STATUS "Found source files: ${SRC_FILES}")
+file(GLOB SRC_BIN "examples/*.cpp")
+file(GLOB SRC_TEST "test/*.cpp")
 
 # Static library
-set(SRC_LIB ${SRC_BIN})
-list(FILTER SRC_LIB EXCLUDE REGEX ".cpp$")
-
-# Unit tests
-file(GLOB SRC_TEST CONFIGURE_DEPENDS ${DIR_TEST_SRC}/*.cpp ${DIR_TEST_SRC}/*.h
-     ${DIR_TEST_SRC}/*.hpp)
-
-# Targets
-
-# Static library
-if(SRC_LIB)
-  add_library(${TARGET_LIB} ${SRC_LIB} INTERFACE)
+if(SRC_FILES)
+  add_library(${TARGET_LIB} STATIC ${SRC_FILES})
+  target_link_libraries(${TARGET_LIB} ${LIBS})
 endif()
+set_target_properties(${TARGET_LIB} PROPERTIES LINKER_LANGUAGE CXX)
 
 # Examples
-set(examples dynamics inverse_kinematics)
-
-foreach(example IN LISTS examples)
-  message(STATUS "${example}")
-  add_executable(${example} examples/${example}.cpp)
-  if(SRC_LIB)
-    target_link_libraries(${example} ${TARGET_LIB})
+foreach(SRC_FILE ${SRC_BIN})
+  get_filename_component(EXAMPLE ${SRC_FILE} NAME_WE)
+  add_executable(${EXAMPLE} ${SRC_FILE})
+  if(SRC_FILES)
+    target_link_libraries(${EXAMPLE} ${TARGET_LIB})
   endif()
-  target_link_libraries(${example} ${LIBS})
+  target_link_libraries(${EXAMPLE} ${LIBS})
 endforeach()
 
 # Unit tests
 add_executable(${TARGET_TEST} ${SRC_TEST})
-if(SRC_LIB)
+if(SRC_FILES)
   target_link_libraries(${TARGET_TEST} ${TARGET_LIB})
 endif()
 target_link_libraries(${TARGET_TEST} ${LIBS})
@@ -92,13 +78,6 @@ target_link_libraries(${TARGET_TEST} Catch2::Catch2)
 add_custom_target(
   run_tests ALL
   COMMAND ${TARGET_TEST} --use-colour yes
-  DEPENDS ${TARGET_TEST}
-  DEPENDS ${TARGET_BIN}
+  DEPENDS ${TARGET_TEST} ${TARGET_LIB}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMENT "Running tests")
-
-# CTest integration
-
-# include(CTest) include(Catch) catch_discover_tests(${TARGET_TEST})
-
-set_property(GLOBAL PROPERTY TARGET_MESSAGES OFF)

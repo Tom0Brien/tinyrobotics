@@ -3,9 +3,9 @@
 #include <ifopt/problem.h>
 #include <string>
 
-#include "../../include/InverseKinematics.hpp"
-#include "../../include/Kinematics.hpp"
-#include "../../include/UrdfParser.hpp"
+#include "../include/InverseKinematics.hpp"
+#include "../include/Kinematics.hpp"
+#include "../include/UrdfParser.hpp"
 #include "catch2/catch.hpp"
 
 using namespace ifopt;

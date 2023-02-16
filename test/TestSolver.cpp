@@ -6,8 +6,8 @@
 #include <string>
 #include <unsupported/Eigen/AutoDiff>
 
-#include "../../include/Solver.hpp"
-#include "../../include/UrdfParser.hpp"
+#include "../include/Solver.hpp"
+#include "../include/UrdfParser.hpp"
 #include "catch2/catch.hpp"
 
 

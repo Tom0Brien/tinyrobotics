@@ -5,8 +5,8 @@
 #include <chrono>
 #include <string>
 
-#include "../../include/Dynamics.hpp"
-#include "../../include/UrdfParser.hpp"
+#include "../include/Dynamics.hpp"
+#include "../include/UrdfParser.hpp"
 #include "catch2/catch.hpp"
 
 TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {

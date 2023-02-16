@@ -1,9 +1,8 @@
 #define CATCH_Solver
 #include <iostream>
 
-#include "../../include/Math.hpp"
+#include "../include/Math.hpp"
 #include "catch2/catch.hpp"
-
 
 TEST_CASE("Test null space", "[Math]") {
 

@@ -3,7 +3,7 @@
 #include <autodiff/forward/real/eigen.hpp>
 #include <string>
 
-#include "../../include/UrdfParser.hpp"
+#include "../include/UrdfParser.hpp"
 #include "catch2/catch.hpp"
 
 TEST_CASE("Load a model with inertial information", "[Model]") {
