@@ -18,13 +18,6 @@ endif()
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-include(GNUInstallDirs)
-
-# Installation paths
-set(INSTALL_INCLUDE_DIR
-    ${CMAKE_INSTALL_INCLUDEDIR}/eigenrobotics
-    CACHE PATH "Installation directory for header files")
-
 # Find required packages
 find_package(Catch2 2.13 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
@@ -44,6 +37,7 @@ set(TARGET_TEST EigenRoboticsTests)
 
 # Source files
 file(GLOB SRC_FILES "include/*.hpp")
+message(STATUS "Found source files: ${SRC_FILES}")
 file(GLOB SRC_BIN "examples/*.cpp")
 file(GLOB SRC_TEST "test/*.cpp")
 
@@ -51,7 +45,6 @@ file(GLOB SRC_TEST "test/*.cpp")
 if(SRC_FILES)
   add_library(${TARGET_LIB} STATIC ${SRC_FILES})
   target_link_libraries(${TARGET_LIB} ${LIBS})
-  install(TARGETS ${TARGET_LIB} ARCHIVE DESTINATION ${INSTALL_INCLUDE_DIR})
 endif()
 set_target_properties(${TARGET_LIB} PROPERTIES LINKER_LANGUAGE CXX)
 
@@ -80,6 +73,3 @@ add_custom_target(
   DEPENDS ${TARGET_TEST} ${TARGET_LIB}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMENT "Running tests")
-
-# Install targets
-install(DIRECTORY include/ DESTINATION ${INSTALL_INCLUDE_DIR})
