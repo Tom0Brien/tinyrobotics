@@ -45,6 +45,12 @@ namespace RML {
         /// @brief Vector of joints in the robot model.
         std::vector<Joint<Scalar>> joints = {};
 
+        /// @brief Vector of spatial transformations
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xtree = {};
+
+        // @brief Vector of spatial inertia matrices
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> I = {};
+
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 

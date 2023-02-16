@@ -10,6 +10,8 @@ int main(int argc, char* argv[]) {
     const int n_joints       = 4;
     auto model               = RML::model_from_urdf<double, n_joints>(path_to_urdf);
 
+    std::cout << "Model.base_link_idx: " << model.base_link_idx << std::endl;
+
     // Create a configuration vector of zeros
     auto q0 = model.home_configuration();
 

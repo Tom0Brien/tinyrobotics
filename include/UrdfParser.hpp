@@ -3,6 +3,7 @@
 
 #include <tinyxml2.h>
 
+#include "Math.hpp"
 #include "Model.hpp"
 
 namespace RML {
@@ -375,6 +376,10 @@ namespace RML {
                 link.link_idx = model.links.size();
                 // Add the link to the model
                 model.links.push_back(link);
+                // Add the spatial inertia to the model
+                Eigen::Matrix<Scalar, 6, 6> I =
+                    RML::spatial_inertia<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
+                model.I.push_back(I);
             }
         }
 
@@ -397,6 +402,9 @@ namespace RML {
                 // Assign the joint index
                 joint.joint_idx = model.joints.size();
                 model.joints.push_back(joint);
+                // Add spatial transform to the Xtree
+                Eigen::Matrix<Scalar, 6, 6> X_T = RML::xlt(joint.parent_transform.matrix());
+                model.Xtree.push_back(X_T);
             }
         }
 

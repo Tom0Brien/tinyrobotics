@@ -396,6 +396,143 @@ namespace RML {
         holonomic_reduction<autodiff::real, nq>(autodiff_model, q_real, M, dfcdqh);
     };
 
+    /**
+     * @brief Compute the joint transform and motion subspace matrices for a joint of the given type.
+     * @param type The joint type.
+     * @param q The joint position variable.
+     * @param Xj The joint transform matrix.
+     * @param S The motion subspace matrix.
+     */
+    template <typename Scalar>
+    void jcalc(const RML::Joint<Scalar>& joint,
+               const Scalar& q,
+               Eigen::Matrix<Scalar, 6, 6>& Xj,
+               Eigen::Matrix<Scalar, 6, 1>& S) {
+
+        RML::JointType joint_type = joint.type;
+        switch (joint_type) {
+            case RML::JointType::REVOLUTE: {
+                Xj.setZero();
+                Eigen::Matrix<Scalar, 3, 3> R =
+                    Eigen::AngleAxis<Scalar>(q,
+                                             Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]))
+                        .toRotationMatrix();
+                Xj.block(0, 0, 3, 3) = R;
+                Xj.block(3, 3, 3, 3) = R;
+
+                S << 0, 0, 0, joint.axis[0], joint.axis[1], joint.axis[2];
+            }
+            case RML::JointType::PRISMATIC: {
+                Eigen::Matrix<Scalar, 3, 1> joint_axis = joint.axis;
+                Xj                                     = RML::xlt(joint_axis);
+                S << 0, 0, 0, joint_axis[0], joint_axis[1], joint_axis[2];
+                break;
+            }
+            case RML::JointType::FIXED: {
+                Xj.setIdentity();
+                S.setZero();
+                break;
+            }
+            default: {
+                std::cout << "Joint type not supported" << std::endl;
+                break;
+            }
+        }
+    }
+
+    /**
+     * @brief Compute the forward dynamics of the robot model via Articulated-Body Algorithm
+     * @param model The robot model.
+     * @param q The joint configuration of the robot.
+     * @param qd The joint velocity of the robot.
+     * @param tau The joint torque of the robot.
+     * @param f_ext The external forces acting on the robot.
+     * @return qdd The joint acceleration of the robot.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(Model<Scalar, nq>& model,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& tau,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& f_ext) {
+        // Get the acceleration due to gravity
+        Eigen::Matrix<Scalar, 6, 1> g = Eigen::Matrix<Scalar, 6, 1>::Zero();
+        g.tail(3)                     = model.gravity;
+
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup;
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> S;
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> v;
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> c;
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> IA;
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> pA;
+
+        for (int i = 0; i < model.n_q; i++) {
+            // Compute the joint transform and motion subspace matrices
+            Eigen::Matrix<Scalar, 6, 6> Xj;
+            Eigen::Matrix<Scalar, 6, 1> S_i;
+            jcalc(model.joints[i], q(i), Xj, S_i);
+            S.push_back(S_i);
+
+            Eigen::Matrix<Scalar, 6, 1> vJ    = S_i * qd(i);
+            Eigen::Matrix<Scalar, 6, 6> Xup_i = Xj * model.Xtree[i];
+            Xup.push_back(Xup_i);
+            // Check if the parent link is the base link
+            if (model.links[model.links[i].parent_link_idx].link_idx == model.base_link_idx) {
+                v.push_back(vJ);
+                c.push_back(Eigen::Matrix<Scalar, 6, 1>::Zero());
+            }
+            else {
+                Eigen::Matrix<Scalar, 6, 1> v_i = Xup_i * v[model.links[i].parent_link_idx] + vJ;
+                Eigen::Matrix<Scalar, 6, 1> c_i = RML::crm(v_i) * vJ;
+                v.push_back(v_i);
+                c.push_back(c_i);
+            }
+            Eigen::Matrix<Scalar, 6, 6> IA_i = model.I[i];
+            Eigen::Matrix<Scalar, 6, 1> pA_i = RML::crf(v[i]) * model.I[i] * v[i];
+            IA.push_back(IA_i);
+            pA.push_back(pA_i);
+        }
+
+        // TODO: If the external force is given, apply external force here
+
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> U;
+        std::vector<Eigen::Matrix<Scalar, 1, 1>> d;
+        std::vector<Eigen::Matrix<Scalar, 1, 1>> u;
+
+        for (int i = model.n_q - 1; i >= 0; i--) {
+            Eigen::Matrix<Scalar, 6, 1> U_i = IA[i] * S[i];
+            Eigen::Matrix<Scalar, 1, 1> d_i = S[i].transpose() * U_i;
+            Eigen::Matrix<Scalar, 1, 1> u_i = Eigen::Matrix<Scalar, 1, 1>(tau(i) - S[i].transpose() * pA[i]);
+            U.push_back(U_i);
+            d.push_back(d_i);
+            u.push_back(u_i);
+            if (!(model.links[model.links[i].parent_link_idx].link_idx == model.base_link_idx)) {
+                Eigen::Matrix<Scalar, 6, 6> Ia = IA[i] - (U_i * d[i].inverse()) * U_i.transpose();
+                Eigen::Matrix<Scalar, 6, 1> pa = pA[i] + Ia * c[i] + U[i] * (u[i] * d[i].inverse());
+                IA[model.links[i].parent_link_idx] =
+                    IA[model.links[i].parent_link_idx] + Xup[i].transpose() * Ia * Xup[i];
+                pA[model.links[i].parent_link_idx] = pA[model.links[i].parent_link_idx] + Xup[i].transpose() * pa;
+            }
+        }
+
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> a;
+        Eigen::Matrix<Scalar, nq, 1> qdd = Eigen::Matrix<Scalar, nq, 1>::Zero();
+
+        for (int i = 0; i < model.n_q; i++) {
+            if (model.links[model.links[i].parent_link_idx].link_idx == 0) {
+                Eigen::Matrix<Scalar, 6, 1> a_i = Xup[i] * -g + c[i];
+                a.push_back(a_i);
+            }
+            else {
+                Eigen::Matrix<Scalar, 6, 1> a_i = Xup[i] * a[model.links[i].parent_link_idx] + c[i];
+                a.push_back(a_i);
+            }
+            qdd(i) = (u[i] - U[i].transpose() * a[i]) * d[i].inverse();
+            a[i]   = a[i] + S[i] * qdd(i);
+        }
+        return qdd;
+    }
+
 }  // namespace RML
 
 #endif

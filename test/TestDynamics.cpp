@@ -81,3 +81,26 @@ TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
     dx_dt_expected << 1.0111, 0.5284, 4.2528, 5.3216, 1.0000, -194.2000, -7.5397, 28.1456;
     REQUIRE(robot_model.data.dx_dt.isApprox(dx_dt_expected, 1e-4));
 };
+
+TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for simple model", "[Dynamics]") {
+
+    auto robot_model = RML::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+    // Create some inputs
+    Eigen::Matrix<double, 4, 1> q;
+    q << 1, 2, 3, 4;
+    Eigen::Matrix<double, 4, 1> qd;
+    qd << 1, 2, 3, 4;
+    Eigen::Matrix<double, 4, 1> tau;
+    tau << 1, 2, 3, 4;
+    Eigen::Matrix<double, 4, 1> f_ext = Eigen::Matrix<double, 4, 1>::Zero();
+
+    // Start the timer
+    auto start                      = std::chrono::high_resolution_clock::now();
+    Eigen::Matrix<double, 4, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
+    // Stop the timer
+    auto stop     = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Forward Dynamics via Articulated-Body Algorithm computation took " << duration.count()
+              << " microseconds" << std::endl;
+    std::cout << "qdd = " << qdd << std::endl;
+}
