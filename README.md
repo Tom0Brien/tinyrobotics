@@ -1,4 +1,4 @@
-Robot Modelling Library (RML)
+EigenRobotics
 ===========
 
 This is a lightweight C++ library using [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) for modelling robots defined by a [URDF](http://wiki.ros.org/urdf) (Unified Robot Description Format).
