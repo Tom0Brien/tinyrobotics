@@ -422,6 +422,7 @@ namespace RML {
             model.parent.push_back(model.links[i].parent_link_idx - 1);
         }
 
+
         // Resize the results structure with number of actuatable joints
         model.data.resize(model.n_q);
 
