@@ -84,19 +84,22 @@ TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for simple model", "[Dynamics]") {
 
-    auto robot_model = RML::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+    const int n_joints = 2;
+    auto robot_model   = RML::model_from_urdf<double, n_joints>("data/urdfs/2_link.urdf");
+    robot_model.show_details();
+
     // Create some inputs
-    Eigen::Matrix<double, 4, 1> q;
-    q << 1, 2, 3, 4;
-    Eigen::Matrix<double, 4, 1> qd;
-    qd << 1, 2, 3, 4;
-    Eigen::Matrix<double, 4, 1> tau;
-    tau << 1, 2, 3, 4;
-    Eigen::Matrix<double, 4, 1> f_ext = Eigen::Matrix<double, 4, 1>::Zero();
+    Eigen::Matrix<double, n_joints, 1> q;
+    q << 1, 2;
+    Eigen::Matrix<double, n_joints, 1> qd;
+    qd << 1, 2;
+    Eigen::Matrix<double, n_joints, 1> tau;
+    tau << 1, 2;
+    Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
 
     // Start the timer
-    auto start                      = std::chrono::high_resolution_clock::now();
-    Eigen::Matrix<double, 4, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
+    auto start                             = std::chrono::high_resolution_clock::now();
+    Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
     // Stop the timer
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);

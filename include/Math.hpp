@@ -212,21 +212,13 @@ namespace RML {
      */
     template <typename Scalar>
     Eigen::Matrix<Scalar, 6, 6> xlt(const Eigen::Matrix<Scalar, 4, 4>& H) {
-        Eigen::Matrix<Scalar, 6, 6> R;
-        R.setZero();
-        // Compute the spatial rotation matrix
-        R.block(0, 0, 3, 3) = H.block(0, 0, 3, 3);
-        R.block(3, 3, 3, 3) = H.block(0, 0, 3, 3);
-        // Compute the spatial translation matrix
         Eigen::Matrix<Scalar, 6, 6> X;
         X.setZero();
+        X.block(0, 0, 3, 3)           = H.block(0, 0, 3, 3);
+        X.block(3, 3, 3, 3)           = H.block(0, 0, 3, 3);
         Eigen::Matrix<Scalar, 3, 1> r = H.block(0, 3, 3, 1);
-        X.block(3, 0, 3, 3)           = -RML::skew(r);
-        // Compute the spatial coordinate transform matrix
-        Eigen::Matrix<Scalar, 6, 6> Xlt;
-        Xlt.setZero();
-        Xlt = R * X;
-        return Xlt;
+        X.block(3, 0, 3, 3)           = -skew(r) * H.block(0, 0, 3, 3);
+        return X;
     }
 
     /**
