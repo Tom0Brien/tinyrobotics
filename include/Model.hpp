@@ -51,6 +51,9 @@ namespace RML {
         // @brief Vector of spatial inertia matrices
         std::vector<Eigen::Matrix<Scalar, 6, 6>> I = {};
 
+        // @brief Vector of links parent indices
+        std::vector<int> parent = {};
+
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 

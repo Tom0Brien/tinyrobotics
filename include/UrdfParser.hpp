@@ -414,6 +414,14 @@ namespace RML {
         model.n_joints = model.joints.size();
         model.n_links  = model.links.size();
 
+        // Remove the base links inertia from the inertia list
+        model.I.erase(model.I.begin() + model.base_link_idx);
+
+        // Add the indices of the parent links to the model
+        for (int i = 1; i < model.n_links; i++) {
+            model.parent.push_back(model.links[i].parent_link_idx - 1);
+        }
+
         // Resize the results structure with number of actuatable joints
         model.data.resize(model.n_q);
 

@@ -468,91 +468,79 @@ namespace RML {
         std::vector<Eigen::Matrix<Scalar, 6, 6>> IA;
         std::vector<Eigen::Matrix<Scalar, 6, 1>> pA;
 
-        std::cout << "model.base_link_idx: " << model.base_link_idx << std::endl;
-        std::cout << "model.Xtree.size(): " << model.Xtree.size() << std::endl;
-        std::cout << "model.I.size(): " << model.I.size() << std::endl;
-
-        for (int link_idx = 1; link_idx < model.n_links; link_idx++) {
-
-            const int joint_idx = model.links[link_idx].joint_idx;
-            const int q_idx     = model.joints[joint_idx].q_idx;
-
-            std::cout << "link_idx: " << link_idx << std::endl;
-            std::cout << "joint_idx: " << joint_idx << std::endl;
-            std::cout << "q_idx: " << q_idx << std::endl;
-
-            std::cout << "model.Xtree[joint_idx]: " << model.Xtree[joint_idx] << std::endl;
+        for (int i = 0; i < model.n_links - 1; i++) {
 
             // Compute the joint transform and motion subspace matrices
             Eigen::Matrix<Scalar, 6, 6> Xj;
             Eigen::Matrix<Scalar, 6, 1> S_i;
-            jcalc(model.joints[joint_idx], q(q_idx), Xj, S_i);
+            jcalc(model.joints[i], q(i), Xj, S_i);
             S.push_back(S_i);
 
-            Eigen::Matrix<Scalar, 6, 1> vJ = S_i * qd(q_idx);
+            Eigen::Matrix<Scalar, 6, 1> vJ = S_i * qd(i);
 
-            Eigen::Matrix<Scalar, 6, 6> Xup_i = Xj * model.Xtree[joint_idx];
-
+            Eigen::Matrix<Scalar, 6, 6> Xup_i = Xj * model.Xtree[i];
 
             Xup.push_back(Xup_i);
             // Check if the parent link is the base link
-            if (model.links[link_idx].parent_link_idx == model.base_link_idx) {
+            if (model.parent[i] == -1) {
                 v.push_back(vJ);
                 c.push_back(Eigen::Matrix<Scalar, 6, 1>::Zero());
             }
             else {
-                Eigen::Matrix<Scalar, 6, 1> v_i = Xup_i * v[model.links[link_idx].parent_link_idx - 1] + vJ;
+                Eigen::Matrix<Scalar, 6, 1> v_i = Xup_i * v[model.parent[i]] + vJ;
                 Eigen::Matrix<Scalar, 6, 1> c_i = RML::crm(v_i) * vJ;
                 v.push_back(v_i);
                 c.push_back(c_i);
             }
 
-            Eigen::Matrix<Scalar, 6, 6> IA_i = model.I[link_idx];
-            Eigen::Matrix<Scalar, 6, 1> pA_i = RML::crf(v[link_idx - 1]) * IA_i * v[link_idx - 1];
+
+            Eigen::Matrix<Scalar, 6, 6> IA_i = model.I[i];
+            Eigen::Matrix<Scalar, 6, 1> pA_i = RML::crf(v[i]) * IA_i * v[i];
             IA.push_back(IA_i);
             pA.push_back(pA_i);
         }
 
-        // // TODO: If the external force is given, apply external force here
+        // TODO: If the external force is given, apply external force here
 
-        // std::vector<Eigen::Matrix<Scalar, 6, 1>> U;
-        // std::vector<Eigen::Matrix<Scalar, 1, 1>> d;
-        // std::vector<Eigen::Matrix<Scalar, 1, 1>> u;
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> U;
+        std::vector<Scalar> d;
+        std::vector<Scalar> u;
 
-        // for (int i = model.n_q - 1; i >= 0; i--) {
-        //     Eigen::Matrix<Scalar, 6, 1> U_i = IA[i] * S[i];
-        //     Eigen::Matrix<Scalar, 1, 1> d_i = S[i].transpose() * U_i;
-        //     Eigen::Matrix<Scalar, 1, 1> u_i = Eigen::Matrix<Scalar, 1, 1>(tau(i) - S[i].transpose() * pA[i]);
-        //     U.push_back(U_i);
-        //     d.push_back(d_i);
-        //     u.push_back(u_i);
-        //     if (!(model.links[model.links[i].parent_link_idx].link_idx == model.base_link_idx)) {
-        //         Eigen::Matrix<Scalar, 6, 6> Ia = IA[i] - (U_i * d[i].inverse()) * U_i.transpose();
-        //         Eigen::Matrix<Scalar, 6, 1> pa = pA[i] + Ia * c[i] + U[i] * (u[i] * d[i].inverse());
-        //         IA[model.links[i].parent_link_idx] =
-        //             IA[model.links[i].parent_link_idx] + Xup[i].transpose() * Ia * Xup[i];
-        //         pA[model.links[i].parent_link_idx] = pA[model.links[i].parent_link_idx] + Xup[i].transpose() * pa;
-        //     }
-        // }
+        // Initialize these vectors with zeros
+        for (int i = 0; i < model.n_links - 1; i++) {
+            U.push_back(Eigen::Matrix<Scalar, 6, 1>::Zero());
+            d.push_back(0);
+            u.push_back(0);
+        }
 
-        // std::vector<Eigen::Matrix<Scalar, 6, 1>> a;
+        for (int i = model.n_links - 2; i >= 0; i--) {
+            U[i] = IA[i] * S[i];
+            d[i] = S[i].transpose() * U[i];
+            u[i] = Scalar(tau(i) - S[i].transpose() * pA[i]);
+
+            if (!(model.parent[i] == -1)) {
+                Eigen::Matrix<Scalar, 6, 6> Ia = IA[i] - (U[i] / d[i]) * U[i].transpose();
+                Eigen::Matrix<Scalar, 6, 1> pa = pA[i] + Ia * c[i] + U[i] * (u[i] / d[i]);
+                IA[model.parent[i]]            = IA[model.parent[i]] + Xup[i].transpose() * Ia * Xup[i];
+                pA[model.parent[i]]            = pA[model.parent[i]] + Xup[i].transpose() * pa;
+            }
+        }
+
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> a;
         Eigen::Matrix<Scalar, nq, 1> qdd = Eigen::Matrix<Scalar, nq, 1>::Zero();
+        for (int i = 0; i < model.n_links - 1; i++) {
+            if (model.parent[i] == -1) {
+                Eigen::Matrix<Scalar, 6, 1> a_i = Xup[i] * -g + c[i];
+                a.push_back(a_i);
+            }
+            else {
+                Eigen::Matrix<Scalar, 6, 1> a_i = Xup[i] * a[model.links[i].parent_link_idx] + c[i];
+                a.push_back(a_i);
+            }
 
-        // for (int i = 0; i < model.n_q; i++) {
-        //     if (model.links[model.links[i].parent_link_idx].link_idx == 0) {
-        //         Eigen::Matrix<Scalar, 6, 1> a_i = Xup[i] * -g + c[i];
-        //         std::cout << "Xup[" << i << "] = " << Xup[i] << std::endl;
-        //         a.push_back(a_i);
-        //     }
-        //     else {
-        //         Eigen::Matrix<Scalar, 6, 1> a_i = Xup[i] * a[model.links[i].parent_link_idx] + c[i];
-        //         a.push_back(a_i);
-        //     }
-
-        //     qdd(i) = (u[i] - U[i].transpose() * a[i]) * d[i].inverse();
-        //     a[i]   = a[i] + S[i] * qdd(i);
-        //     std::cout << "a[" << i << "] = " << a[i].transpose() << std::endl;
-        // }
+            qdd(i) = (u[i] - U[i].transpose() * a[i]) / d[i];
+            a[i]   = a[i] + S[i] * qdd(i);
+        }
         return qdd;
     }
 
