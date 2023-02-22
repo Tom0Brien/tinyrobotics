@@ -376,10 +376,6 @@ namespace RML {
                 link.link_idx = model.links.size();
                 // Add the link to the model
                 model.links.push_back(link);
-                // Add the spatial inertia to the model
-                Eigen::Matrix<Scalar, 6, 6> I =
-                    RML::spatial_inertia<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
-                model.I.push_back(I);
             }
         }
 
@@ -402,9 +398,6 @@ namespace RML {
                 // Assign the joint index
                 joint.joint_idx = model.joints.size();
                 model.joints.push_back(joint);
-                // Add spatial transform to the Xtree
-                Eigen::Matrix<Scalar, 6, 6> X_T = RML::xlt(joint.parent_transform.matrix());
-                model.Xtree.push_back(X_T);
             }
         }
 
@@ -414,14 +407,88 @@ namespace RML {
         model.n_joints = model.joints.size();
         model.n_links  = model.links.size();
 
-        // Remove the base links inertia from the inertia list
-        model.I.erase(model.I.begin() + model.base_link_idx);
-
-        // Add the indices of the parent links to the model
+        // ************************ Add the dynamic links to the model ************************
         for (int i = 1; i < model.n_links; i++) {
-            model.parent.push_back(model.links[i].parent_link_idx - 1);
+            auto link_i  = model.links[i];
+            auto joint_i = model.joints[link_i.joint_idx];
+            if (joint_i.type == JointType::FIXED) {
+                // Merge the spatial inertia of the link with its parent
+                auto parent_link = model.links[link_i.parent_link_idx];
+                Eigen::Matrix<Scalar, 6, 6> I =
+                    RML::spatial_inertia<Scalar>(link_i.mass, link_i.centre_of_mass.translation(), link_i.inertia);
+                // Add the spatial inertia of the link to the parent link in the dynamic link tree, TODO: We should
+                // probably transform the inertia to the parent frame, for now just don't support fixed joints with an
+                // offset
+
+                for (int j = 0; j < model.dynamic_links.size(); j++) {
+                    if (model.dynamic_links[j].link.name == parent_link.name) {
+                        Eigen::Matrix<Scalar, 6, 6> X_T = model.dynamic_links[j].X;
+                        Eigen::Matrix<Scalar, 6, 6> I_T = X_T.transpose() * I;  // * X_T;
+                        model.dynamic_links[j].I += I_T;
+                        break;
+                    }
+                }
+            }
+            else {
+                // Create a new dynamic link
+                DynamicLink<Scalar> dynamic_link = DynamicLink<Scalar>();
+                // Add its associated joint
+                dynamic_link.joint = joint_i;
+                // Add its associated link
+                dynamic_link.link = link_i;
+                // Add its spatial transform
+                Eigen::Matrix<Scalar, 6, 6> X_T = RML::xlt(joint_i.parent_transform.matrix());
+                dynamic_link.X                  = X_T;
+                // Add its spatial inertia
+                Eigen::Matrix<Scalar, 6, 6> I =
+                    RML::spatial_inertia<Scalar>(link_i.mass, link_i.centre_of_mass.translation(), link_i.inertia);
+                dynamic_link.I = I;
+                model.dynamic_links.push_back(dynamic_link);
+            }
         }
 
+        // For each dynamic link, find its closest parent link that is not fixed in the dynamic link tree and add it to
+        // the dynamic link
+        for (int i = 0; i < model.dynamic_links.size(); i++) {
+            auto dynamic_link_i = model.dynamic_links[i];
+            // Find the closest parent link that is not fixed
+            auto dynamic_link_parent = model.links[dynamic_link_i.link.parent_link_idx];
+            // Check if the parent is fixed
+            if (model.joints[dynamic_link_parent.joint_idx].type == JointType::FIXED) {
+                // If the parent is fixed, find the closest parent that is not fixed
+                while (model.joints[dynamic_link_parent.joint_idx].type == JointType::FIXED) {
+                    dynamic_link_parent = model.links[dynamic_link_parent.parent_link_idx];
+                }
+            }
+            // Find the index of the closest parent link that is not fixed in the dynamic link tree
+            int parent_link_idx = -1;
+            for (int j = 0; j < model.dynamic_links.size(); j++) {
+                if (model.dynamic_links[j].link.name == dynamic_link_parent.name) {
+                    parent_link_idx = j;
+                    break;
+                }
+            }
+            // Add the parent index to the dynamic link
+            model.dynamic_links[i].parent_link_idx = parent_link_idx;
+        }
+
+
+        std::cout << "Xtree.size() = " << model.Xtree.size() << std::endl;
+        std::cout << "I.size() = " << model.I.size() << std::endl;
+        std::cout << "parent.size() = " << model.parent.size() << std::endl;
+
+        // Starting from the base link, add the dynamic links (links with non-fixed joints) to the model, this includes
+        // the spatial inertia and spatial transform and the parent index
+
+        for (int i = 0; i < model.Xtree.size(); i++) {
+            std::cout << "Xtree[" << i << "] = " << std::endl << model.Xtree[i] << std::endl;
+            std::cout << "model.dynamic_links[" << i << "].X = " << std::endl << model.dynamic_links[i].X << std::endl;
+            std::cout << "I[" << i << "] = " << std::endl << model.I[i] << std::endl;
+            std::cout << "model.dynamic_links[" << i << "].I = " << std::endl << model.dynamic_links[i].I << std::endl;
+            std::cout << "parent[" << i << "] = " << model.parent[i] << std::endl;
+            std::cout << "model.dynamic_links[" << i << "].parent = " << model.dynamic_links[i].link.parent_link_idx
+                      << std::endl;
+        }
 
         // Resize the results structure with number of actuatable joints
         model.data.resize(model.n_q);

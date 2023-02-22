@@ -15,6 +15,31 @@
 #include "Link.hpp"
 
 namespace RML {
+
+    /**
+     * @brief A struct to store a dynamic link of a robot model, these are links that have a joint associated with them
+     * that can be actuated.
+     *
+     */
+    template <typename Scalar>
+    struct DynamicLink {
+        /// @brief The link associated with the dynamic link
+        Link<Scalar> link = {};
+
+        /// @brief The joint associated with the dynamic link
+        Joint<Scalar> joint = {};
+
+        /// @brief The spatial inertia matrix of the link
+        Eigen::Matrix<Scalar, 6, 6> I = Eigen::Matrix<Scalar, 6, 6>::Zero();
+
+        /// @brief The spatial transformation from the parent link to the link
+        Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Zero();
+
+        /// @brief Index to the parent in a vector of dynamic links
+        int parent_link_idx = -1;
+    };
+
+
     /**
      * @brief A robot model.
      * @details
@@ -41,6 +66,9 @@ namespace RML {
 
         /// @brief Vector of links in the robot model.
         std::vector<Link<Scalar>> links = {};
+
+        /// @brief Vector of dynamic links in the robot model (links with joints that can be actuated)
+        std::vector<DynamicLink<Scalar>> dynamic_links = {};
 
         /// @brief Vector of joints in the robot model.
         std::vector<Joint<Scalar>> joints = {};
