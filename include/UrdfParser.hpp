@@ -198,6 +198,9 @@ namespace RML {
             throw std::runtime_error(error_msg.str());
         }
 
+        // Add the spatial inertia to the link
+        link.I = RML::spatial_inertia<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
+
         return link;
     }
 
@@ -289,6 +292,9 @@ namespace RML {
             }
         }
 
+        // Add spatial transform to the Xtree
+        joint.X = RML::xlt(joint.parent_transform.matrix());
+
         // tinyxml2::XMLElement *prop_xml = xml->FirstChildElement("dynamics");
         // if (prop_xml != nullptr) {
         //     joint.dynamics = JointDynamics::fromXml(prop_xml);
@@ -374,8 +380,6 @@ namespace RML {
             else {
                 // Assign the link index
                 link.link_idx = model.links.size();
-                // Add the spatial inertia to the link
-                link.I = RML::spatial_inertia<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
                 // Add the link to the model
                 model.links.push_back(link);
             }
@@ -386,7 +390,7 @@ namespace RML {
             throw std::runtime_error(error_msg);
         }
 
-        // ************************ Add the joints to the model ************************
+        // Add the joints to the model
         for (tinyxml2::XMLElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr;
              joint_xml                       = joint_xml->NextSiblingElement("joint")) {
             auto joint = joint_from_xml<Scalar>(joint_xml);
@@ -399,8 +403,7 @@ namespace RML {
             else {
                 // Assign the joint index
                 joint.joint_idx = model.joints.size();
-                // Add spatial transform to the Xtree
-                joint.X = RML::xlt(joint.parent_transform.matrix());
+                // Add the joint to the model
                 model.joints.push_back(joint);
             }
         }
@@ -411,7 +414,7 @@ namespace RML {
         model.n_joints = model.joints.size();
         model.n_links  = model.links.size();
 
-        // ************************ Add the dynamic links to the model ************************
+        // Add the dynamic links to the model
         model.dynamic_links = model.links;
         // Remove the base link from the dynamic links
         model.dynamic_links.erase(model.dynamic_links.begin() + model.base_link_idx);
