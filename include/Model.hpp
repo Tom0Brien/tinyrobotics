@@ -17,30 +17,6 @@
 namespace RML {
 
     /**
-     * @brief A struct to store a dynamic link of a robot model, these are links that have a joint associated with them
-     * that can be actuated.
-     *
-     */
-    template <typename Scalar>
-    struct DynamicLink {
-        /// @brief The link associated with the dynamic link
-        Link<Scalar> link = {};
-
-        /// @brief The joint associated with the dynamic link
-        Joint<Scalar> joint = {};
-
-        /// @brief The spatial inertia matrix of the link
-        Eigen::Matrix<Scalar, 6, 6> I = Eigen::Matrix<Scalar, 6, 6>::Zero();
-
-        /// @brief The spatial transformation from the parent link to the link
-        Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Zero();
-
-        /// @brief Index to the parent in a vector of dynamic links
-        int parent_link_idx = -1;
-    };
-
-
-    /**
      * @brief A robot model.
      * @details
      * @param Scalar The scalar type for the robot model
@@ -68,19 +44,10 @@ namespace RML {
         std::vector<Link<Scalar>> links = {};
 
         /// @brief Vector of dynamic links in the robot model (links with joints that can be actuated)
-        std::vector<DynamicLink<Scalar>> dynamic_links = {};
+        std::vector<Link<Scalar>> dynamic_links = {};
 
         /// @brief Vector of joints in the robot model.
         std::vector<Joint<Scalar>> joints = {};
-
-        /// @brief Vector of spatial transformations
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xtree = {};
-
-        // @brief Vector of spatial inertia matrices
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> I = {};
-
-        // @brief Vector of links parent indices
-        std::vector<int> parent = {};
 
         /// @brief The gravitational acceleration experienced by robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
@@ -97,16 +64,15 @@ namespace RML {
             n_q = 0;
 
             for (auto joint : joints) {
-
                 std::string parent_link_name = joint.parent_link_name;
-                std::string child_link_name  = joint.child_link_name;
-
                 if (parent_link_name.empty()) {
                     std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Joint [" << joint.name
                               << "] is missing a parent link specification.";
                     throw std::runtime_error(error_msg.str());
                 }
+
+                std::string child_link_name = joint.child_link_name;
                 if (child_link_name.empty()) {
                     std::ostringstream error_msg;
                     error_msg << "Error while constructing model! Joint [" << joint.name
@@ -131,26 +97,22 @@ namespace RML {
                 }
 
 
-                child_link.parent_link_idx = parent_link.link_idx;
-                child_link.joint_idx       = joint.joint_idx;
-                // Overwrite the child link with the updated link
-                links[child_link.link_idx] = child_link;
-
-                parent_link.add_child_joint_idx(joint.joint_idx);
-                parent_link.add_child_link_idx(child_link.link_idx);
-
-                // Overwrite the parent link with the updated link
-                links[parent_link.link_idx] = parent_link;
-
-                parent_link_tree[child_link.name] = parent_link_name;
-
-                // If the joint is actuatable, add its configuration vector q_idx
+                // Set the child links parent link index
+                child_link.parent = parent_link.link_idx;
+                // If the joint is actuatable, add its index in the configuration vector
                 if (joint.type == JointType::REVOLUTE || joint.type == JointType::PRISMATIC) {
                     joint.q_idx = n_q;
                     n_q++;
-                    // Overwrite the joint with the updated joint
-                    joints[joint.joint_idx] = joint;
                 }
+                child_link.joint           = joint;
+                links[child_link.link_idx] = child_link;
+
+                // Add the child link to the parent link children
+                parent_link.add_child_link_idx(child_link.link_idx);
+
+                parent_link_tree[child_link.name] = parent_link_name;
+
+                links[parent_link.link_idx] = parent_link;
             }
         }
 
@@ -201,7 +163,7 @@ namespace RML {
         Link<Scalar> get_parent_link(const std::string& name) const {
             for (auto link : links) {
                 if (link.name == name) {
-                    return links[link.parent_link_idx];
+                    return links[link.parent];
                 }
             }
             // No link was found
@@ -276,16 +238,15 @@ namespace RML {
                       << "Parent Name" << std::setw(spacing) << "Children Names" << std::endl;
             for (auto& link : links) {
                 std::string children_names = "";
-                for (auto& child_joint_idx : link.child_joints) {
-                    children_names += joints[child_joint_idx].child_link_name + " ";
-                }
+                // for (auto& child_joint_idx : link.child_joints) {
+                //     children_names += joints[child_joint_idx].child_link_name + " ";
+                // }
                 // std::cout << "link.joint_idx : " << link.joint_idx << std::endl;
-                if (link.joint_idx != -1) {
+                if (link.joint.joint_idx != -1) {
                     std::cout << link.link_idx << std::setw(spacing) << link.name << std::setw(spacing)
-                              << joints[link.joint_idx].name << std::setw(15) << joints[link.joint_idx].q_idx
-                              << std::setw(15) << int(joints[link.joint_idx].type) << std::setw(spacing)
-                              << links[link.parent_link_idx].name << std::setw(spacing + 15) << children_names
-                              << std::endl
+                              << link.joint.name << std::setw(15) << link.joint.q_idx << std::setw(15)
+                              << int(link.joint.type) << std::setw(spacing + 15) << link.parent << std::setw(spacing)
+                              << children_names << std::endl
                               << std::endl;
                 }
             }

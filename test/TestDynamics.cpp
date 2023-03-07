@@ -86,7 +86,6 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for simple model
 
     const int n_joints = 2;
     auto robot_model   = RML::model_from_urdf<double, n_joints>("data/urdfs/2_link.urdf");
-    robot_model.show_details();
 
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
@@ -108,31 +107,30 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for simple model
     std::cout << "qdd = " << qdd << std::endl;
 }
 
-// TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass model", "[Dynamics]") {
+TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass model", "[Dynamics]") {
 
-//     const int n_joints = 4;
-//     auto robot_model   = RML::model_from_urdf<double, n_joints>("data/urdfs/simple.urdf");
-//     robot_model.show_details();
+    const int n_joints = 4;
+    auto robot_model   = RML::model_from_urdf<double, n_joints>("data/urdfs/simple.urdf");
 
-//     // Create some inputs
-//     Eigen::Matrix<double, n_joints, 1> q;
-//     q << 1, 2, 3, 4;
-//     Eigen::Matrix<double, n_joints, 1> qd;
-//     qd << 1, 2, 3, 4;
-//     Eigen::Matrix<double, n_joints, 1> tau;
-//     tau << 1, 2, 3, 4;
-//     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
+    // Create some inputs
+    Eigen::Matrix<double, n_joints, 1> q;
+    q << 1, 2, 3, 4;
+    Eigen::Matrix<double, n_joints, 1> qd;
+    qd << 1, 2, 3, 4;
+    Eigen::Matrix<double, n_joints, 1> tau;
+    tau << 1, 2, 3, 4;
+    Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
 
-//     // Start the timer
-//     auto start                             = std::chrono::high_resolution_clock::now();
-//     Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
-//     // Stop the timer
-//     auto stop     = std::chrono::high_resolution_clock::now();
-//     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-//     std::cout << "Forward Dynamics via Articulated-Body Algorithm computation took " << duration.count()
-//               << " microseconds" << std::endl;
-//     std::cout << "qdd = " << qdd << std::endl;
-// }
+    // Start the timer
+    auto start                             = std::chrono::high_resolution_clock::now();
+    Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
+    // Stop the timer
+    auto stop     = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Forward Dynamics via Articulated-Body Algorithm computation took " << duration.count()
+              << " microseconds" << std::endl;
+    std::cout << "qdd = " << qdd << std::endl;
+}
 
 // TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for NUgus model", "[Dynamics]") {
 
@@ -141,12 +139,9 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for simple model
 //     robot_model.show_details();
 
 //     // Create some inputs
-//     Eigen::Matrix<double, n_joints, 1> q;
-//     q << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20;
-//     Eigen::Matrix<double, n_joints, 1> qd;
-//     qd << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20;
-//     Eigen::Matrix<double, n_joints, 1> tau;
-//     tau << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20;
+//     Eigen::Matrix<double, n_joints, 1> q     = Eigen::Matrix<double, n_joints, 1>::Ones();
+//     Eigen::Matrix<double, n_joints, 1> qd    = Eigen::Matrix<double, n_joints, 1>::Ones();
+//     Eigen::Matrix<double, n_joints, 1> tau   = Eigen::Matrix<double, n_joints, 1>::Ones();
 //     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
 
 //     // Start the timer

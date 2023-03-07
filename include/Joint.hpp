@@ -17,34 +17,37 @@ namespace RML {
     template <typename Scalar>
     struct Joint {
 
-        /// @brief The index of the joint in the model joint vector
+        /// @brief Index of joint in the model joint vector
         int joint_idx = -1;
 
-        /// @brief The index of the joint in the models configuration vector
+        /// @brief Index of joint in the models configuration vector
         int q_idx = -1;
 
-        /// @brief The name of the joint
+        /// @brief Name of the joint
         std::string name = "";
 
-        /// @brief The type of the joint
+        /// @brief Type of the joint
         JointType type = JointType::UNKNOWN;
 
-        /// @brief The axis of motion for the joint
+        /// @brief Axis of motion for the joint
         Eigen::Matrix<Scalar, 3, 1> axis = Eigen::Matrix<Scalar, 3, 1>::Zero();
 
-        /// @brief The transform to the parent link
+        /// @brief Transform to the parent link
         Eigen::Transform<Scalar, 3, Eigen::Isometry> parent_transform =
             Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
-        /// @brief The transform to the child link
+        /// @brief Transform to the child link
         Eigen::Transform<Scalar, 3, Eigen::Isometry> child_transform =
             Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
-        /// @brief The parent link name
+        /// @brief Parent link name
         std::string parent_link_name = "";
 
-        /// @brief The child link name
+        /// @brief Child link name
         std::string child_link_name = "";
+
+        /// @brief Spatial transformation
+        Eigen::Matrix<Scalar, 6, 6> X = {};
 
         /**
          * @brief Casts to NewScalar type

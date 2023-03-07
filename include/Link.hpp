@@ -16,33 +16,33 @@ namespace RML {
     template <typename Scalar>
     struct Link {
 
-        /// @brief Name of the link
+        /// @brief Name of link
         std::string name = "";
 
-        /// @brief The index of the link in the model link vector
+        /// @brief Index of link in the model link vector
         int link_idx = -1;
 
-        /// @brief The index of links joint in the model joint vector
-        int joint_idx = -1;
+        /// @brief Index of links parent link in the models link vector
+        int parent = -1;
 
-        /// @brief The links centre of mass.
+        /// @brief List of child link indices in the models link vector.
+        std::vector<int> child_links;
+
+        /// @brief Links centre of mass.
         Eigen::Transform<Scalar, 3, Eigen::Isometry> centre_of_mass =
             Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
-        /// @brief The links inertia matrix [kg m^2].
+        /// @brief Links inertia matrix [kg m^2].
         Eigen::Matrix<Scalar, 3, 3> inertia = Eigen::Matrix<Scalar, 3, 3>::Zero();
 
-        /// @brief The links mass [kg].
+        /// @brief Mass of link [kg].
         Scalar mass = 0;
 
-        /// @brief The index of the links parent link in the models link vector
-        int parent_link_idx = -1;
+        /// @brief Links joint
+        Joint<Scalar> joint;
 
-        /// @brief The list of child link indices in the models link vector.
-        std::vector<int> child_links;
-
-        /// @brief The list of child joint indices in the models joint vector.
-        std::vector<int> child_joints;
+        // @brief Spatial inertia matrices
+        Eigen::Matrix<Scalar, 6, 6> I = {};
 
         /**
          * @brief Add child link index
@@ -53,13 +53,6 @@ namespace RML {
         }
 
         /**
-         * @brief Add child joint index
-         */
-        void add_child_joint_idx(const int child_joint_idx) {
-            this->child_joints.push_back(child_joint_idx);
-        }
-
-        /**
          * @brief Cast to NewScalar type
          */
         template <typename NewScalar>
@@ -67,13 +60,12 @@ namespace RML {
             Link<NewScalar> new_link = Link<NewScalar>();
             new_link.name            = name;
             new_link.link_idx        = link_idx;
-            new_link.joint_idx       = joint_idx;
+            new_link.joint           = joint.template cast<NewScalar>();
             new_link.centre_of_mass  = centre_of_mass.template cast<NewScalar>();
             new_link.mass            = NewScalar(mass);
             new_link.inertia         = inertia.template cast<NewScalar>();
-            new_link.parent_link_idx = parent_link_idx;
+            new_link.parent          = parent;
             new_link.child_links     = child_links;
-            new_link.child_joints    = child_joints;
             return new_link;
         }
     };

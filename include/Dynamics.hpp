@@ -305,7 +305,7 @@ namespace RML {
             // Add links contribution to potential energy m* g* h
             V -= link.mass * model.gravity.transpose() * rMBb;
 
-            if (link.link_idx != -1 && model.joints[link.joint_idx].type == RML::JointType::REVOLUTE) {
+            if (link.link_idx != -1 && link.joint.type == RML::JointType::REVOLUTE) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
@@ -314,14 +314,14 @@ namespace RML {
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.link_idx != -1 && model.joints[link.joint_idx].type == RML::JointType::FIXED) {
+            else if (link.link_idx != -1 && link.joint.type == RML::JointType::FIXED) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add to constraint vector
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.link_idx != -1 && model.joints[link.joint_idx].type == RML::JointType::PRISMATIC) {
+            else if (link.link_idx != -1 && link.joint.type == RML::JointType::PRISMATIC) {
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
                 Jp.insert(Jp.end(), {0});
             }
@@ -474,56 +474,51 @@ namespace RML {
         std::vector<Eigen::Matrix<Scalar, 6, 1>> a(n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
         Eigen::Matrix<Scalar, nq, 1> qdd = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
-        std::cout << "model.dynamic_links.size() = " << model.dynamic_links.size() << std::endl;
-        for (int i = 0; i < model.dynamic_links.size(); i++) {
-            std::cout << "model.dynamic_links[" << i << "].parent_link_idx = " << model.dynamic_links[i].parent_link_idx
-                      << std::endl;
-        }
-
         for (int i = 0; i < n_links; i++) {
             // Compute the joint transform and motion subspace matrices
+            auto link = model.dynamic_links[i];
             Eigen::Matrix<Scalar, 6, 6> Xj;
             Eigen::Matrix<Scalar, 6, 1> S_i;
-            jcalc(model.dynamic_links[i].joint, q(i), Xj, S_i);
+            jcalc(link.joint, q(i), Xj, S_i);
             S[i]                           = S_i;
             Eigen::Matrix<Scalar, 6, 1> vJ = S_i * qd(i);
-            Xup[i]                         = Xj * model.dynamic_links[i].X;
+            Xup[i]                         = Xj * link.joint.X;
 
             // Check if the parent link is the base link
-            if (model.dynamic_links[i].parent_link_idx == -1) {
+            if (link.parent == -1) {
                 v[i] = vJ;
                 c[i] = Eigen::Matrix<Scalar, 6, 1>::Zero();
             }
             else {
-                v[i] = Xup[i] * v[model.dynamic_links[i].parent_link_idx] + vJ;
+                v[i] = Xup[i] * v[link.parent] + vJ;
                 c[i] = RML::crm(v[i]) * vJ;
             }
-            IA[i] = model.dynamic_links[i].I;
+            IA[i] = link.I;
             pA[i] = RML::crf(v[i]) * IA[i] * v[i];
         }
 
         // TODO: If the external force is given, apply external force here
 
         for (int i = n_links - 1; i >= 0; i--) {
-            U[i] = IA[i] * S[i];
-            d[i] = S[i].transpose() * U[i];
-            u[i] = Scalar(tau(i) - S[i].transpose() * pA[i]);
-            if (!(model.dynamic_links[i].parent_link_idx == -1)) {
+            auto link = model.dynamic_links[i];
+            U[i]      = IA[i] * S[i];
+            d[i]      = S[i].transpose() * U[i];
+            u[i]      = Scalar(tau(i) - S[i].transpose() * pA[i]);
+            if (!(link.parent == -1)) {
                 Eigen::Matrix<Scalar, 6, 6> Ia = IA[i] - (U[i] / d[i]) * U[i].transpose();
                 Eigen::Matrix<Scalar, 6, 1> pa = pA[i] + Ia * c[i] + U[i] * (u[i] / d[i]);
-                IA[model.dynamic_links[i].parent_link_idx] =
-                    IA[model.dynamic_links[i].parent_link_idx] + Xup[i].transpose() * Ia * Xup[i];
-                pA[model.dynamic_links[i].parent_link_idx] =
-                    pA[model.dynamic_links[i].parent_link_idx] + Xup[i].transpose() * pa;
+                IA[link.parent]                = IA[link.parent] + Xup[i].transpose() * Ia * Xup[i];
+                pA[link.parent]                = pA[link.parent] + Xup[i].transpose() * pa;
             }
         }
 
         for (int i = 0; i < n_links; i++) {
-            if (model.dynamic_links[i].parent_link_idx == -1) {
+            auto link = model.dynamic_links[i];
+            if (link.parent == -1) {
                 a[i] = Xup[i] * -g + c[i];
             }
             else {
-                a[i] = Xup[i] * a[model.dynamic_links[i].parent_link_idx] + c[i];
+                a[i] = Xup[i] * a[link.parent] + c[i];
             }
             qdd(i) = (u[i] - U[i].transpose() * a[i]) / d[i];
             a[i]   = a[i] + S[i] * qdd(i);

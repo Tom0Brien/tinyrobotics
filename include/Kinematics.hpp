@@ -39,7 +39,7 @@ namespace RML {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> Htb = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
         while (current_link.name != model.links[model.base_link_idx].name) {
             Eigen::Transform<Scalar, 3, Eigen::Isometry> H = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
-            auto current_joint                             = model.joints[current_link.joint_idx];
+            auto current_joint                             = current_link.joint;
             if (current_joint.type == JointType::REVOLUTE) {
                 Scalar q_current = q(current_joint.q_idx);
                 // Rotate by q_current around axis
@@ -54,7 +54,7 @@ namespace RML {
             // Apply inverse joint transform as we are going back up tree
             Htb = Htb * RML::inv(current_joint.parent_transform);
             // Move up the tree to parent
-            current_link = model.links[current_link.parent_link_idx];
+            current_link = model.links[current_link.parent];
         }
 
         // Return transform from base {b} to target {t}
@@ -257,7 +257,7 @@ namespace RML {
         Eigen::Matrix<Scalar, 3, 1> rTBb = position(model, q, base_link.link_idx, current_link.link_idx);
 
         while (current_link.name != model.links[model.base_link_idx].name) {
-            auto current_joint = model.joints[current_link.joint_idx];
+            auto current_joint = current_link.joint;
             if (current_joint.q_idx != -1) {
                 // Compute the transform between base {b} and the current link {i}
                 auto Hbi = forward_kinematics(model, q, base_link.link_idx, current_link.link_idx);
@@ -275,7 +275,7 @@ namespace RML {
                 }
             }
             // Move up the tree to parent towards the base
-            current_link = model.links[current_link.parent_link_idx];
+            current_link = model.links[current_link.parent];
         }
         return J;
     }
@@ -335,7 +335,7 @@ namespace RML {
             forward_kinematics_com(model, q, base_link.name, target_link_name).translation();
 
         while (current_link.name != model.links[model.base_link_idx].name) {
-            auto current_joint = model.joints[current_link.joint_idx];
+            auto current_joint = current_link.joint;
             if (current_joint.q_idx != -1) {
                 // Compute the transform between base {b} and the current link {i}
                 auto Hbi = forward_kinematics(model, q, base_link.name, current_link.name);
@@ -353,7 +353,7 @@ namespace RML {
                 }
             }
             // Move up the tree to parent towards the base
-            current_link = model.links[current_link.parent_link_idx];
+            current_link = model.links[current_link.parent];
         }
         return J;
     }
