@@ -117,6 +117,68 @@ namespace RML {
         }
 
         /**
+         * @brief Initialize the dynamic link tree of the robot model.
+         *
+         */
+        void init_dynamic_link_tree() {
+            dynamic_links = links;
+            // Remove the base link from the dynamic links
+            dynamic_links.erase(dynamic_links.begin() + base_link_idx);
+            for (int i = 0; i < dynamic_links.size(); i++) {
+                auto link = dynamic_links[i];
+                if (link.joint.type == JointType::FIXED) {
+                    // Update fixed transforms
+                    for (auto child_link_idx : link.child_links) {
+                        auto child_link = links[child_link_idx];
+                        for (int j = 0; j < dynamic_links.size(); j++) {
+                            if (dynamic_links[j].name == child_link.name) {
+                                Eigen::Matrix<Scalar, 6, 6> X_T = dynamic_links[j].joint.X;
+                                dynamic_links[j].joint.X        = X_T * link.joint.X;
+                                break;
+                            }
+                        }
+                    }
+                    // Combine spatial inertias
+                    auto parent_link = links[link.parent];
+                    // Add the spatial inertia of the link to its parent link in the dynamic link tree
+                    for (int j = 0; j < dynamic_links.size(); j++) {
+                        if (dynamic_links[j].name == parent_link.name) {
+                            Eigen::Matrix<Scalar, 6, 6> X_T = dynamic_links[j].joint.X;
+                            Eigen::Matrix<Scalar, 6, 6> I_T = X_T.transpose() * link.I * X_T;
+                            dynamic_links[j].I += I_T;
+                            break;
+                        }
+                    }
+                    // Remove the fixed link from the dynamic link tree
+                    dynamic_links.erase(dynamic_links.begin() + i);
+                }
+            }
+
+            // Assign the link/parent link indices
+            for (int i = 0; i < dynamic_links.size(); i++) {
+                dynamic_links[i].link_idx = i;
+                if (dynamic_links[i].parent == -1) {
+                    dynamic_links[i].parent = -1;
+                }
+                else {
+                    // Find the parent link in the full link tree which doesn't have a fixed joint
+                    // and assign the parent link index
+                    auto parent_link = links[dynamic_links[i].parent];
+                    while (parent_link.joint.type == JointType::FIXED) {
+                        parent_link = links[parent_link.parent];
+                    }
+                    // Find the parent links index in the dynamic link tree
+                    for (int j = 0; j < dynamic_links.size(); j++) {
+                        if (dynamic_links[j].name == parent_link.name) {
+                            dynamic_links[i].parent = j;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
          * @brief Find the base link of the robot model.
          *
          */

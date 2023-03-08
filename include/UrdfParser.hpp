@@ -329,149 +329,76 @@ namespace RML {
      * @return The URDF parsed Model object.
      */
     template <typename Scalar, int nq>
-    static Model<Scalar, nq> model_from_urdf(const std::string& path_to_urdf) {
-
-        Model<Scalar, nq> model = Model<Scalar, nq>();
-        // Parse the URDF file into a string
+    Model<Scalar, nq> model_from_urdf(const std::string& path_to_urdf) {
+        // Open the URDF file
         std::ifstream input_file(path_to_urdf);
         if (!input_file.is_open()) {
-            std::cerr << "Could not open the file - '" << path_to_urdf << "'" << std::endl;
-            exit(EXIT_FAILURE);
+            throw std::runtime_error("Could not open the file - '" + path_to_urdf + "'");
         }
 
+        // Read the URDF file into an XML string
         std::string urdf_string =
-            std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+            std::string(std::istreambuf_iterator<char>(input_file), std::istreambuf_iterator<char>());
 
+        // Parse the XML string using tinyxml2
         tinyxml2::XMLDocument xml_doc;
         xml_doc.Parse(urdf_string.c_str());
-
         if (xml_doc.Error()) {
-            std::string error_msg = xml_doc.ErrorStr();
-            xml_doc.ClearError();
-            throw std::runtime_error(error_msg);
+            throw std::runtime_error("Error parsing XML: " + std::string(xml_doc.ErrorStr()));
         }
 
+        // Get the robot element
         tinyxml2::XMLElement* robot_xml = xml_doc.RootElement();
-        if (std::string(robot_xml->Value()) != "robot") {
-            std::cout << "robot_xml->Value() = " << robot_xml->Value() << std::endl;
-            std::string error_msg = "Error! Could not find the <robot> element in the xml file";
-            throw std::runtime_error(error_msg);
+        if (!robot_xml || std::string(robot_xml->Value()) != "robot") {
+            throw std::runtime_error("Error: Could not find the <robot> element in the URDF file");
         }
 
-        // ************************ Add the name to the model ************************
+        // Create a new model
+        Model<Scalar, nq> model;
+
+        // Get the robot's name
         const char* name = robot_xml->Attribute("name");
-        if (name != nullptr) {
-            model.name = std::string(name);
+        if (!name) {
+            throw std::runtime_error("Error: No name given for the robot");
         }
-        else {
-            std::string error_msg = "No name given for the robot. Please add a name attribute to the robot element!";
-            throw std::runtime_error(error_msg);
-        }
+        model.name = name;
 
-        // ************************ Add the links to the model ************************
-        for (tinyxml2::XMLElement* link_xml = robot_xml->FirstChildElement("link"); link_xml != nullptr;
+        // Parse the links
+        for (tinyxml2::XMLElement* link_xml = robot_xml->FirstChildElement("link"); link_xml;
              link_xml                       = link_xml->NextSiblingElement("link")) {
             Link<Scalar> link = link_from_xml<Scalar>(link_xml);
             if (model.get_link(link.name).link_idx != -1) {
-                std::ostringstream error_msg;
-                error_msg << "Error! Duplicate links '" << link.name << "' found!";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error: Duplicate links '" + link.name + "' found");
             }
-            else {
-                // Assign the link index
-                link.link_idx = model.links.size();
-                // Add the link to the model
-                model.links.push_back(link);
-            }
+            link.link_idx = model.links.size();
+            model.links.push_back(link);
+        }
+        if (model.links.empty()) {
+            throw std::runtime_error("Error: No link elements found in the URDF file");
         }
 
-        if (model.links.size() == 0) {
-            std::string error_msg = "Error! No link elements found in the urdf file.";
-            throw std::runtime_error(error_msg);
-        }
-
-        // Add the joints to the model
-        for (tinyxml2::XMLElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml != nullptr;
+        // Parse the joints
+        for (tinyxml2::XMLElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml;
              joint_xml                       = joint_xml->NextSiblingElement("joint")) {
-            auto joint = joint_from_xml<Scalar>(joint_xml);
-
+            Joint<Scalar> joint = joint_from_xml<Scalar>(joint_xml);
             if (model.get_joint(joint.name).joint_idx != -1) {
-                std::ostringstream error_msg;
-                error_msg << "Error! Duplicate joints '" << joint.name << "' found!";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error: Duplicate joints '" + joint.name + "' found");
             }
-            else {
-                // Assign the joint index
-                joint.joint_idx = model.joints.size();
-                // Add the joint to the model
-                model.joints.push_back(joint);
-            }
+            joint.joint_idx = model.joints.size();
+            model.joints.push_back(joint);
         }
-
-        std::map<std::string, std::string> parent_link_tree;
-        model.init_link_tree(parent_link_tree);
-        model.find_base(parent_link_tree);
         model.n_joints = model.joints.size();
         model.n_links  = model.links.size();
 
-        // Add the dynamic links to the model
-        model.dynamic_links = model.links;
-        // Remove the base link from the dynamic links
-        model.dynamic_links.erase(model.dynamic_links.begin() + model.base_link_idx);
-        for (int i = 0; i < model.dynamic_links.size(); i++) {
-            auto link = model.dynamic_links[i];
-            if (link.joint.type == JointType::FIXED) {
-                // Update fixed transforms
-                for (auto child_link_idx : link.child_links) {
-                    auto child_link = model.links[child_link_idx];
-                    for (int j = 0; j < model.dynamic_links.size(); j++) {
-                        if (model.dynamic_links[j].name == child_link.name) {
-                            Eigen::Matrix<Scalar, 6, 6> X_T = model.dynamic_links[j].joint.X;
-                            model.dynamic_links[j].joint.X  = X_T * link.joint.X;
-                            break;
-                        }
-                    }
-                }
-                // Combine spatial inertias
-                auto parent_link = model.links[link.parent];
-                // Add the spatial inertia of the link to its parent link in the dynamic link tree
-                for (int j = 0; j < model.dynamic_links.size(); j++) {
-                    if (model.dynamic_links[j].name == parent_link.name) {
-                        Eigen::Matrix<Scalar, 6, 6> X_T = model.dynamic_links[j].joint.X;
-                        Eigen::Matrix<Scalar, 6, 6> I_T = X_T.transpose() * link.I * X_T;
-                        model.dynamic_links[j].I += I_T;
-                        break;
-                    }
-                }
-                // Remove the fixed link from the dynamic link tree
-                model.dynamic_links.erase(model.dynamic_links.begin() + i);
-            }
-        }
+        // Initialize the link tree and find the base link
+        std::map<std::string, std::string> parent_link_tree;
+        model.init_link_tree(parent_link_tree);
+        model.find_base(parent_link_tree);
 
-        // Assign the link/parent link indices
-        for (int i = 0; i < model.dynamic_links.size(); i++) {
-            model.dynamic_links[i].link_idx = i;
-            if (model.dynamic_links[i].parent == -1) {
-                model.dynamic_links[i].parent = -1;
-            }
-            else {
-                // Find the parent link in the full link tree which doesn't have a fixed joint
-                // and assign the parent link index
-                auto parent_link = model.links[model.dynamic_links[i].parent];
-                while (parent_link.joint.type == JointType::FIXED) {
-                    parent_link = model.links[parent_link.parent];
-                }
-                // Find the parent links index in the dynamic link tree
-                for (int j = 0; j < model.dynamic_links.size(); j++) {
-                    if (model.dynamic_links[j].name == parent_link.name) {
-                        model.dynamic_links[i].parent = j;
-                        break;
-                    }
-                }
-            }
-        }
+        // Initialize the dynamic link tree
+        model.init_dynamic_link_tree();
 
-        // Resize the results structure with number of actuatable joints
+        // Resize the results structure
         model.data.resize(model.n_q);
 
         return model;
