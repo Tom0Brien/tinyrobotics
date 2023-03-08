@@ -443,6 +443,39 @@ namespace RML {
     }
 
     /**
+     * @brief Apply external forces to the robot model
+     * @param model The robot model.
+     * @param f_in The input force array of the robot model.
+     * @param f_ext The external force array to be added to the input force array.
+     * @return f_out The output force array with the external forces incorporated.
+     */
+    template <typename Scalar, int nq>
+    std::vector<Eigen::Matrix<Scalar, 6, 1>> apply_external_forces(
+        const RML::Model<Scalar, nq>& model,
+        const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
+        const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_in,
+        const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext) {
+
+        const int n_links = model.dynamic_links.size();
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> f_out(n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xa(n_links, Eigen::Matrix<Scalar, 6, 6>::Zero());
+
+        f_out = f_in;
+
+        for (int i = 0; i < n_links; i++) {
+            const auto link = model.dynamic_links[i];
+            if (link.parent == -1) {
+                Xa[i] = Xup[i];
+            }
+            else {
+                Xa[i] = Xup[i] * Xa[link.parent];
+            }
+            f_out[i] += Xa[i].transpose().inverse() * f_ext[i];
+        }
+        return f_out;
+    }
+
+    /**
      * @brief Compute the forward dynamics of the robot model via Articulated-Body Algorithm
      * @param model The robot model.
      * @param q The joint configuration of the robot.
@@ -452,29 +485,29 @@ namespace RML {
      * @return qdd The joint acceleration of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(const RML::Model<Scalar, nq>& model,
                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
                                                      const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                      const Eigen::Matrix<Scalar, nq, 1>& tau,
-                                                     const Eigen::Matrix<Scalar, nq, 1>& f_ext) {
-        const int n_links = model.dynamic_links.size();
+                                                     const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
+        // const int nq = model.dynamic_links.size();
 
         // Initialize the vectors for the algorithm
         Eigen::Matrix<Scalar, 6, 1> g = Eigen::Matrix<Scalar, 6, 1>::Zero();
         g.tail(3)                     = model.gravity;
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup(n_links, Eigen::Matrix<Scalar, 6, 6>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> S(n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> v(model.n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> c(model.n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> IA(model.n_links, Eigen::Matrix<Scalar, 6, 6>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> pA(model.n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> U(n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Scalar> d(n_links, 0);
-        std::vector<Scalar> u(n_links, 0);
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> a(n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> S(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> v(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> c(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> IA(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> pA(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> U(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Scalar> d(nq, 0);
+        std::vector<Scalar> u(nq, 0);
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> a(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
         Eigen::Matrix<Scalar, nq, 1> qdd = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
-        for (int i = 0; i < n_links; i++) {
+        for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
             auto link = model.dynamic_links[i];
             Eigen::Matrix<Scalar, 6, 6> Xj;
@@ -497,22 +530,25 @@ namespace RML {
             pA[i] = RML::crf(v[i]) * IA[i] * v[i];
         }
 
-        // TODO: If the external force is given, apply external force here
+        // Apply external forces if non-zero
+        if (f_ext.size() != 0) {
+            pA = apply_external_forces(model, Xup, pA, f_ext);
+        }
 
-        for (int i = n_links - 1; i >= 0; i--) {
+        for (int i = nq - 1; i >= 0; i--) {
             auto link = model.dynamic_links[i];
             U[i]      = IA[i] * S[i];
             d[i]      = S[i].transpose() * U[i];
             u[i]      = Scalar(tau(i) - S[i].transpose() * pA[i]);
-            if (!(link.parent == -1)) {
+            if (link.parent != -1) {
                 Eigen::Matrix<Scalar, 6, 6> Ia = IA[i] - (U[i] / d[i]) * U[i].transpose();
                 Eigen::Matrix<Scalar, 6, 1> pa = pA[i] + Ia * c[i] + U[i] * (u[i] / d[i]);
-                IA[link.parent]                = IA[link.parent] + Xup[i].transpose() * Ia * Xup[i];
-                pA[link.parent]                = pA[link.parent] + Xup[i].transpose() * pa;
+                IA[link.parent] += Xup[i].transpose() * Ia * Xup[i];
+                pA[link.parent] += Xup[i].transpose() * pa;
             }
         }
 
-        for (int i = 0; i < n_links; i++) {
+        for (int i = 0; i < nq; i++) {
             auto link = model.dynamic_links[i];
             if (link.parent == -1) {
                 a[i] = Xup[i] * -g + c[i];

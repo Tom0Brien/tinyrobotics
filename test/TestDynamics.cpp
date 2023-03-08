@@ -98,7 +98,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for simple model
 
     // Start the timer
     auto start                             = std::chrono::high_resolution_clock::now();
-    Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
+    Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau);
     // Stop the timer
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -123,7 +123,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass mode
 
     // Start the timer
     auto start                             = std::chrono::high_resolution_clock::now();
-    Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
+    Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau);
     // Stop the timer
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -146,7 +146,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass mode
 
 //     // Start the timer
 //     auto start                             = std::chrono::high_resolution_clock::now();
-//     Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau, f_ext);
+//     Eigen::Matrix<double, n_joints, 1> qdd = RML::forward_dynamics_ab(robot_model, q, qd, tau);
 //     // Stop the timer
 //     auto stop     = std::chrono::high_resolution_clock::now();
 //     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
