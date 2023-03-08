@@ -6,21 +6,32 @@
 
 namespace RML {
 
-    /// @brief The types of joints
-    enum class JointType { UNKNOWN, REVOLUTE, CONTINUOUS, PRISMATIC, FLOATING, PLANAR, FIXED };
+    /// @brief The types of joints that can be used in the model
+    enum class JointType {
+        UNKNOWN,     ///< Unknown joint type
+        REVOLUTE,    ///< Revolute joint
+        CONTINUOUS,  ///< Continuous joint
+        PRISMATIC,   ///< Prismatic joint
+        FLOATING,    ///< Floating joint
+        PLANAR,      ///< Planar joint
+        FIXED        ///< Fixed joint
+    };
 
     /**
-     * @brief Defines how a link moves relative to an attachment point
-     * @details
-     * @param Scalar The scalar type of the joint
+     * @brief Defines a joint in a robot model.
+     *
+     * @details A joint is used to connect two links in the model and defines how the child link can move
+     * relative to the parent link.
+     *
+     * @tparam Scalar The scalar type of the joint
      */
     template <typename Scalar>
     struct Joint {
 
-        /// @brief Index of joint in the model joint vector
+        /// @brief Index of the joint in the model's joint vector
         int joint_idx = -1;
 
-        /// @brief Index of joint in the models configuration vector
+        /// @brief Index of the joint in the model's configuration vector
         int q_idx = -1;
 
         /// @brief Name of the joint
@@ -40,17 +51,24 @@ namespace RML {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> child_transform =
             Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
-        /// @brief Parent link name
+        /// @brief Name of the parent link
         std::string parent_link_name = "";
 
-        /// @brief Child link name
+        /// @brief Name of the child link
         std::string child_link_name = "";
 
-        /// @brief Spatial transformation
+        /// @brief Spatial transformation matrix from the parent to the child link
         Eigen::Matrix<Scalar, 6, 6> X = {};
 
         /**
-         * @brief Casts to NewScalar type
+         * @brief Casts the joint to a new scalar type.
+         *
+         * @details This function creates a new Joint object with the same properties as this joint, but with
+         * a different scalar type.
+         *
+         * @tparam NewScalar The new scalar type for the joint
+         * @return The new joint object with the same properties as this joint, but with a different
+         * scalar type.
          */
         template <typename NewScalar>
         Joint<NewScalar> cast() const {

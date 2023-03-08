@@ -47,13 +47,17 @@ namespace RML {
         /// @brief Vector of joints in the robot model.
         std::vector<Joint<Scalar>> joints = {};
 
-        /// @brief The gravitational acceleration experienced by robot.
+        /// @brief The gravitational acceleration experienced by the robot.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
-        /// @brief Stores the results of the models algorithms.
+        /// @brief Stores the results of the model's algorithms.
         Data<Scalar, nq> data;
 
-        /// @brief @brief Initialize the link tree of the robot model.
+        /**
+         * @brief Initializes the link tree of the robot model.
+         * @details This method sets the parent link index for each child link, adds each child link index to the
+         * parent link's list of child link indices, and determines the base link of the robot model.
+         */
         void init_link_tree() {
             // Initialize the joint count to zero
             n_q = 0;
