@@ -18,13 +18,11 @@ namespace RML {
 
     /**
      * @brief A robot model.
-     * @details
+     * @details A robot model is a collection of links and joints that can be used to represent a robot.
      * @param Scalar The scalar type for the robot model
      */
     template <typename Scalar, int nq>
-    class Model {
-
-    public:
+    struct Model {
         /// @brief The name of the robot model.
         std::string name = "";
 
@@ -55,15 +53,14 @@ namespace RML {
         /// @brief Stores the results of the models algorithms.
         Data<Scalar, nq> data;
 
-        /**
-         * @brief Initialize the link tree of the robot model.
-         *
-         */
-        void init_link_tree(std::map<std::string, std::string>& parent_link_tree) {
-            // Set n_q to zero
+        /// @brief @brief Initialize the link tree of the robot model.
+        void init_link_tree() {
+            // Initialize the joint count to zero
             n_q = 0;
 
+            // Iterate over each joint in the robot model
             for (auto joint : joints) {
+                // Check that the joint has a parent link and a child link specified
                 std::string parent_link_name = joint.parent_link_name;
                 if (parent_link_name.empty()) {
                     std::ostringstream error_msg;
@@ -71,7 +68,6 @@ namespace RML {
                               << "] is missing a parent link specification.";
                     throw std::runtime_error(error_msg.str());
                 }
-
                 std::string child_link_name = joint.child_link_name;
                 if (child_link_name.empty()) {
                     std::ostringstream error_msg;
@@ -80,6 +76,7 @@ namespace RML {
                     throw std::runtime_error(error_msg.str());
                 }
 
+                // Get references to the child and parent links associated with the joint
                 auto child_link = get_link(child_link_name);
                 if (child_link.link_idx == -1) {
                     std::ostringstream error_msg;
@@ -96,30 +93,41 @@ namespace RML {
                     throw std::runtime_error(error_msg.str());
                 }
 
-
-                // Set the child links parent link index
+                // Set the parent link index for the child link and add the child link index to the parent link's list
+                // of child link indices
                 child_link.parent = parent_link.link_idx;
-                // If the joint is actuatable, add its index in the configuration vector
+                parent_link.add_child_link_idx(child_link.link_idx);
+
+                // If the joint is of type REVOLUTE or PRISMATIC, add its index in the configuration vector and
+                // increment the configuration vector size
                 if (joint.type == JointType::REVOLUTE || joint.type == JointType::PRISMATIC) {
                     joint.q_idx = n_q;
                     n_q++;
                 }
+
+                // Associate the joint with the child link and update the child link in the links vector
                 child_link.joint           = joint;
                 links[child_link.link_idx] = child_link;
 
-                // Add the child link to the parent link children
-                parent_link.add_child_link_idx(child_link.link_idx);
-
-                parent_link_tree[child_link.name] = parent_link_name;
-
+                // Update the parent link in the links vector
                 links[parent_link.link_idx] = parent_link;
+            }
+
+            // Find the base link of the robot model by finding the link with no parent link
+            for (auto link : links) {
+                bool found = false;
+                if (link.parent == -1) {
+                    if (found) {
+                        throw std::runtime_error(
+                            "Error! Multiple base links found. The urdf does not contain a valid link tree.");
+                    }
+                    base_link_idx = link.link_idx;
+                    found         = true;
+                }
             }
         }
 
-        /**
-         * @brief Initialize the dynamic link tree of the robot model.
-         *
-         */
+        /// @brief Initialize the dynamic link tree of the robot model.
         void init_dynamic_link_tree() {
             dynamic_links = links;
             // Remove the base link from the dynamic links
@@ -179,32 +187,9 @@ namespace RML {
         }
 
         /**
-         * @brief Find the base link of the robot model.
-         *
-         */
-        void find_base(const std::map<std::string, std::string>& parent_link_tree) {
-            for (auto link : links) {
-                auto parent = parent_link_tree.find(link.name);
-                if (parent == parent_link_tree.end()) {
-                    if (base_link_idx == -1) {
-                        base_link_idx = get_link_idx(link.name);
-                    }
-                    else {
-                        std::ostringstream error_msg;
-                        error_msg << "Error! Multiple base links found: (" << links[base_link_idx].name << ", "
-                                  << ") and (" + link.name + ")!";
-                        throw std::runtime_error(error_msg.str());
-                    }
-                }
-            }
-            if (base_link_idx == -1) {
-                throw std::runtime_error("Error! No base link found. The urdf does not contain a valid link tree.");
-            }
-        }
-
-        /**
          * @brief Get a link in the robot model.
-         *
+         * @param name The name of the link.
+         * @return The link
          */
         Link<Scalar> get_link(const std::string& name) const {
             for (auto link : links) {
@@ -234,28 +219,12 @@ namespace RML {
         }
 
         /**
-         * @brief Get the index of a link in the robot model.
-         * @param name The name of the link.
-         * @return The index of the link in the robot model.
-         */
-        int get_link_idx(const std::string& name) const {
-            for (auto link : links) {
-                if (link.name == name) {
-                    return link.link_idx;
-                }
-            }
-            // No link was found
-            throw std::runtime_error("Error! Link [" + name + "] not found!");
-            return -1;
-        }
-
-        /**
          * @brief Get the joint in the robot model.
          * @param name The name of the joint.
          * @return The joint in the robot model.
          *
          */
-        Joint<Scalar> get_joint(const std::string& name) {
+        Joint<Scalar> get_joint(const std::string& name) const {
             for (auto joint : joints) {
                 if (joint.name == name) {
                     return joints[joint.joint_idx];
@@ -263,22 +232,6 @@ namespace RML {
             }
             // No joint was found
             return Joint<Scalar>();
-        }
-
-        /**
-         * @brief Get the index of a joint in the robot model.
-         * @param name The name of the joint.
-         * @return The index of the joint in the robot model.
-         *
-         */
-        int get_joint_idx(const std::string& name) {
-            for (auto joint : joints) {
-                if (joint.name == name) {
-                    return joint.joint_idx;
-                }
-            }
-            // No joint was found
-            return -1;
         }
 
         /**

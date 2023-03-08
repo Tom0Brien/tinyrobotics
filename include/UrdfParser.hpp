@@ -391,11 +391,9 @@ namespace RML {
         model.n_links  = model.links.size();
 
         // Initialize the link tree and find the base link
-        std::map<std::string, std::string> parent_link_tree;
-        model.init_link_tree(parent_link_tree);
-        model.find_base(parent_link_tree);
+        model.init_link_tree();
 
-        // Initialize the dynamic link tree
+        // Initialize the dynamic link tree, which is used for dynamics algorithms
         model.init_dynamic_link_tree();
 
         // Resize the results structure
