@@ -198,9 +198,17 @@ namespace RML {
      */
     template <typename Scalar>
     Eigen::Matrix<Scalar, 6, 6> xlt(const Eigen::Matrix<Scalar, 3, 1>& r) {
-        Eigen::Matrix<Scalar, 6, 6> X;
-        X.setIdentity();
-        X.block(3, 0, 3, 3) = -skew(r);
+        Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Identity();
+        X.block(3, 0, 3, 3)           = -skew(r);
+        return X;
+    }
+
+    template <typename Scalar>
+    Eigen::Matrix<Scalar, 6, 6> R(const Eigen::Matrix<Scalar, 3, 1>& rpy) {
+        Eigen::Matrix<Scalar, 3, 3> E = rx(rpy(0)) * ry(rpy(1)) * rz(rpy(2));
+        Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Identity();
+        X.block(0, 0, 3, 3)           = E;
+        X.block(3, 3, 3, 3)           = E;
         return X;
     }
 
@@ -212,14 +220,17 @@ namespace RML {
      */
     template <typename Scalar>
     Eigen::Matrix<Scalar, 6, 6> xlt(const Eigen::Matrix<Scalar, 4, 4>& H) {
-        Eigen::Matrix<Scalar, 6, 6> X;
-        X.setZero();
-        X.block(0, 0, 3, 3)           = H.block(0, 0, 3, 3);
-        X.block(3, 3, 3, 3)           = H.block(0, 0, 3, 3);
-        Eigen::Matrix<Scalar, 3, 1> r = H.block(0, 3, 3, 1);
-        X.block(3, 0, 3, 3)           = -skew(r) * H.block(0, 0, 3, 3);
+        Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Zero();
+        Eigen::Matrix<Scalar, 3, 3> R = H.block(0, 0, 3, 3);
+        Eigen::Matrix<Scalar, 3, 1> p = H.block(0, 3, 3, 1);
+
+        X.block(0, 0, 3, 3) = R;
+        X.block(3, 3, 3, 3) = R;
+        X.block(3, 0, 3, 3) = skew(p) * R;
+
         return X;
     }
+
 
     /**
      * @brief Spatial inertia matrix from planar inertia matrix.

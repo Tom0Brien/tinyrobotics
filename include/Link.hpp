@@ -19,7 +19,7 @@ namespace RML {
         std::string name = "";
 
         /// @brief Index of the link in the model's link vector.
-        int link_idx = -1;
+        int idx = -1;
 
         /// @brief Index of the link's parent link in the model's link vector.
         int parent = -1;
@@ -60,7 +60,7 @@ namespace RML {
         Link<NewScalar> cast() {
             Link<NewScalar> new_link = Link<NewScalar>();
             new_link.name            = name;
-            new_link.link_idx        = link_idx;
+            new_link.idx             = idx;
             new_link.joint           = joint.template cast<NewScalar>();
             new_link.centre_of_mass  = centre_of_mass.template cast<NewScalar>();
             new_link.mass            = NewScalar(mass);

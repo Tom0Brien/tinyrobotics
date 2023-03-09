@@ -29,10 +29,10 @@ namespace RML {
     struct Joint {
 
         /// @brief Index of the joint in the model's joint vector
-        int joint_idx = -1;
+        int joint_id = -1;
 
         /// @brief Index of the joint in the model's configuration vector
-        int q_idx = -1;
+        int idx = -1;
 
         /// @brief Name of the joint
         std::string name = "";
@@ -73,8 +73,8 @@ namespace RML {
         template <typename NewScalar>
         Joint<NewScalar> cast() const {
             Joint<NewScalar> new_joint = Joint<NewScalar>();
-            new_joint.joint_idx        = joint_idx;
-            new_joint.q_idx            = q_idx;
+            new_joint.joint_id         = joint_id;
+            new_joint.idx              = idx;
             new_joint.name             = name;
             new_joint.type             = type;
             new_joint.axis             = axis.template cast<NewScalar>();

@@ -120,8 +120,5 @@ int main(int argc, char* argv[]) {
     params.active_constraints.push_back("right_foot");
     auto results2 = RML::solver(model, q0, p0, u0, params);
 
-    // Save the results
-    RML::save_history(model, results.x_history);
-
     return EXIT_SUCCESS;
 }

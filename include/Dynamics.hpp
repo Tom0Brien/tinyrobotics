@@ -39,7 +39,7 @@ namespace RML {
             model.data.M += Jci.transpose() * Mi * Jci;
             // Compute the contribution to the potential energy of the link
             Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c =
-                forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
+                forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].idx);
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
             model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
         }
@@ -76,7 +76,7 @@ namespace RML {
         for (int i = 0; i < model.n_links; i++) {
             // Compute the contribution to the potential energy of the link
             Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c =
-                forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].link_idx);
+                forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].idx);
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
             model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
         }
@@ -305,7 +305,7 @@ namespace RML {
             // Add links contribution to potential energy m* g* h
             V -= link.mass * model.gravity.transpose() * rMBb;
 
-            if (link.link_idx != -1 && link.joint.type == RML::JointType::REVOLUTE) {
+            if (link.idx != -1 && link.joint.type == RML::JointType::REVOLUTE) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
@@ -314,14 +314,14 @@ namespace RML {
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.link_idx != -1 && link.joint.type == RML::JointType::FIXED) {
+            else if (link.idx != -1 && link.joint.type == RML::JointType::FIXED) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add to constraint vector
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.link_idx != -1 && link.joint.type == RML::JointType::PRISMATIC) {
+            else if (link.idx != -1 && link.joint.type == RML::JointType::PRISMATIC) {
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
                 Jp.insert(Jp.end(), {0});
             }
@@ -419,15 +419,13 @@ namespace RML {
                         .toRotationMatrix();
                 Xj.block(0, 0, 3, 3) = R;
                 Xj.block(3, 3, 3, 3) = R;
-
-                S.setZero();
                 S << joint.axis[0], joint.axis[1], joint.axis[2], 0, 0, 0;
                 break;
             }
             case RML::JointType::PRISMATIC: {
-                Eigen::Matrix<Scalar, 3, 1> joint_axis = joint.axis;
-                Xj                                     = RML::xlt(joint_axis);
-                S << 0, 0, 0, joint_axis[0], joint_axis[1], joint_axis[2];
+                Eigen::Matrix<Scalar, 3, 1> q_axis = q * joint.axis;
+                Xj                                 = RML::xlt(q_axis);
+                S << 0, 0, 0, joint.axis[0], joint.axis[1], joint.axis[2];
                 break;
             }
             case RML::JointType::FIXED: {
@@ -443,6 +441,44 @@ namespace RML {
     }
 
     /**
+     * @brief Compute the joint transform and motion subspace matrices for a joint of the given type.
+     * @param type The joint type.
+     * @param q The joint position variable.
+     * @param Xj The joint transform matrix.
+     * @param S The motion subspace matrix.
+     */
+    template <typename Scalar>
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> joint_transform(const RML::Joint<Scalar>& joint, const Scalar& q) {
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+        RML::JointType joint_type                      = joint.type;
+        switch (joint_type) {
+            case RML::JointType::REVOLUTE: {
+                T.linear() =
+                    Eigen::AngleAxis<Scalar>(q,
+                                             Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]))
+                        .toRotationMatrix();
+                return T;
+                break;
+            }
+            case RML::JointType::PRISMATIC: {
+                T.translation() = q * Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]);
+                return T;
+                break;
+            }
+            case RML::JointType::FIXED: {
+
+                break;
+            }
+            default: {
+                std::cout << "Joint type not supported" << std::endl;
+                break;
+            }
+        }
+        return T;
+    }
+
+
+    /**
      * @brief Apply external forces to the robot model
      * @param model The robot model.
      * @param f_in The input force array of the robot model.
@@ -455,25 +491,23 @@ namespace RML {
         const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
         const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_in,
         const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext) {
-
-        const int n_links = model.dynamic_links.size();
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> f_out(n_links, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xa(n_links, Eigen::Matrix<Scalar, 6, 6>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> f_out(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xa(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
 
         f_out = f_in;
-
-        for (int i = 0; i < n_links; i++) {
-            const auto link = model.dynamic_links[i];
-            if (link.parent == -1) {
+        for (int i = 0; i < nq; i++) {
+            const auto link = model.links[model.q_idx[i]];
+            if (model.parent[i] == -1) {
                 Xa[i] = Xup[i];
             }
             else {
-                Xa[i] = Xup[i] * Xa[link.parent];
+                Xa[i] = Xup[i] * Xa[model.parent[i]];
             }
             f_out[i] += Xa[i].transpose().inverse() * f_ext[i];
         }
         return f_out;
     }
+
 
     /**
      * @brief Compute the forward dynamics of the robot model via Articulated-Body Algorithm
@@ -490,8 +524,6 @@ namespace RML {
                                                      const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                      const Eigen::Matrix<Scalar, nq, 1>& tau,
                                                      const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
-        // const int nq = model.dynamic_links.size();
-
         // Initialize the vectors for the algorithm
         Eigen::Matrix<Scalar, 6, 1> g = Eigen::Matrix<Scalar, 6, 1>::Zero();
         g.tail(3)                     = model.gravity;
@@ -509,21 +541,27 @@ namespace RML {
 
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            auto link = model.dynamic_links[i];
+            auto link = model.links[model.q_idx[i]];
             Eigen::Matrix<Scalar, 6, 6> Xj;
             Eigen::Matrix<Scalar, 6, 1> S_i;
             jcalc(link.joint, q(i), Xj, S_i);
             S[i]                           = S_i;
             Eigen::Matrix<Scalar, 6, 1> vJ = S_i * qd(i);
-            Xup[i]                         = Xj * link.joint.X;
+            // Get transform from body to parent
+            auto T_joint = joint_transform(link.joint, q(i));
+            auto T       = link.joint.parent_transform * T_joint * link.joint.child_transform;
+            // Compute the spatial transform from the parent to the current body
+            auto X = RML::xlt(T.inverse().matrix());
 
-            // Check if the parent link is the base link
-            if (link.parent == -1) {
+            Xup[i] = X;
+            // Xup[i] = Xj * link.joint.X;
+            // Check if the model.parent link is the base link
+            if (model.parent[i] == -1) {
                 v[i] = vJ;
                 c[i] = Eigen::Matrix<Scalar, 6, 1>::Zero();
             }
             else {
-                v[i] = Xup[i] * v[link.parent] + vJ;
+                v[i] = Xup[i] * v[model.parent[i]] + vJ;
                 c[i] = RML::crm(v[i]) * vJ;
             }
             IA[i] = link.I;
@@ -536,25 +574,23 @@ namespace RML {
         }
 
         for (int i = nq - 1; i >= 0; i--) {
-            auto link = model.dynamic_links[i];
-            U[i]      = IA[i] * S[i];
-            d[i]      = S[i].transpose() * U[i];
-            u[i]      = Scalar(tau(i) - S[i].transpose() * pA[i]);
-            if (link.parent != -1) {
+            U[i] = IA[i] * S[i];
+            d[i] = S[i].transpose() * U[i];
+            u[i] = Scalar(tau(i) - S[i].transpose() * pA[i]);
+            if (model.parent[i] != -1) {
                 Eigen::Matrix<Scalar, 6, 6> Ia = IA[i] - (U[i] / d[i]) * U[i].transpose();
                 Eigen::Matrix<Scalar, 6, 1> pa = pA[i] + Ia * c[i] + U[i] * (u[i] / d[i]);
-                IA[link.parent] += Xup[i].transpose() * Ia * Xup[i];
-                pA[link.parent] += Xup[i].transpose() * pa;
+                IA[model.parent[i]] += Xup[i].transpose() * Ia * Xup[i];
+                pA[model.parent[i]] += Xup[i].transpose() * pa;
             }
         }
 
         for (int i = 0; i < nq; i++) {
-            auto link = model.dynamic_links[i];
-            if (link.parent == -1) {
+            if (model.parent[i] == -1) {
                 a[i] = Xup[i] * -g + c[i];
             }
             else {
-                a[i] = Xup[i] * a[link.parent] + c[i];
+                a[i] = Xup[i] * a[model.parent[i]] + c[i];
             }
             qdd(i) = (u[i] - U[i].transpose() * a[i]) / d[i];
             a[i]   = a[i] + S[i] * qdd(i);

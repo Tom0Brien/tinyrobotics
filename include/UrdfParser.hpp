@@ -50,7 +50,7 @@ namespace RML {
      */
     template <typename Scalar>
     Eigen::Matrix<Scalar, 3, 3> rot_from_string(const std::string& rotation_str) {
-        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> rpy = vec_from_string<Scalar>(rotation_str);
+        Eigen::Matrix<Scalar, 3, 1> rpy = vec_from_string<Scalar>(rotation_str);
         Eigen::Matrix<Scalar, 3, 3> R;
         R = Eigen::AngleAxis<Scalar>(rpy.x(), Eigen::Matrix<Scalar, 3, 1>::UnitX())
             * Eigen::AngleAxis<Scalar>(rpy.y(), Eigen::Matrix<Scalar, 3, 1>::UnitY())
@@ -68,17 +68,44 @@ namespace RML {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> t;
         t.setIdentity();
         if (xml) {
-            const char* xyz_str = xml->Attribute("xyz");
-            if (xyz_str != nullptr) {
-                t.translation() = vec_from_string<Scalar>(xyz_str);
-            }
-
             const char* rpy_str = xml->Attribute("rpy");
             if (rpy_str != nullptr) {
                 t.linear() = rot_from_string<Scalar>(rpy_str);
             }
+
+            const char* xyz_str = xml->Attribute("xyz");
+            if (xyz_str != nullptr) {
+                t.translation() = vec_from_string<Scalar>(xyz_str);
+            }
         }
         return t;
+    }
+
+    /**
+     * @brief Get the spatial transform from a URDF xml element.
+     * @param xml The XML element
+     * @return A spatial transform
+     */
+    template <typename Scalar>
+    Eigen::Matrix<Scalar, 6, 6> spatial_transform_from_xml(tinyxml2::XMLElement* xml) {
+        Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Identity();
+        Eigen::Matrix<Scalar, 6, 6> R = Eigen::Matrix<Scalar, 6, 6>::Identity();
+        Eigen::Matrix<Scalar, 6, 6> T = Eigen::Matrix<Scalar, 6, 6>::Identity();
+        if (xml) {
+            const char* rpy_str = xml->Attribute("rpy");
+            if (rpy_str != nullptr) {
+                Eigen::Matrix<Scalar, 3, 1> rpy = vec_from_string<Scalar>(rpy_str);
+                R                               = RML::R(rpy);
+            }
+
+            const char* xyz_str = xml->Attribute("xyz");
+            if (xyz_str != nullptr) {
+                Eigen::Matrix<Scalar, 3, 1> translation = vec_from_string<Scalar>(xyz_str);
+                T                                       = RML::xlt(translation);
+            }
+        }
+        X = R * T;
+        return X;
     }
 
     /**
@@ -226,6 +253,7 @@ namespace RML {
         tinyxml2::XMLElement* origin_xml = xml->FirstChildElement("origin");
         if (origin_xml != nullptr) {
             joint.parent_transform = transform_from_xml<Scalar>(origin_xml);
+            joint.X                = spatial_transform_from_xml<Scalar>(origin_xml);
         }
 
         tinyxml2::XMLElement* parent_xml = xml->FirstChildElement("parent");
@@ -293,7 +321,7 @@ namespace RML {
         }
 
         // Add spatial transform to the Xtree
-        joint.X = RML::xlt(joint.parent_transform.matrix());
+        // joint.X = RML::xlt(joint.parent_transform.inverse().matrix());
 
         // tinyxml2::XMLElement *prop_xml = xml->FirstChildElement("dynamics");
         // if (prop_xml != nullptr) {
@@ -367,10 +395,10 @@ namespace RML {
         for (tinyxml2::XMLElement* link_xml = robot_xml->FirstChildElement("link"); link_xml;
              link_xml                       = link_xml->NextSiblingElement("link")) {
             Link<Scalar> link = link_from_xml<Scalar>(link_xml);
-            if (model.get_link(link.name).link_idx != -1) {
+            if (model.get_link(link.name).idx != -1) {
                 throw std::runtime_error("Error: Duplicate links '" + link.name + "' found");
             }
-            link.link_idx = model.links.size();
+            link.idx = model.links.size();
             model.links.push_back(link);
         }
         if (model.links.empty()) {
@@ -381,10 +409,10 @@ namespace RML {
         for (tinyxml2::XMLElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml;
              joint_xml                       = joint_xml->NextSiblingElement("joint")) {
             Joint<Scalar> joint = joint_from_xml<Scalar>(joint_xml);
-            if (model.get_joint(joint.name).joint_idx != -1) {
+            if (model.get_joint(joint.name).joint_id != -1) {
                 throw std::runtime_error("Error: Duplicate joints '" + joint.name + "' found");
             }
-            joint.joint_idx = model.joints.size();
+            joint.joint_id = model.joints.size();
             model.joints.push_back(joint);
         }
         model.n_joints = model.joints.size();
@@ -392,9 +420,8 @@ namespace RML {
 
         // Initialize the link tree and find the base link
         model.init_link_tree();
-
-        // Initialize the dynamic link tree, which is used for dynamics algorithms
-        model.init_dynamic_link_tree();
+        // Initialize the q_idx and parent_map
+        model.init_dynamics();
 
         // Resize the results structure
         model.data.resize(model.n_q);

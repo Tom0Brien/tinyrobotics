@@ -25,7 +25,7 @@ namespace RML {
         Link<Scalar> current_link = model.links[target_link_idx];
 
         // Check if the link is within the kinematic tree
-        if (current_link.link_idx == -1) {
+        if (current_link.idx == -1) {
             std::string error_msg = "Error: Link " + std::to_string(target_link_idx) + " not found.";
             throw std::runtime_error(error_msg);
         }
@@ -41,12 +41,12 @@ namespace RML {
             Eigen::Transform<Scalar, 3, Eigen::Isometry> H = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
             auto current_joint                             = current_link.joint;
             if (current_joint.type == JointType::REVOLUTE) {
-                Scalar q_current = q(current_joint.q_idx);
+                Scalar q_current = q(current_joint.idx);
                 // Rotate by q_current around axis
                 H.linear() = Eigen::AngleAxis<Scalar>(q_current, current_joint.axis).toRotationMatrix();
             }
             else if (current_joint.type == JointType::PRISMATIC) {
-                Scalar q_current = q(current_joint.q_idx);
+                Scalar q_current = q(current_joint.idx);
                 // Translate by q_current along axis
                 H.translation() = current_joint.axis * q_current;
             }
@@ -76,7 +76,7 @@ namespace RML {
         Link<Scalar> current_link = model.get_link(target_link_name);
 
         // Return transform from base {b} to target {t}
-        return forward_kinematics(model, q, current_link.link_idx);
+        return forward_kinematics(model, q, current_link.idx);
     }
 
     /**
@@ -254,24 +254,24 @@ namespace RML {
         auto base_link = model.links[model.base_link_idx];
 
         // Compute the displacement of the target link {t} in the base link frame {b}
-        Eigen::Matrix<Scalar, 3, 1> rTBb = position(model, q, base_link.link_idx, current_link.link_idx);
+        Eigen::Matrix<Scalar, 3, 1> rTBb = position(model, q, base_link.idx, current_link.idx);
 
         while (current_link.name != model.links[model.base_link_idx].name) {
             auto current_joint = current_link.joint;
-            if (current_joint.q_idx != -1) {
+            if (current_joint.idx != -1) {
                 // Compute the transform between base {b} and the current link {i}
-                auto Hbi = forward_kinematics(model, q, base_link.link_idx, current_link.link_idx);
+                auto Hbi = forward_kinematics(model, q, base_link.idx, current_link.idx);
                 // Axis of the current joint rotated into the base frame {b}
                 auto zIBb = Hbi.linear() * current_joint.axis;
                 // Compute the displacement of the current link {i} from the base link frame {b}
                 auto rIBb = Hbi.translation();
                 if (current_joint.type == JointType::PRISMATIC) {
-                    J.block(0, current_joint.q_idx, 3, 1) = zIBb;
-                    J.block(3, current_joint.q_idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
+                    J.block(0, current_joint.idx, 3, 1) = zIBb;
+                    J.block(3, current_joint.idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
                 }
                 else if (current_joint.type == JointType::REVOLUTE) {
-                    J.block(0, current_joint.q_idx, 3, 1) = (zIBb).cross(rTBb - rIBb);
-                    J.block(3, current_joint.q_idx, 3, 1) = zIBb;
+                    J.block(0, current_joint.idx, 3, 1) = (zIBb).cross(rTBb - rIBb);
+                    J.block(3, current_joint.idx, 3, 1) = zIBb;
                 }
             }
             // Move up the tree to parent towards the base
@@ -336,7 +336,7 @@ namespace RML {
 
         while (current_link.name != model.links[model.base_link_idx].name) {
             auto current_joint = current_link.joint;
-            if (current_joint.q_idx != -1) {
+            if (current_joint.idx != -1) {
                 // Compute the transform between base {b} and the current link {i}
                 auto Hbi = forward_kinematics(model, q, base_link.name, current_link.name);
                 // Axis of the current joint rotated into the base frame {b}
@@ -344,12 +344,12 @@ namespace RML {
                 // Compute the displacement of the current link {i} from the base link frame {b}
                 auto rIBb = Hbi.translation();
                 if (current_joint.type == JointType::PRISMATIC) {
-                    J.block(0, current_joint.q_idx, 3, 1) = zIBb;
-                    J.block(3, current_joint.q_idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
+                    J.block(0, current_joint.idx, 3, 1) = zIBb;
+                    J.block(3, current_joint.idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
                 }
                 else if (current_joint.type == JointType::REVOLUTE) {
-                    J.block(0, current_joint.q_idx, 3, 1) = (zIBb).cross(rTcBb - rIBb);
-                    J.block(3, current_joint.q_idx, 3, 1) = zIBb;
+                    J.block(0, current_joint.idx, 3, 1) = (zIBb).cross(rTcBb - rIBb);
+                    J.block(3, current_joint.idx, 3, 1) = zIBb;
                 }
             }
             // Move up the tree to parent towards the base

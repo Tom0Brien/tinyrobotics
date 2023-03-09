@@ -144,7 +144,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  1.571" xyz="0 0 0.15"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="torso_collision">
       <origin rpy="0       0       1.57079" xyz="0  0  0"/>
@@ -163,7 +163,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  0" xyz="-0.0075 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_shoulder_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
@@ -182,7 +182,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  0" xyz="0.0075 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_shoulder_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
@@ -201,7 +201,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  0" xyz="-0.00047 -0.00048 -0.04785"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_upper_arm_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
@@ -220,7 +220,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  0" xyz="0 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_upper_arm_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
@@ -239,7 +239,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  0" xyz="0.05336 -0.00081  0.0006"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_lower_arm_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
@@ -258,7 +258,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  0" xyz="0.05336 -0.00081  0.0006"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_lower_arm_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
@@ -277,7 +277,7 @@
     <inertial>
       <mass value="0.067"/>
       <origin rpy="0  0  0" xyz="0 0 -0.03"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_hip_yaw_collision">
       <origin rpy="0  0  1.571" xyz="0  0  0"/>
@@ -296,7 +296,7 @@
     <inertial>
       <mass value="0.067"/>
       <origin rpy="0  0  0" xyz="0 0 -0.03"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_hip_yaw_collision">
       <origin rpy="0  0  1.571" xyz="0  0  0"/>
@@ -315,7 +315,7 @@
     <inertial>
       <mass value="0.306"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_hip_roll_collision">
       <origin rpy="-1.571 0 1.571" xyz="0  0  0"/>
@@ -334,7 +334,7 @@
     <inertial>
       <mass value="0.306"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_hip_roll_collision">
       <origin rpy="-1.571 0 1.571" xyz="0  0  0"/>
@@ -353,7 +353,7 @@
     <inertial>
       <mass value="0.387"/>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_upper_leg_collision">
       <origin rpy="0 -1.571 0" xyz="0 0 0"/>
@@ -372,7 +372,7 @@
     <inertial>
       <mass value="0.387"/>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_upper_leg_collision">
       <origin rpy="0 -1.571 0" xyz="0 0 0"/>
@@ -391,7 +391,7 @@
     <inertial>
       <mass value="0.177"/>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_lower_leg_collision">
       <origin rpy="0 -1.571 0" xyz="0  0  0"/>
@@ -410,7 +410,7 @@
     <inertial>
       <mass value="0.177"/>
       <origin rpy="0 0 0" xyz="0.1 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_lower_leg_collision">
       <origin rpy="0 -1.571 0" xyz="0  0  0"/>
@@ -429,7 +429,7 @@
     <inertial>
       <mass value="0.306"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_ankle_collision">
       <origin rpy="0 1.571 0" xyz="0  0  0"/>
@@ -448,7 +448,7 @@
     <inertial>
       <mass value="0.306"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_ankle_collision">
       <origin rpy="0 1.571 0" xyz="0  0  0"/>
@@ -467,7 +467,7 @@
     <inertial>
       <mass value="0.205"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="right_foot_collision">
       <origin rpy="-1.571 0 1.571" xyz="-0.01 0 -0.04"/>
@@ -486,7 +486,7 @@
     <inertial>
       <mass value="0.205"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="left_foot_collision">
       <origin rpy="-1.571 0 1.571" xyz="-0.01 0 -0.04"/>
@@ -505,7 +505,7 @@
     <inertial>
       <mass value="0"/>
       <origin rpy="0  0  0" xyz="-0.00603 -0.0016   0.24115"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="neck_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
@@ -524,7 +524,7 @@
     <inertial>
       <mass value="4.2530"/>
       <origin rpy="0  0  0" xyz="0 0 -0.11"/>
-    <inertia ixx="0.1" ixy="0.1" ixz="0.1" iyy="0.1" iyz="0.1" izz="0.1"/>
+    <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
     </inertial>
     <collision name="head_collision">
       <origin rpy="0  0  0" xyz="0  0  0"/>
