@@ -177,10 +177,11 @@ namespace RML {
         Eigen::Matrix<Scalar, Eigen::Dynamic, nq> Jc;
         for (int i = 0; i < active_constraints.size(); i++) {
             // Compute the jacobian of the active constraint
-            Eigen::Matrix<Scalar, 3, nq> Jci = RML::Jv(model, q, active_constraints[i]);
+            auto Jci   = RML::geometric_jacobian(model, q, active_constraints[i]);
+            auto Jci_v = Jci.block(0, 0, 3, nq);
             // Vertically Concatenate the jacobian of the active constraint to the jacobian of the active constraints
-            Jc.conservativeResize(Jc.rows() + Jci.rows(), nq);
-            Jc.block(Jc.rows() - Jci.rows(), 0, Jci.rows(), Jci.cols()) = Jci;
+            Jc.conservativeResize(Jc.rows() + Jci_v.rows(), nq);
+            Jc.block(Jc.rows() - Jci_v.rows(), 0, Jci_v.rows(), Jci_v.cols()) = Jci_v;
         }
         model.data.Jc.resize(Jc.rows(), Jc.cols());
         model.data.Jc = Jc;

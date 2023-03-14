@@ -28,13 +28,13 @@ std::string world_frame  = "world";
  */
 bool eventDetection(RML::Model<double, 4>& model, Eigen::Matrix<double, 4, 1>& q, Eigen::Matrix<double, 4, 1>& p) {
     // Get the position of the left foot
-    Eigen::Matrix<double, 3, 1> right_foot_pos = RML::position(model, q, world_frame, swing_foot);
+    Eigen::Matrix<double, 3, 1> right_foot_pos = RML::translation(model, q, world_frame, swing_foot);
     // Rotate into ground frame around y axis by -3 degrees
     Eigen::Matrix<double, 3, 3> Ry =
         Eigen::AngleAxisd(-3.0 * M_PI / 180.0, Eigen::Vector3d::UnitY()).toRotationMatrix();
     Eigen::Matrix<double, 3, 1> right_foot_pos_ground = Ry * right_foot_pos;
 
-    Eigen::Matrix<double, 3, 1> swing_from_planted = RML::position(model, q, planted_foot, swing_foot);
+    Eigen::Matrix<double, 3, 1> swing_from_planted = RML::translation(model, q, planted_foot, swing_foot);
 
     // Check if the left foot is below the ground
     if (right_foot_pos_ground(2) <= 0 && swing_from_planted(0) >= 0.1) {
@@ -109,9 +109,11 @@ int main(int argc, char* argv[]) {
     // Apply impact mapping
     Eigen::Matrix<double, 4, 1> q_minus = results.x_history.back().head(4);
     Eigen::Matrix<double, 4, 1> p_minus = results.x_history.back().tail(4);
-    auto Ja                             = RML::Jv(model, q_minus, std::string("left_foot"));
-    auto Jb                             = RML::Jv(model, q_minus, std::string("right_foot"));
-    auto x_plus                         = impact_mapping(model, q_minus, p_minus, Ja, Jb);
+    auto Ja                             = RML::geometric_jacobian(model, q_minus, std::string("left_foot"));
+    Eigen::Matrix<double, 3, 4> Ja_v    = Ja.block(0, 0, 3, 4);
+    auto Jb                             = RML::geometric_jacobian(model, q_minus, std::string("right_foot"));
+    Eigen::Matrix<double, 3, 4> Jb_v    = Jb.block(0, 0, 3, 4);
+    auto x_plus                         = impact_mapping(model, q_minus, p_minus, Ja_v, Jb_v);
     q0                                  = x_plus.head(4);
     p0                                  = x_plus.tail(4);
     swing_foot                          = "left_foot";

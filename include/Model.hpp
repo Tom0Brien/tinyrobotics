@@ -9,7 +9,6 @@
 #include <map>
 #include <memory>
 #include <numeric>
-#include <queue>
 #include <sstream>
 
 #include "Data.hpp"
@@ -21,7 +20,7 @@ namespace RML {
     /**
      * @brief A robot model.
      * @details A robot model is a collection of links and joints that can be used to represent a robot.
-     * @param Scalar The scalar type for the robot model
+     * @tparam Scalar The scalar type for the robot model
      */
     template <typename Scalar, int nq>
     struct Model {
@@ -273,41 +272,6 @@ namespace RML {
                               << std::endl;
                 }
             }
-        }
-
-        /**
-         * @brief Display details of the robot models dynamic tree.
-         */
-        void show_dynamic_details() {
-            std::cout << "name = " << name << std::endl;
-            std::cout << "q_idx.size() = " << q_idx.size() << std::endl;
-            std::cout << "parent.size() = " << parent.size() << std::endl;
-            std::cout << "[";
-            for (int i = 0; i < q_idx.size(); i++) {
-                std::cout << q_idx[i] << ",";
-            }
-            std::cout << "]" << std::endl;
-            std::cout << "[";
-            for (int i = 0; i < parent.size(); i++) {
-                std::cout << parent[i] << ",";
-            }
-            std::cout << "]" << std::endl;
-
-            std::cout << "[";
-            for (int i = 0; i < q_idx.size(); i++) {
-                std::cout << links[q_idx[i]].name << ",";
-            }
-            std::cout << "]" << std::endl;
-            std::cout << "[";
-            for (int i = 0; i < parent.size(); i++) {
-                if (parent[i] == -1) {
-                    std::cout << "base,";
-                }
-                else {
-                    std::cout << links[q_idx[parent[i]]].name << ",";
-                }
-            }
-            std::cout << "]" << std::endl;
         }
 
 

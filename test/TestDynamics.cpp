@@ -86,7 +86,6 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 2 link model
 
     const int n_joints = 2;
     auto robot_model   = RML::model_from_urdf<double, n_joints>("data/urdfs/2_link.urdf");
-    robot_model.show_dynamic_details();
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
     q << 1, 2;
@@ -248,6 +247,4 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for NUgus model"
     std::cout << "Forward Dynamics via Articulated-Body Algorithm computation took " << duration.count()
               << " microseconds" << std::endl;
     std::cout << "qdd = " << qdd << std::endl;
-
-    robot_model.show_dynamic_details();
 }
