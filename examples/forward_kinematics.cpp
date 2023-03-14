@@ -2,7 +2,7 @@
 
 #include "../include/Kinematics.hpp"
 #include "../include/Model.hpp"
-#include "../include/UrdfParser.hpp"
+#include "../include/Parser.hpp"
 
 int main(int argc, char* argv[]) {
     // Create a robot model with 4 joints

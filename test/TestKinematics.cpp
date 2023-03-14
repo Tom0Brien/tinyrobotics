@@ -5,7 +5,7 @@
 
 #include "../include/InverseKinematics.hpp"
 #include "../include/Kinematics.hpp"
-#include "../include/UrdfParser.hpp"
+#include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
 
 using namespace ifopt;

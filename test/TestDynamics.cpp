@@ -6,7 +6,7 @@
 #include <string>
 
 #include "../include/Dynamics.hpp"
-#include "../include/UrdfParser.hpp"
+#include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
 
 // TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {

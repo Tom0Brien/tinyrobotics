@@ -12,8 +12,8 @@
 #include "../include/Kinematics.hpp"
 #include "../include/Math.hpp"
 #include "../include/Model.hpp"
+#include "../include/Parser.hpp"
 #include "../include/Solver.hpp"
-#include "../include/UrdfParser.hpp"
 
 
 std::string swing_foot   = "right_foot";
