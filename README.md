@@ -24,14 +24,13 @@ Kinematics algorithms are implemented in [Kinematics](./include/Kinematics.hpp).
 | `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass. |
 | `centre_of_mass` | Compute centre of mass of model. |
 
-### Inverse Kinematics
 Inverse Kinematics is implemented in [InverseKinematics](./include/InverseKinematics.hpp).
 | Function | Description |
 | --- | --- |
-| `inverse_kinematics` | Solve inverse kinematics for model. |
+| `inverse_kinematics` | Solve joint positions to achieve desired pose of model. |
 
 ### Dynamics
-Dynamics algorithms implemented in [Dynamics](./include/Dynamics.hpp).
+Dynamics algorithms are implemented in [Dynamics](./include/Dynamics.hpp).
 | Function | Description |
 | --- | --- |
 | `forward_dynamics` | Compute joint accelerations given joint positions and velocities and torques. |
