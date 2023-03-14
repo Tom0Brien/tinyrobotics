@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 # Set the project name
-project(EigenRobotics VERSION 1.0)
+project(tinyrobotics VERSION 1.0)
 
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -31,9 +31,9 @@ set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt
          nlohmann_json::nlohmann_json tinyxml2::tinyxml2)
 
 # Target names
-set(TARGET_LIB EigenRoboticsLib)
-set(TARGET_BIN EigenRoboticsExecutable)
-set(TARGET_TEST EigenRoboticsTests)
+set(TARGET_LIB tinyroboticsLib)
+set(TARGET_BIN tinyroboticsExecutable)
+set(TARGET_TEST tinyroboticsTests)
 
 # Source files
 file(GLOB SRC_FILES "include/*.hpp")

@@ -1,10 +1,10 @@
-#ifndef RML_MATH_HPP
-#define RML_MATH_HPP
+#ifndef TR_MATH_HPP
+#define TR_MATH_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-namespace RML {
+namespace tr {
     /**
      * @brief Computes the inverse of a 4x4 homogeneous transformation matrix
      * @param T The 4x4 homogeneous transformation matrix
@@ -244,7 +244,7 @@ namespace RML {
                                                 const Eigen::Matrix<Scalar, 3, 1>& c,
                                                 const Eigen::Matrix<Scalar, 3, 3>& I) {
         Eigen::Matrix<Scalar, 6, 6> Ic;
-        Eigen::Matrix<Scalar, 3, 3> C = RML::skew(c);
+        Eigen::Matrix<Scalar, 3, 3> C = tr::skew(c);
         Ic.setZero();
         Ic.block(0, 0, 3, 3) = I + m * C * C.transpose();
         Ic.block(0, 3, 3, 3) = m * C;
@@ -253,6 +253,6 @@ namespace RML {
         return Ic;
     }
 
-}  // namespace RML
+}  // namespace tr
 
 #endif

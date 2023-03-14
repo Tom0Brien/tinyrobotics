@@ -1,5 +1,5 @@
-#ifndef RML_DYNAMICS_HPP
-#define RML_DYNAMICS_HPP
+#ifndef TR_DYNAMICS_HPP
+#define TR_DYNAMICS_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -10,7 +10,7 @@
 #include "Kinematics.hpp"
 #include "Model.hpp"
 
-namespace RML {
+namespace tr {
 
     /**
      * @brief Compute the mass matrix of the robot model.
@@ -177,7 +177,7 @@ namespace RML {
         Eigen::Matrix<Scalar, Eigen::Dynamic, nq> Jc;
         for (int i = 0; i < active_constraints.size(); i++) {
             // Compute the jacobian of the active constraint
-            auto Jci   = RML::geometric_jacobian(model, q, active_constraints[i]);
+            auto Jci   = tr::geometric_jacobian(model, q, active_constraints[i]);
             auto Jci_v = Jci.block(0, 0, 3, nq);
             // Vertically Concatenate the jacobian of the active constraint to the jacobian of the active constraints
             Jc.conservativeResize(Jc.rows() + Jci_v.rows(), nq);
@@ -187,7 +187,7 @@ namespace RML {
         model.data.Jc = Jc;
 
         // Compute the left annihilator of the jacobian of the active constraints
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jcp = RML::null<Scalar>(Jc);
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jcp = tr::null<Scalar>(Jc);
         model.data.Jcp.resize(Jcp.rows(), Jcp.cols());
         model.data.Jcp = Jcp;
 
@@ -306,7 +306,7 @@ namespace RML {
             // Add links contribution to potential energy m* g* h
             V -= link.mass * model.gravity.transpose() * rMBb;
 
-            if (link.idx != -1 && link.joint.type == RML::JointType::REVOLUTE) {
+            if (link.idx != -1 && link.joint.type == tr::JointType::REVOLUTE) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
@@ -315,14 +315,14 @@ namespace RML {
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.idx != -1 && link.joint.type == RML::JointType::FIXED) {
+            else if (link.idx != -1 && link.joint.type == tr::JointType::FIXED) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add to constraint vector
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.idx != -1 && link.joint.type == RML::JointType::PRISMATIC) {
+            else if (link.idx != -1 && link.joint.type == tr::JointType::PRISMATIC) {
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
                 Jp.insert(Jp.end(), {0});
             }
@@ -405,14 +405,14 @@ namespace RML {
      * @param S The motion subspace matrix.
      */
     template <typename Scalar>
-    void jcalc(const RML::Joint<Scalar>& joint,
+    void jcalc(const tr::Joint<Scalar>& joint,
                const Scalar& q,
                Eigen::Matrix<Scalar, 6, 6>& Xj,
                Eigen::Matrix<Scalar, 6, 1>& S) {
 
-        RML::JointType joint_type = joint.type;
+        tr::JointType joint_type = joint.type;
         switch (joint_type) {
-            case RML::JointType::REVOLUTE: {
+            case tr::JointType::REVOLUTE: {
                 Xj.setZero();
                 Eigen::Matrix<Scalar, 3, 3> R =
                     Eigen::AngleAxis<Scalar>(-q,
@@ -423,13 +423,13 @@ namespace RML {
                 S << joint.axis[0], joint.axis[1], joint.axis[2], 0, 0, 0;
                 break;
             }
-            case RML::JointType::PRISMATIC: {
+            case tr::JointType::PRISMATIC: {
                 Eigen::Matrix<Scalar, 3, 1> q_axis = q * joint.axis;
-                Xj                                 = RML::xlt(q_axis);
+                Xj                                 = tr::xlt(q_axis);
                 S << 0, 0, 0, joint.axis[0], joint.axis[1], joint.axis[2];
                 break;
             }
-            case RML::JointType::FIXED: {
+            case tr::JointType::FIXED: {
                 Xj.setIdentity();
                 S.setZero();
                 break;
@@ -449,11 +449,11 @@ namespace RML {
      * @param S The motion subspace matrix.
      */
     template <typename Scalar>
-    Eigen::Transform<Scalar, 3, Eigen::Isometry> joint_transform(const RML::Joint<Scalar>& joint, const Scalar& q) {
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> joint_transform(const tr::Joint<Scalar>& joint, const Scalar& q) {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
-        RML::JointType joint_type                      = joint.type;
+        tr::JointType joint_type                       = joint.type;
         switch (joint_type) {
-            case RML::JointType::REVOLUTE: {
+            case tr::JointType::REVOLUTE: {
                 T.linear() =
                     Eigen::AngleAxis<Scalar>(q,
                                              Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]))
@@ -461,12 +461,12 @@ namespace RML {
                 return T;
                 break;
             }
-            case RML::JointType::PRISMATIC: {
+            case tr::JointType::PRISMATIC: {
                 T.translation() = q * Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]);
                 return T;
                 break;
             }
-            case RML::JointType::FIXED: {
+            case tr::JointType::FIXED: {
 
                 break;
             }
@@ -488,7 +488,7 @@ namespace RML {
      */
     template <typename Scalar, int nq>
     std::vector<Eigen::Matrix<Scalar, 6, 1>> apply_external_forces(
-        const RML::Model<Scalar, nq>& model,
+        const tr::Model<Scalar, nq>& model,
         const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
         const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_in,
         const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext) {
@@ -520,7 +520,7 @@ namespace RML {
      * @return qdd The joint acceleration of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(const RML::Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(const tr::Model<Scalar, nq>& model,
                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
                                                      const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                      const Eigen::Matrix<Scalar, nq, 1>& tau,
@@ -551,7 +551,7 @@ namespace RML {
             // Get transform from body to parent
             auto T = link.joint.parent_transform * joint_transform(link.joint, q(i)) * link.joint.child_transform;
             // Compute the spatial transform from the parent to the current body
-            Xup[i] = RML::xlt(T.inverse().matrix());
+            Xup[i] = tr::xlt(T.inverse().matrix());
             // Check if the model.parent link is the base link
             if (model.parent[i] == -1) {
                 v[i] = vJ;
@@ -559,10 +559,10 @@ namespace RML {
             }
             else {
                 v[i] = Xup[i] * v[model.parent[i]] + vJ;
-                c[i] = RML::crm(v[i]) * vJ;
+                c[i] = tr::crm(v[i]) * vJ;
             }
             IA[i] = link.I;
-            pA[i] = RML::crf(v[i]) * IA[i] * v[i];
+            pA[i] = tr::crf(v[i]) * IA[i] * v[i];
         }
 
         // Apply external forces if non-zero
@@ -595,6 +595,6 @@ namespace RML {
         return qdd;
     }
 
-}  // namespace RML
+}  // namespace tr
 
 #endif

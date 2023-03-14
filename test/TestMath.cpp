@@ -11,7 +11,7 @@ TEST_CASE("Test null space", "[Math]") {
     A << 1, 2, 3, 4, 5, 6, 7, 8, 9;
 
     // Create null space
-    auto null_space = RML::null<double>(A);
+    auto null_space = tr::null<double>(A);
 
     // Verify null space
     Eigen::Matrix<double, 3, 1> expected_null_space;

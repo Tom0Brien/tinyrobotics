@@ -1,5 +1,5 @@
-#ifndef RML_MODEL_HPP
-#define RML_MODEL_HPP
+#ifndef TR_MODEL_HPP
+#define TR_MODEL_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -15,54 +15,58 @@
 #include "Joint.hpp"
 #include "Link.hpp"
 
-namespace RML {
+namespace tr {
 
     /**
-     * @brief A robot model.
-     * @details A robot model is a collection of links and joints that can be used to represent a robot.
-     * @tparam Scalar The scalar type for the robot model
+     * @brief A tinyrobotics model.
+     * @details A tinyrobotics model is a collection of links and joints that represents a robot.
+     * @tparam Scalar The scalar type for the model.
+     * @tparam nq The number of configuration coordinates (number of degrees of freedom).
      */
     template <typename Scalar, int nq>
     struct Model {
-        /// @brief The name of the robot model.
+        /// @brief Name of the model.
         std::string name = "";
 
-        /// @brief The number of links in the robot model.
+        /// @brief Number of links in the model.
         int n_links = 0;
 
-        /// @brief The number of joints in the robot model.
+        /// @brief Number of joints in the model.
         int n_joints = 0;
 
-        /// @brief The number of actuatable joints in the robot model.
+        /// @brief Number of configuration coordinates (degrees of freedom) in the model.
         int n_q = 0;
 
-        /// @brief The index of the base link in the robot model.
-        int base_link_idx = -1;
-
-        /// @brief Vector of links in the robot model.
+        /// @brief Vector of links in the model.
         std::vector<Link<Scalar>> links = {};
 
-        /// @brief Vector of indices of dynamic links in the robot model (links with joints that can be actuated)
+        /// @brief Index of the base link in the models links vector.
+        int base_link_idx = -1;
+
+        /// @brief Vector of indices of dynamic links in the models link vector (links with joints that can be
+        /// actuated).
         std::vector<int> q_idx = {};
 
-        /// @brief Vector of parent link indices of the associated dynamic link in the dynamic_idxs vector.
+        /// @brief Vector of parent link indices of links which are not fixed (links with joints that can be actuated).
         std::vector<int> parent = {};
 
-        /// @brief Vector of joints in the robot model.
+        /// @brief Vector of joints in the model.
         std::vector<Joint<Scalar>> joints = {};
 
-        /// @brief The gravitational acceleration experienced by robot.
+        /// @brief Gravitational acceleration experienced by model.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
         /// @brief Stores the results of the models algorithms.
         Data<Scalar, nq> data;
 
-        /// @brief @brief Initialize the link tree of the robot model.
+        /**
+         * @brief Initialize the link tree in the model.
+         */
         void init_link_tree() {
             // Initialize the joint count to zero
             n_q = 0;
 
-            // Iterate over each joint in the robot model
+            // Iterate over each joint in the model
             for (auto joint : joints) {
                 // Check that the joint has a parent link and a child link specified
                 std::string parent_link_name = joint.parent_link_name;
@@ -117,7 +121,7 @@ namespace RML {
                 links[parent_link.idx] = parent_link;
             }
 
-            // Find the base link of the robot model by finding the link with no parent link
+            // Find the base link of the model by finding the link with no parent link
             for (auto link : links) {
                 bool found = false;
                 if (link.parent == -1) {
@@ -131,8 +135,10 @@ namespace RML {
             }
         }
 
-        /// @brief Updates dynamic links with any fixed joints associated with them, and updates the indices of the
-        /// dynamic links and their parents.
+        /**
+         * @brief Updates dynamic links with any fixed joints associated with them, and updates the indices of the
+         * dynamic links and their parents.
+         */
         void init_dynamics() {
             for (auto& link : links) {
                 // If the link has a fixed joint, update the transforms of the child links and its parents link inertia
@@ -196,9 +202,9 @@ namespace RML {
         }
 
         /**
-         * @brief Get a link in the robot model.
-         * @param name The name of the link.
-         * @return The link
+         * @brief Get a link in the model by name.
+         * @param name Name of the link.
+         * @return Link in the model.
          */
         Link<Scalar> get_link(const std::string& name) const {
             for (auto link : links) {
@@ -211,9 +217,9 @@ namespace RML {
         }
 
         /**
-         * @brief Get the parent link in the robot model.
-         * @param link_idx The index of the link in the robot model.
-         * @return The parent link of the link
+         * @brief Get the parent link of a link in the model by name.
+         * @param link_idx Index of the link in the model.
+         * @return Parent link of the link.
          *
          */
         Link<Scalar> get_parent_link(const std::string& name) const {
@@ -228,9 +234,9 @@ namespace RML {
         }
 
         /**
-         * @brief Get the joint in the robot model.
-         * @param name The name of the joint.
-         * @return The joint in the robot model.
+         * @brief Get the joint in the model by name.
+         * @param name Name of the joint.
+         * @return Joint in the model.
          *
          */
         Joint<Scalar> get_joint(const std::string& name) const {
@@ -239,16 +245,16 @@ namespace RML {
                     return link.joint;
                 }
             }
-            // No joint was found
+            // No joint was found, return an empty joint
             return Joint<Scalar>();
         }
 
         /**
-         * @brief Display details of the robot model.
+         * @brief Display details of the model.
          */
         void show_details() {
             int spacing = 25;
-            std::cout << "| ************************************************ Robot Model Details "
+            std::cout << "| ************************************************ Model Details "
                          "************************************************ |"
                       << std::endl;
             std::cout << "Name : " << name << std::endl;
@@ -276,8 +282,8 @@ namespace RML {
 
 
         /**
-         * @brief Get a configuration vector for the robot model of all zeros.
-         *
+         * @brief Get a configuration vector for the model of all zeros.
+         * @return Configuration vector of all zeros.
          */
         Eigen::Matrix<Scalar, nq, 1> home_configuration() const {
             assert(n_q > 0);
@@ -287,8 +293,8 @@ namespace RML {
         }
 
         /**
-         * @brief Get a random configuration vector for the robot model.
-         *
+         * @brief Get a random configuration vector for the model.
+         * @return Random configuration vector.
          */
         Eigen::Matrix<Scalar, nq, 1> random_configuration() const {
             assert(n_q > 0);
@@ -298,9 +304,11 @@ namespace RML {
             return q;
         }
 
+
         /**
-         * @brief Cast to NewScalar type.
-         *
+         * @brief Casts the model to a new scalar type.
+         * @tparam NewScalar scalar type to cast the model to.
+         * @return Model with new scalar type.
          */
         template <typename NewScalar>
         Model<NewScalar, nq> cast() {
@@ -321,6 +329,6 @@ namespace RML {
             return new_model;
         }
     };
-}  // namespace RML
+}  // namespace tr
 
 #endif

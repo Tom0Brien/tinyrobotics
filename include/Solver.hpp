@@ -1,5 +1,5 @@
-#ifndef RML_SOLVERS_HPP
-#define RML_SOLVERS_HPP
+#ifndef TR_SOLVERS_HPP
+#define TR_SOLVERS_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -8,7 +8,7 @@
 #include "Dynamics.hpp"
 #include "Model.hpp"
 
-namespace RML {
+namespace tr {
 
     /// @brief The types of integration methods
     enum class IntegrationMethod { EULER, SYMPLECTIC_EULER, RK4 };  // namespace IntegrationMethod
@@ -252,7 +252,7 @@ namespace RML {
         return results;
     }
 
-}  // namespace RML
+}  // namespace tr
 
 
-#endif  // RML_SOLVERS_HPP
+#endif  // TR_SOLVERS_HPP

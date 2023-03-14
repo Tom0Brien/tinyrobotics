@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     // Load in Model from URDF
     std::string path_to_urdf = "../data/urdfs/robot.urdf";
     const int n_joints       = 20;
-    auto model               = RML::model_from_urdf<double, n_joints>(path_to_urdf);
+    auto model               = tr::model_from_urdf<double, n_joints>(path_to_urdf);
 
     // Set initial conditions for the robot
     auto q0 = model.home_configuration();
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     // Compute the forward kinematics to the left foot
     auto source_frame = std::string("torso");
     auto target_frame = std::string("left_foot");
-    auto Htl_0        = RML::forward_kinematics(model, q0, target_frame);
+    auto Htl_0        = tr::forward_kinematics(model, q0, target_frame);
 
     // Compute the inverse kinematics for moving the left foot upwards
     Eigen::Matrix<double, 3, 1> target_position;
@@ -50,17 +50,17 @@ int main(int argc, char* argv[]) {
         Htl_target(2, 3) += 0.01;
 
         // Compute the inverse kinematics
-        q = RML::inverse_kinematics(model, source_frame, target_frame, Htl_target, q);
+        q = tr::inverse_kinematics(model, source_frame, target_frame, Htl_target, q);
         q_history.push_back(q);
 
         // Print out the current configuration
-        auto Htl = RML::forward_kinematics(model, q, target_frame);
+        auto Htl = tr::forward_kinematics(model, q, target_frame);
 
         // Compute the error
         Eigen::Quaterniond quaternion_current(Htl.rotation());
         Eigen::Quaterniond quaternion_target(Htl_target.rotation());
         auto translation_error = (Htl_target.translation() - Htl.translation()).norm();
-        auto rotation_error    = RML::quaternion_error(quaternion_current, quaternion_target);
+        auto rotation_error    = tr::quaternion_error(quaternion_current, quaternion_target);
         total_translation_error += translation_error;
         total_rotation_error += rotation_error;
         std::cout << "(Translation error, Rotation error): (" << translation_error << ", " << rotation_error << ")"

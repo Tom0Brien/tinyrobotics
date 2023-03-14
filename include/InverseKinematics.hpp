@@ -1,5 +1,5 @@
-#ifndef RML_INVERSEKINEMATICS_HPP
-#define RML_INVERSEKINEMATICS_HPP
+#ifndef TR_INVERSEKINEMATICS_HPP
+#define TR_INVERSEKINEMATICS_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -11,7 +11,7 @@
 #include "Kinematics.hpp"
 #include "Model.hpp"
 
-namespace RML {
+namespace tr {
 
     /**
      * @brief Defines the variable set for the IK problem, which is the configuration for the robot.
@@ -283,6 +283,6 @@ namespace RML {
         Eigen::Matrix<Scalar, nq, 1> q = nlp.GetOptVariables()->GetValues();
         return q;
     }
-}  // namespace RML
+}  // namespace tr
 
 #endif

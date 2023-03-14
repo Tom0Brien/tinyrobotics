@@ -1,12 +1,12 @@
-#ifndef RML_URDFPARSER_HPP
-#define RML_URDFPARSER_HPP
+#ifndef TR_URDFPARSER_HPP
+#define TR_URDFPARSER_HPP
 
 #include <tinyxml2.h>
 
 #include "Math.hpp"
 #include "Model.hpp"
 
-namespace RML {
+namespace tr {
 
     /**
      * @brief Get Eigen3 vector from a URDF vector element.
@@ -95,13 +95,13 @@ namespace RML {
             const char* rpy_str = xml->Attribute("rpy");
             if (rpy_str != nullptr) {
                 Eigen::Matrix<Scalar, 3, 1> rpy = vec_from_string<Scalar>(rpy_str);
-                R                               = RML::R(rpy);
+                R                               = tr::R(rpy);
             }
 
             const char* xyz_str = xml->Attribute("xyz");
             if (xyz_str != nullptr) {
                 Eigen::Matrix<Scalar, 3, 1> translation = vec_from_string<Scalar>(xyz_str);
-                T                                       = RML::xlt(translation);
+                T                                       = tr::xlt(translation);
             }
         }
         X = R * T;
@@ -226,7 +226,7 @@ namespace RML {
         }
 
         // Add the spatial inertia to the link
-        link.I = RML::spatial_inertia<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
+        link.I = tr::spatial_inertia<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
 
         return link;
     }
@@ -320,7 +320,7 @@ namespace RML {
         }
 
         // Add spatial transform to the Xtree
-        // joint.X = RML::xlt(joint.parent_transform.inverse().matrix());
+        // joint.X = tr::xlt(joint.parent_transform.inverse().matrix());
 
         // tinyxml2::XMLElement *prop_xml = xml->FirstChildElement("dynamics");
         // if (prop_xml != nullptr) {
@@ -383,7 +383,7 @@ namespace RML {
         // Create a new model
         Model<Scalar, nq> model;
 
-        // Get the robot's name
+        // Set the models name
         const char* name = robot_xml->Attribute("name");
         if (!name) {
             throw std::runtime_error("Error: No name given for the robot");
@@ -414,20 +414,19 @@ namespace RML {
             joint.joint_id = model.joints.size();
             model.joints.push_back(joint);
         }
-        model.n_joints = model.joints.size();
-        model.n_links  = model.links.size();
 
-        // Initialize the link tree and find the base link
+        // Initialize the link tree and find the base link index (should be -1)
         model.init_link_tree();
 
         // Initialize the q_idx and parent_map
         model.init_dynamics();
 
-        // Resize the results structure
-        model.data.resize(model.n_q);
+        // Set the number of joints and links
+        model.n_joints = model.joints.size();
+        model.n_links  = model.links.size();
 
         return model;
     }
-}  // namespace RML
+}  // namespace tr
 
 #endif

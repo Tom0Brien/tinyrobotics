@@ -1,5 +1,5 @@
-#ifndef RML_FORWARDKINEMATICS_HPP
-#define RML_FORWARDKINEMATICS_HPP
+#ifndef TR_FORWARDKINEMATICS_HPP
+#define TR_FORWARDKINEMATICS_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -7,7 +7,7 @@
 #include "Math.hpp"
 #include "Model.hpp"
 
-namespace RML {
+namespace tr {
 
     /**
      * @brief Computes the transform to the target from the base link.
@@ -146,7 +146,7 @@ namespace RML {
      * @return Homogeneous transform from source link {s} to target link centre of mass {c}.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(Model<Scalar, nq>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(const Model<Scalar, nq>& model,
                                                                         const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                         const std::string& source_link_name,
                                                                         const std::string& target_link_name) {
@@ -170,7 +170,7 @@ namespace RML {
      * @return Homogeneous transform from source link {s} to target link centre of mass {c}.
      */
     template <typename Scalar, int nq>
-    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(Model<Scalar, nq>& model,
+    Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(const Model<Scalar, nq>& model,
                                                                         const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                         const int& source_link_idx,
                                                                         const int& target_link_idx) {
@@ -193,7 +193,7 @@ namespace RML {
      * @return Translation of the target link from the source link in the source link frame.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 1> translation(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 3, 1> translation(const Model<Scalar, nq>& model,
                                             const Eigen::Matrix<Scalar, nq, 1>& q,
                                             const std::string& source_link_name,
                                             const std::string& target_link_name) {
@@ -214,7 +214,7 @@ namespace RML {
      * @return Translation of the target link from the source link in the source link frame.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 1> translation(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 3, 1> translation(const Model<Scalar, nq>& model,
                                             const Eigen::Matrix<Scalar, nq, 1>& q,
                                             const int& source_link_idx,
                                             const int& target_link_idx) {
@@ -235,7 +235,7 @@ namespace RML {
      * @return Rotation matrix between the target link and the source link in the source link frame.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 3> rotation(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 3, 3> rotation(const Model<Scalar, nq>& model,
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          const std::string& source_link_name,
                                          const std::string& target_link_name) {
@@ -254,7 +254,7 @@ namespace RML {
      * @return The geometric jacobian of the target link from the base link in the base link frame.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(const Model<Scalar, nq>& model,
                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                                     const int& target_link_idx) {
         // Initialize the geometric jabobian matrix with zeros
@@ -303,7 +303,7 @@ namespace RML {
      * @return The geometric jacobian relative to the base for the specified target link.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(const Model<Scalar, nq>& model,
                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                                     const std::string& target_link_name) {
         // Get the target link by name
@@ -321,7 +321,7 @@ namespace RML {
      * @return The geometric jacobian between the base and the target link.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian_com(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian_com(const Model<Scalar, nq>& model,
                                                         const Eigen::Matrix<Scalar, nq, 1>& q,
                                                         const std::string& target_link_name) {
         // Initialize the geometric jabobian matrix with zeros
@@ -371,7 +371,7 @@ namespace RML {
      * @return The centre of mass position expressed in source link frame.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 3, 1> centre_of_mass(Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 3, 1> centre_of_mass(const Model<Scalar, nq>& model,
                                                const Eigen::Matrix<Scalar, nq, 1>& q,
                                                const std::string& source_link_name) {
         // For each link in the model, compute the transform from the source link to the CoM of the link
@@ -390,6 +390,6 @@ namespace RML {
         return rISs / total_mass;
     }
 
-}  // namespace RML
+}  // namespace tr
 
 #endif

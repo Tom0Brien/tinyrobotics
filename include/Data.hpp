@@ -1,13 +1,15 @@
-#ifndef RML_DATA_HPP
-#define RML_DATA_HPP
+#ifndef TR_DATA_HPP
+#define TR_DATA_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-namespace RML {
+namespace tr {
 
     /**
      * @brief A data struct for storing results of various model algorithms.
+     * @tparam Scalar Scalar type of the associated model.
+     * @tparam nq Number of configuration coordinates (number of degrees of freedom)
      */
     template <typename Scalar, int nq>
     struct Data {
@@ -21,7 +23,7 @@ namespace RML {
         /// @brief Joint acceleration.
         Eigen::Matrix<Scalar, nq, 1> ddq;
 
-        /// @brief Joint Momentum
+        /// @brief Joint Momentum.
         Eigen::Matrix<Scalar, nq, 1> p;
 
         /// @brief Joint torque.
@@ -77,26 +79,9 @@ namespace RML {
         int nz = 0;
 
         /**
-         * @brief Resize all matrices to the given size.
-         * @param n The size to resize all matrices to.
-         */
-        void resize(int n) {
-            // q.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            // dq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            // ddq.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            // p.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            // tau.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            // M.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            // Minv.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            // C.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            // g.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n, 1));
-            // Gp.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Identity(n, n));
-            // Dp.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(n, n));
-            // dx_dt.conservativeResizeLike(Eigen::Matrix<Scalar, Eigen::Dynamic, 1>::Zero(n + n, 1));
-        }
-
-        /**
-         * @brief Cast to NewScalar type.
+         * @brief Casts the data to a new scalar type.
+         * @tparam NewScalar scalar type to cast the data to.
+         * @return Data with new scalar type.
          */
         template <typename NewScalar>
         Data<NewScalar, nq> cast() {
@@ -122,6 +107,6 @@ namespace RML {
             return new_res;
         }
     };
-}  // namespace RML
+}  // namespace tr
 
 #endif
