@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include <numeric>
+#include <queue>
 #include <sstream>
 
 #include "Data.hpp"
@@ -142,6 +143,7 @@ namespace RML {
                         auto child_link = links[child_link_idx];
                         for (int j = 0; j < links.size(); j++) {
                             if (links[j].name == child_link.name) {
+                                // TODO: IMPLEMENT SOMETHING LIKE THIS
                                 links[j].joint.X = links[j].joint.X * link.joint.X;
                                 break;
                             }
@@ -192,19 +194,6 @@ namespace RML {
                     }
                 }
             }
-
-            // Sort q_idx vector based on parent indices
-            std::vector<int> indices(q_idx.size());
-            std::iota(indices.begin(), indices.end(), 0);
-            std::sort(indices.begin(), indices.end(), [&](int a, int b) { return parent[a] < parent[b]; });
-            std::vector<int> q_idx_sorted(q_idx.size());
-            std::vector<int> parent_sorted(q_idx.size());
-            for (int i = 0; i < q_idx.size(); i++) {
-                q_idx_sorted[i]  = q_idx[indices[i]];
-                parent_sorted[i] = parent[indices[i]];
-            }
-            q_idx  = q_idx_sorted;
-            parent = parent_sorted;
         }
 
         /**
@@ -319,10 +308,6 @@ namespace RML {
                 }
             }
             std::cout << "]" << std::endl;
-
-            for (int i = 0; i < q_idx.size(); i++) {
-                std::cout << links[q_idx[i]].joint.X << std::endl;
-            }
         }
 
 

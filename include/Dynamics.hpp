@@ -548,13 +548,9 @@ namespace RML {
             S[i]                           = S_i;
             Eigen::Matrix<Scalar, 6, 1> vJ = S_i * qd(i);
             // Get transform from body to parent
-            auto T_joint = joint_transform(link.joint, q(i));
-            auto T       = link.joint.parent_transform * T_joint * link.joint.child_transform;
+            auto T = link.joint.parent_transform * joint_transform(link.joint, q(i)) * link.joint.child_transform;
             // Compute the spatial transform from the parent to the current body
-            auto X = RML::xlt(T.inverse().matrix());
-
-            Xup[i] = X;
-            // Xup[i] = Xj * link.joint.X;
+            Xup[i] = RML::xlt(T.inverse().matrix());
             // Check if the model.parent link is the base link
             if (model.parent[i] == -1) {
                 v[i] = vJ;

@@ -253,7 +253,6 @@ namespace RML {
         tinyxml2::XMLElement* origin_xml = xml->FirstChildElement("origin");
         if (origin_xml != nullptr) {
             joint.parent_transform = transform_from_xml<Scalar>(origin_xml);
-            joint.X                = spatial_transform_from_xml<Scalar>(origin_xml);
         }
 
         tinyxml2::XMLElement* parent_xml = xml->FirstChildElement("parent");
@@ -420,6 +419,7 @@ namespace RML {
 
         // Initialize the link tree and find the base link
         model.init_link_tree();
+
         // Initialize the q_idx and parent_map
         model.init_dynamics();
 

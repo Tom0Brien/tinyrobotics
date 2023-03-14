@@ -82,6 +82,7 @@ namespace RML {
             new_joint.child_transform  = child_transform.template cast<NewScalar>();
             new_joint.parent_link_name = parent_link_name;
             new_joint.child_link_name  = child_link_name;
+            new_joint.X                = X.template cast<NewScalar>();
             return new_joint;
         }
     };
