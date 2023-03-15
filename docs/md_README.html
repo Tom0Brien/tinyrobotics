@@ -104,13 +104,15 @@ Kinematics</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>centre_of_mass</code>   </td><td class="markdownTableBodyNone">Compute centre of mass of model.   </td></tr>
 </table>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Inverse Kinematics</h2>
 <p>Inverse Kinematics is implemented in <a href="./include/InverseKinematics.hpp">InverseKinematics</a>. </p><table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>inverse_kinematics</code>   </td><td class="markdownTableBodyNone">Solve joint positions to achieve desired pose of model.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md3"></a>
+<h2><a class="anchor" id="autotoc_md4"></a>
 Dynamics</h2>
 <p>Dynamics algorithms are implemented in <a href="./include/Dynamics.hpp">Dynamics</a>. </p><table class="markdownTable">
 <tr class="markdownTableHead">
@@ -124,9 +126,9 @@ Dynamics</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>total_energy</code>   </td><td class="markdownTableBodyNone">Compute total energy (kinetic + potential) given joint positions and velocity.   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Install</h1>
-<h2><a class="anchor" id="autotoc_md5"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 1. Install Dependencies</h2>
 <ul>
 <li><a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a></li>
@@ -135,14 +137,14 @@ Install</h1>
 <li><a href="https://github.com/autodiff/autodiff">autodiff</a></li>
 <li><a href="https://github.com/ethz-adrl/ifopt">ifopt</a></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 2. Build with cmake</h2>
 <div class="fragment"><div class="line">git clone https://github.com/Tom0Brien/tinyrobotics.git &amp;&amp; cd RML</div>
 <div class="line">mkdir build &amp;&amp; cd build</div>
 <div class="line">cmake ..</div>
 <div class="line">make</div>
 <div class="line">sudo make install # copies files in this folder to /usr/local/*</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md7"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md8"></a>
 Examples</h1>
 <p>The code below demonstrates how to load in a URDF model and compute the forward kinematics between two links.</p>
 <div class="fragment"><div class="line"> ++</div>
