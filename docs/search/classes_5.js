@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['solverparams_0',['SolverParams',['../structtr_1_1solver_1_1SolverParams.html',1,'tr::solver']]],
-  ['solverresults_1',['SolverResults',['../structtr_1_1solver_1_1SolverResults.html',1,'tr::solver']]]
+  ['model_0',['Model',['../structtr_1_1model_1_1Model.html',1,'tr::model']]],
+  ['model_3c_20autodifftype_2c_20nq_20_3e_1',['Model&lt; AutoDiffType, nq &gt;',['../structtr_1_1model_1_1Model.html',1,'tr::model']]]
 ];

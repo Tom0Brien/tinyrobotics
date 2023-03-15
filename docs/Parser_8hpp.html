@@ -141,43 +141,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a9b0394bceae17a4dba142be963c75ab1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Parser_8hpp.html#a9b0394bceae17a4dba142be963c75ab1">tr::parser::init_dynamics</a> (<a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model)</td></tr>
 <tr class="memdesc:a9b0394bceae17a4dba142be963c75ab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates dynamic links with any fixed joints associated with them, and updates the indices of the dynamic links and their parents.  <br /></td></tr>
 <tr class="separator:a9b0394bceae17a4dba142be963c75ab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1a568de396c2063639b48a4e8873ea9"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:ad1a568de396c2063639b48a4e8873ea9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Parser_8hpp.html#ad1a568de396c2063639b48a4e8873ea9">tr::parser::from_urdf</a> (const std::string &amp;path_to_urdf)</td></tr>
-<tr class="memdesc:ad1a568de396c2063639b48a4e8873ea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Model object from URDF file description.  <br /></td></tr>
-<tr class="separator:ad1a568de396c2063639b48a4e8873ea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c618cc225e965f1c83fab727b08e68c"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a6c618cc225e965f1c83fab727b08e68c"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Parser_8hpp.html#a6c618cc225e965f1c83fab727b08e68c">tr::parser::import_urdf</a> (const std::string &amp;path_to_urdf)</td></tr>
+<tr class="memdesc:a6c618cc225e965f1c83fab727b08e68c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Model object from URDF file description.  <br /></td></tr>
+<tr class="separator:a6c618cc225e965f1c83fab727b08e68c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains various functions for parsing URDF files and strings to create a tinyrobotics model. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ad1a568de396c2063639b48a4e8873ea9" name="ad1a568de396c2063639b48a4e8873ea9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1a568de396c2063639b48a4e8873ea9">&#9670;&#160;</a></span>from_urdf()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Scalar , int nq&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Model&lt; Scalar, nq &gt; tr::parser::from_urdf </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path_to_urdf</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Construct a new Model object from URDF file description. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">xml_string</td><td>The XML string of the URDF file. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The URDF parsed Model object. </dd></dl>
-
-</div>
-</div>
 <a id="a19be1d8d4091397fc4498055679dad50" name="a19be1d8d4091397fc4498055679dad50"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a19be1d8d4091397fc4498055679dad50">&#9670;&#160;</a></span>get_parent_link_name()</h2>
 
@@ -210,6 +181,35 @@ template&lt;typename Scalar , int nq&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The name of the link's parent link. </dd></dl>
+
+</div>
+</div>
+<a id="a6c618cc225e965f1c83fab727b08e68c" name="a6c618cc225e965f1c83fab727b08e68c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c618cc225e965f1c83fab727b08e68c">&#9670;&#160;</a></span>import_urdf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">Model&lt; Scalar, nq &gt; tr::parser::import_urdf </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path_to_urdf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Construct a new Model object from URDF file description. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">xml_string</td><td>The XML string of the URDF file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The URDF parsed Model object. </dd></dl>
 
 </div>
 </div>

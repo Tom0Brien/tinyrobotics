@@ -1,7 +1,7 @@
 var Parser_8hpp =
 [
-    [ "from_urdf", "Parser_8hpp.html#ad1a568de396c2063639b48a4e8873ea9", null ],
     [ "get_parent_link_name", "Parser_8hpp.html#a19be1d8d4091397fc4498055679dad50", null ],
+    [ "import_urdf", "Parser_8hpp.html#a6c618cc225e965f1c83fab727b08e68c", null ],
     [ "init_dynamics", "Parser_8hpp.html#a9b0394bceae17a4dba142be963c75ab1", null ],
     [ "init_link_tree", "Parser_8hpp.html#a49736915723c2287854acfbe38e34a0e", null ],
     [ "joint_from_xml", "Parser_8hpp.html#a6ee1a4bc8effd86cc8c021aa1d8f0eeb", null ],

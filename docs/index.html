@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.7"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>tinyrobotics: tinyrobotics</title>
+<title>tinyrobotics: Doxygen Awesome</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -90,95 +90,98 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">tinyrobotics </div></div>
+  <div class="headertitle"><div class="title">Doxygen Awesome </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a></p>
-<p><b>tinyrobotics</b> is a lightweight C++ library which provides core robotics algorithms and tools.</p>
-<p>The goal of <b>tinyrobotics</b> is to be as simple as possible. The library leverages <a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a> and modern C++ to be incredibly fast and versatile.</p>
-<h1><a class="anchor" id="autotoc_md0"></a>
+<div class="textblock"><p><a class="anchor" id="md_docs_2doxygen-awesome-css_2README"></a> <a href="https://github.com/jothepro/doxygen-awesome-css/releases/latest"><img src="https://img.shields.io/github/v/release/jothepro/doxygen-awesome-css" alt="GitHub release (latest by date)" class="inline"/></a> <a href="https://github.com/jothepro/doxygen-awesome-css/blob/main/LICENSE"><img src="https://img.shields.io/github/license/jothepro/doxygen-awesome-css" alt="GitHub" class="inline"/></a> <img src="https://img.shields.io/github/stars/jothepro/doxygen-awesome-css" alt="GitHub Repo stars" class="inline"/></p>
+<div class="title_screenshot"></div><div class="title_screenshot"><img src="img/screenshot.png" alt="Screenshot of Doxygen Awesome CSS" class="inline"/></div><div class="title_screenshot"></div><p><b>Doxygen Awesome</b> is a custom <b>CSS theme for Doxygen HTML-documentation</b> with lots of customization parameters.</p>
+<h1><a class="anchor" id="autotoc_md27"></a>
+Motivation</h1>
+<p>I really like how the Doxygen HTML-documentation is structured! But IMHO it looks a bit outdated.</p>
+<p>This theme is an attempt to update the visuals of Doxygen without changing its overall layout too much.</p>
+<h1><a class="anchor" id="autotoc_md28"></a>
 Features</h1>
-<h2><a class="anchor" id="autotoc_md1"></a>
-Models</h2>
-<p>A tinyrobotics <a href="./include/Model.hpp">model</a> consists of a collection of <a href="./include/Link.hpp">links</a> connected via <a href="./include/Joint.hpp">joints</a>. The following functions can be used to build a model, all of which are implemented in <a href="./include/Parser.hpp">Parser</a>. </p><table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>model_from_urdf</code>   </td><td class="markdownTableBodyNone">Generate a tinyrobotics model from a <a href="http://wiki.ros.org/urdf">URDF</a> robot description.   </td></tr>
-</table>
-<h2><a class="anchor" id="autotoc_md2"></a>
-Kinematics</h2>
-<p>Kinematics algorithms are implemented in <a href="./include/Kinematics.hpp">Kinematics</a>. </p><table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>forward_kinematics</code>   </td><td class="markdownTableBodyNone">Compute transforms between links.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>forward_kinematics_com</code>   </td><td class="markdownTableBodyNone">Compute transforms between link and another links centre of mass.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>translation</code>   </td><td class="markdownTableBodyNone">Compute translation between links.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>rotation</code>   </td><td class="markdownTableBodyNone">Compute rotation between links.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>geometric_jacobian</code>   </td><td class="markdownTableBodyNone">Compute geometric jacobian to a link.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>geometric_jacobian_com</code>   </td><td class="markdownTableBodyNone">Compute geometric jacobian to a links centre of mass.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>centre_of_mass</code>   </td><td class="markdownTableBodyNone">Compute centre of mass of model.   </td></tr>
-</table>
-<h2><a class="anchor" id="autotoc_md3"></a>
-Inverse Kinematics</h2>
-<p>Inverse Kinematics is implemented in <a href="./include/InverseKinematics.hpp">InverseKinematics</a>. </p><table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>inverse_kinematics</code>   </td><td class="markdownTableBodyNone">Solve joint positions to achieve desired pose of model.   </td></tr>
-</table>
-<h2><a class="anchor" id="autotoc_md4"></a>
-Dynamics</h2>
-<p>Dynamics algorithms are implemented in <a href="./include/Dynamics.hpp">Dynamics</a>. </p><table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>forward_dynamics</code>   </td><td class="markdownTableBodyNone">Compute joint accelerations given joint positions and velocities and torques.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>inverse_dynamics</code>   </td><td class="markdownTableBodyNone">Compute required joint torques for given motion.    </td></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>mass_matrix</code>   </td><td class="markdownTableBodyNone">Compute mass matrix given joint positions.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>total_energy</code>   </td><td class="markdownTableBodyNone">Compute total energy (kinetic + potential) given joint positions and velocity.   </td></tr>
-</table>
-<h1><a class="anchor" id="autotoc_md5"></a>
-Install</h1>
-<h2><a class="anchor" id="autotoc_md6"></a>
-1. Install Dependencies</h2>
 <ul>
-<li><a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a></li>
-<li><a href="https://github.com/catchorg/Catch2">Catch2</a></li>
-<li><a href="https://github.com/leethomason/tinyxml2">TinyXML2</a></li>
-<li><a href="https://github.com/autodiff/autodiff">autodiff</a></li>
-<li><a href="https://github.com/ethz-adrl/ifopt">ifopt</a></li>
+<li>🌈 Clean, modern design</li>
+<li>🚀 Heavily customizable by adjusting CSS-variables</li>
+<li>🧩 No changes to the HTML structure of Doxygen required</li>
+<li>📱 Improved mobile usability</li>
+<li>🌘 Dark mode support!</li>
+<li>🥇 Works best with <b>doxygen 1.9.1</b> - <b>1.9.4</b> and <b>1.9.6</b></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md7"></a>
-2. Build with cmake</h2>
-<div class="fragment"><div class="line">git clone https://github.com/Tom0Brien/tinyrobotics.git &amp;&amp; cd RML</div>
-<div class="line">mkdir build &amp;&amp; cd build</div>
-<div class="line">cmake ..</div>
-<div class="line">make</div>
-<div class="line">sudo make install # copies files in this folder to /usr/local/*</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md29"></a>
 Examples</h1>
-<p>The code below demonstrates how to load in a URDF model and compute the forward kinematics between two links.</p>
-<div class="fragment"><div class="line"> ++</div>
-<div class="line"><span class="comment">// Create a robot model with 4 joints</span></div>
-<div class="line"><span class="keyword">auto</span> model = from_urdf&lt;double, 4&gt;(<span class="stringliteral">&quot;example.urdf&quot;</span>);</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// Create a configuration vector of all zeros</span></div>
-<div class="line"><span class="keyword">auto</span> q = model.home_configuration();</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// Compute the forward kinematics to the target frame for the source frame at the home configuration</span></div>
-<div class="line"><span class="keyword">auto</span> H = forward_kinematics(model, q, <span class="stringliteral">&quot;source_frame&quot;</span>, <span class="stringliteral">&quot;target_frame&quot;</span>);</div>
-</div><!-- fragment --> </div></div><!-- PageDoc -->
+<p>Some websites using this theme:</p>
+<ul>
+<li><a href="https://jothepro.github.io/doxygen-awesome-css/">Documentation of this repository</a></li>
+<li><a href="https://docs.wxwidgets.org/3.2/">wxWidgets</a></li>
+<li><a href="https://docs.opencv.org/5.x/">OpenCV 5.x</a></li>
+<li><a href="https://docs.zephyrproject.org/latest/doxygen/html/index.html">Zephyr</a></li>
+<li><a href="https://mwiesenberger.github.io/feltor/dg/html/modules.html">FELTOR</a></li>
+<li><a href="https://leomccormack.github.io/Spatial_Audio_Framework/index.html">Spatial Audio Framework (SAF)</a></li>
+<li><a href="https://jothepro.github.io/libCloudSync/">libCloudSync</a></li>
+<li><a href="https://a4z.github.io/libsl3/">libsl3</a></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md30"></a>
+Installation</h1>
+<p>To use the theme in your documentation, copy the required CSS and JS files from this repository into your project or add the repository as submodule and check out the latest release:</p>
+<div class="fragment"><div class="line">git submodule add https://github.com/jothepro/doxygen-awesome-css.git</div>
+<div class="line">cd doxygen-awesome-css</div>
+<div class="line">git checkout v2.2.0</div>
+</div><!-- fragment --><p>You can even install the theme system-wide by running <code>make install</code>. The files will be installed to <code>/usr/local/share/</code> by default, but you can customize the install location with <code>make PREFIX=/my/custom/path install</code>.</p>
+<p>All theme files are located in the root of this repository and start with the prefix <code>doxygen-awesome-</code>. You may not need all of them. Follow the install instructions to figure out what files are required for your setup.</p>
+<h2><a class="anchor" id="autotoc_md31"></a>
+Choosing a layout</h2>
+<p>There is two layout options. Choose one of them and configure Doxygen accordingly:</p>
+<div class="darkmode_inverted_image"></div><div class="darkmode_inverted_image"><img src="img/theme-variants.drawio.svg" alt="Available theme variants" style="pointer-events: none;" class="inline"/></div><div class="darkmode_inverted_image"></div><div class="tabbed"></div><div class="tabbed"><ul>
+<li><p class="startli"><b class="tab-title">1️⃣ Base Theme </b> Comes with the typical Doxygen titlebar. Optionally the treeview in the sidebar can be enabled.</p>
+<p class="startli">Required files: <code>doxygen-awesome.css</code></p>
+<p class="startli">Required <code>Doxyfile</code> configuration: </p><div class="fragment"><div class="line">GENERATE_TREEVIEW      = YES # optional. Also works without treeview</div>
+<div class="line">DISABLE_INDEX = NO</div>
+<div class="line">FULL_SIDEBAR = NO</div>
+<div class="line">HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css</div>
+<div class="line">HTML_COLORSTYLE        = LIGHT # required with Doxygen &gt;= 1.9.5</div>
+</div><!-- fragment --></li>
+<li><p class="startli"><b class="tab-title">2️⃣ Sidebar-Only Theme </b> Hides the top titlebar to give more space to the content. The treeview must be enabled in order for this theme to work.</p>
+<p class="startli">Required files: <code>doxygen-awesome.css</code>, <code>doxygen-awesome-sidebar-only.css</code></p>
+<p class="startli">Required <code>Doxyfile</code> configuration: </p><div class="fragment"><div class="line">GENERATE_TREEVIEW      = YES # required!</div>
+<div class="line">DISABLE_INDEX          = NO</div>
+<div class="line">FULL_SIDEBAR           = NO</div>
+<div class="line">HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css \</div>
+<div class="line">                        doxygen-awesome-css/doxygen-awesome-sidebar-only.css</div>
+<div class="line">HTML_COLORSTYLE        = LIGHT # required with Doxygen &gt;= 1.9.5</div>
+</div><!-- fragment --></li>
+</ul>
+</div><div class="tabbed"></div><p><b>Caution</b>:</p><ul>
+<li>This theme is not compatible with the <code>FULL_SIDEBAR = YES</code> option provided by Doxygen!</li>
+<li><code>HTML_COLORSTYLE</code> must be set to <code>LIGHT</code> since Doxygen 1.9.5!</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md32"></a>
+Further installation instructions:</h2>
+<ul>
+<li><a class="el" href="md_docs_2doxygen-awesome-css_2docs_2extensions.html">Installing extensions</a></li>
+<li><a class="el" href="md_docs_2doxygen-awesome-css_2docs_2customization.html">Customizing the theme (colors, spacing, border-radius, ...)</a></li>
+<li><a class="el" href="md_docs_2doxygen-awesome-css_2docs_2tricks.html">Tips and Tricks for further configuration</a></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md33"></a>
+Browser support</h1>
+<p>Tested with</p>
+<ul>
+<li>Chrome 110, Chrome 109 for Android, Chrome 110 for iOS</li>
+<li>Safari 16, Safari for iOS 16</li>
+<li>Firefox 110, Firefox 110 for Android, Firefox 109 for iOS</li>
+<li>Edge 110</li>
+</ul>
+<p>The theme does not strive to be backwards compatible to (significantly) older browser versions.</p>
+<h1><a class="anchor" id="autotoc_md34"></a>
+Credits</h1>
+<p>Thanks for all the bug reports and inspiring feedback on github!</p>
+<p>Special thanks to all the contributors: <br  />
+<br  />
+ <a href="https://github.com/jothepro/doxygen-awesome-css/graphs/contributors"><img src="https://contrib.rocks/image?repo=jothepro/doxygen-awesome-css" alt="" class="inline"/> </a></p>
+<p><span class="next_section_button"></span></p>
+<p><span class="next_section_button">Read Next: <a class="el" href="md_docs_2doxygen-awesome-css_2docs_2extensions.html">Extensions</a> </span> </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

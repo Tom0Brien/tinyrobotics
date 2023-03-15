@@ -11,5 +11,6 @@ var searchData=
   ['solverresults_8',['SolverResults',['../structtr_1_1solver_1_1SolverResults.html',1,'tr::solver']]],
   ['source_5flink_5fname_9',['source_link_name',['../classtr_1_1ik_1_1IKCost.html#aa5d6a0f6b4dd0f4176482d2ceb42c74d',1,'tr::ik::IKCost']]],
   ['spatial_5ftransform_5ffrom_5fxml_10',['spatial_transform_from_xml',['../Parser_8hpp.html#a6f0c5414f9eb1113524b0d215f59d0d7',1,'tr::parser']]],
-  ['symplectic_5feuler_5fstep_11',['symplectic_euler_step',['../Solver_8hpp.html#aa61c1ac4e7370174d882eae3dc66cb34',1,'tr::solver']]]
+  ['subclassexample_11',['SubclassExample',['../classMyLibrary_1_1SubclassExample.html',1,'MyLibrary']]],
+  ['symplectic_5feuler_5fstep_12',['symplectic_euler_step',['../Solver_8hpp.html#aa61c1ac4e7370174d882eae3dc66cb34',1,'tr::solver']]]
 ];

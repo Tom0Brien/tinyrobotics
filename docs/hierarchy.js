@@ -8,6 +8,9 @@ var hierarchy =
     ] ],
     [ "tr::data::Data< Scalar, nq >", "structtr_1_1data_1_1Data.html", null ],
     [ "tr::data::Data< AutoDiffType, nq >", "structtr_1_1data_1_1Data.html", null ],
+    [ "MyLibrary::Example", "classMyLibrary_1_1Example.html", [
+      [ "MyLibrary::SubclassExample< TemplatedClass >", "classMyLibrary_1_1SubclassExample.html", null ]
+    ] ],
     [ "tr::model::Joint< Scalar >", "structtr_1_1model_1_1Joint.html", null ],
     [ "tr::model::Link< Scalar >", "structtr_1_1model_1_1Link.html", null ],
     [ "tr::model::Model< Scalar, nq >", "structtr_1_1model_1_1Model.html", null ],
