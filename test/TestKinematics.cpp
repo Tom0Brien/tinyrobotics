@@ -17,7 +17,7 @@ using namespace tr::kinematics;
 using namespace tr::ik;
 
 // Load the robot model from a URDF file
-auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
 
 TEST_CASE("Test forward kinematics with link names", "[ForwardKinematics]") {
     // Compute FK for a given configuration
@@ -106,7 +106,7 @@ TEST_CASE("Test geometric_jacobian_com calculations for simple model", "[Forward
 
 TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinematics]") {
 
-    auto kuka_model = from_urdf<double, 7>("data/urdfs/kuka.urdf");
+    auto kuka_model = import_urdf<double, 7>("data/urdfs/kuka.urdf");
     // Create a configuration for the robot
     auto q = kuka_model.home_configuration();
     q << 1, 2, 3, 4, 5, 6, 7;
@@ -124,7 +124,7 @@ TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinema
 
 TEST_CASE("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
     const int ITERATIONS = 25;
-    auto nugus_model     = from_urdf<double, 20>("data/urdfs/nugus.urdf");
+    auto nugus_model     = import_urdf<double, 20>("data/urdfs/nugus.urdf");
     double total_time    = 0;
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration
@@ -175,7 +175,7 @@ TEST_CASE("Test inverse kinematics simple with initial conditions close to solut
 
 TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
     const int ITERATIONS = 25;
-    auto kuka_model      = from_urdf<double, 7>("data/urdfs/kuka.urdf");
+    auto kuka_model      = import_urdf<double, 7>("data/urdfs/kuka.urdf");
 
     for (int i = 0; i < ITERATIONS; ++i) {
         // Make a random configuration

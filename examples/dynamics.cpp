@@ -88,7 +88,7 @@ Eigen::Matrix<double, 8, 1> impact_mapping(Model<double, 4>& model,
 int main(int argc, char* argv[]) {
     // Create a robot model
     std::string path_to_urdf = "../data/urdfs/simple.urdf";
-    auto model               = from_urdf<double, 4>(path_to_urdf);
+    auto model               = import_urdf<double, 4>(path_to_urdf);
 
     // Show details of the robot model
     model.show_details();

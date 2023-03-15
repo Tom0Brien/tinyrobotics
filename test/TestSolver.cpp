@@ -18,7 +18,7 @@ using namespace solver;
 
 TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
     // Create a robot model
-    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create initial conditions
     Eigen::Matrix<double, 4, 1> q0 = robot_model.home_configuration();
@@ -34,7 +34,7 @@ TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
 
 TEST_CASE("Test integration routine for simple model with euler integration", "[Solver]") {
     // Create a robot model
-    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create initial conditions
     Eigen::Matrix<double, 4, 1> q0 = robot_model.home_configuration();
@@ -57,7 +57,7 @@ TEST_CASE("Test integration routine for simple model with euler integration", "[
 
 TEST_CASE("Test integration routine for simple model with symplectic euler integration", "[Solver]") {
     // Create a robot model
-    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create initial conditions
     Eigen::Matrix<double, 4, 1> q0 = robot_model.home_configuration();

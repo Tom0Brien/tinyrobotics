@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 
 
     // Create a robot model with 4 joints
-    auto model = tr::parser::from_urdf<double, 4>("../data/urdfs/4_link.urdf");
+    auto model = tr::parser::import_urdf<double, 4>("../data/urdfs/4_link.urdf");
 
     // Display details of model
     model.show_details();

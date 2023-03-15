@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     using namespace tr::ik;
     // Load in Model from URDF
     const int n_joints = 20;
-    auto model         = from_urdf<double, n_joints>("../data/urdfs/robot.urdf");
+    auto model         = import_urdf<double, n_joints>("../data/urdfs/robot.urdf");
 
     // Set initial conditions for the robot
     auto q0 = model.home_configuration();

@@ -16,7 +16,7 @@ using namespace tr::kinematics;
 
 TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create a random configuration
     Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
@@ -36,7 +36,7 @@ TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
 
 TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
     // Create a robot model
-    auto kuka_model = from_urdf<double, 7>("data/urdfs/kuka.urdf");
+    auto kuka_model = import_urdf<double, 7>("data/urdfs/kuka.urdf");
     // Create a random configuration
     Eigen::Matrix<double, 7, 1> q = kuka_model.home_configuration();
     // Compute the mass matrix
@@ -51,7 +51,7 @@ TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
 
 TEST_CASE("Test kinetic, potential and total energy computation for simple model", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
     // Create a random configuration
     Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
@@ -67,7 +67,7 @@ TEST_CASE("Test kinetic, potential and total energy computation for simple model
 
 TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
     // Create a robot model
-    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
     // Create a random configuration
     Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
@@ -89,7 +89,7 @@ TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 2 link model", "[Dynamics]") {
     const int n_joints = 2;
-    auto robot_model   = from_urdf<double, n_joints>("data/urdfs/2_link.urdf");
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/2_link.urdf");
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
     q << 1, 2;
@@ -103,7 +103,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 2 link model
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 3 link model", "[Dynamics]") {
     const int n_joints = 3;
-    auto robot_model   = from_urdf<double, n_joints>("data/urdfs/3_link.urdf");
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/3_link.urdf");
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
     q << 1, 2, 3;
@@ -117,7 +117,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 3 link model
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 4 link model", "[Dynamics]") {
     const int n_joints = 4;
-    auto robot_model   = from_urdf<double, n_joints>("data/urdfs/4_link.urdf");
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/4_link.urdf");
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
     q << 1, 2, 3, 4;
@@ -131,7 +131,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 4 link model
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 5 link model", "[Dynamics]") {
     const int n_joints = 5;
-    auto robot_model   = from_urdf<double, n_joints>("data/urdfs/5_link.urdf");
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/5_link.urdf");
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
     q << 1, 2, 3, 4, 5;
@@ -146,7 +146,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 5 link model
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass model", "[Dynamics]") {
     const int n_joints = 4;
-    auto robot_model   = from_urdf<double, n_joints>("data/urdfs/simple.urdf");
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/simple.urdf");
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
     q << 1, 2, 3, 4;
@@ -160,7 +160,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass mode
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for panda_arm", "[Dynamics]") {
     const int n_joints = 7;
-    auto robot_model   = from_urdf<double, n_joints>("data/urdfs/panda_arm.urdf");
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/panda_arm.urdf");
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q;
     q << 1, 2, 3, 4, 5, 6, 7;
@@ -174,7 +174,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for panda_arm", 
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for NUgus model", "[Dynamics]") {
     const int n_joints = 20;
-    auto robot_model   = from_urdf<double, n_joints>("data/urdfs/nugus.urdf");
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/nugus.urdf");
     // Create some inputs
     Eigen::Matrix<double, n_joints, 1> q     = Eigen::Matrix<double, n_joints, 1>::Ones();
     Eigen::Matrix<double, n_joints, 1> qd    = Eigen::Matrix<double, n_joints, 1>::Ones();

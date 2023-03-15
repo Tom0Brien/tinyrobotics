@@ -12,7 +12,7 @@ using namespace tr::parser;
 
 TEST_CASE("Load a model with inertial information", "[Model]") {
     // Create a robot model
-    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
 
     CHECK(robot_model.name == "compass_gait");
 
@@ -71,14 +71,14 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 // TEST_CASE("Create a Model of autodiff type", "[Model]") {
 //     // Create a robot model
 using namespace tr::model;
-//     auto robot_model = tr::from_urdf<autodiff::real, 4>("data/urdfs/simple.urdf");
+//     auto robot_model = tr::import_urdf<autodiff::real, 4>("data/urdfs/simple.urdf");
 //     CHECK(robot_model.name == "compass_gait");
 // }
 
 // TEST_CASE("Cast a Model from double to float", "[Model]") {
 //     // Create a robot model
 using namespace tr::model;
-//     auto robot_model_double = tr::from_urdf<double, 4>("data/urdfs/simple.urdf");
+//     auto robot_model_double = tr::import_urdf<double, 4>("data/urdfs/simple.urdf");
 
 //     // Cast the model to a different type
 //     auto robot_model_float = robot_model_double.template cast<float>();
@@ -141,7 +141,7 @@ using namespace tr::model;
 
 // TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
 //     // Load the robot model from a URDF file
-//     auto robot_model_double = tr::from_urdf<double, 4>("data/urdfs/simple.urdf");
+//     auto robot_model_double = tr::import_urdf<double, 4>("data/urdfs/simple.urdf");
 
 //     // Cast the model to a different type
 //     auto autodiff_model = robot_model_double.template cast<autodiff::real>();

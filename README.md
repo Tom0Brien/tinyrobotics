@@ -8,9 +8,9 @@ The goal of **tinyrobotics** is to be as simple as possible. The library leverag
 ## Features
 ### Models
 A tinyrobotics [model](./include/Model.hpp) consists of a collection of [links](./include/Link.hpp) connected via [joints](./include/Joint.hpp). The following functions can be used to build a model, all of which are implemented in [Parser](./include/Parser.hpp).
-| Function          | Description                                                                              |
-| ----------------- | ---------------------------------------------------------------------------------------- |
-| `model_from_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
+| Function            | Description                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| `model_import_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
 
 ### Kinematics
 Kinematics algorithms are implemented in [Kinematics](./include/Kinematics.hpp).
@@ -62,7 +62,7 @@ The code below demonstrates how to load in a URDF model and compute the forward 
 
 ```c++
 // Create a robot model with 4 joints
-auto model = from_urdf<double, 4>("example.urdf");
+auto model = import_urdf<double, 4>("example.urdf");
 
 // Create a configuration vector of all zeros
 auto q = model.home_configuration();

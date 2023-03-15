@@ -515,7 +515,7 @@ namespace tr::parser {
      * @return The URDF parsed Model object.
      */
     template <typename Scalar, int nq>
-    Model<Scalar, nq> from_urdf(const std::string& path_to_urdf) {
+    Model<Scalar, nq> import_urdf(const std::string& path_to_urdf) {
         // Open the URDF file
         std::ifstream input_file(path_to_urdf);
         if (!input_file.is_open()) {
