@@ -24,6 +24,7 @@ Kinematics algorithms are implemented in [Kinematics](./include/Kinematics.hpp).
 | `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass. |
 | `centre_of_mass` | Compute centre of mass of model. |
 
+### Inverse Kinematics
 Inverse Kinematics is implemented in [InverseKinematics](./include/InverseKinematics.hpp).
 | Function | Description |
 | --- | --- |
