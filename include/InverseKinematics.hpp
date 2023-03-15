@@ -179,9 +179,8 @@ namespace tr {
             Eigen::Matrix<AutoDiffType, 3, 3> Rst_desired = Hst_desired.linear();
             Eigen::Matrix<AutoDiffType, 3, 3> R_v_r       = Rst_desired * Rst_current.transpose();
 
-            AutoDiffType orientation_error = (Eigen::Matrix<AutoDiffType, 3, 3>::Identity() - R_v_r).diagonal().sum();
-            Eigen::Matrix<AutoDiffType, 1, 1> o_error;
-            o_error(0, 0) = orientation_error;
+            Eigen::Matrix<AutoDiffType, 1, 1> o_error = Eigen::Matrix<AutoDiffType, 1, 1>(
+                (Eigen::Matrix<AutoDiffType, 3, 3>::Identity() - R_v_r).diagonal().sum());
 
             Eigen::Matrix<AutoDiffType, nq, 1> q_diff = q - q0;
 
@@ -191,9 +190,9 @@ namespace tr {
 
             // Compute the cost function
             Eigen::Matrix<AutoDiffType, 1, 1> cost =
-                ((Hst_current.translation() - Hst_desired.translation()).transpose() * 10 * K
+                ((Hst_current.translation() - Hst_desired.translation()).transpose() * 1e2 * K
                  * (Hst_current.translation() - Hst_desired.translation()))
-                + (q - q0).transpose() * 1e-1 * W * (q - q0) + o_error.transpose() * 100 * o_error;
+                + (q - q0).transpose() * 1e-1 * W * (q - q0) + o_error.transpose() * 1e3 * o_error;
 
             return cost;
         }
@@ -275,7 +274,7 @@ namespace tr {
         ipopt.SetOption("mu_strategy", "adaptive");
         ipopt.SetOption("jacobian_approximation", "exact");
         ipopt.SetOption("max_iter", 1000);
-        ipopt.SetOption("tol", 1e-3);
+        ipopt.SetOption("tol", 1e-4);
         ipopt.SetOption("print_level", 0);
         ipopt.SetOption("sb", "yes");
         // 3. Solve
