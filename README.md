@@ -3,7 +3,7 @@ tinyrobotics
 
 **tinyrobotics** is a lightweight C++ library which provides core robotics algorithms and tools. 
 
-The goal of **tinyrobotics** is to be as simple as possible. The library leverages [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) and modern C++ to be incredibly fast and versatile.
+The goal of **tinyrobotics** is to be as simple as possible but still be incredibly fast and versatile.
 
 ## Features
 ### Models
