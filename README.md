@@ -10,7 +10,7 @@ The goal of **tinyrobotics** is to be as simple as possible. The library leverag
 A tinyrobotics [model](./include/Model.hpp) consists of a collection of [links](./include/Link.hpp) connected via [joints](./include/Joint.hpp). The following functions can be used to build a model, all of which are implemented in [Parser](./include/Parser.hpp).
 | Function            | Description                                                                              |
 | ------------------- | ---------------------------------------------------------------------------------------- |
-| `model_import_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
+| `import_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
 
 ### Kinematics
 Kinematics algorithms are implemented in [Kinematics](./include/Kinematics.hpp).
