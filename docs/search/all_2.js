@@ -10,6 +10,5 @@ var searchData=
   ['continuous_7',['CONTINUOUS',['../Joint_8hpp.html#a04e42b2b7b1efa236cb6dc5a74cbf393ab1fa9dd3af034b3ef4291579aa673c07',1,'tr::model']]],
   ['cost_8',['cost',['../classtr_1_1ik_1_1IKCost.html#a4690603052672683e4bf1473cd1b573e',1,'tr::ik::IKCost']]],
   ['cross_5fmotion_9',['cross_motion',['../Math_8hpp.html#a7ef17567703a971d8ca7a411336ffe5b',1,'tr::math']]],
-  ['cross_5fspatial_10',['cross_spatial',['../Math_8hpp.html#ad2d42cb5c3a681be6fd9153a4da6fb8b',1,'tr::math']]],
-  ['customization_11',['Customization',['../md_docs_2doxygen-awesome-css_2docs_2customization.html',1,'']]]
+  ['cross_5fspatial_10',['cross_spatial',['../Math_8hpp.html#ad2d42cb5c3a681be6fd9153a4da6fb8b',1,'tr::math']]]
 ];

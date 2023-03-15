@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['joint_0',['Joint',['../structtr_1_1model_1_1Joint.html',1,'tr::model']]]
+  ['link_0',['Link',['../structtr_1_1model_1_1Link.html',1,'tr::model']]]
 ];
