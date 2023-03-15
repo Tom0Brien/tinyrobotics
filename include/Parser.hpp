@@ -351,6 +351,156 @@ namespace tr {
     }
 
     /**
+     * @brief Initialize the link tree in the model.
+     * @param model Tinyrobtics model.
+     * @tparam Scalar Scalar type of the model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     */
+    template <typename Scalar, int nq>
+    void init_link_tree(Model<Scalar, nq>& model) {
+        // Initialize the joint count to zero
+        model.n_q = 0;
+
+        // Iterate over each joint in the model
+        for (auto joint : model.joints) {
+            // Check that the joint has a parent link and a child link specified
+            std::string parent_link_name = joint.parent_link_name;
+            if (parent_link_name.empty()) {
+                std::ostringstream error_msg;
+                error_msg << "Error while constructing model! Joint [" << joint.name
+                          << "] is missing a parent link specification.";
+                throw std::runtime_error(error_msg.str());
+            }
+            std::string child_link_name = joint.child_link_name;
+            if (child_link_name.empty()) {
+                std::ostringstream error_msg;
+                error_msg << "Error while constructing model! Joint [" << joint.name
+                          << "] is missing a child link specification.";
+                throw std::runtime_error(error_msg.str());
+            }
+
+            // Get references to the child and parent links associated with the joint
+            auto child_link = model.get_link(child_link_name);
+            if (child_link.idx == -1) {
+                std::ostringstream error_msg;
+                error_msg << "Error while constructing model! Child link [" << child_link_name << "] of joint ["
+                          << joint.name << "] not found";
+                throw std::runtime_error(error_msg.str());
+            }
+
+            auto parent_link = model.get_link(parent_link_name);
+            if (parent_link.idx == -1) {
+                std::ostringstream error_msg;
+                error_msg << "Error while constructing model! Parent link [" << parent_link_name << "] of joint ["
+                          << joint.name << "] not found";
+                throw std::runtime_error(error_msg.str());
+            }
+
+            // Set the parent link index for the child link and add the child link index to the parent link's list
+            // of child link indices
+            child_link.parent = parent_link.idx;
+            parent_link.add_child_link_idx(child_link.idx);
+
+            // If the joint is of type REVOLUTE or PRISMATIC, add its index in the configuration vector and
+            // increment the configuration vector size
+            if (joint.type == JointType::REVOLUTE || joint.type == JointType::PRISMATIC) {
+                joint.idx = model.n_q;
+                model.n_q++;
+            }
+
+            // Associate the joint with the child link and update the child link in the links vector
+            child_link.joint            = joint;
+            model.links[child_link.idx] = child_link;
+
+            // Update the parent link in the links vector
+            model.links[parent_link.idx] = parent_link;
+        }
+
+        // Find the base link of the model by finding the link with no parent link
+        for (auto link : model.links) {
+            bool found = false;
+            if (link.parent == -1) {
+                if (found) {
+                    throw std::runtime_error(
+                        "Error! Multiple base links found. The urdf does not contain a valid link tree.");
+                }
+                model.base_link_idx = link.idx;
+                found               = true;
+            }
+        }
+    }
+
+    /**
+     * @brief Updates dynamic links with any fixed joints associated with them, and updates the indices of the
+     * dynamic links and their parents.
+     * @param model Tinyrobtics model.
+     * @tparam Scalar Scalar type of the model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     */
+    template <typename Scalar, int nq>
+    void init_dynamics(Model<Scalar, nq>& model) {
+        for (auto& link : model.links) {
+            // If the link has a fixed joint, update the transforms of the child links and its parents link inertia
+            if (link.joint.type == JointType::FIXED && link.idx != model.base_link_idx) {
+                // Update fixed transforms of the child links
+                for (auto child_link_idx : link.child_links) {
+                    auto child_link = model.links[child_link_idx];
+                    for (int j = 0; j < model.links.size(); j++) {
+                        if (model.links[j].name == child_link.name) {
+                            // TODO: IMPLEMENT SOMETHING LIKE THIS
+                            model.links[j].joint.X = model.links[j].joint.X * link.joint.X;
+                            break;
+                        }
+                    }
+                }
+                // Combine spatial inertias
+                auto parent_link = model.links[link.parent];
+                // Add the spatial inertia of the link to its parent link in the link tree
+                for (int j = 0; j < model.links.size(); j++) {
+                    if (model.links[j].name == parent_link.name) {
+                        Eigen::Matrix<Scalar, 6, 6> X_T = model.links[j].joint.X;
+                        model.links[j].I += X_T.transpose() * link.I * X_T;
+                        break;
+                    }
+                }
+            }
+            else if (link.idx != model.base_link_idx) {
+                // Add the index of this actuatable link to the list of dynamic link indices
+                model.q_idx.push_back(link.idx);
+            }
+        }
+        // For each dynamic link, find the index of its parent link in the dynamic link indices
+        for (int i = 0; i < model.q_idx.size(); i++) {
+            // Get the dynamic link
+            auto link = model.links[model.q_idx[i]];
+            // Get the parent link which isn't fixed
+            auto parent_link = model.links[link.parent];
+            while (parent_link.joint.type == JointType::FIXED) {
+                parent_link = model.links[parent_link.parent];
+            }
+            // First check to see if the parent link is the base link
+            if (parent_link.idx == model.base_link_idx) {
+                // Add the index of the base link to the list of parent indices
+                model.parent.push_back(-1);
+            }
+            else {
+                // Find the parent link in the q_idx
+                bool found = false;
+                for (int j = 0; j < model.q_idx.size(); j++) {
+                    if (model.q_idx[j] == parent_link.idx) {
+                        model.parent.push_back(j);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    model.parent.push_back(-1);
+                }
+            }
+        }
+    }
+
+    /**
      * @brief Construct a new Model object from URDF file description.
      * @param xml_string The XML string of the URDF file.
      * @return The URDF parsed Model object.
@@ -416,10 +566,10 @@ namespace tr {
         }
 
         // Initialize the link tree and find the base link index (should be -1)
-        model.init_link_tree();
+        init_link_tree(model);
 
         // Initialize the q_idx and parent_map
-        model.init_dynamics();
+        init_dynamics(model);
 
         // Set the number of joints and links
         model.n_joints = model.joints.size();

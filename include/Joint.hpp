@@ -57,6 +57,24 @@ namespace tr {
         Eigen::Matrix<Scalar, 6, 6> X = {};
 
         /**
+         * @brief Get joint type as a string.
+         * @param joint_type The joint type to convert to a string.
+         * @return String representation of the joint type.
+         */
+        std::string get_type() const {
+            switch (type) {
+                case JointType::UNKNOWN: return "Unknown";
+                case JointType::REVOLUTE: return "Revolute";
+                case JointType::CONTINUOUS: return "Continuous";
+                case JointType::PRISMATIC: return "Prismatic";
+                case JointType::FLOATING: return "Floating";
+                case JointType::PLANAR: return "Planar";
+                case JointType::FIXED: return "Fixed";
+                default: return "Invalid";
+            }
+        }
+
+        /**
          * @brief Casts the joint to a new scalar type.
          * @tparam NewScalar Scalar type to cast the joint to.
          * @return Joint with new scalar type.
@@ -77,5 +95,7 @@ namespace tr {
             return new_joint;
         }
     };
+
+
 }  // namespace tr
 #endif

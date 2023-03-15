@@ -64,7 +64,7 @@ Eigen::Matrix<double, 8, 1> impact_mapping(tr::Model<double, 4>& model,
     // Compute the null space of Jb
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Jbp = tr::null(Jb);
     // Compute the mass matrix
-    mass_matrix<double, 4>(model, q_minus);
+    tr::mass_matrix<double, 4>(model, q_minus);
     // Compute the impact mapping matrix
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> QTMQ    = (Jap.transpose() * model.data.M * Jap);
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> QTMQinv = QTMQ.inverse();

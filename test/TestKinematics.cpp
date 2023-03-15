@@ -57,7 +57,7 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
     Eigen::Transform<double, 3, Eigen::Isometry> Hstc;
     std::string target_link_name = "left_leg";
     std::string source_link_name = "ground";
-    Hstc                         = tr::forward_kinematics_com(robot_model, q, source_link_name, target_link_name);
+    Hstc                         = tr::forward_kinematics_com(robot_model, q, source_link_name, "left_leg");
     // Check that the transform is correct
     Eigen::Matrix<double, 4, 4> Hstc_expected;
     Hstc_expected << -0.9900, 0, -0.1411, 1.0706, 0, 1, 0, 0, 0.1411, 0, -0.9900, 2.4950, 0, 0, 0, 1;
