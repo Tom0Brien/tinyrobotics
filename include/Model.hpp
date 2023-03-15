@@ -15,7 +15,12 @@
 #include "Joint.hpp"
 #include "Link.hpp"
 
-namespace tr {
+/** \file Model.hpp
+ * @brief Contains struct for representing a tinyrobotics model.
+ */
+namespace tr::model {
+
+    using namespace tr::data;
 
     /**
      * @brief A tinyrobotics model.
@@ -187,6 +192,6 @@ namespace tr {
             return new_model;
         }
     };
-}  // namespace tr
+}  // namespace tr::model
 
 #endif

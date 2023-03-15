@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['p_0',['p',['../structtr_1_1Data.html#a19738180710f97f7378c6f56a1ffe2db',1,'tr::Data']]],
-  ['parent_1',['parent',['../structtr_1_1Link.html#a633d5641dbe45379b6f598b627ce8c0d',1,'tr::Link::parent'],['../structtr_1_1Model.html#a5f4eed404b87ef3a3499df03f7263b44',1,'tr::Model::parent']]],
-  ['parent_5flink_5fname_2',['parent_link_name',['../structtr_1_1Joint.html#ac5a53633174fa886e359650860d88b49',1,'tr::Joint']]],
-  ['parent_5ftransform_3',['parent_transform',['../structtr_1_1Joint.html#ad24a3c999621e715f712b103b5490213',1,'tr::Joint']]]
+  ['n_5fjoints_0',['n_joints',['../structtr_1_1model_1_1Model.html#a2bf5cc834122b8ab6888d98aab17f274',1,'tr::model::Model']]],
+  ['n_5flinks_1',['n_links',['../structtr_1_1model_1_1Model.html#a457b44b781a14519b84697dae17bc26b',1,'tr::model::Model']]],
+  ['n_5fq_2',['n_q',['../structtr_1_1model_1_1Model.html#a5cb7429d30fd954e3297b29046fef349',1,'tr::model::Model']]],
+  ['name_3',['name',['../structtr_1_1model_1_1Joint.html#a85ff21f84d31cd4716741d1cc06a19d8',1,'tr::model::Joint::name'],['../structtr_1_1model_1_1Link.html#a6f496ff61c59cd634d28ef27f9d20dea',1,'tr::model::Link::name'],['../structtr_1_1model_1_1Model.html#af4759dcaeb3dd4f78c622dd97c7dcd9f',1,'tr::model::Model::name']]],
+  ['nr_4',['nr',['../structtr_1_1data_1_1Data.html#a02a886f70e6eac0c5ed27508edbddf00',1,'tr::data::Data']]],
+  ['null_5',['null',['../Math_8hpp.html#a61ee1f49b69c4262fdb8db9cc3adaf60',1,'tr::math']]],
+  ['nz_6',['nz',['../structtr_1_1data_1_1Data.html#adfff63172f62d2fc6fa1c77f240b0d4a',1,'tr::data::Data']]]
 ];

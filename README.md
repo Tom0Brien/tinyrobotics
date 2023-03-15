@@ -8,36 +8,36 @@ The goal of **tinyrobotics** is to be as simple as possible. The library leverag
 ## Features
 ### Models
 A tinyrobotics [model](./include/Model.hpp) consists of a collection of [links](./include/Link.hpp) connected via [joints](./include/Joint.hpp). The following functions can be used to build a model, all of which are implemented in [Parser](./include/Parser.hpp).
-| Function | Description |
-| --- | --- |
+| Function          | Description                                                                              |
+| ----------------- | ---------------------------------------------------------------------------------------- |
 | `model_from_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
 
 ### Kinematics
 Kinematics algorithms are implemented in [Kinematics](./include/Kinematics.hpp).
-| Function | Description |
-| --- | --- |
-| `forward_kinematics` | Compute transforms between links. |
+| Function                 | Description                                                       |
+| ------------------------ | ----------------------------------------------------------------- |
+| `forward_kinematics`     | Compute transforms between links.                                 |
 | `forward_kinematics_com` | Compute transforms between link and another links centre of mass. |
-| `translation` | Compute translation between links. |
-| `rotation` | Compute rotation between links. |
-| `geometric_jacobian` | Compute geometric jacobian to a link. |
-| `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass. |
-| `centre_of_mass` | Compute centre of mass of model. |
+| `translation`            | Compute translation between links.                                |
+| `rotation`               | Compute rotation between links.                                   |
+| `geometric_jacobian`     | Compute geometric jacobian to a link.                             |
+| `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass.             |
+| `centre_of_mass`         | Compute centre of mass of model.                                  |
 
 ### Inverse Kinematics
 Inverse Kinematics is implemented in [InverseKinematics](./include/InverseKinematics.hpp).
-| Function | Description |
-| --- | --- |
+| Function             | Description                                             |
+| -------------------- | ------------------------------------------------------- |
 | `inverse_kinematics` | Solve joint positions to achieve desired pose of model. |
 
 ### Dynamics
 Dynamics algorithms are implemented in [Dynamics](./include/Dynamics.hpp).
-| Function | Description |
-| --- | --- |
-| `forward_dynamics` | Compute joint accelerations given joint positions and velocities and torques. |
-| `inverse_dynamics` | Compute required joint torques for given motion. |
-| `mass_matrix` | Compute mass matrix given joint positions. |
-| `total_energy` | Compute total energy (kinetic + potential) given joint positions and velocity. |
+| Function           | Description                                                                    |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `forward_dynamics` | Compute joint accelerations given joint positions and velocities and torques.  |
+| `inverse_dynamics` | Compute required joint torques for given motion.                               |
+| `mass_matrix`      | Compute mass matrix given joint positions.                                     |
+| `total_energy`     | Compute total energy (kinetic + potential) given joint positions and velocity. |
 
 ## Install
 
@@ -62,7 +62,7 @@ The code below demonstrates how to load in a URDF model and compute the forward 
 
 ```c++
 // Create a robot model with 4 joints
-auto model = model_from_urdf<double, 4>("example.urdf");
+auto model = from_urdf<double, 4>("example.urdf");
 
 // Create a configuration vector of all zeros
 auto q = model.home_configuration();

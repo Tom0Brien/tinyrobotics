@@ -9,9 +9,13 @@
 #include "../include/Solver.hpp"
 
 int main(int argc, char* argv[]) {
+    using namespace tr;
+    using namespace tr::parser;
+    using namespace tr::kinematics;
+    using namespace tr::ik;
     // Load in Model from URDF
     const int n_joints = 20;
-    auto model         = tr::model_from_urdf<double, n_joints>("../data/urdfs/robot.urdf");
+    auto model         = from_urdf<double, n_joints>("../data/urdfs/robot.urdf");
 
     // Set initial conditions for the robot
     auto q0 = model.home_configuration();
@@ -19,7 +23,7 @@ int main(int argc, char* argv[]) {
     // Compute the forward kinematics to the left foot
     auto source_frame = std::string("torso");
     auto target_frame = std::string("left_foot");
-    auto Htl_0        = tr::forward_kinematics(model, q0, target_frame);
+    auto Htl_0        = forward_kinematics(model, q0, target_frame);
 
     // Compute the inverse kinematics for moving the left foot upwards
     auto Htl_target = Htl_0;
@@ -39,14 +43,14 @@ int main(int argc, char* argv[]) {
         // Compute the inverse kinematics
         // Start timer
         auto start = std::chrono::high_resolution_clock::now();
-        q          = tr::inverse_kinematics(model, source_frame, target_frame, Htl_target, q);
+        q          = inverse_kinematics(model, source_frame, target_frame, Htl_target, q);
         // Stop timer
         auto stop     = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
         total_time += duration.count();
 
         // Print out the current configuration
-        auto Htl = tr::forward_kinematics(model, q, target_frame);
+        auto Htl = forward_kinematics(model, q, target_frame);
 
         // Compute the error
         auto translation_error = (Htl_target.translation() - Htl.translation()).norm();

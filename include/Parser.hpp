@@ -6,7 +6,13 @@
 #include "Math.hpp"
 #include "Model.hpp"
 
-namespace tr {
+/** \file Parser.hpp
+ * @brief Contains various functions for parsing URDF files and strings to create a tinyrobotics model.
+ */
+namespace tr::parser {
+
+    using namespace tr::math;
+    using namespace tr::model;
 
     /**
      * @brief Get Eigen3 vector from a URDF vector element.
@@ -95,13 +101,13 @@ namespace tr {
             const char* rpy_str = xml->Attribute("rpy");
             if (rpy_str != nullptr) {
                 Eigen::Matrix<Scalar, 3, 1> rpy = vec_from_string<Scalar>(rpy_str);
-                R                               = tr::rpy_to_spatial(rpy);
+                R                               = rpy_to_spatial(rpy);
             }
 
             const char* xyz_str = xml->Attribute("xyz");
             if (xyz_str != nullptr) {
                 Eigen::Matrix<Scalar, 3, 1> translation = vec_from_string<Scalar>(xyz_str);
-                T                                       = tr::translation_to_spatial(translation);
+                T                                       = translation_to_spatial(translation);
             }
         }
         X = R * T;
@@ -226,7 +232,7 @@ namespace tr {
         }
 
         // Add the spatial inertia to the link
-        link.I = tr::inertia_to_spatial<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
+        link.I = inertia_to_spatial<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
 
         return link;
     }
@@ -509,7 +515,7 @@ namespace tr {
      * @return The URDF parsed Model object.
      */
     template <typename Scalar, int nq>
-    Model<Scalar, nq> model_from_urdf(const std::string& path_to_urdf) {
+    Model<Scalar, nq> from_urdf(const std::string& path_to_urdf) {
         // Open the URDF file
         std::ifstream input_file(path_to_urdf);
         if (!input_file.is_open()) {
@@ -580,6 +586,6 @@ namespace tr {
 
         return model;
     }
-}  // namespace tr
+}  // namespace tr::parser
 
 #endif

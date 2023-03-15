@@ -1,9 +1,12 @@
 var searchData=
 [
-  ['n_5fjoints_0',['n_joints',['../structtr_1_1Model.html#a864a0576b3aad0bf1684edc733a6cb91',1,'tr::Model']]],
-  ['n_5flinks_1',['n_links',['../structtr_1_1Model.html#a0c336661aed01aa2abef8a5a09dcddf2',1,'tr::Model']]],
-  ['n_5fq_2',['n_q',['../structtr_1_1Model.html#a004e9980cbf7b2f8ddaa52d75d5d144d',1,'tr::Model']]],
-  ['name_3',['name',['../structtr_1_1Joint.html#ac2b1724543744b388988e5f7143ef847',1,'tr::Joint::name'],['../structtr_1_1Link.html#a02856636054345b8ea303046610325db',1,'tr::Link::name'],['../structtr_1_1Model.html#a3a539148b43a6d4a4442c3040a16da3b',1,'tr::Model::name']]],
-  ['nr_4',['nr',['../structtr_1_1Data.html#a9c500aed32bdbc3a5d0056fc0978271c',1,'tr::Data']]],
-  ['nz_5',['nz',['../structtr_1_1Data.html#afb3a2eb532aca877f458dae42c2e356a',1,'tr::Data']]]
+  ['m_0',['M',['../structtr_1_1data_1_1Data.html#a1c32caa43777418d0bfef66a9fbc46b0',1,'tr::data::Data']]],
+  ['mass_1',['mass',['../structtr_1_1model_1_1Link.html#a8b8171b3968a16972d2ef91936c9e1a8',1,'tr::model::Link']]],
+  ['mass_5fmatrix_2',['mass_matrix',['../Dynamics_8hpp.html#aac223e5aee78b7af39edd6e2487e8f71',1,'tr::dynamics']]],
+  ['math_2ehpp_3',['Math.hpp',['../Math_8hpp.html',1,'']]],
+  ['minv_4',['Minv',['../structtr_1_1data_1_1Data.html#aaa3d55d78cd13081ec95547d55b27822',1,'tr::data::Data']]],
+  ['model_5',['model',['../classtr_1_1ik_1_1IKCost.html#ad0edc0ce7297437fa00e2eb5ed235f81',1,'tr::ik::IKCost']]],
+  ['model_6',['Model',['../structtr_1_1model_1_1Model.html',1,'tr::model']]],
+  ['model_2ehpp_7',['Model.hpp',['../Model_8hpp.html',1,'']]],
+  ['model_3c_20autodifftype_2c_20nq_20_3e_8',['Model&lt; AutoDiffType, nq &gt;',['../structtr_1_1model_1_1Model.html',1,'tr::model']]]
 ];

@@ -3,7 +3,10 @@
 
 #include "Joint.hpp"
 
-namespace tr {
+/** \file Link.hpp
+ * @brief Contains struct for representing a joint in a tinyrobotics model.
+ */
+namespace tr::model {
 
     /**
      * @brief Represents a link in a tinyrobotics model.
@@ -68,5 +71,5 @@ namespace tr {
             return new_link;
         }
     };
-}  // namespace tr
+}  // namespace tr::model
 #endif

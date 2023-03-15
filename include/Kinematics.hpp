@@ -7,7 +7,13 @@
 #include "Math.hpp"
 #include "Model.hpp"
 
-namespace tr {
+/** \file Kinematics.hpp
+ * @brief Contains functions for computing various kinematic quantities of a tinyrobotics model.
+ */
+namespace tr::kinematics {
+
+    using namespace tr::math;
+    using namespace tr::model;
 
     /**
      * @brief Computes the transform to the target from the base link.
@@ -390,6 +396,6 @@ namespace tr {
         return rISs / total_mass;
     }
 
-}  // namespace tr
+}  // namespace tr::kinematics
 
 #endif

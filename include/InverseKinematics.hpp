@@ -11,7 +11,15 @@
 #include "Kinematics.hpp"
 #include "Model.hpp"
 
-namespace tr {
+/** \file InverseKinematics.hpp
+ * @brief Contains functions for computing the inverse kinematics for a tinyrobotics model.
+ */
+namespace tr::ik {
+
+    using namespace tr::math;
+    using namespace tr::model;
+    using namespace tr::kinematics;
+
 
     /**
      * @brief Defines the variable set for the IK problem, which is the configuration for the robot.
@@ -282,6 +290,6 @@ namespace tr {
         Eigen::Matrix<Scalar, nq, 1> q = nlp.GetOptVariables()->GetValues();
         return q;
     }
-}  // namespace tr
+}  // namespace tr::ik
 
 #endif

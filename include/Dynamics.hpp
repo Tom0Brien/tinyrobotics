@@ -10,7 +10,14 @@
 #include "Kinematics.hpp"
 #include "Model.hpp"
 
-namespace tr {
+/** \file Dynamics.hpp
+ * @brief Contains functions for computing the dynamics of a tinyrobotics model.
+ */
+namespace tr::dynamics {
+
+    using namespace tr::math;
+    using namespace tr::model;
+    using namespace tr::kinematics;
 
     /**
      * @brief Compute the mass matrix of the robot model.
@@ -177,7 +184,7 @@ namespace tr {
         Eigen::Matrix<Scalar, Eigen::Dynamic, nq> Jc;
         for (int i = 0; i < active_constraints.size(); i++) {
             // Compute the jacobian of the active constraint
-            auto Jci   = tr::geometric_jacobian(model, q, active_constraints[i]);
+            auto Jci   = geometric_jacobian(model, q, active_constraints[i]);
             auto Jci_v = Jci.block(0, 0, 3, nq);
             // Vertically Concatenate the jacobian of the active constraint to the jacobian of the active constraints
             Jc.conservativeResize(Jc.rows() + Jci_v.rows(), nq);
@@ -187,7 +194,7 @@ namespace tr {
         model.data.Jc = Jc;
 
         // Compute the left annihilator of the jacobian of the active constraints
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jcp = tr::null<Scalar>(Jc);
+        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jcp = null<Scalar>(Jc);
         model.data.Jcp.resize(Jcp.rows(), Jcp.cols());
         model.data.Jcp = Jcp;
 
@@ -306,7 +313,7 @@ namespace tr {
             // Add links contribution to potential energy m* g* h
             V -= link.mass * model.gravity.transpose() * rMBb;
 
-            if (link.idx != -1 && link.joint.type == tr::JointType::REVOLUTE) {
+            if (link.idx != -1 && link.joint.type == JointType::REVOLUTE) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
@@ -315,14 +322,14 @@ namespace tr {
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.idx != -1 && link.joint.type == tr::JointType::FIXED) {
+            else if (link.idx != -1 && link.joint.type == JointType::FIXED) {
                 // Add to mass matrix list
                 Mp.insert(Mp.end(), {link.mass, link.mass, link.mass});
                 // Add to constraint vector
                 fc.conservativeResize(fc.rows() + 3);
                 fc.tail(3) = rMBb;
             }
-            else if (link.idx != -1 && link.joint.type == tr::JointType::PRISMATIC) {
+            else if (link.idx != -1 && link.joint.type == JointType::PRISMATIC) {
                 // Add inertia to J matrix TODO: Need to figure out inertia contribution
                 Jp.insert(Jp.end(), {0});
             }
@@ -407,7 +414,7 @@ namespace tr {
      */
     template <typename Scalar, int nq>
     std::vector<Eigen::Matrix<Scalar, 6, 1>> apply_external_forces(
-        const tr::Model<Scalar, nq>& model,
+        const Model<Scalar, nq>& model,
         const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
         const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_in,
         const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext) {
@@ -439,7 +446,7 @@ namespace tr {
      * @return qdd The joint acceleration of the robot.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(const tr::Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(const Model<Scalar, nq>& model,
                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
                                                      const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                      const Eigen::Matrix<Scalar, nq, 1>& tau,
@@ -467,7 +474,7 @@ namespace tr {
             // Get transform from body to parent
             auto T = link.joint.get_parent_to_child_transform(q(i));
             // Compute the spatial transform from the parent to the current body
-            Xup[i] = tr::homogeneous_to_spatial(T.inverse());
+            Xup[i] = homogeneous_to_spatial(T.inverse());
             // Check if the model.parent link is the base link
             if (model.parent[i] == -1) {
                 v[i] = vJ;
@@ -475,10 +482,10 @@ namespace tr {
             }
             else {
                 v[i] = Xup[i] * v[model.parent[i]] + vJ;
-                c[i] = tr::cross_spatial(v[i]) * vJ;
+                c[i] = cross_spatial(v[i]) * vJ;
             }
             IA[i] = link.I;
-            pA[i] = tr::cross_motion(v[i]) * IA[i] * v[i];
+            pA[i] = cross_motion(v[i]) * IA[i] * v[i];
         }
 
         // Apply external forces if non-zero
@@ -511,6 +518,6 @@ namespace tr {
         return qdd;
     }
 
-}  // namespace tr
+}  // namespace tr::dynamics
 
 #endif

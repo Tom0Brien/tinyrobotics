@@ -6,9 +6,13 @@
 #include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
 
+using namespace tr;
+using namespace tr::model;
+using namespace tr::parser;
+
 TEST_CASE("Load a model with inertial information", "[Model]") {
     // Create a robot model
-    auto robot_model = tr::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
 
     CHECK(robot_model.name == "compass_gait");
 
@@ -32,7 +36,7 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 
     // Check parsed fixed joint information
     CHECK(robot_model.get_joint("hip_joint").name == "hip_joint");
-    CHECK(robot_model.get_joint("hip_joint").type == tr::JointType::FIXED);
+    CHECK(robot_model.get_joint("hip_joint").type == JointType::FIXED);
     CHECK(robot_model.get_joint("hip_joint").parent_link_name == "floating_base_z");
     CHECK(robot_model.get_joint("hip_joint").child_link_name == "body");
     CHECK(robot_model.get_joint("hip_joint").axis == Eigen::Matrix<double, 3, 1>::Zero());
@@ -43,7 +47,7 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 
     // Check parsed revolute joint information
     CHECK(robot_model.get_joint("left_hip_pitch").name == "left_hip_pitch");
-    CHECK(robot_model.get_joint("left_hip_pitch").type == tr::JointType::REVOLUTE);
+    CHECK(robot_model.get_joint("left_hip_pitch").type == JointType::REVOLUTE);
     CHECK(robot_model.get_joint("left_hip_pitch").parent_link_name == "body");
     CHECK(robot_model.get_joint("left_hip_pitch").child_link_name == "left_leg");
     CHECK(robot_model.get_joint("left_hip_pitch").axis == Eigen::Matrix<double, 3, 1>(0, -1, 0));
@@ -54,7 +58,7 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 
     // Check parsed prismatic joint information
     CHECK(robot_model.get_joint("floating_base_x").name == "floating_base_x");
-    CHECK(robot_model.get_joint("floating_base_x").type == tr::JointType::PRISMATIC);
+    CHECK(robot_model.get_joint("floating_base_x").type == JointType::PRISMATIC);
     CHECK(robot_model.get_joint("floating_base_x").parent_link_name == "ground");
     CHECK(robot_model.get_joint("floating_base_x").child_link_name == "floating_base_x");
     CHECK(robot_model.get_joint("floating_base_x").axis == Eigen::Matrix<double, 3, 1>(1, 0, 0));
@@ -66,13 +70,15 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 
 // TEST_CASE("Create a Model of autodiff type", "[Model]") {
 //     // Create a robot model
-//     auto robot_model = tr::model_from_urdf<autodiff::real, 4>("data/urdfs/simple.urdf");
+using namespace tr::model;
+//     auto robot_model = tr::from_urdf<autodiff::real, 4>("data/urdfs/simple.urdf");
 //     CHECK(robot_model.name == "compass_gait");
 // }
 
 // TEST_CASE("Cast a Model from double to float", "[Model]") {
 //     // Create a robot model
-//     auto robot_model_double = tr::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+using namespace tr::model;
+//     auto robot_model_double = tr::from_urdf<double, 4>("data/urdfs/simple.urdf");
 
 //     // Cast the model to a different type
 //     auto robot_model_float = robot_model_double.template cast<float>();
@@ -135,7 +141,7 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 
 // TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
 //     // Load the robot model from a URDF file
-//     auto robot_model_double = tr::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+//     auto robot_model_double = tr::from_urdf<double, 4>("data/urdfs/simple.urdf");
 
 //     // Cast the model to a different type
 //     auto autodiff_model = robot_model_double.template cast<autodiff::real>();

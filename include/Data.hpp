@@ -4,7 +4,10 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-namespace tr {
+/** \file Data.hpp
+ * @brief Contains the Data struct which stores the results of various model algorithms.
+ */
+namespace tr::data {
 
     /**
      * @brief A data struct for storing results of various model algorithms.
@@ -107,6 +110,6 @@ namespace tr {
             return new_res;
         }
     };
-}  // namespace tr
+}  // namespace tr::data
 
 #endif

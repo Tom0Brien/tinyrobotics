@@ -4,7 +4,10 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-namespace tr {
+/** \file Math.hpp
+ * @brief Contains various math related functions.
+ */
+namespace tr::math {
     /**
      * @brief Computes the skew of a 3x3 vector.
      * @param input The 3x3 vector.
@@ -126,7 +129,7 @@ namespace tr {
                                                    const Eigen::Matrix<Scalar, 3, 1>& c,
                                                    const Eigen::Matrix<Scalar, 3, 3>& I) {
         Eigen::Matrix<Scalar, 6, 6> Ic;
-        Eigen::Matrix<Scalar, 3, 3> C = tr::skew(c);
+        Eigen::Matrix<Scalar, 3, 3> C = skew(c);
         Ic.setZero();
         Ic.block(0, 0, 3, 3) = I + m * C * C.transpose();
         Ic.block(0, 3, 3, 3) = m * C;
@@ -135,6 +138,6 @@ namespace tr {
         return Ic;
     }
 
-}  // namespace tr
+}  // namespace tr::math
 
 #endif

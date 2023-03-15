@@ -4,7 +4,10 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-namespace tr {
+/** \file Joint.hpp
+ * @brief Contains struct for representing a joint in a tinyrobotics model.
+ */
+namespace tr::model {
 
     /// @brief The types of joints.
     enum class JointType {
@@ -85,18 +88,18 @@ namespace tr {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> get_joint_transform(const Scalar& q) {
             Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
             switch (type) {
-                case tr::JointType::REVOLUTE: {
+                case JointType::REVOLUTE: {
                     T.linear() = Eigen::AngleAxis<Scalar>(q, Eigen::Matrix<Scalar, 3, 1>(axis[0], axis[1], axis[2]))
                                      .toRotationMatrix();
                     return T;
                     break;
                 }
-                case tr::JointType::PRISMATIC: {
+                case JointType::PRISMATIC: {
                     T.translation() = q * Eigen::Matrix<Scalar, 3, 1>(axis[0], axis[1], axis[2]);
                     return T;
                     break;
                 }
-                case tr::JointType::FIXED: {
+                case JointType::FIXED: {
                     return T;
                     break;
                 }
@@ -140,5 +143,5 @@ namespace tr {
     };
 
 
-}  // namespace tr
+}  // namespace tr::model
 #endif

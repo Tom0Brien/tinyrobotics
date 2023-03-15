@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['setvariables_0',['SetVariables',['../classtr_1_1IKVariables.html#a36cb34d829e18e172a220a3ed2ec3e7b',1,'tr::IKVariables']]],
-  ['show_5fdetails_1',['show_details',['../structtr_1_1Model.html#ab177f221f9f981a29e704171f5304f4c',1,'tr::Model']]]
+  ['joint_5ffrom_5fxml_0',['joint_from_xml',['../Parser_8hpp.html#a6ee1a4bc8effd86cc8c021aa1d8f0eeb',1,'tr::parser']]]
 ];

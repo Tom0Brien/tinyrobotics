@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['m_0',['M',['../structtr_1_1Data.html#a2871371d419e2760e53b2595057249d4',1,'tr::Data']]],
-  ['mass_1',['mass',['../structtr_1_1Link.html#a22cac9841093534d2c242d4c2dc3d072',1,'tr::Link']]],
-  ['minv_2',['Minv',['../structtr_1_1Data.html#a40b51bbf38f87b3e9490e63deec3afd3',1,'tr::Data']]],
-  ['model_3',['model',['../classtr_1_1IKCost.html#a0ef92045f6fac6dee3196c10da81648a',1,'tr::IKCost']]],
-  ['model_4',['Model',['../structtr_1_1Model.html',1,'tr']]],
-  ['model_3c_20autodifftype_2c_20nq_20_3e_5',['Model&lt; AutoDiffType, nq &gt;',['../structtr_1_1Model.html',1,'tr']]]
+  ['link_0',['Link',['../structtr_1_1model_1_1Link.html',1,'tr::model']]],
+  ['link_2ehpp_1',['Link.hpp',['../Link_8hpp.html',1,'']]],
+  ['link_5ffrom_5fxml_2',['link_from_xml',['../Parser_8hpp.html#a43fbeeb3a17739ad89966c4160eee8d0',1,'tr::parser']]],
+  ['links_3',['links',['../structtr_1_1model_1_1Model.html#a2deb8f55d0c5ed15efec8ebe6a5e0ed9',1,'tr::model::Model']]]
 ];

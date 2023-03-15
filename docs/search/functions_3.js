@@ -1,12 +1,10 @@
 var searchData=
 [
-  ['get_5fjoint_0',['get_joint',['../structtr_1_1Model.html#a9b90995f45903ffe7ee93628ac971730',1,'tr::Model']]],
-  ['get_5fjoint_5ftransform_1',['get_joint_transform',['../structtr_1_1Joint.html#ae486044e08f2e21cc9508f1754dc92f3',1,'tr::Joint']]],
-  ['get_5flink_2',['get_link',['../structtr_1_1Model.html#a64ec23049a772d37742b67e5c2947d0f',1,'tr::Model']]],
-  ['get_5fparent_5flink_3',['get_parent_link',['../structtr_1_1Model.html#a979572e4031e1d692553f606557d589c',1,'tr::Model']]],
-  ['get_5fparent_5fto_5fchild_5ftransform_4',['get_parent_to_child_transform',['../structtr_1_1Joint.html#aaed550d9e07c43ed84cdec67539e1005',1,'tr::Joint']]],
-  ['get_5ftype_5',['get_type',['../structtr_1_1Joint.html#ae543a726f26b44c191fea280f1c166ee',1,'tr::Joint']]],
-  ['getbounds_6',['GetBounds',['../classtr_1_1IKVariables.html#abc22d18cdf8ede72a05e7deb69e44286',1,'tr::IKVariables']]],
-  ['getcost_7',['GetCost',['../classtr_1_1IKCost.html#a7f93080ee1eacd7c6930f2924eece43e',1,'tr::IKCost']]],
-  ['getvalues_8',['GetValues',['../classtr_1_1IKVariables.html#ab8153c22dfc6932c8c0da95fdaf19677',1,'tr::IKVariables']]]
+  ['filljacobianblock_0',['FillJacobianBlock',['../classtr_1_1ik_1_1IKCost.html#ab9a4c1d7e3b71773cdeef70f4ab261a4',1,'tr::ik::IKCost']]],
+  ['forward_5fdynamics_1',['forward_dynamics',['../Dynamics_8hpp.html#a1a2cf581701deaebd420968ed5caacf4',1,'tr::dynamics']]],
+  ['forward_5fdynamics_5fab_2',['forward_dynamics_ab',['../Dynamics_8hpp.html#a291c468c1487270e77ddea58be0ae9e2',1,'tr::dynamics']]],
+  ['forward_5fdynamics_5fwithout_5fconstraints_3',['forward_dynamics_without_constraints',['../Dynamics_8hpp.html#a0e5860bde05c6ec6aac11c987bbd843e',1,'tr::dynamics']]],
+  ['forward_5fkinematics_4',['forward_kinematics',['../Kinematics_8hpp.html#a7b0dcc1ea21a7f239297841f58327afd',1,'tr::kinematics::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx, const bool inverse_transform=false)'],['../Kinematics_8hpp.html#a173ef46f4e514784b36b5dc7d61f4378',1,'tr::kinematics::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name, const bool inverse_transform=false)'],['../Kinematics_8hpp.html#ad0eca53a6b24258516ca7e1a4d645222',1,'tr::kinematics::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)'],['../Kinematics_8hpp.html#a80d34afcb0fb240d4670c3972e5b8668',1,'tr::kinematics::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)']]],
+  ['forward_5fkinematics_5fcom_5',['forward_kinematics_com',['../Kinematics_8hpp.html#ae54986478a01decc6fb25c0bdcdff4d7',1,'tr::kinematics::forward_kinematics_com(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)'],['../Kinematics_8hpp.html#ada61b81caa345a6bd5af46e9768710cc',1,'tr::kinematics::forward_kinematics_com(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)']]],
+  ['from_5furdf_6',['from_urdf',['../Parser_8hpp.html#ad1a568de396c2063639b48a4e8873ea9',1,'tr::parser']]]
 ];

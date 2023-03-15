@@ -10,10 +10,15 @@
 #include "../include/Solver.hpp"
 #include "catch2/catch.hpp"
 
+using namespace tr;
+using namespace parser;
+using namespace kinematics;
+using namespace dynamics;
+using namespace solver;
 
 TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
     // Create a robot model
-    auto robot_model = tr::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create initial conditions
     Eigen::Matrix<double, 4, 1> q0 = robot_model.home_configuration();
@@ -24,12 +29,12 @@ TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
 
     // Run a single step of euler integration
     Eigen::Matrix<double, 8, 1> result;
-    result = tr::euler_step(robot_model, q0, p0, u0, dt);
+    result = euler_step(robot_model, q0, p0, u0, dt);
 }
 
 TEST_CASE("Test integration routine for simple model with euler integration", "[Solver]") {
     // Create a robot model
-    auto robot_model = tr::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create initial conditions
     Eigen::Matrix<double, 4, 1> q0 = robot_model.home_configuration();
@@ -41,18 +46,18 @@ TEST_CASE("Test integration routine for simple model with euler integration", "[
     double dt = 0.1;
 
     // Run solver
-    tr::SolverParams<double, 4> params;
+    SolverParams<double, 4> params;
     params.dt                 = 0.1;
     params.tspan              = std::pair<float, float>(0.0, 10.0);
-    params.integration_method = tr::IntegrationMethod::RK4;
-    auto results              = tr::solver(robot_model, q0, p0, u0, params);
+    params.integration_method = IntegrationMethod::RK4;
+    auto results              = tr::solver::solver(robot_model, q0, p0, u0, params);
 
     // TODO: Verify results
 }
 
 TEST_CASE("Test integration routine for simple model with symplectic euler integration", "[Solver]") {
     // Create a robot model
-    auto robot_model = tr::model_from_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model = from_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Create initial conditions
     Eigen::Matrix<double, 4, 1> q0 = robot_model.home_configuration();
@@ -64,11 +69,11 @@ TEST_CASE("Test integration routine for simple model with symplectic euler integ
     double dt = 0.01;
 
     // Run solver
-    tr::SolverParams<double, 4> params;
+    SolverParams<double, 4> params;
     params.dt                 = 0.1;
     params.tspan              = std::pair<float, float>(0.0, 10.0);
-    params.integration_method = tr::IntegrationMethod::SYMPLECTIC_EULER;
-    auto results              = tr::solver(robot_model, q0, p0, u0, params);
+    params.integration_method = IntegrationMethod::SYMPLECTIC_EULER;
+    auto results              = tr::solver::solver(robot_model, q0, p0, u0, params);
 
     // TODO: Verify results
 }
