@@ -397,87 +397,6 @@ namespace tr {
         holonomic_reduction<autodiff::real, nq>(autodiff_model, q_real, M, dfcdqh);
     };
 
-    /**
-     * @brief Compute the joint transform and motion subspace matrices for a joint of the given type.
-     * @param type The joint type.
-     * @param q The joint position variable.
-     * @param Xj The joint transform matrix.
-     * @param S The motion subspace matrix.
-     */
-    template <typename Scalar>
-    void jcalc(const tr::Joint<Scalar>& joint,
-               const Scalar& q,
-               Eigen::Matrix<Scalar, 6, 6>& Xj,
-               Eigen::Matrix<Scalar, 6, 1>& S) {
-
-        tr::JointType joint_type = joint.type;
-        switch (joint_type) {
-            case tr::JointType::REVOLUTE: {
-                Xj.setZero();
-                Eigen::Matrix<Scalar, 3, 3> R =
-                    Eigen::AngleAxis<Scalar>(-q,
-                                             Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]))
-                        .toRotationMatrix();
-                Xj.block(0, 0, 3, 3) = R;
-                Xj.block(3, 3, 3, 3) = R;
-                S << joint.axis[0], joint.axis[1], joint.axis[2], 0, 0, 0;
-                break;
-            }
-            case tr::JointType::PRISMATIC: {
-                Eigen::Matrix<Scalar, 3, 1> q_axis = q * joint.axis;
-                Xj                                 = tr::xlt(q_axis);
-                S << 0, 0, 0, joint.axis[0], joint.axis[1], joint.axis[2];
-                break;
-            }
-            case tr::JointType::FIXED: {
-                Xj.setIdentity();
-                S.setZero();
-                break;
-            }
-            default: {
-                std::cout << "Joint type not supported" << std::endl;
-                break;
-            }
-        }
-    }
-
-    /**
-     * @brief Compute the joint transform and motion subspace matrices for a joint of the given type.
-     * @param type The joint type.
-     * @param q The joint position variable.
-     * @param Xj The joint transform matrix.
-     * @param S The motion subspace matrix.
-     */
-    template <typename Scalar>
-    Eigen::Transform<Scalar, 3, Eigen::Isometry> joint_transform(const tr::Joint<Scalar>& joint, const Scalar& q) {
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
-        tr::JointType joint_type                       = joint.type;
-        switch (joint_type) {
-            case tr::JointType::REVOLUTE: {
-                T.linear() =
-                    Eigen::AngleAxis<Scalar>(q,
-                                             Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]))
-                        .toRotationMatrix();
-                return T;
-                break;
-            }
-            case tr::JointType::PRISMATIC: {
-                T.translation() = q * Eigen::Matrix<Scalar, 3, 1>(joint.axis[0], joint.axis[1], joint.axis[2]);
-                return T;
-                break;
-            }
-            case tr::JointType::FIXED: {
-
-                break;
-            }
-            default: {
-                std::cout << "Joint type not supported" << std::endl;
-                break;
-            }
-        }
-        return T;
-    }
-
 
     /**
      * @brief Apply external forces to the robot model
@@ -542,16 +461,13 @@ namespace tr {
 
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            auto link = model.links[model.q_idx[i]];
-            Eigen::Matrix<Scalar, 6, 6> Xj;
-            Eigen::Matrix<Scalar, 6, 1> S_i;
-            jcalc(link.joint, q(i), Xj, S_i);
-            S[i]                           = S_i;
-            Eigen::Matrix<Scalar, 6, 1> vJ = S_i * qd(i);
+            auto link                      = model.links[model.q_idx[i]];
+            S[i]                           = link.joint.S;
+            Eigen::Matrix<Scalar, 6, 1> vJ = S[i] * qd(i);
             // Get transform from body to parent
-            auto T = link.joint.parent_transform * joint_transform(link.joint, q(i)) * link.joint.child_transform;
+            auto T = link.joint.get_parent_to_child_transform(q(i));
             // Compute the spatial transform from the parent to the current body
-            Xup[i] = tr::xlt(T.inverse().matrix());
+            Xup[i] = tr::homogeneous_to_spatial(T.inverse());
             // Check if the model.parent link is the base link
             if (model.parent[i] == -1) {
                 v[i] = vJ;
@@ -559,10 +475,10 @@ namespace tr {
             }
             else {
                 v[i] = Xup[i] * v[model.parent[i]] + vJ;
-                c[i] = tr::crm(v[i]) * vJ;
+                c[i] = tr::cross_spatial(v[i]) * vJ;
             }
             IA[i] = link.I;
-            pA[i] = tr::crf(v[i]) * IA[i] * v[i];
+            pA[i] = tr::cross_motion(v[i]) * IA[i] * v[i];
         }
 
         // Apply external forces if non-zero

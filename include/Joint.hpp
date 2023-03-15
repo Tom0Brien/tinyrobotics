@@ -54,7 +54,10 @@ namespace tr {
         std::string child_link_name = "";
 
         /// @brief Spatial transformation matrix from the parent to the child link.
-        Eigen::Matrix<Scalar, 6, 6> X = {};
+        Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Identity();
+
+        /// @brief Spatial axis
+        Eigen::Matrix<Scalar, 6, 1> S = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
         /**
          * @brief Get joint type as a string.
@@ -72,6 +75,46 @@ namespace tr {
                 case JointType::FIXED: return "Fixed";
                 default: return "Invalid";
             }
+        }
+
+        /**
+         * @brief Compute the joint transform.
+         * @param q The joint position variable.
+         * @return Homogeneous transform of the joint from its home position to its transformed position.
+         */
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> get_joint_transform(const Scalar& q) {
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+            switch (type) {
+                case tr::JointType::REVOLUTE: {
+                    T.linear() = Eigen::AngleAxis<Scalar>(q, Eigen::Matrix<Scalar, 3, 1>(axis[0], axis[1], axis[2]))
+                                     .toRotationMatrix();
+                    return T;
+                    break;
+                }
+                case tr::JointType::PRISMATIC: {
+                    T.translation() = q * Eigen::Matrix<Scalar, 3, 1>(axis[0], axis[1], axis[2]);
+                    return T;
+                    break;
+                }
+                case tr::JointType::FIXED: {
+                    return T;
+                    break;
+                }
+                default: {
+                    std::cout << "Joint type not supported." << std::endl;
+                    break;
+                }
+            }
+            return T;
+        }
+
+        /**
+         * @brief Compute the transform from parent to child.
+         * @param q The joint position variable.
+         * @return Homogeneous transform from parent to child.
+         */
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> get_parent_to_child_transform(const Scalar& q) {
+            return parent_transform * get_joint_transform(q) * child_transform;
         }
 
         /**

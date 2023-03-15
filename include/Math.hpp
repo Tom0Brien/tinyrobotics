@@ -6,39 +6,34 @@
 
 namespace tr {
     /**
-     * @brief Computes the inverse of a 4x4 homogeneous transformation matrix
-     * @param T The 4x4 homogeneous transformation matrix
-     * @return The 4x4 inverse homogeneous transformation matrix
+     * @brief Computes the skew of a 3x3 vector.
+     * @param input The 3x3 vector.
+     * @tparam Scalar Scalar type.
+     * @return The skew of input.
      */
     template <typename Scalar>
-    Eigen::Transform<Scalar, 3, Eigen::Isometry> inv(const Eigen::Transform<Scalar, 3, Eigen::Isometry>& T) {
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Tinv = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
-        Tinv.linear()                                     = T.linear().transpose();
-        Tinv.translation()                                = -T.linear().transpose() * T.translation();
-        return Tinv;
+    Eigen::Matrix<Scalar, 3, 3> skew(const Eigen::Matrix<Scalar, 3, 3>& input) {
+        return 0.5 * (input - input.transpose());
     }
 
     /**
-     * @brief Computes the skew of a 3x1 vector or 3x3 matrix
-     * @param in The 3x1 vector or 3x3 matrix
-     * @return The skew of in
+     * @brief Computes the skew matrix for a 3x1 vector.
+     * @param input The 3x1 vector.
+     * @tparam Scalar Scalar type.
+     * @return The skew of input.
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> skew(const Eigen::Matrix<Scalar, 3, 3>& in) {
-        return 0.5 * (in - in.transpose());
-    }
-
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> skew(const Eigen::Matrix<Scalar, 3, 1>& in) {
+    Eigen::Matrix<Scalar, 3, 3> skew(const Eigen::Matrix<Scalar, 3, 1>& input) {
         Eigen::Matrix<Scalar, 3, 3> out;
-        out << Scalar(0), -in(2), in(1), in(2), Scalar(0), -in(0), -in(1), in(0), Scalar(0);
+        out << Scalar(0), -input(2), input(1), input(2), Scalar(0), -input(0), -input(1), input(0), Scalar(0);
         return out;
     }
 
     /**
      * @brief Computes an orthonormal basis for the null space of a matrix.
-     * @param A The matrix
-     * @return The orthonormal basis for the null space of A
+     * @param A Input matrix.
+     * @tparam Scalar Scalar type.
+     * @return The orthonormal basis for the null space of A.
      */
     template <typename Scalar>
     Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> null(
@@ -49,110 +44,13 @@ namespace tr {
     }
 
     /**
-     * @brief Computes the error between two quaternions
-     * @param q1 The first quaternion
-     * @param q2 The second quaternion
-     * @return The error between the two quaternions
+     * @brief Computes the 6x6 cross-product matrix for a 6D spatial vector.
+     * @param v The 6D spatial vector.
+     * @tparam Scalar Scalar type.
+     * @return 6x6 cross-product matrix.
      */
     template <typename Scalar>
-    Scalar quaternion_error(const Eigen::Quaternion<Scalar>& q1, const Eigen::Quaternion<Scalar>& q2) {
-        return (q1.inverse() * q2).vec().norm();
-    }
-
-    /**
-     * @brief Computes the 3x3 rotation matrix about the z-axis
-     * @param theta The rotation angle in radians
-     * @return The 3x3 rotation matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> rz(const Scalar& theta) {
-        const Scalar c = std::cos(theta);
-        const Scalar s = std::sin(theta);
-        Eigen::Matrix<Scalar, 3, 3> E;
-        E << c, s, Scalar(0), -s, c, Scalar(0), Scalar(0), Scalar(0), Scalar(1);
-        return E;
-    }
-
-    /**
-     * @brief Computes the 3x3 rotation matrix about the y-axis
-     * @param theta The rotation angle in radians
-     * @return The 3x3 rotation matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> ry(const Scalar& theta) {
-        const Scalar c = std::cos(theta);
-        const Scalar s = std::sin(theta);
-        Eigen::Matrix<Scalar, 3, 3> E;
-        E << c, Scalar(0), -s, Scalar(0), Scalar(1), Scalar(0), s, Scalar(0), c;
-        return E;
-    }
-
-    /**
-     * @brief Computes the 3x3 rotation matrix about the x-axis
-     * @param theta The rotation angle in radians
-     * @return The 3x3 rotation matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> rx(const Scalar& theta) {
-        const Scalar c = std::cos(theta);
-        const Scalar s = std::sin(theta);
-        Eigen::Matrix<Scalar, 3, 3> E;
-        E << Scalar(1), Scalar(0), Scalar(0), Scalar(0), c, s, Scalar(0), -s, c;
-        return E;
-    }
-
-    /**
-     * @brief Computes the 6x6 spatial coordinate transform matrix for a rotation about the X-axis
-     * @param theta The rotation angle in radians
-     * @return The 6x6 coordinate transform matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> rotx(const Scalar theta) {
-        const Scalar c = std::cos(theta);
-        const Scalar s = std::sin(theta);
-        Eigen::Matrix<Scalar, 6, 6> X;
-        X << 1, 0, 0, 0, 0, 0, 0, c, s, 0, 0, 0, 0, -s, c, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, c, s, 0, 0, 0, 0, -s,
-            c;
-        return X;
-    }
-
-    /**
-     * @brief Computes the 6x6 spatial coordinate transform matrix for a rotation about the Y-axis
-     * @param theta The rotation angle in radians
-     * @return The 6x6 coordinate transform matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> roty(const Scalar theta) {
-        const Scalar c = std::cos(theta);
-        const Scalar s = std::sin(theta);
-        Eigen::Matrix<Scalar, 6, 6> Y;
-        Y << c, 0, -s, 0, 0, 0, 0, 1, 0, 0, 0, 0, s, 0, c, 0, 0, 0, 0, 0, 0, c, 0, -s, 0, 0, 0, 0, 1, 0, 0, 0, 0, s, 0,
-            c;
-        return Y;
-    }
-
-    /**
-     * @brief Computes the 6x6 spatial coordinate transform matrix for a rotation about the Z-axis
-     * @param theta The rotation angle in radians
-     * @return The 6x6 coordinate transform matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> rotz(const Scalar theta) {
-        const Scalar c = std::cos(theta);
-        const Scalar s = std::sin(theta);
-        Eigen::Matrix<Scalar, 6, 6> Z;
-        Z << c, s, 0, 0, 0, 0, -s, c, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, c, s, 0, 0, 0, 0, -s, c, 0, 0, 0, 0, 0, 0,
-            1;
-        return Z;
-    }
-
-    /**
-     * @brief Computes the 6x6 cross-product matrix for a 6D spatial vector
-     * @param v The 6D spatial vector
-     * @return The 6x6 cross-product matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> crm(const Eigen::Matrix<Scalar, 6, 1>& v) {
+    Eigen::Matrix<Scalar, 6, 6> cross_spatial(const Eigen::Matrix<Scalar, 6, 1>& v) {
         Eigen::Matrix<Scalar, 6, 6> vcross;
         vcross << 0, -v(2), v(1), 0, 0, 0, v(2), 0, -v(0), 0, 0, 0, -v(1), v(0), 0, 0, 0, 0, 0, -v(5), v(4), 0, -v(2),
             v(1), v(5), 0, -v(3), v(2), 0, -v(0), -v(4), v(3), 0, -v(1), v(0), 0;
@@ -160,51 +58,37 @@ namespace tr {
     }
 
     /**
-     * @brief Computes the 3x3 cross-product matrix for a 3D vector
-     * @param v The 3D vector
-     * @return The 3x3 cross-product matrix
+     * @brief Computes the 6x6 cross-product matrix for a motion vector and a force vector.
+     * @param v The motion and force vector.
+     * @tparam Scalar Scalar type.
+     * @return 6x6 cross-product matrix.
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 3, 3> crm(const Eigen::Matrix<Scalar, 3, 1>& v) {
-        Eigen::Matrix<Scalar, 3, 3> vcross;
-        vcross << 0, -v(2), v(1), v(2), 0, -v(0), -v(1), v(0), 0;
-        return vcross;
+    Eigen::Matrix<Scalar, 6, 6> cross_motion(const Eigen::Matrix<Scalar, 6, 1>& v) {
+        return -cross_spatial(v).transpose();
     }
 
     /**
-     * @brief Computes the 6x6 (or 3x3) cross-product matrix for a motion vector and a force vector
-     * @param v The motion vector
-     * @return The 6x6 (or 3x3) cross-product matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> crf(const Eigen::Matrix<Scalar, 6, 1>& v) {
-        return -crm(v).transpose();
-    }
-
-    /**
-     * @brief Computes the 6x6 (or 3x3) cross-product matrix for a motion vector and a force vector
-     * @param v The force vector
-     * @return The 6x6 (or 3x3) cross-product matrix
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> crf(const Eigen::Matrix<Scalar, 3, 1>& v) {
-        return -crm(v).transpose();
-    }
-
-    /**
-     * @brief Spatial coordinate transform (translation of origin).
+     * @brief Spatial coordinate transform from a xyz translation
      * @param v The spatial vector
-     * @return The spatial coordinate transform matrix
+     * @return Spatial coordinate transform matrix
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> xlt(const Eigen::Matrix<Scalar, 3, 1>& r) {
+    Eigen::Matrix<Scalar, 6, 6> translation_to_spatial(const Eigen::Matrix<Scalar, 3, 1>& xyz) {
         Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Identity();
-        X.block(3, 0, 3, 3)           = -skew(r);
+        X.block(3, 0, 3, 3)           = -skew(xyz);
         return X;
     }
 
+
+    /**
+     * @brief Spatial coordinate transform from roll-pitch-yaw angles.
+     * @param rpy The roll-pitch-yaw angles.
+     * @tparam Scalar Scalar type.
+     * @return Spatial coordinate transform matrix.
+     */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> R(const Eigen::Matrix<Scalar, 3, 1>& rpy) {
+    Eigen::Matrix<Scalar, 6, 6> rpy_to_spatial(const Eigen::Matrix<Scalar, 3, 1>& rpy) {
         Eigen::Matrix<Scalar, 3, 3> E = rx(rpy(0)) * ry(rpy(1)) * rz(rpy(2));
         Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Identity();
         X.block(0, 0, 3, 3)           = E;
@@ -215,34 +99,32 @@ namespace tr {
 
     /**
      * @brief Spatial coordinate transform from homogeneous transformation matrix.
-     * @param H The homogeneous transformation matrix
-     * @return The spatial coordinate transform matrix
+     * @param H The homogeneous transformation matrix.
+     * @tparam Scalar Scalar type.
+     * @return Spatial coordinate transform matrix.
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> xlt(const Eigen::Matrix<Scalar, 4, 4>& H) {
+    Eigen::Matrix<Scalar, 6, 6> homogeneous_to_spatial(const Eigen::Transform<Scalar, 3, Eigen::Isometry>& H) {
         Eigen::Matrix<Scalar, 6, 6> X = Eigen::Matrix<Scalar, 6, 6>::Zero();
-        Eigen::Matrix<Scalar, 3, 3> R = H.block(0, 0, 3, 3);
-        Eigen::Matrix<Scalar, 3, 1> p = H.block(0, 3, 3, 1);
-
-        X.block(0, 0, 3, 3) = R;
-        X.block(3, 3, 3, 3) = R;
-        X.block(3, 0, 3, 3) = skew(p) * R;
-
+        X.block(0, 0, 3, 3)           = H.rotation();
+        X.block(3, 3, 3, 3)           = H.rotation();
+        X.block(3, 0, 3, 3)           = skew(Eigen::Matrix<Scalar, 3, 1>(H.translation())) * H.rotation();
         return X;
     }
 
 
     /**
-     * @brief Spatial inertia matrix from planar inertia matrix.
-     * @param m mass of the link
-     * @param C vector from the origin of the link to the center of mass
-     * @param I inertia of the link
-     * @return The spatial inertia matrix
+     * @brief Spatial inertia matrix from inertia parameters.
+     * @param m Mass of link.
+     * @param C Vector from the origin of the link to the center of mass.
+     * @param I Inertia of link.
+     * @tparam Scalar Scalar type.
+     * @return Spatial inertia matrix.
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 6> spatial_inertia(const Scalar m,
-                                                const Eigen::Matrix<Scalar, 3, 1>& c,
-                                                const Eigen::Matrix<Scalar, 3, 3>& I) {
+    Eigen::Matrix<Scalar, 6, 6> inertia_to_spatial(const Scalar m,
+                                                   const Eigen::Matrix<Scalar, 3, 1>& c,
+                                                   const Eigen::Matrix<Scalar, 3, 3>& I) {
         Eigen::Matrix<Scalar, 6, 6> Ic;
         Eigen::Matrix<Scalar, 3, 3> C = tr::skew(c);
         Ic.setZero();

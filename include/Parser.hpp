@@ -95,13 +95,13 @@ namespace tr {
             const char* rpy_str = xml->Attribute("rpy");
             if (rpy_str != nullptr) {
                 Eigen::Matrix<Scalar, 3, 1> rpy = vec_from_string<Scalar>(rpy_str);
-                R                               = tr::R(rpy);
+                R                               = tr::rpy_to_spatial(rpy);
             }
 
             const char* xyz_str = xml->Attribute("xyz");
             if (xyz_str != nullptr) {
                 Eigen::Matrix<Scalar, 3, 1> translation = vec_from_string<Scalar>(xyz_str);
-                T                                       = tr::xlt(translation);
+                T                                       = tr::translation_to_spatial(translation);
             }
         }
         X = R * T;
@@ -146,12 +146,12 @@ namespace tr {
 
         tinyxml2::XMLElement* i = xml->FirstChildElement("inertial");
         if (i != nullptr) {
-            // ************************ Add the centre of mass to the link ************************
+            // Add the centre of mass to the link
             tinyxml2::XMLElement* o = i->FirstChildElement("origin");
             if (o != nullptr) {
                 link.centre_of_mass = transform_from_xml<Scalar>(o);
             }
-            // ************************ Add the mass to the link ************************
+            // Add the mass to the link
             tinyxml2::XMLElement* mass_xml = i->FirstChildElement("mass");
             if (mass_xml != nullptr) {
                 if (mass_xml->Attribute("value") != nullptr) {
@@ -179,7 +179,7 @@ namespace tr {
                 throw std::runtime_error(error_msg.str());
             }
         }
-        // ************************ Add the inertia to the link ************************
+        // Add the inertia to the link
         tinyxml2::XMLElement* inertia_xml = i->FirstChildElement("inertia");
         if (inertia_xml != nullptr) {
             Eigen::Matrix<Scalar, 3, 3> inertia;
@@ -226,7 +226,7 @@ namespace tr {
         }
 
         // Add the spatial inertia to the link
-        link.I = tr::spatial_inertia<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
+        link.I = tr::inertia_to_spatial<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
 
         return link;
     }
@@ -307,9 +307,8 @@ namespace tr {
         if (joint.type != JointType::FLOATING && joint.type != JointType::FIXED) {
             tinyxml2::XMLElement* axis_xml = xml->FirstChildElement("axis");
             if (axis_xml == nullptr) {
-                Eigen::Matrix<Scalar, 3, 1> default_axis;
-                default_axis << 1, 0, 0;
-                joint.axis = default_axis;
+                joint.axis << 1, 0, 0;
+                joint.S << 1, 0, 0, 0, 0, 0;
             }
             else {
                 const char* xyz_char = axis_xml->Attribute("xyz");
@@ -317,10 +316,14 @@ namespace tr {
                     joint.axis = vec_from_string<Scalar>(std::string(xyz_char));
                 }
             }
-        }
 
-        // Add spatial transform to the Xtree
-        // joint.X = tr::xlt(joint.parent_transform.inverse().matrix());
+            if (joint.type == JointType::REVOLUTE || joint.type == JointType::CONTINUOUS) {
+                joint.S << joint.axis, 0, 0, 0;
+            }
+            else if (joint.type == JointType::PRISMATIC) {
+                joint.S << 0, 0, 0, joint.axis;
+            }
+        }
 
         // tinyxml2::XMLElement *prop_xml = xml->FirstChildElement("dynamics");
         // if (prop_xml != nullptr) {
