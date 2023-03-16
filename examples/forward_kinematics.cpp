@@ -6,9 +6,11 @@
 
 int main(int argc, char* argv[]) {
 
+    using namespace tr::parser;
+    using namespace tr::kinematics;
 
     // Create a robot model with 4 joints
-    auto model = tr::parser::import_urdf<double, 4>("../data/urdfs/4_link.urdf");
+    auto model = import_urdf<double, 4>("../data/urdfs/4_link.urdf");
 
     // Display details of model
     model.show_details();
@@ -17,7 +19,7 @@ int main(int argc, char* argv[]) {
     auto q = model.random_configuration();
 
     // Compute the forward kinematics to the left foot at the home configuration
-    auto H = tr::kinematics::forward_kinematics(model, q, "link_4");
+    auto H = forward_kinematics(model, q, std::string("link_4"));
     std::cout << "H: \n" << H.matrix() << std::endl;
 
     return EXIT_SUCCESS;

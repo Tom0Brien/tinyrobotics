@@ -85,7 +85,7 @@ namespace tr::model {
          * @param q The joint position variable.
          * @return Homogeneous transform of the joint from its home position to its transformed position.
          */
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> get_joint_transform(const Scalar& q) {
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> get_joint_transform(const Scalar& q) const {
             Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
             switch (type) {
                 case JointType::REVOLUTE: {

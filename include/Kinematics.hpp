@@ -16,11 +16,37 @@ namespace tr::kinematics {
     using namespace tr::model;
 
     /**
+     * @brief Computes the transform to all the links in the tinyrobotics model.
+     * @param model Tinyrobotics model.
+     * @param q Joint configuration of the robot.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @return Stores the transform to all the links in model.data.FK vector.
+     */
+    template <typename Scalar, int nq>
+    void forward_kinematics(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        // Resize the FK vector to store the results for all links
+        model.data.FK.resize(model.n_links, Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity());
+        for (auto const link : model.links) {
+            // Compute the transform to the current joint from the parent link (Hpj)
+            model.data.FK[link.idx] = link.joint.parent_transform;
+            if (link.joint.idx != -1) {
+                // Transform the joint frame by joint value (Hjt)
+                model.data.FK[link.idx] = model.data.FK[link.idx] * link.joint.get_joint_transform(q[link.joint.idx]);
+            }
+            if (link.parent != -1) {
+                // Hpt = Hpj * Hjt
+                model.data.FK[link.idx] = model.data.FK[link.parent] * model.data.FK[link.idx];
+            }
+        }
+    }
+
+    /**
      * @brief Computes the transform to the target from the base link.
      * @param model Tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link_idx Index of the link to which the transform is computed.
-     * @param inverse_transform Optional: If true, returns the transform to the base from the target link.
+     * @param inverse_transform OPTIONAL: Set true if you want the transform from the target to the source.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @return Homogeneous transform between the base and the target link.
@@ -39,28 +65,22 @@ namespace tr::kinematics {
             throw std::runtime_error(error_msg);
         }
 
-        // Return identity transform if the link is itself the base link
+        // Check if the link is itself the base link
         if (current_link.idx == model.base_link_idx) {
             return Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
         }
 
         // Build kinematic tree from target_link {t} to base {b}
         Eigen::Transform<Scalar, 3, Eigen::Isometry> Htb = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
-        while (current_link.idx != model.links[model.base_link_idx].idx) {
+        while (current_link.idx != model.base_link_idx) {
             Eigen::Transform<Scalar, 3, Eigen::Isometry> H = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
-            auto current_joint                             = current_link.joint;
-            if (current_joint.type == JointType::REVOLUTE) {
-                // Rotate by q_current around axis
-                H.linear() =
-                    Eigen::AngleAxis<Scalar>(Scalar(q(current_joint.idx)), current_joint.axis).toRotationMatrix();
-            }
-            else if (current_joint.type == JointType::PRISMATIC) {
-                // Translate by q_current along axis
-                H.translation() = current_joint.axis * Scalar(q(current_joint.idx));
+            if (current_link.joint.idx != -1) {
+                // Transform the joint frame by joint value (Hpt)
+                H = current_link.joint.get_joint_transform(q[current_link.joint.idx]);
             }
             Htb = Htb * H.inverse();
             // Apply inverse joint transform as we are going back up tree
-            Htb = Htb * current_joint.parent_transform.inverse();
+            Htb = Htb * current_link.joint.parent_transform.inverse();
             // Move up the tree to parent link
             current_link = model.links[current_link.parent];
         }
@@ -78,7 +98,7 @@ namespace tr::kinematics {
      * @param model Tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link_idx Name of the link to which the transform is computed.
-     * @param inverse_transform Optional: If true, returns the transform to the base from the target link.
+     * @param inverse_transform OPTIONAL: Set true if you want the transform from the target to the source.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @return Homogeneous transform between the base and the target link.

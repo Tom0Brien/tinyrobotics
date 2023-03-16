@@ -115,8 +115,8 @@ namespace tr::model {
          * @brief Display details of the model.
          */
         void show_details() {
-            const int spacing = 20;
-            const std::string separator(120, '*');
+            const int spacing = 25;
+            const std::string separator(150, '*');
             std::cout << separator << std::endl;
             std::cout << "Model name             : " << name << std::endl;
             std::cout << "No. of links           : " << links.size() << std::endl;
@@ -132,13 +132,19 @@ namespace tr::model {
                 for (const auto& child_link_idx : link.child_links) {
                     children_names += links[child_link_idx].name + " ";
                 }
-                if (link.joint.idx != -1) {
-                    std::cout << std::left << std::setw(spacing) << link.idx << std::setw(spacing) << link.name
-                              << std::setw(spacing) << link.joint.name + "[" + std::to_string(link.joint.idx) + "]"
-                              << std::setw(spacing) << link.joint.get_type() << std::setw(spacing)
-                              << links[link.parent].name + " [" + std::to_string(link.parent) + "]"
-                              << std::setw(spacing) << children_names << std::endl;
+                Link<Scalar> parent_link;
+                std::string parent_name = "";
+                int parent_idx          = -1;
+                if (link.parent != -1) {
+                    parent_link = links[link.parent];
+                    parent_name = parent_link.name;
+                    parent_idx  = link.parent;
                 }
+                std::cout << std::left << std::setw(spacing) << link.idx << std::setw(spacing) << link.name
+                          << std::setw(spacing) << link.joint.name + "[" + std::to_string(link.joint.idx) + "]"
+                          << std::setw(spacing) << link.joint.get_type() << std::setw(spacing)
+                          << parent_name + " [" + std::to_string(parent_idx) + "]" << std::setw(spacing)
+                          << children_names << std::endl;
             }
             std::cout << separator << std::endl;
         }
