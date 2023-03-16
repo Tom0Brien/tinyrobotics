@@ -1,16 +1,16 @@
 var Solver_8hpp =
 [
-    [ "tr::solver::SolverParams< Scalar, nq >", "structtr_1_1solver_1_1SolverParams.html", "structtr_1_1solver_1_1SolverParams" ],
-    [ "tr::solver::SolverResults< Scalar, nq >", "structtr_1_1solver_1_1SolverResults.html", null ],
-    [ "IntegrationMethod", "Solver_8hpp.html#a09fe045fa23cfc34d3db6a8a21d7c00a", [
-      [ "EULER", "Solver_8hpp.html#a09fe045fa23cfc34d3db6a8a21d7c00aa678c1200011554fa94722938765910bf", null ],
-      [ "SYMPLECTIC_EULER", "Solver_8hpp.html#a09fe045fa23cfc34d3db6a8a21d7c00aabe374a6850ec4310e62df1eccafe264b", null ],
-      [ "RK4", "Solver_8hpp.html#a09fe045fa23cfc34d3db6a8a21d7c00aaf81fe250c66aad887e2086f79364f2a8", null ]
+    [ "tr::SolverParams< Scalar, nq >", "structtr_1_1SolverParams.html", "structtr_1_1SolverParams" ],
+    [ "tr::SolverResults< Scalar, nq >", "structtr_1_1SolverResults.html", null ],
+    [ "IntegrationMethod", "Solver_8hpp.html#a9bd6e7c2da7e2c0a2d6b48647e22bcc0", [
+      [ "EULER", "Solver_8hpp.html#a9bd6e7c2da7e2c0a2d6b48647e22bcc0a678c1200011554fa94722938765910bf", null ],
+      [ "SYMPLECTIC_EULER", "Solver_8hpp.html#a9bd6e7c2da7e2c0a2d6b48647e22bcc0abe374a6850ec4310e62df1eccafe264b", null ],
+      [ "RK4", "Solver_8hpp.html#a9bd6e7c2da7e2c0a2d6b48647e22bcc0af81fe250c66aad887e2086f79364f2a8", null ]
     ] ],
-    [ "euler_step", "Solver_8hpp.html#a0837ef791b660339377b0785f982fcec", null ],
-    [ "integrate", "Solver_8hpp.html#a34126e0ab012576c0fe50c9ccc711c9b", null ],
-    [ "RK4", "Solver_8hpp.html#a9d7c48b971a643e776fa357c420e16b7", null ],
-    [ "save_history", "Solver_8hpp.html#adfd7d481ab254d47ebfeb997847fdc96", null ],
-    [ "solver", "Solver_8hpp.html#a95e7840fbbd1fbf4be346c160cfe5698", null ],
-    [ "symplectic_euler_step", "Solver_8hpp.html#aa61c1ac4e7370174d882eae3dc66cb34", null ]
+    [ "euler_step", "Solver_8hpp.html#af8120fe71a4c2b40e307cd9bfe1d42ea", null ],
+    [ "integrate", "Solver_8hpp.html#a7c93db57be33bf49d895edbfca748ac6", null ],
+    [ "RK4", "Solver_8hpp.html#aaed6e67f5ad5ab47c8e479f7feb598d9", null ],
+    [ "save_history", "Solver_8hpp.html#ad0dc617f7f6ae241af4c7451d392ff2c", null ],
+    [ "solver", "Solver_8hpp.html#aff324a9b841fcb0ec7662d6934591ab9", null ],
+    [ "symplectic_euler_step", "Solver_8hpp.html#a6a33b18553e3cfd0949b00339caa7c56", null ]
 ];

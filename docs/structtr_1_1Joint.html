@@ -108,9 +108,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae543a726f26b44c191fea280f1c166ee"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtr_1_1Joint.html#ae543a726f26b44c191fea280f1c166ee">get_type</a> () const</td></tr>
 <tr class="memdesc:ae543a726f26b44c191fea280f1c166ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get joint type as a string.  <br /></td></tr>
 <tr class="separator:ae543a726f26b44c191fea280f1c166ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae486044e08f2e21cc9508f1754dc92f3"><td class="memItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtr_1_1Joint.html#ae486044e08f2e21cc9508f1754dc92f3">get_joint_transform</a> (const Scalar &amp;q)</td></tr>
-<tr class="memdesc:ae486044e08f2e21cc9508f1754dc92f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the joint transform.  <br /></td></tr>
-<tr class="separator:ae486044e08f2e21cc9508f1754dc92f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdbd3f0244d6808c88aa55fa20988229"><td class="memItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtr_1_1Joint.html#acdbd3f0244d6808c88aa55fa20988229">get_joint_transform</a> (const Scalar &amp;q) const</td></tr>
+<tr class="memdesc:acdbd3f0244d6808c88aa55fa20988229"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the joint transform.  <br /></td></tr>
+<tr class="separator:acdbd3f0244d6808c88aa55fa20988229"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaed550d9e07c43ed84cdec67539e1005"><td class="memItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtr_1_1Joint.html#aaed550d9e07c43ed84cdec67539e1005">get_parent_to_child_transform</a> (const Scalar &amp;q)</td></tr>
 <tr class="memdesc:aaed550d9e07c43ed84cdec67539e1005"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the transform from parent to child.  <br /></td></tr>
 <tr class="separator:aaed550d9e07c43ed84cdec67539e1005"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,7 +134,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b> = &qu
 <tr class="memdesc:ac2b1724543744b388988e5f7143ef847"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the joint. <br /></td></tr>
 <tr class="separator:ac2b1724543744b388988e5f7143ef847"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31f08e3825ee97befc14dac353cdb811"><td class="memItemLeft" align="right" valign="top"><a id="a31f08e3825ee97befc14dac353cdb811" name="a31f08e3825ee97befc14dac353cdb811"></a>
-<a class="el" href="namespacetr.html#aed42c816c1475f5143d24c37f1769496">JointType</a>&#160;</td><td class="memItemRight" valign="bottom"><b>type</b> = <a class="el" href="namespacetr.html#aed42c816c1475f5143d24c37f1769496a696b031073e74bf2cb98e5ef201d4aa3">JointType::UNKNOWN</a></td></tr>
+<a class="el" href="Joint_8hpp.html#aed42c816c1475f5143d24c37f1769496">JointType</a>&#160;</td><td class="memItemRight" valign="bottom"><b>type</b> = <a class="el" href="Joint_8hpp.html#aed42c816c1475f5143d24c37f1769496a696b031073e74bf2cb98e5ef201d4aa3">JointType::UNKNOWN</a></td></tr>
 <tr class="memdesc:a31f08e3825ee97befc14dac353cdb811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the joint. <br /></td></tr>
 <tr class="separator:a31f08e3825ee97befc14dac353cdb811"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad477940f6c838b144509f38645707de7"><td class="memItemLeft" align="right" valign="top"><a id="ad477940f6c838b144509f38645707de7" name="ad477940f6c838b144509f38645707de7"></a>
@@ -212,8 +212,8 @@ template&lt;typename NewScalar &gt; </div>
 
 </div>
 </div>
-<a id="ae486044e08f2e21cc9508f1754dc92f3" name="ae486044e08f2e21cc9508f1754dc92f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae486044e08f2e21cc9508f1754dc92f3">&#9670;&#160;</a></span>get_joint_transform()</h2>
+<a id="acdbd3f0244d6808c88aa55fa20988229" name="acdbd3f0244d6808c88aa55fa20988229"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdbd3f0244d6808c88aa55fa20988229">&#9670;&#160;</a></span>get_joint_transform()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -228,7 +228,7 @@ template&lt;typename Scalar &gt; </div>
           <td>(</td>
           <td class="paramtype">const Scalar &amp;&#160;</td>
           <td class="paramname"><em>q</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -371,7 +371,7 @@ template&lt;typename Scalar &gt; </div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacetr.html">tr</a></li><li class="navelem"><a class="el" href="structtr_1_1Joint.html">Joint</a></li>
+    <li class="navelem"><b>tr</b></li><li class="navelem"><a class="el" href="structtr_1_1Joint.html">Joint</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.7 </li>
   </ul>
 </div>

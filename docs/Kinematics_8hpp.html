@@ -107,68 +107,68 @@ $(document).ready(function(){initNavTree('Kinematics_8hpp.html',''); initResizab
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a4db9ca57e0aa544ff3564ce9e85bfc5f">tr::kinematics::forward_kinematics</a> (<a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q)</td></tr>
-<tr class="memdesc:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform to all the links in the tinyrobotics model.  <br /></td></tr>
-<tr class="separator:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b0dcc1ea21a7f239297841f58327afd"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a7b0dcc1ea21a7f239297841f58327afd"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a7b0dcc1ea21a7f239297841f58327afd">tr::kinematics::forward_kinematics</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx, const bool inverse_transform=false)</td></tr>
-<tr class="memdesc:a7b0dcc1ea21a7f239297841f58327afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform to the target from the base link.  <br /></td></tr>
-<tr class="separator:a7b0dcc1ea21a7f239297841f58327afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a173ef46f4e514784b36b5dc7d61f4378"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a173ef46f4e514784b36b5dc7d61f4378"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a173ef46f4e514784b36b5dc7d61f4378">tr::kinematics::forward_kinematics</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name, const bool inverse_transform=false)</td></tr>
-<tr class="memdesc:a173ef46f4e514784b36b5dc7d61f4378"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform between base and target link.  <br /></td></tr>
-<tr class="separator:a173ef46f4e514784b36b5dc7d61f4378"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0eca53a6b24258516ca7e1a4d645222"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:ad0eca53a6b24258516ca7e1a4d645222"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#ad0eca53a6b24258516ca7e1a4d645222">tr::kinematics::forward_kinematics</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
-<tr class="memdesc:ad0eca53a6b24258516ca7e1a4d645222"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the homogeneous transform from a source to target link.  <br /></td></tr>
-<tr class="separator:ad0eca53a6b24258516ca7e1a4d645222"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80d34afcb0fb240d4670c3972e5b8668"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a80d34afcb0fb240d4670c3972e5b8668"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a80d34afcb0fb240d4670c3972e5b8668">tr::kinematics::forward_kinematics</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)</td></tr>
-<tr class="memdesc:a80d34afcb0fb240d4670c3972e5b8668"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the homogeneous transform from a source to target link.  <br /></td></tr>
-<tr class="separator:a80d34afcb0fb240d4670c3972e5b8668"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae54986478a01decc6fb25c0bdcdff4d7"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:ae54986478a01decc6fb25c0bdcdff4d7"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#ae54986478a01decc6fb25c0bdcdff4d7">tr::kinematics::forward_kinematics_com</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
-<tr class="memdesc:ae54986478a01decc6fb25c0bdcdff4d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.  <br /></td></tr>
-<tr class="separator:ae54986478a01decc6fb25c0bdcdff4d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada61b81caa345a6bd5af46e9768710cc"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:ada61b81caa345a6bd5af46e9768710cc"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#ada61b81caa345a6bd5af46e9768710cc">tr::kinematics::forward_kinematics_com</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)</td></tr>
-<tr class="memdesc:ada61b81caa345a6bd5af46e9768710cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.  <br /></td></tr>
-<tr class="separator:ada61b81caa345a6bd5af46e9768710cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbfd9f8a99230c44eaa01b90bd85676c"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:adbfd9f8a99230c44eaa01b90bd85676c"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#adbfd9f8a99230c44eaa01b90bd85676c">tr::kinematics::translation</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
-<tr class="memdesc:adbfd9f8a99230c44eaa01b90bd85676c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the translation of the target link from the source link in the source link frame.  <br /></td></tr>
-<tr class="separator:adbfd9f8a99230c44eaa01b90bd85676c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b520b2e3cecd6875cc436068f0dba3d"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a3b520b2e3cecd6875cc436068f0dba3d"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a3b520b2e3cecd6875cc436068f0dba3d">tr::kinematics::translation</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)</td></tr>
-<tr class="memdesc:a3b520b2e3cecd6875cc436068f0dba3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the translation of the target link from the source link in the source link frame.  <br /></td></tr>
-<tr class="separator:a3b520b2e3cecd6875cc436068f0dba3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a423e50eccf381737f815491f60a9c229"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a423e50eccf381737f815491f60a9c229"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a423e50eccf381737f815491f60a9c229">tr::kinematics::rotation</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
-<tr class="memdesc:a423e50eccf381737f815491f60a9c229"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the rotation matrix between the target link and the source link in the source link frame.  <br /></td></tr>
-<tr class="separator:a423e50eccf381737f815491f60a9c229"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a503c08d982b70f155dd0c27a36585031"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a503c08d982b70f155dd0c27a36585031"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 6, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a503c08d982b70f155dd0c27a36585031">tr::kinematics::geometric_jacobian</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx)</td></tr>
-<tr class="memdesc:a503c08d982b70f155dd0c27a36585031"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the geometric jacobian of the target link from the base link in the base link frame.  <br /></td></tr>
-<tr class="separator:a503c08d982b70f155dd0c27a36585031"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68bf9ec3fd32613629ea9054c8be57ba"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a68bf9ec3fd32613629ea9054c8be57ba"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 6, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a68bf9ec3fd32613629ea9054c8be57ba">tr::kinematics::geometric_jacobian</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name)</td></tr>
-<tr class="memdesc:a68bf9ec3fd32613629ea9054c8be57ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the geometric jacobian relative to the base for the specified target link.  <br /></td></tr>
-<tr class="separator:a68bf9ec3fd32613629ea9054c8be57ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40e6c50249a281566697fad72cb5b711"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a40e6c50249a281566697fad72cb5b711"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 6, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a40e6c50249a281566697fad72cb5b711">tr::kinematics::geometric_jacobian_com</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name)</td></tr>
-<tr class="memdesc:a40e6c50249a281566697fad72cb5b711"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the geometric jacobian relative to the base for the specified target link's center of mass.  <br /></td></tr>
-<tr class="separator:a40e6c50249a281566697fad72cb5b711"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46281bf5070b64871aaa1c2b2d4ce3f9"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a46281bf5070b64871aaa1c2b2d4ce3f9"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a46281bf5070b64871aaa1c2b2d4ce3f9">tr::kinematics::centre_of_mass</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name)</td></tr>
-<tr class="memdesc:a46281bf5070b64871aaa1c2b2d4ce3f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the centre of mass expressed in source link frame.  <br /></td></tr>
-<tr class="separator:a46281bf5070b64871aaa1c2b2d4ce3f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab214d7483e620917f6d9693d7cef14a1"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:ab214d7483e620917f6d9693d7cef14a1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#ab214d7483e620917f6d9693d7cef14a1">tr::forward_kinematics</a> (<a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q)</td></tr>
+<tr class="memdesc:ab214d7483e620917f6d9693d7cef14a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform to all the links in the tinyrobotics model.  <br /></td></tr>
+<tr class="separator:ab214d7483e620917f6d9693d7cef14a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22e7ec9c58043f82520ebda18397a9f6"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a22e7ec9c58043f82520ebda18397a9f6"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a22e7ec9c58043f82520ebda18397a9f6">tr::forward_kinematics</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx, const bool inverse_transform=false)</td></tr>
+<tr class="memdesc:a22e7ec9c58043f82520ebda18397a9f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform to the target from the base link.  <br /></td></tr>
+<tr class="separator:a22e7ec9c58043f82520ebda18397a9f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7059e467101c51deaad280b619bd6954"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a7059e467101c51deaad280b619bd6954"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a7059e467101c51deaad280b619bd6954">tr::forward_kinematics</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name, const bool inverse_transform=false)</td></tr>
+<tr class="memdesc:a7059e467101c51deaad280b619bd6954"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform between base and target link.  <br /></td></tr>
+<tr class="separator:a7059e467101c51deaad280b619bd6954"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abce32c28459e8edd1b3c555cd206a7cc"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:abce32c28459e8edd1b3c555cd206a7cc"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#abce32c28459e8edd1b3c555cd206a7cc">tr::forward_kinematics</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
+<tr class="memdesc:abce32c28459e8edd1b3c555cd206a7cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the homogeneous transform from a source to target link.  <br /></td></tr>
+<tr class="separator:abce32c28459e8edd1b3c555cd206a7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5edb327cd36148f92c860f3c10578713"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a5edb327cd36148f92c860f3c10578713"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a5edb327cd36148f92c860f3c10578713">tr::forward_kinematics</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)</td></tr>
+<tr class="memdesc:a5edb327cd36148f92c860f3c10578713"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the homogeneous transform from a source to target link.  <br /></td></tr>
+<tr class="separator:a5edb327cd36148f92c860f3c10578713"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5789efa7634981aac079f22c0a7a38f0"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a5789efa7634981aac079f22c0a7a38f0"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a5789efa7634981aac079f22c0a7a38f0">tr::forward_kinematics_com</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
+<tr class="memdesc:a5789efa7634981aac079f22c0a7a38f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.  <br /></td></tr>
+<tr class="separator:a5789efa7634981aac079f22c0a7a38f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf1e45f61fe9786cbccde4a97a67fd42"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:acf1e45f61fe9786cbccde4a97a67fd42"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#acf1e45f61fe9786cbccde4a97a67fd42">tr::forward_kinematics_com</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)</td></tr>
+<tr class="memdesc:acf1e45f61fe9786cbccde4a97a67fd42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.  <br /></td></tr>
+<tr class="separator:acf1e45f61fe9786cbccde4a97a67fd42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bc758a8de53ed1a2b69267379bcd539"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a8bc758a8de53ed1a2b69267379bcd539"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a8bc758a8de53ed1a2b69267379bcd539">tr::translation</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
+<tr class="memdesc:a8bc758a8de53ed1a2b69267379bcd539"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the translation of the target link from the source link in the source link frame.  <br /></td></tr>
+<tr class="separator:a8bc758a8de53ed1a2b69267379bcd539"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed8e04204f2119a37cec7b092abcd1e7"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:aed8e04204f2119a37cec7b092abcd1e7"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#aed8e04204f2119a37cec7b092abcd1e7">tr::translation</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)</td></tr>
+<tr class="memdesc:aed8e04204f2119a37cec7b092abcd1e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the translation of the target link from the source link in the source link frame.  <br /></td></tr>
+<tr class="separator:aed8e04204f2119a37cec7b092abcd1e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78a075924b5a67d67835ac19b5a23844"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a78a075924b5a67d67835ac19b5a23844"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a78a075924b5a67d67835ac19b5a23844">tr::rotation</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)</td></tr>
+<tr class="memdesc:a78a075924b5a67d67835ac19b5a23844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the rotation matrix between the target link and the source link in the source link frame.  <br /></td></tr>
+<tr class="separator:a78a075924b5a67d67835ac19b5a23844"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae55245c942227cb5870c75a531ffb6b0"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:ae55245c942227cb5870c75a531ffb6b0"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 6, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#ae55245c942227cb5870c75a531ffb6b0">tr::geometric_jacobian</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx)</td></tr>
+<tr class="memdesc:ae55245c942227cb5870c75a531ffb6b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the geometric jacobian of the target link from the base link in the base link frame.  <br /></td></tr>
+<tr class="separator:ae55245c942227cb5870c75a531ffb6b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa8a60bab3fc6b34098dacdace203c93"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:afa8a60bab3fc6b34098dacdace203c93"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 6, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#afa8a60bab3fc6b34098dacdace203c93">tr::geometric_jacobian</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name)</td></tr>
+<tr class="memdesc:afa8a60bab3fc6b34098dacdace203c93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the geometric jacobian relative to the base for the specified target link.  <br /></td></tr>
+<tr class="separator:afa8a60bab3fc6b34098dacdace203c93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8662485164aeffeb8525e96f7e2c8786"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a8662485164aeffeb8525e96f7e2c8786"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 6, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a8662485164aeffeb8525e96f7e2c8786">tr::geometric_jacobian_com</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name)</td></tr>
+<tr class="memdesc:a8662485164aeffeb8525e96f7e2c8786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the geometric jacobian relative to the base for the specified target link's center of mass.  <br /></td></tr>
+<tr class="separator:a8662485164aeffeb8525e96f7e2c8786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeda333379b9640bf539f78987e89c16"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:aaeda333379b9640bf539f78987e89c16"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#aaeda333379b9640bf539f78987e89c16">tr::centre_of_mass</a> (const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name)</td></tr>
+<tr class="memdesc:aaeda333379b9640bf539f78987e89c16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the centre of mass expressed in source link frame.  <br /></td></tr>
+<tr class="separator:aaeda333379b9640bf539f78987e89c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains functions for computing various kinematic quantities of a tinyrobotics model. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a46281bf5070b64871aaa1c2b2d4ce3f9" name="a46281bf5070b64871aaa1c2b2d4ce3f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46281bf5070b64871aaa1c2b2d4ce3f9">&#9670;&#160;</a></span>centre_of_mass()</h2>
+<a id="aaeda333379b9640bf539f78987e89c16" name="aaeda333379b9640bf539f78987e89c16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeda333379b9640bf539f78987e89c16">&#9670;&#160;</a></span>centre_of_mass()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -176,9 +176,9 @@ Functions</h2></td></tr>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 1 &gt; tr::kinematics::centre_of_mass </td>
+          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 1 &gt; tr::centre_of_mass </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -221,8 +221,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a80d34afcb0fb240d4670c3972e5b8668" name="a80d34afcb0fb240d4670c3972e5b8668"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80d34afcb0fb240d4670c3972e5b8668">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[1/5]</span></h2>
+<a id="a5edb327cd36148f92c860f3c10578713" name="a5edb327cd36148f92c860f3c10578713"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5edb327cd36148f92c860f3c10578713">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -230,9 +230,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::kinematics::forward_kinematics </td>
+          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::forward_kinematics </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -282,8 +282,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a7b0dcc1ea21a7f239297841f58327afd" name="a7b0dcc1ea21a7f239297841f58327afd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b0dcc1ea21a7f239297841f58327afd">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[2/5]</span></h2>
+<a id="a22e7ec9c58043f82520ebda18397a9f6" name="a22e7ec9c58043f82520ebda18397a9f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22e7ec9c58043f82520ebda18397a9f6">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,9 +291,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::kinematics::forward_kinematics </td>
+          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::forward_kinematics </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -343,8 +343,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="ad0eca53a6b24258516ca7e1a4d645222" name="ad0eca53a6b24258516ca7e1a4d645222"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0eca53a6b24258516ca7e1a4d645222">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[3/5]</span></h2>
+<a id="abce32c28459e8edd1b3c555cd206a7cc" name="abce32c28459e8edd1b3c555cd206a7cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abce32c28459e8edd1b3c555cd206a7cc">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -352,9 +352,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::kinematics::forward_kinematics </td>
+          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::forward_kinematics </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -404,8 +404,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a173ef46f4e514784b36b5dc7d61f4378" name="a173ef46f4e514784b36b5dc7d61f4378"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a173ef46f4e514784b36b5dc7d61f4378">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[4/5]</span></h2>
+<a id="a7059e467101c51deaad280b619bd6954" name="a7059e467101c51deaad280b619bd6954"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7059e467101c51deaad280b619bd6954">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -413,9 +413,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::kinematics::forward_kinematics </td>
+          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::forward_kinematics </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -465,8 +465,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a4db9ca57e0aa544ff3564ce9e85bfc5f" name="a4db9ca57e0aa544ff3564ce9e85bfc5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4db9ca57e0aa544ff3564ce9e85bfc5f">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[5/5]</span></h2>
+<a id="ab214d7483e620917f6d9693d7cef14a1" name="ab214d7483e620917f6d9693d7cef14a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab214d7483e620917f6d9693d7cef14a1">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -474,9 +474,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void tr::kinematics::forward_kinematics </td>
+          <td class="memname">void tr::forward_kinematics </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -512,8 +512,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="ada61b81caa345a6bd5af46e9768710cc" name="ada61b81caa345a6bd5af46e9768710cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada61b81caa345a6bd5af46e9768710cc">&#9670;&#160;</a></span>forward_kinematics_com() <span class="overload">[1/2]</span></h2>
+<a id="acf1e45f61fe9786cbccde4a97a67fd42" name="acf1e45f61fe9786cbccde4a97a67fd42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf1e45f61fe9786cbccde4a97a67fd42">&#9670;&#160;</a></span>forward_kinematics_com() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -521,9 +521,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::kinematics::forward_kinematics_com </td>
+          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::forward_kinematics_com </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -573,8 +573,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="ae54986478a01decc6fb25c0bdcdff4d7" name="ae54986478a01decc6fb25c0bdcdff4d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae54986478a01decc6fb25c0bdcdff4d7">&#9670;&#160;</a></span>forward_kinematics_com() <span class="overload">[2/2]</span></h2>
+<a id="a5789efa7634981aac079f22c0a7a38f0" name="a5789efa7634981aac079f22c0a7a38f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5789efa7634981aac079f22c0a7a38f0">&#9670;&#160;</a></span>forward_kinematics_com() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -582,9 +582,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::kinematics::forward_kinematics_com </td>
+          <td class="memname">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; tr::forward_kinematics_com </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -634,8 +634,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a503c08d982b70f155dd0c27a36585031" name="a503c08d982b70f155dd0c27a36585031"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a503c08d982b70f155dd0c27a36585031">&#9670;&#160;</a></span>geometric_jacobian() <span class="overload">[1/2]</span></h2>
+<a id="ae55245c942227cb5870c75a531ffb6b0" name="ae55245c942227cb5870c75a531ffb6b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae55245c942227cb5870c75a531ffb6b0">&#9670;&#160;</a></span>geometric_jacobian() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -643,9 +643,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 6, nq &gt; tr::kinematics::geometric_jacobian </td>
+          <td class="memname">Eigen::Matrix&lt; Scalar, 6, nq &gt; tr::geometric_jacobian </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -688,8 +688,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a68bf9ec3fd32613629ea9054c8be57ba" name="a68bf9ec3fd32613629ea9054c8be57ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68bf9ec3fd32613629ea9054c8be57ba">&#9670;&#160;</a></span>geometric_jacobian() <span class="overload">[2/2]</span></h2>
+<a id="afa8a60bab3fc6b34098dacdace203c93" name="afa8a60bab3fc6b34098dacdace203c93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa8a60bab3fc6b34098dacdace203c93">&#9670;&#160;</a></span>geometric_jacobian() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -697,9 +697,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 6, nq &gt; tr::kinematics::geometric_jacobian </td>
+          <td class="memname">Eigen::Matrix&lt; Scalar, 6, nq &gt; tr::geometric_jacobian </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -742,8 +742,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a40e6c50249a281566697fad72cb5b711" name="a40e6c50249a281566697fad72cb5b711"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40e6c50249a281566697fad72cb5b711">&#9670;&#160;</a></span>geometric_jacobian_com()</h2>
+<a id="a8662485164aeffeb8525e96f7e2c8786" name="a8662485164aeffeb8525e96f7e2c8786"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8662485164aeffeb8525e96f7e2c8786">&#9670;&#160;</a></span>geometric_jacobian_com()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -751,9 +751,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 6, nq &gt; tr::kinematics::geometric_jacobian_com </td>
+          <td class="memname">Eigen::Matrix&lt; Scalar, 6, nq &gt; tr::geometric_jacobian_com </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -796,8 +796,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a423e50eccf381737f815491f60a9c229" name="a423e50eccf381737f815491f60a9c229"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a423e50eccf381737f815491f60a9c229">&#9670;&#160;</a></span>rotation()</h2>
+<a id="a78a075924b5a67d67835ac19b5a23844" name="a78a075924b5a67d67835ac19b5a23844"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78a075924b5a67d67835ac19b5a23844">&#9670;&#160;</a></span>rotation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -805,9 +805,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 3 &gt; tr::kinematics::rotation </td>
+          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 3 &gt; tr::rotation </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -857,8 +857,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a3b520b2e3cecd6875cc436068f0dba3d" name="a3b520b2e3cecd6875cc436068f0dba3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b520b2e3cecd6875cc436068f0dba3d">&#9670;&#160;</a></span>translation() <span class="overload">[1/2]</span></h2>
+<a id="aed8e04204f2119a37cec7b092abcd1e7" name="aed8e04204f2119a37cec7b092abcd1e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed8e04204f2119a37cec7b092abcd1e7">&#9670;&#160;</a></span>translation() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -866,9 +866,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 1 &gt; tr::kinematics::translation </td>
+          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 1 &gt; tr::translation </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
@@ -918,8 +918,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="adbfd9f8a99230c44eaa01b90bd85676c" name="adbfd9f8a99230c44eaa01b90bd85676c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbfd9f8a99230c44eaa01b90bd85676c">&#9670;&#160;</a></span>translation() <span class="overload">[2/2]</span></h2>
+<a id="a8bc758a8de53ed1a2b69267379bcd539" name="a8bc758a8de53ed1a2b69267379bcd539"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bc758a8de53ed1a2b69267379bcd539">&#9670;&#160;</a></span>translation() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -927,9 +927,9 @@ template&lt;typename Scalar , int nq&gt; </div>
 template&lt;typename Scalar , int nq&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 1 &gt; tr::kinematics::translation </td>
+          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 1 &gt; tr::translation </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structtr_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
         </tr>
         <tr>
