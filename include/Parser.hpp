@@ -56,11 +56,11 @@ namespace tr::parser {
      */
     template <typename Scalar>
     Eigen::Matrix<Scalar, 3, 3> rot_from_string(const std::string& rotation_str) {
-        Eigen::Matrix<Scalar, 3, 1> rpy = vec_from_string<Scalar>(rotation_str);
-        Eigen::Matrix<Scalar, 3, 3> R;
-        R = Eigen::AngleAxis<Scalar>(rpy.x(), Eigen::Matrix<Scalar, 3, 1>::UnitX())
+        Eigen::Matrix<Scalar, Eigen::Dynamic, 1> rpy = vec_from_string<Scalar>(rotation_str);
+        Eigen::Matrix<Scalar, 3, 3> R =
+            Eigen::AngleAxis<Scalar>(rpy.z(), Eigen::Matrix<Scalar, 3, 1>::UnitZ())
             * Eigen::AngleAxis<Scalar>(rpy.y(), Eigen::Matrix<Scalar, 3, 1>::UnitY())
-            * Eigen::AngleAxis<Scalar>(rpy.z(), Eigen::Matrix<Scalar, 3, 1>::UnitZ());
+            * Eigen::AngleAxis<Scalar>(rpy.x(), Eigen::Matrix<Scalar, 3, 1>::UnitX()).toRotationMatrix();
         return R;
     }
 
