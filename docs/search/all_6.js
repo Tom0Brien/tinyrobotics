@@ -4,7 +4,7 @@ var searchData=
   ['geometric_5fjacobian_1',['geometric_jacobian',['../Kinematics_8hpp.html#a503c08d982b70f155dd0c27a36585031',1,'tr::kinematics::geometric_jacobian(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx)'],['../Kinematics_8hpp.html#a68bf9ec3fd32613629ea9054c8be57ba',1,'tr::kinematics::geometric_jacobian(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name)']]],
   ['geometric_5fjacobian_5fcom_2',['geometric_jacobian_com',['../Kinematics_8hpp.html#a40e6c50249a281566697fad72cb5b711',1,'tr::kinematics']]],
   ['get_5fjoint_3',['get_joint',['../structtr_1_1model_1_1Model.html#a82a7d17b5b92c02750503c36de0bf59e',1,'tr::model::Model']]],
-  ['get_5fjoint_5ftransform_4',['get_joint_transform',['../structtr_1_1model_1_1Joint.html#a0bfead37f23837d4d0bf5b7cddf2b71b',1,'tr::model::Joint']]],
+  ['get_5fjoint_5ftransform_4',['get_joint_transform',['../structtr_1_1model_1_1Joint.html#ac17523468e9d454349e3cff18b1c3aca',1,'tr::model::Joint']]],
   ['get_5flink_5',['get_link',['../structtr_1_1model_1_1Model.html#a3cfef802da41904f0246e29665a33a04',1,'tr::model::Model']]],
   ['get_5fparent_5flink_6',['get_parent_link',['../structtr_1_1model_1_1Model.html#a416a04da6882181fdabe81760f55e774',1,'tr::model::Model']]],
   ['get_5fparent_5flink_5fname_7',['get_parent_link_name',['../Parser_8hpp.html#a19be1d8d4091397fc4498055679dad50',1,'tr::parser']]],

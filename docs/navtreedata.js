@@ -26,10 +26,10 @@ var NAVTREE =
 [
   [ "tinyrobotics", "index.html", [
     [ "Features", "index.html#autotoc_md0", [
-      [ "Models", "index.html#autotoc_md1", null ],
-      [ "Kinematics", "index.html#autotoc_md2", null ],
-      [ "Inverse Kinematics", "index.html#autotoc_md3", null ],
-      [ "Dynamics", "index.html#autotoc_md4", null ]
+      [ "<a href=\"https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details\" >Models</a>", "index.html#autotoc_md1", null ],
+      [ "<a href=\"https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html\" >Kinematics</a>", "index.html#autotoc_md2", null ],
+      [ "<a href=\"https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html\" >InverseKinematics</a>", "index.html#autotoc_md3", null ],
+      [ "<a href=\"https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html\" >Dynamics</a>", "index.html#autotoc_md4", null ]
     ] ],
     [ "Install", "index.html#autotoc_md5", [
       [ "1. Install Dependencies", "index.html#autotoc_md6", null ],

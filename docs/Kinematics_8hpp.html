@@ -107,6 +107,10 @@ $(document).ready(function(){initNavTree('Kinematics_8hpp.html',''); initResizab
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a4db9ca57e0aa544ff3564ce9e85bfc5f">tr::kinematics::forward_kinematics</a> (<a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q)</td></tr>
+<tr class="memdesc:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform to all the links in the tinyrobotics model.  <br /></td></tr>
+<tr class="separator:a4db9ca57e0aa544ff3564ce9e85bfc5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b0dcc1ea21a7f239297841f58327afd"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
 <tr class="memitem:a7b0dcc1ea21a7f239297841f58327afd"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Kinematics_8hpp.html#a7b0dcc1ea21a7f239297841f58327afd">tr::kinematics::forward_kinematics</a> (const <a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx, const bool inverse_transform=false)</td></tr>
 <tr class="memdesc:a7b0dcc1ea21a7f239297841f58327afd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the transform to the target from the base link.  <br /></td></tr>
@@ -218,7 +222,7 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div>
 </div>
 <a id="a80d34afcb0fb240d4670c3972e5b8668" name="a80d34afcb0fb240d4670c3972e5b8668"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80d34afcb0fb240d4670c3972e5b8668">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a80d34afcb0fb240d4670c3972e5b8668">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -279,7 +283,7 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div>
 </div>
 <a id="a7b0dcc1ea21a7f239297841f58327afd" name="a7b0dcc1ea21a7f239297841f58327afd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b0dcc1ea21a7f239297841f58327afd">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b0dcc1ea21a7f239297841f58327afd">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -324,7 +328,7 @@ template&lt;typename Scalar , int nq&gt; </div>
     <tr><td class="paramname">model</td><td>Tinyrobotics model. </td></tr>
     <tr><td class="paramname">q</td><td>Joint configuration of the robot. </td></tr>
     <tr><td class="paramname">target_link_idx</td><td>Index of the link to which the transform is computed. </td></tr>
-    <tr><td class="paramname">inverse_transform</td><td>Optional: If true, returns the transform to the base from the target link. </td></tr>
+    <tr><td class="paramname">inverse_transform</td><td>OPTIONAL: Set true if you want the transform from the target to the source. </td></tr>
   </table>
   </dd>
 </dl>
@@ -340,7 +344,7 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div>
 </div>
 <a id="ad0eca53a6b24258516ca7e1a4d645222" name="ad0eca53a6b24258516ca7e1a4d645222"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0eca53a6b24258516ca7e1a4d645222">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0eca53a6b24258516ca7e1a4d645222">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -401,7 +405,7 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div>
 </div>
 <a id="a173ef46f4e514784b36b5dc7d61f4378" name="a173ef46f4e514784b36b5dc7d61f4378"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a173ef46f4e514784b36b5dc7d61f4378">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a173ef46f4e514784b36b5dc7d61f4378">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -446,7 +450,7 @@ template&lt;typename Scalar , int nq&gt; </div>
     <tr><td class="paramname">model</td><td>Tinyrobotics model. </td></tr>
     <tr><td class="paramname">q</td><td>Joint configuration of the robot. </td></tr>
     <tr><td class="paramname">target_link_idx</td><td>Name of the link to which the transform is computed. </td></tr>
-    <tr><td class="paramname">inverse_transform</td><td>Optional: If true, returns the transform to the base from the target link. </td></tr>
+    <tr><td class="paramname">inverse_transform</td><td>OPTIONAL: Set true if you want the transform from the target to the source. </td></tr>
   </table>
   </dd>
 </dl>
@@ -458,6 +462,53 @@ template&lt;typename Scalar , int nq&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Homogeneous transform between the base and the target link. </dd></dl>
+
+</div>
+</div>
+<a id="a4db9ca57e0aa544ff3564ce9e85bfc5f" name="a4db9ca57e0aa544ff3564ce9e85bfc5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4db9ca57e0aa544ff3564ce9e85bfc5f">&#9670;&#160;</a></span>forward_kinematics() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void tr::kinematics::forward_kinematics </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtr_1_1model_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramname"><em>model</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>q</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the transform to all the links in the tinyrobotics model. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>Tinyrobotics model. </td></tr>
+    <tr><td class="paramname">q</td><td>Joint configuration of the robot. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Scalar</td><td>type of the tinyrobotics model. </td></tr>
+    <tr><td class="paramname">nq</td><td>Number of configuration coordinates (degrees of freedom). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Stores the transform to all the links in model.data.FK vector. </dd></dl>
 
 </div>
 </div>

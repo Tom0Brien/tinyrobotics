@@ -5,6 +5,7 @@ var Kinematics_8hpp =
     [ "forward_kinematics", "Kinematics_8hpp.html#a7b0dcc1ea21a7f239297841f58327afd", null ],
     [ "forward_kinematics", "Kinematics_8hpp.html#ad0eca53a6b24258516ca7e1a4d645222", null ],
     [ "forward_kinematics", "Kinematics_8hpp.html#a173ef46f4e514784b36b5dc7d61f4378", null ],
+    [ "forward_kinematics", "Kinematics_8hpp.html#a4db9ca57e0aa544ff3564ce9e85bfc5f", null ],
     [ "forward_kinematics_com", "Kinematics_8hpp.html#ada61b81caa345a6bd5af46e9768710cc", null ],
     [ "forward_kinematics_com", "Kinematics_8hpp.html#ae54986478a01decc6fb25c0bdcdff4d7", null ],
     [ "geometric_jacobian", "Kinematics_8hpp.html#a503c08d982b70f155dd0c27a36585031", null ],

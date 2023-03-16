@@ -138,11 +138,11 @@ $(document).ready(function(){initNavTree('Parser_8hpp_source.html',''); initResi
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> Scalar&gt;</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="Parser_8hpp.html#a5138d9c7d10b4f2349d2bdda393aa83c">   58</a></span>    Eigen::Matrix&lt;Scalar, 3, 3&gt; <a class="code hl_function" href="Parser_8hpp.html#a5138d9c7d10b4f2349d2bdda393aa83c">rot_from_string</a>(<span class="keyword">const</span> std::string&amp; rotation_str) {</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        Eigen::Matrix&lt;Scalar, 3, 1&gt; rpy = vec_from_string&lt;Scalar&gt;(rotation_str);</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        Eigen::Matrix&lt;Scalar, 3, 3&gt; R;</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        R = Eigen::AngleAxis&lt;Scalar&gt;(rpy.x(), Eigen::Matrix&lt;Scalar, 3, 1&gt;::UnitX())</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        Eigen::Matrix&lt;Scalar, Eigen::Dynamic, 1&gt; rpy = vec_from_string&lt;Scalar&gt;(rotation_str);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        Eigen::Matrix&lt;Scalar, 3, 3&gt; R =</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            Eigen::AngleAxis&lt;Scalar&gt;(rpy.z(), Eigen::Matrix&lt;Scalar, 3, 1&gt;::UnitZ())</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            * Eigen::AngleAxis&lt;Scalar&gt;(rpy.y(), Eigen::Matrix&lt;Scalar, 3, 1&gt;::UnitY())</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            * Eigen::AngleAxis&lt;Scalar&gt;(rpy.z(), Eigen::Matrix&lt;Scalar, 3, 1&gt;::UnitZ());</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            * Eigen::AngleAxis&lt;Scalar&gt;(rpy.x(), Eigen::Matrix&lt;Scalar, 3, 1&gt;::UnitX()).toRotationMatrix();</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        <span class="keywordflow">return</span> R;</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    }</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>

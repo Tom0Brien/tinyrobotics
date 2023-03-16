@@ -1,7 +1,7 @@
 var structtr_1_1model_1_1Joint =
 [
     [ "cast", "structtr_1_1model_1_1Joint.html#a936b388bf1af2301af0150629cb0d4bf", null ],
-    [ "get_joint_transform", "structtr_1_1model_1_1Joint.html#a0bfead37f23837d4d0bf5b7cddf2b71b", null ],
+    [ "get_joint_transform", "structtr_1_1model_1_1Joint.html#ac17523468e9d454349e3cff18b1c3aca", null ],
     [ "get_parent_to_child_transform", "structtr_1_1model_1_1Joint.html#a1678c5ef0841f669a421015dffad5307", null ],
     [ "get_type", "structtr_1_1model_1_1Joint.html#ae764f96b22d42c76038bc20fdeb9c6c3", null ],
     [ "axis", "structtr_1_1model_1_1Joint.html#adf32c60a587a5e58854e7c99f98fd572", null ],
