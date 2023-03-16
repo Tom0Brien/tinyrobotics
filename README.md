@@ -6,14 +6,13 @@ tinyrobotics
 The goal of **tinyrobotics** is to be as simple as possible but still be incredibly fast and versatile.
 
 ## Features
-### Models
-A tinyrobotics [model](./include/Model.hpp) consists of a collection of [links](./include/Link.hpp) connected via [joints](./include/Joint.hpp). The following functions can be used to build a model, all of which are implemented in [Parser](./include/Parser.hpp).
+### [Models](https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details)
+A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details) consists of a collection of links connected via joints. The following functions can be used to build a model, all of which are implemented in [Parser](https://tom0brien.github.io/tinyrobotics/Parser_8hpp.html)
 | Function            | Description                                                                              |
 | ------------------- | ---------------------------------------------------------------------------------------- |
 | `import_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
 
-### Kinematics
-Kinematics algorithms are implemented in [Kinematics](./include/Kinematics.hpp).
+### [Kinematics](https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html)
 | Function                 | Description                                                       |
 | ------------------------ | ----------------------------------------------------------------- |
 | `forward_kinematics`     | Compute transforms between links.                                 |
@@ -24,14 +23,12 @@ Kinematics algorithms are implemented in [Kinematics](./include/Kinematics.hpp).
 | `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass.             |
 | `centre_of_mass`         | Compute centre of mass of model.                                  |
 
-### Inverse Kinematics
-Inverse Kinematics is implemented in [InverseKinematics](./include/InverseKinematics.hpp).
+### [InverseKinematics](https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html)
 | Function             | Description                                             |
 | -------------------- | ------------------------------------------------------- |
 | `inverse_kinematics` | Solve joint positions to achieve desired pose of model. |
 
-### Dynamics
-Dynamics algorithms are implemented in [Dynamics](./include/Dynamics.hpp).
+### [Dynamics](https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html)
 | Function           | Description                                                                    |
 | ------------------ | ------------------------------------------------------------------------------ |
 | `forward_dynamics` | Compute joint accelerations given joint positions and velocities and torques.  |
@@ -67,6 +64,6 @@ auto model = import_urdf<double, 4>("example.urdf");
 // Create a configuration vector of all zeros
 auto q = model.home_configuration();
 
-// Compute the forward kinematics to the target frame for the source frame at the home configuration
+// Compute the forward kinematics to the target frame from the source frame at the home configuration
 auto H = forward_kinematics(model, q, "source_frame", "target_frame");
 ```
