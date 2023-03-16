@@ -16,8 +16,8 @@
 namespace tr {
     /**
      * @brief Compute the mass matrix of the robot model.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
@@ -50,8 +50,8 @@ namespace tr {
 
     /**
      * @brief Compute the kinetic_energy of the robot model.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
      * @param dq The joint velocity of the robot.
      */
     template <typename Scalar, int nq>
@@ -67,8 +67,10 @@ namespace tr {
 
     /**
      * @brief Compute the potential_energy of the robot model.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
      */
     template <typename Scalar, int nq>
     void potential_energy(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
@@ -86,9 +88,11 @@ namespace tr {
 
     /**
      * @brief Compute the hamiltonian of the robot model.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
-     * @param p The joint velocity of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
+     * @param p Joint momentum of the robot.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 1, 1> hamiltonian(Model<Scalar, nq>& model,
@@ -112,11 +116,14 @@ namespace tr {
 
     /**
      *
-     * @brief Compute the forward dynamics of the model.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
-     * @param p The momentum vector
-     * @param u The input vector.
+     * @brief Compute the forward dynamics of the model without constraints.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
+     * @param p Momentum vector
+     * @param u Joint torque input vector.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @return Joint acclerations of the model.
      */
     template <typename Scalar, int nq, int ni>
     Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics_without_constraints(Model<Scalar, nq>& model,
@@ -162,10 +169,13 @@ namespace tr {
 
     /**
      * @brief Compute the hamiltonian of the robot model with active constraints.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
-     * @param p The joint velocity of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
+     * @param p Joint momentum of the robot.
      * @param active_constraints The active set of the robot.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @return Hamiltonian of the model with active constraints.
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, 1, 1> hamiltonian_with_constraints(Model<Scalar, nq>& model,
@@ -229,12 +239,12 @@ namespace tr {
 
     /**
      * @brief Compute the forward dynamics of the model with active constraints.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
      * @param p The momentum vector
      * @param u The input vector.
      * @param active_constraints The active constraints.
-     * @return The forward dynamics of the model.
+     * @return Joint accelerations of the model.
      */
     template <typename Scalar, int nq, int ni>
     Eigen::Matrix<Scalar, nq + nq, 1> forward_dynamics(Model<Scalar, nq>& model,
@@ -278,8 +288,8 @@ namespace tr {
 
     /**
      * @brief Creates a vector of holonomic constraints.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
      * @param M The over-paremeterised mass matrix.
      * @param V The over-paremeterised potential energy.
      * @return The constraint function for holonomic constraints.
@@ -347,7 +357,7 @@ namespace tr {
     /**
      * @brief Eliminates holonomic constraints from the dynamic equations of motion via the appropriate selection
      * of generalised coordinates.
-     * @param model The robot model.
+     * @param model tinyrobotics model.
      * @param q_real The joint configuration of the robot.
      * @param M The mass matrix.
      * @param dfcdqh The jacobian of the holonomic constraints.
@@ -371,8 +381,8 @@ namespace tr {
 
     /**
      * @brief Compute the mass matrix, coriolis and gravity matrices of the robot model.
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
      */
     template <typename Scalar, int nq>
     void compute_dynamics(Model<Scalar, nq>& model,
@@ -402,7 +412,7 @@ namespace tr {
 
     /**
      * @brief Apply external forces to the robot model
-     * @param model The robot model.
+     * @param model tinyrobotics model.
      * @param f_in The input force array of the robot model.
      * @param f_ext The external force array to be added to the input force array.
      * @return f_out The output force array with the external forces incorporated.
@@ -433,12 +443,12 @@ namespace tr {
 
     /**
      * @brief Compute the forward dynamics of the robot model via Articulated-Body Algorithm
-     * @param model The robot model.
-     * @param q The joint configuration of the robot.
-     * @param qd The joint velocity of the robot.
-     * @param tau The joint torque of the robot.
-     * @param f_ext The external forces acting on the robot.
-     * @return qdd The joint acceleration of the robot.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
+     * @param qd Joint velocity of the robot.
+     * @param tau Joint torque of the robot.
+     * @param f_ext External forces acting on the robot.
+     * @return Joint accelerations of the model.
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(const Model<Scalar, nq>& model,

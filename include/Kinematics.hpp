@@ -14,7 +14,7 @@ namespace tr {
 
     /**
      * @brief Computes the transform to all the links in the tinyrobotics model.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
@@ -40,7 +40,7 @@ namespace tr {
 
     /**
      * @brief Computes the transform to the target from the base link.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link_idx Index of the link to which the transform is computed.
      * @param inverse_transform OPTIONAL: Set true if you want the transform from the target to the source.
@@ -92,7 +92,7 @@ namespace tr {
 
     /**
      * @brief Computes the transform between base and target link.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link_idx Name of the link to which the transform is computed.
      * @param inverse_transform OPTIONAL: Set true if you want the transform from the target to the source.
@@ -112,7 +112,7 @@ namespace tr {
 
     /**
      * @brief Computes the homogeneous transform from a source to target link.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param source_link_name Name of source {s} link from which the transform is computed.
      * @param target_link_name Name of target {t} link to which the transform is computed.
@@ -136,7 +136,7 @@ namespace tr {
 
     /**
      * @brief Computes the homogeneous transform from a source to target link.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param source_link_idx Index of source {s} link from which the transform is computed.
      * @param target_link_idx Index of target {t} link to which the transform is computed.
@@ -160,7 +160,7 @@ namespace tr {
 
     /**
      * @brief Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param source_link_name Name of source {s} link from which the transform is computed.
      * @param target_link_name Name of target {t} link to which the transform is computed.
@@ -184,7 +184,7 @@ namespace tr {
 
     /**
      * @brief Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param source_link_idx Index of source {s} link from which the transform is computed.
      * @param target_link_idx Index of target {t} link to which the transform is computed.
@@ -207,7 +207,7 @@ namespace tr {
 
     /**
      * @brief Computes the translation of the target link from the source link in the source link frame.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param source_link_name Name of source {s} link from which the translation is computed.
      * @param target_link_name Name of target {t} link to which the translation is computed.
@@ -228,7 +228,7 @@ namespace tr {
 
     /**
      * @brief Computes the translation of the target link from the source link in the source link frame.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param source_link_idx Index of source {s} link from which the translation is computed.
      * @param target_link_idx Index of target {t} link to which the translation is computed.
@@ -249,7 +249,7 @@ namespace tr {
 
     /**
      * @brief Computes the rotation matrix between the target link and the source link in the source link frame.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param source_link_name Name of source {s} link from which the rotation matrix is computed.
      * @param target_link_name Name of target {t} link to which the rotation matrix is computed.
@@ -269,7 +269,7 @@ namespace tr {
 
     /**
      * @brief Computes the geometric jacobian of the target link from the base link in the base link frame.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link_idx Index of target {t} link to which the geometric jacobian is computed.
      * @tparam Scalar type of the tinyrobotics model.
@@ -318,7 +318,7 @@ namespace tr {
 
     /**
      * @brief Computes the geometric jacobian relative to the base for the specified target link.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link_name Name of target {t} link to which the geometric jacobian is computed.
      * @tparam Scalar type of the tinyrobotics model.
@@ -336,7 +336,7 @@ namespace tr {
 
     /**
      * @brief Computes the geometric jacobian relative to the base for the specified target link's center of mass.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link_name {n} The link to which the transform is computed.
      * @tparam Scalar type of the tinyrobotics model.
@@ -386,7 +386,7 @@ namespace tr {
 
     /**
      * @brief Computes the centre of mass expressed in source link frame.
-     * @param model Tinyrobotics model.
+     * @param model tinyrobotics model.
      * @param q The configuration vector of the robot model.
      * @param source_link_name Name of source {s} link frame from which the centre of mass is expressed.
      * @tparam Scalar type of the tinyrobotics model.
