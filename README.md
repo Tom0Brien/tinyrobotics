@@ -6,13 +6,13 @@ tinyrobotics
 The goal of **tinyrobotics** is to be as simple as possible but still be incredibly fast and versatile.
 
 ## Features
-### [Models](https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details)
+<h2><a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">Model</a></h2>
 A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details) consists of a collection of links connected via joints. The following functions can be used to build a model, all of which are implemented in [Parser](https://tom0brien.github.io/tinyrobotics/Parser_8hpp.html)
-| Function            | Description                                                                              |
-| ------------------- | ---------------------------------------------------------------------------------------- |
+| Function      | Description                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------- |
 | `import_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
 
-### [Kinematics](https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html)
+<h2><a href="https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html">Kinematics</a></h2>
 | Function                 | Description                                                       |
 | ------------------------ | ----------------------------------------------------------------- |
 | `forward_kinematics`     | Compute transforms between links.                                 |
@@ -23,12 +23,12 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
 | `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass.             |
 | `centre_of_mass`         | Compute centre of mass of model.                                  |
 
-### [InverseKinematics](https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html)
+<h2><a href="https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html">Inverse Kinematics</a></h2>
 | Function             | Description                                             |
 | -------------------- | ------------------------------------------------------- |
 | `inverse_kinematics` | Solve joint positions to achieve desired pose of model. |
 
-### [Dynamics](https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html)
+<h2><a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html">Dynamics</a></h2>
 | Function           | Description                                                                    |
 | ------------------ | ------------------------------------------------------------------------------ |
 | `forward_dynamics` | Compute joint accelerations given joint positions and velocities and torques.  |

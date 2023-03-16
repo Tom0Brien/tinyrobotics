@@ -98,16 +98,14 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 <p>The goal of <b>tinyrobotics</b> is to be as simple as possible but still be incredibly fast and versatile.</p>
 <h1><a class="anchor" id="autotoc_md0"></a>
 Features</h1>
-<h2><a class="anchor" id="autotoc_md1"></a>
-&lt;a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details" &gt;Models&lt;/a&gt;</h2>
+<h2><a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">Model</a></h2>
 <p>A tinyrobotics <a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">model</a> consists of a collection of links connected via joints. The following functions can be used to build a model, all of which are implemented in <a href="https://tom0brien.github.io/tinyrobotics/Parser_8hpp.html">Parser</a> </p><table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>import_urdf</code>   </td><td class="markdownTableBodyNone">Generate a tinyrobotics model from a <a href="http://wiki.ros.org/urdf">URDF</a> robot description.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md2"></a>
-&lt;a href="https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html" &gt;Kinematics&lt;/a&gt;</h2>
+<h2><a href="https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html">Kinematics</a></h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
@@ -126,16 +124,14 @@ Features</h1>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>centre_of_mass</code>   </td><td class="markdownTableBodyNone">Compute centre of mass of model.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md3"></a>
-&lt;a href="https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html" &gt;InverseKinematics&lt;/a&gt;</h2>
+<h2><a href="https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html">Inverse Kinematics</a></h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>inverse_kinematics</code>   </td><td class="markdownTableBodyNone">Solve joint positions to achieve desired pose of model.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md4"></a>
-&lt;a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html" &gt;Dynamics&lt;/a&gt;</h2>
+<h2><a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html">Dynamics</a></h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
@@ -148,9 +144,9 @@ Features</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>total_energy</code>   </td><td class="markdownTableBodyNone">Compute total energy (kinetic + potential) given joint positions and velocity.   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md1"></a>
 Install</h1>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md2"></a>
 1. Install Dependencies</h2>
 <ul>
 <li><a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a></li>
@@ -159,14 +155,14 @@ Install</h1>
 <li><a href="https://github.com/autodiff/autodiff">autodiff</a></li>
 <li><a href="https://github.com/ethz-adrl/ifopt">ifopt</a></li>
 </ul>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md3"></a>
 2. Build with cmake</h2>
 <div class="fragment"><div class="line">git clone https://github.com/Tom0Brien/tinyrobotics.git &amp;&amp; cd RML</div>
 <div class="line">mkdir build &amp;&amp; cd build</div>
 <div class="line">cmake ..</div>
 <div class="line">make</div>
 <div class="line">sudo make install # copies files in this folder to /usr/local/*</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md8"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Examples</h1>
 <p>The code below demonstrates how to load in a URDF model and compute the forward kinematics between two links.</p>
 <div class="fragment"><div class="line"> ++</div>
