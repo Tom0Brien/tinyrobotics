@@ -65,5 +65,5 @@ auto model = import_urdf<double, 4>("example.urdf");
 auto q = model.home_configuration();
 
 // Compute the forward kinematics to the target frame from the source frame at the home configuration
-auto H = forward_kinematics(model, q, "source_frame", "target_frame");
+auto H = forward_kinematics(model, q, string("source_frame"), string("target_frame"));
 ```

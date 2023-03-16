@@ -9,10 +9,7 @@
 /** \file Parser.hpp
  * @brief Contains various functions for parsing URDF files and strings to create a tinyrobotics model.
  */
-namespace tr::parser {
-
-    using namespace tr::math;
-    using namespace tr::model;
+namespace tr {
 
     /**
      * @brief Get Eigen3 vector from a URDF vector element.
@@ -586,6 +583,6 @@ namespace tr::parser {
 
         return model;
     }
-}  // namespace tr::parser
+}  // namespace tr
 
 #endif

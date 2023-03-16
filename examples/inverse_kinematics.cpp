@@ -8,11 +8,9 @@
 #include "../include/Parser.hpp"
 #include "../include/Solver.hpp"
 
+using namespace tr;
+
 int main(int argc, char* argv[]) {
-    using namespace tr;
-    using namespace tr::parser;
-    using namespace tr::kinematics;
-    using namespace tr::ik;
     // Load in Model from URDF
     const int n_joints = 20;
     auto model         = import_urdf<double, n_joints>("../data/urdfs/robot.urdf");

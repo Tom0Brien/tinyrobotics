@@ -7,7 +7,7 @@
 /** \file Data.hpp
  * @brief Contains the Data struct which stores the results of various model algorithms.
  */
-namespace tr::data {
+namespace tr {
 
     /**
      * @brief A data struct for storing results of various model algorithms.
@@ -110,6 +110,6 @@ namespace tr::data {
             return new_res;
         }
     };
-}  // namespace tr::data
+}  // namespace tr
 
 #endif

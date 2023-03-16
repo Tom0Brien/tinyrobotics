@@ -16,16 +16,11 @@
 #include "../include/Parser.hpp"
 #include "../include/Solver.hpp"
 
+using namespace tr;
 
 std::string swing_foot   = "right_foot";
 std::string planted_foot = "left_foot";
 std::string world_frame  = "world";
-
-using namespace tr;
-using namespace tr::parser;
-using namespace tr::kinematics;
-using namespace tr::dynamics;
-using namespace tr::solver;
 
 /**
  * @brief Example event detection function
@@ -109,7 +104,7 @@ int main(int argc, char* argv[]) {
     Eigen::Matrix<double, 4, 1> p0;
     p0 << 0, 0, -16.9340, 1.8667;
     Eigen::Matrix<double, 4, 1> u0 = Eigen::Matrix<double, 4, 1>::Zero();
-    auto results                   = tr::solver::solver(model, q0, p0, u0, params);
+    auto results                   = solver(model, q0, p0, u0, params);
 
 
     // Apply impact mapping
@@ -126,7 +121,7 @@ int main(int argc, char* argv[]) {
     planted_foot                        = "right_foot";
     params.active_constraints.clear();
     params.active_constraints.push_back("right_foot");
-    auto results2 = tr::solver::solver(model, q0, p0, u0, params);
+    auto results2 = solver(model, q0, p0, u0, params);
 
     return EXIT_SUCCESS;
 }

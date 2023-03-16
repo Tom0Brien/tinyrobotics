@@ -4,11 +4,9 @@
 #include "../include/Model.hpp"
 #include "../include/Parser.hpp"
 
+using namespace tr;
+
 int main(int argc, char* argv[]) {
-
-    using namespace tr::parser;
-    using namespace tr::kinematics;
-
     // Create a robot model with 4 joints
     auto model = import_urdf<double, 4>("../data/urdfs/4_link.urdf");
 

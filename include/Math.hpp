@@ -7,7 +7,7 @@
 /** \file Math.hpp
  * @brief Contains various math related functions.
  */
-namespace tr::math {
+namespace tr {
     /**
      * @brief Computes the skew of a 3x3 vector.
      * @param input The 3x3 vector.
@@ -138,6 +138,6 @@ namespace tr::math {
         return Ic;
     }
 
-}  // namespace tr::math
+}  // namespace tr
 
 #endif

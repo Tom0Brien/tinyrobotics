@@ -6,7 +6,7 @@
 /** \file Link.hpp
  * @brief Contains struct for representing a joint in a tinyrobotics model.
  */
-namespace tr::model {
+namespace tr {
 
     /**
      * @brief Represents a link in a tinyrobotics model.
@@ -71,5 +71,5 @@ namespace tr::model {
             return new_link;
         }
     };
-}  // namespace tr::model
+}  // namespace tr
 #endif

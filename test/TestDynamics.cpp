@@ -9,10 +9,7 @@
 #include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
 
-using namespace tr::parser;
-using namespace tr::dynamics;
-using namespace tr::kinematics;
-
+using namespace tr;
 
 TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Create a robot model

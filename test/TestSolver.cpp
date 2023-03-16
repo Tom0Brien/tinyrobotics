@@ -11,10 +11,6 @@
 #include "catch2/catch.hpp"
 
 using namespace tr;
-using namespace parser;
-using namespace kinematics;
-using namespace dynamics;
-using namespace solver;
 
 TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
     // Create a robot model
@@ -50,7 +46,7 @@ TEST_CASE("Test integration routine for simple model with euler integration", "[
     params.dt                 = 0.1;
     params.tspan              = std::pair<float, float>(0.0, 10.0);
     params.integration_method = IntegrationMethod::RK4;
-    auto results              = tr::solver::solver(robot_model, q0, p0, u0, params);
+    auto results              = solver(robot_model, q0, p0, u0, params);
 
     // TODO: Verify results
 }
@@ -73,7 +69,7 @@ TEST_CASE("Test integration routine for simple model with symplectic euler integ
     params.dt                 = 0.1;
     params.tspan              = std::pair<float, float>(0.0, 10.0);
     params.integration_method = IntegrationMethod::SYMPLECTIC_EULER;
-    auto results              = tr::solver::solver(robot_model, q0, p0, u0, params);
+    auto results              = solver(robot_model, q0, p0, u0, params);
 
     // TODO: Verify results
 }

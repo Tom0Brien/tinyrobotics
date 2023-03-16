@@ -11,12 +11,7 @@
 /** \file Solver.hpp
  * @brief Contains various functions for integrating the dynamics of a tinyrobotics model.
  */
-namespace tr::solver {
-
-    using namespace tr::math;
-    using namespace tr::model;
-    using namespace tr::dynamics;
-
+namespace tr {
     /// @brief The types of integration methods
     enum class IntegrationMethod { EULER, SYMPLECTIC_EULER, RK4 };  // namespace IntegrationMethod
 
@@ -259,7 +254,7 @@ namespace tr::solver {
         return results;
     }
 
-}  // namespace tr::solver
+}  // namespace tr
 
 
 #endif  // TR_SOLVERS_HPP
