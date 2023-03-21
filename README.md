@@ -63,12 +63,15 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
 The code below demonstrates how to load in a URDF model and compute the forward kinematics between two links.
 
 ```c++
-// Create a robot model with 4 joints
+// Create a tinyrobotics model with 4 joints defined in example.urdf
 auto model = import_urdf<double, 4>("example.urdf");
 
 // Create a configuration vector of all zeros
 auto q = model.home_configuration();
 
-// Compute the forward kinematics to the target frame from the source frame at the home configuration
-auto H = forward_kinematics(model, q, string("source_frame"), string("target_frame"));
+// Get the target link index
+auto target_idx = model.get_link("target_link").idx;
+
+// Compute the forward kinematics to the target link from the base frame at the home configuration
+auto H = forward_kinematics(model, q, target_idx);
 ```
