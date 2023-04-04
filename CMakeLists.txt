@@ -89,7 +89,7 @@ install(
   INCLUDES
   DESTINATION include/tinyrobotics)
 
-install(DIRECTORY include/ DESTINATION /usr/local/include/tinyrobotics)
+install(DIRECTORY include/ DESTINATION include/tinyrobotics)
 
 install(
   EXPORT tinyroboticsTargets
