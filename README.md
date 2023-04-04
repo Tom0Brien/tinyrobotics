@@ -46,11 +46,11 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
 
 ### 2. Build with cmake
   ```bash
-  git clone https://github.com/Tom0Brien/tinyrobotics.git && cd RML
+  git clone https://github.com/Tom0Brien/tinyrobotics.git && cd tinyrobotics
   mkdir build && cd build
   cmake ..
   make
-  sudo make install # copies files in this folder to /usr/local/*
+  sudo make install # copies files in the include folder to /usr/local/include*
   ```
 
 ## Examples
