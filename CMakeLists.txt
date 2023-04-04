@@ -87,9 +87,9 @@ install(
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
   INCLUDES
-  DESTINATION include)
+  DESTINATION include/tinyrobotics)
 
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION /usr/local/include/tinyrobotics)
 
 install(
   EXPORT tinyroboticsTargets
@@ -106,4 +106,4 @@ write_basic_package_version_file(
 
 install(FILES "tinyroboticsConfig.cmake"
               "${CMAKE_CURRENT_BINARY_DIR}/tinyroboticsConfigVersion.cmake"
-        DESTINATION lib/cmake/TinyRobotics)
+        DESTINATION lib/cmake/tinyrobotics)
