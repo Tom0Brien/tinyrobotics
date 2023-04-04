@@ -38,7 +38,13 @@ int main(int argc, char* argv[]) {
     auto qdd = forward_dynamics(model, q, q, q);
     stop     = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Forward Dynamics time: " << duration.count() << " microseconds" << std::endl;
+    std::cout << "Forward Dynamics ABA time: " << duration.count() << " microseconds" << std::endl;
+
+    start    = std::chrono::high_resolution_clock::now();
+    qdd      = forward_dynamics_crb(model, q, q, q);
+    stop     = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Forward Dynamics CRB time: " << duration.count() << " microseconds" << std::endl;
 
     // ************ Mass Matrix ************
     start    = std::chrono::high_resolution_clock::now();

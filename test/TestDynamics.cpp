@@ -108,6 +108,20 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 5 link model
     Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }
 
+TEST_CASE("Test Forward Dynamics via Composite-Rigid-Body Algorithm for 5 link model", "[Dynamics]") {
+    const int n_joints = 5;
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/5_link.urdf");
+    // Create some inputs
+    Eigen::Matrix<double, n_joints, 1> q;
+    q << 1, 2, 3, 4, 5;
+    Eigen::Matrix<double, n_joints, 1> qd;
+    qd << 1, 2, 3, 4, 5;
+    Eigen::Matrix<double, n_joints, 1> tau;
+    tau << 1, 2, 3, 4, 5;
+    Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_crb(robot_model, q, qd, tau);
+}
+
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass model", "[Dynamics]") {
     const int n_joints = 4;

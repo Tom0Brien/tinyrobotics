@@ -97,6 +97,28 @@ namespace tinyrobotics {
         std::vector<Eigen::Matrix<Scalar, 6, 1>> a =
             std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
 
+        /// @brief
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+
+        /// @brief
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> avp =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> fvp =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief
+        Eigen::Matrix<Scalar, nq, 1> C = Eigen::Matrix<Scalar, nq, 1>::Zero();
+
+        /// @brief
+        Eigen::Matrix<Scalar, 6, 1> fh = Eigen::Matrix<Scalar, 6, 1>::Zero();
+
+        /// @brief
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> IC =
+            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+
+
         /// @brief Gravity vector in spatial coordinates.
         Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
@@ -135,7 +157,12 @@ namespace tinyrobotics {
                 new_res.d[i]   = NewScalar(d[i]);
                 new_res.u[i]   = NewScalar(u[i]);
                 new_res.a[i]   = a[i].template cast<NewScalar>();
+                new_res.avp[i] = avp[i].template cast<NewScalar>();
+                new_res.fvp[i] = fvp[i].template cast<NewScalar>();
+                new_res.IC[i]  = IC[i].template cast<NewScalar>();
             }
+            new_res.C               = C.template cast<NewScalar>();
+            new_res.fh              = fh.template cast<NewScalar>();
             new_res.spatial_gravity = spatial_gravity.template cast<NewScalar>();
             return new_res;
         }
