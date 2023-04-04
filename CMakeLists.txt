@@ -73,6 +73,7 @@ add_library(tinyrobotics SHARED ${SRC_INCLUDES})
 
 # Link libraries to the library target
 target_link_libraries(tinyrobotics PUBLIC ${LIBS})
+set_target_properties(tinyrobotics PROPERTIES LINKER_LANGUAGE CXX)
 
 # Set the installation rules
 install(
