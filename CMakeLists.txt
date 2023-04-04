@@ -41,7 +41,6 @@ if(SRC_INCLUDES)
   add_library(${TARGET_LIB} STATIC ${SRC_INCLUDES})
   target_link_libraries(${TARGET_LIB} ${LIBS})
 endif()
-set_target_properties(${TARGET_LIB} PROPERTIES LINKER_LANGUAGE CXX)
 
 # Examples
 foreach(SRC_FILE ${SRC_EXAMPLES})
