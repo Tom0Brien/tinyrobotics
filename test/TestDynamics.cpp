@@ -1,9 +1,6 @@
 #define CATCH_DYNAMICS
 #include <Eigen/Dense>
-#include <autodiff/forward/real.hpp>
-#include <autodiff/forward/real/eigen.hpp>
 #include <chrono>
-#include <string>
 
 #include "../include/Dynamics.hpp"
 #include "../include/Parser.hpp"

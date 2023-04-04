@@ -4,8 +4,6 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
-#include <autodiff/forward/real.hpp>
-#include <autodiff/forward/real/eigen.hpp>
 
 #include "Kinematics.hpp"
 #include "Model.hpp"

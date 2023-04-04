@@ -40,9 +40,7 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
 ### 1. Install Dependencies
 - [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [Catch2](https://github.com/catchorg/Catch2)
-- [TinyXML2](https://github.com/leethomason/tinyxml2) 
-- [autodiff](https://github.com/autodiff/autodiff) 
-- [ifopt](https://github.com/ethz-adrl/ifopt) 
+- [TinyXML2](https://github.com/leethomason/tinyxml2)
 
 ### 2. Build with cmake
   ```bash
