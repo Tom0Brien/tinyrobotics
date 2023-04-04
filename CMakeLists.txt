@@ -21,14 +21,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 # Find required packages
 find_package(Catch2 2.13 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-find_package(autodiff REQUIRED)
-find_package(ifopt REQUIRED)
-find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(TinyXML2 REQUIRED)
 
 # Libraries
-set(LIBS Eigen3::Eigen autodiff::autodiff ifopt::ifopt_ipopt
-         nlohmann_json::nlohmann_json tinyxml2::tinyxml2)
+set(LIBS Eigen3::Eigen tinyxml2::tinyxml2)
 
 # Target names
 set(TARGET_LIB tinyroboticsLib)

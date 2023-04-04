@@ -66,7 +66,7 @@ namespace tinyrobotics {
         /// @brief The potential energy.
         Scalar V = 0;
 
-        /// @brief The hamiltonian (total energy).
+        /// @brief The total_energy (total energy).
         Scalar H = 0;
 
         /// @brief The dynamics dx_dt

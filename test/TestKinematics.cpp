@@ -4,7 +4,6 @@
 #include <ifopt/problem.h>
 #include <string>
 
-#include "../include/InverseKinematics.hpp"
 #include "../include/Kinematics.hpp"
 #include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
@@ -109,77 +108,4 @@ TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinema
         0.1763, -0.0337, 0.0000, -0.5403, -0.7651, -0.4855, 0.1801, 0.9581, 0.2352, 1.0000, -0.0000, -0.4161, -0.1283,
         0.9533, -0.2258, 0.9714;
     REQUIRE(J.isApprox(J_expected, 1e-4));
-}
-
-TEST_CASE("Test inverse kinematics simple with initial conditions close to solution", "[InverseKinematics]") {
-    const int ITERATIONS = 25;
-    auto nugus_model     = import_urdf<double, 20>("data/urdfs/nugus.urdf");
-    for (int i = 0; i < ITERATIONS; ++i) {
-        // Make a random configuration
-        auto q_random = nugus_model.home_configuration();
-        // Compute the forward kinematics for the random configuration
-        Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
-        std::string target_link_name = "torso";
-        std::string source_link_name = "left_hip_yaw";
-        Hst_desired                  = forward_kinematics(nugus_model, q_random, source_link_name, target_link_name);
-        // Compute the inverse kinematics for the random desired transform
-        auto q0 = q_random + 0.05 * nugus_model.random_configuration();
-        Eigen::Matrix<double, 20, 1> q_solution =
-            inverse_kinematics<double, 20>(nugus_model, source_link_name, target_link_name, Hst_desired, q0);
-        // Compute the forward kinematics for the solution
-        Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
-        Hst_solution = forward_kinematics(nugus_model, q_solution, source_link_name, target_link_name);
-
-        // Compute the euler angles for current
-        Eigen::Matrix<double, 3, 3> Rst_solution = Hst_solution.linear();
-
-        // Compute the euler angles for desired
-        Eigen::Matrix<double, 3, 3> Rst_desired = Hst_desired.linear();
-
-        Eigen::Matrix<double, 3, 3> R_error = Rst_desired * Rst_solution.transpose();
-        double orientation_error            = (Eigen::Matrix<double, 3, 3>::Identity() - R_error).diagonal().sum();
-
-        // Check that the solution is close to the desired transform
-        REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
-        REQUIRE(orientation_error < 1e-2);
-    }
-}
-
-TEST_CASE("Test inverse kinematics Kuka", "[Kinematics]") {
-    const int ITERATIONS = 25;
-    auto kuka_model      = import_urdf<double, 7>("data/urdfs/kuka.urdf");
-
-    for (int i = 0; i < ITERATIONS; ++i) {
-        // Make a random configuration
-        auto q_random = kuka_model.random_configuration();
-        // Compute the forward kinematics for the random configuration
-        Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
-        std::string target_link_name = "kuka_arm_7_link";
-        std::string source_link_name = "calib_kuka_arm_base_link";
-        Hst_desired                  = forward_kinematics(kuka_model, q_random, source_link_name, target_link_name);
-        // Compute the inverse kinematics for the random desired transform
-        auto q0    = q_random + 0.1 * kuka_model.random_configuration();
-        auto start = high_resolution_clock::now();
-        Eigen::Matrix<double, 7, 1> q_solution =
-            inverse_kinematics<double, 7>(kuka_model, source_link_name, target_link_name, Hst_desired, q0);
-        auto stop     = high_resolution_clock::now();
-        auto duration = duration_cast<milliseconds>(stop - start);
-        // std::cout << "Duration milliseconds: " << duration.count() << std::endl;
-        // Compute the forward kinematics for the solution
-        Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
-        Hst_solution = forward_kinematics(kuka_model, q_solution, source_link_name, target_link_name);
-
-        // Compute the euler angles for current
-        Eigen::Matrix<double, 3, 3> Rst_solution = Hst_solution.linear();
-
-        // Compute the euler angles for desired
-        Eigen::Matrix<double, 3, 3> Rst_desired = Hst_desired.linear();
-
-        Eigen::Matrix<double, 3, 3> R_error = Rst_desired * Rst_solution.transpose();
-        double orientation_error            = (Eigen::Matrix<double, 3, 3>::Identity() - R_error).diagonal().sum();
-
-        // Check that the solution is close to the desired transform
-        REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
-        REQUIRE(orientation_error < 1e-1);
-    }
 }

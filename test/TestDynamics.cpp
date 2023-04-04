@@ -47,28 +47,12 @@ TEST_CASE("Test kinetic, potential and total energy computation for simple model
     q << 1, 2, 3, 4;
     Eigen::Matrix<double, 4, 1> p;
     p << 1, 2, 3, 4;
-    // Compute the kinetic, potential and hamiltonian
-    hamiltonian(robot_model, q, p);
-    // Check that the kinetic, potential and hamiltonian are correct
+    // Compute the kinetic, potential and total_energy
+    total_energy(robot_model, q, p);
+    // Check that the kinetic, potential and total_energy are correct
     REQUIRE(robot_model.data.T - 83.1250 < 1e-2);
     REQUIRE(robot_model.data.V - 432.7102 < 1e-2);
     REQUIRE(robot_model.data.H - 515.8352 < 1e-2);
-};
-
-TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
-    // Create a robot model
-    auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
-    // Create a random configuration
-    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
-    q << 1, 2, 3, 4;
-    Eigen::Matrix<double, 4, 1> p;
-    p << 1, 2, 3, 4;
-    Eigen::Matrix<double, 4, 1> u = robot_model.home_configuration();
-    u << 1, 2, 3, 4;
-    forward_dynamics(robot_model, q, p, u);
-    Eigen::Matrix<double, 8, 1> dx_dt_expected;
-    dx_dt_expected << 1.0111, 0.5284, 4.2528, 5.3216, 1.0000, -194.2000, -7.5397, 28.1456;
-    REQUIRE(robot_model.data.dx_dt.isApprox(dx_dt_expected, 1e-4));
 };
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 2 link model", "[Dynamics]") {
@@ -82,7 +66,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 2 link model
     Eigen::Matrix<double, n_joints, 1> tau;
     tau << 1, 2;
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 3 link model", "[Dynamics]") {
@@ -96,7 +80,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 3 link model
     Eigen::Matrix<double, n_joints, 1> tau;
     tau << 1, 2, 3;
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 4 link model", "[Dynamics]") {
@@ -110,7 +94,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 4 link model
     Eigen::Matrix<double, n_joints, 1> tau;
     tau << 1, 2, 3, 4;
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 5 link model", "[Dynamics]") {
@@ -124,7 +108,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 5 link model
     Eigen::Matrix<double, n_joints, 1> tau;
     tau << 1, 2, 3, 4, 5;
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }
 
 
@@ -139,7 +123,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass mode
     Eigen::Matrix<double, n_joints, 1> tau;
     tau << 1, 2, 3, 4;
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for panda_arm", "[Dynamics]") {
@@ -153,7 +137,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for panda_arm", 
     Eigen::Matrix<double, n_joints, 1> tau;
     tau << 1, 2, 3, 4, 5, 6, 7;
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for NUgus model", "[Dynamics]") {
@@ -165,5 +149,5 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for NUgus model"
     q(0)                                     = 10;
     Eigen::Matrix<double, n_joints, 1> tau   = Eigen::Matrix<double, n_joints, 1>::Ones();
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
 }

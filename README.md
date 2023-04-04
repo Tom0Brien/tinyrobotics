@@ -26,12 +26,6 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
 | `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass.             |
 | `centre_of_mass`         | Compute centre of mass of model.                                  |
 
-<h2><a href="https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html">Inverse Kinematics</a></h2>
-
-| Function             | Description                                             |
-| -------------------- | ------------------------------------------------------- |
-| `inverse_kinematics` | Solve joint positions to achieve desired pose of model. |
-
 <h2><a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html">Dynamics</a></h2>
 
 | Function           | Description                                                                    |
