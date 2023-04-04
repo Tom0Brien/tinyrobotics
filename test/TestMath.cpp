@@ -1,4 +1,4 @@
-#define CATCH_Solver
+#define CATCH_MATH
 #include <iostream>
 
 #include "../include/Math.hpp"

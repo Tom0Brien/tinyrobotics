@@ -5,7 +5,6 @@
 #include "../include/Dynamics.hpp"
 #include "../include/Kinematics.hpp"
 #include "../include/Parser.hpp"
-#include "../include/Solver.hpp"
 
 using namespace tinyrobotics;
 
