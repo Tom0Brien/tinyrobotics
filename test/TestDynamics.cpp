@@ -21,7 +21,7 @@ TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Check that the mass matrix is correct
     Eigen::Matrix<double, 4, 4> M_expected;
     M_expected << 20, 0, 2.5, 2.5, 0, 20, 0, 0, 2.5, 0, 1.25108, 0, 2.5, 0, 0, 1.25;
-    REQUIRE(robot_model.data.M.isApprox(M_expected, 1e-4));
+    REQUIRE(robot_model.data.mass_matrix.isApprox(M_expected, 1e-4));
 };
 
 TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
@@ -36,7 +36,7 @@ TEST_CASE("Test mass matrix for kuka model", "[Dynamics]") {
     M_expected << 0.0136, 0.0346, 0.0072, -0.0186, 0.0008, 0, 0, 0.0346, 4.4728, 0.0402, -1.9636, 0.0290, 0.1354, 0,
         0.0072, 0.0402, 0.0072, -0.0186, 0.0008, 0, 0, -0.0186, -1.9636, -0.0186, 0.9620, -0.0130, -0.0730, 0, 0.0008,
         0.0290, 0.0008, -0.0130, 0.0008, 0, 0, 0, 0.1354, 0, -0.0730, 0, 0.0122, 0, 0, 0, 0, 0, 0, 0, 0;
-    REQUIRE(kuka_model.data.M.isApprox(M_expected, 1e-4));
+    REQUIRE(kuka_model.data.mass_matrix.isApprox(M_expected, 1e-4));
 };
 
 TEST_CASE("Test kinetic, potential and total energy computation for simple model", "[Dynamics]") {
@@ -50,9 +50,9 @@ TEST_CASE("Test kinetic, potential and total energy computation for simple model
     // Compute the kinetic, potential and total_energy
     total_energy(robot_model, q, p);
     // Check that the kinetic, potential and total_energy are correct
-    REQUIRE(robot_model.data.T - 83.1250 < 1e-2);
-    REQUIRE(robot_model.data.V - 432.7102 < 1e-2);
-    REQUIRE(robot_model.data.H - 515.8352 < 1e-2);
+    REQUIRE(robot_model.data.kinetic_energy - 83.1250 < 1e-2);
+    REQUIRE(robot_model.data.potential_energy - 432.7102 < 1e-2);
+    REQUIRE(robot_model.data.total_energy - 515.8352 < 1e-2);
 };
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 2 link model", "[Dynamics]") {

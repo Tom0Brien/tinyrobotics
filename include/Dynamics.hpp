@@ -21,31 +21,31 @@ namespace tinyrobotics {
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
-        // Reset the mass matrix and potential energy
-        model.data.M.setZero();
-        model.data.V = 0;
+        // Reset the mass matrix
+        model.data.mass_matrix.setZero();
         Eigen::Matrix<Scalar, 6, 6> Mi;
+        Eigen::Matrix<Scalar, 3, 3> R0i;
+        Eigen::Matrix<Scalar, 6, nq> Jci;
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c;
+        Eigen::Matrix<Scalar, 3, 1> rMIi_c;
         // Get the base link from the model
         auto base_link = model.links[model.base_link_idx];
         for (int i = 0; i < model.n_links; i++) {
             Mi.setZero();
             // Compute the rotation between the ith link and the base
-            Eigen::Matrix<Scalar, 3, 3> R0i = rotation(model, q, base_link.name, model.links[i].name);
+            R0i = rotation(model, q, base_link.name, model.links[i].name);
             // Insert the mass of the link into the top 3 diagonals
             Mi.block(0, 0, 3, 3) = model.links[i].mass * Eigen::Matrix<Scalar, 3, 3>::Identity();
             // Insert the inertia of the link into the bottom 3 diagonals
             Mi.block(3, 3, 3, 3) = R0i * model.links[i].inertia * R0i.transpose();
             // Compute the geometric jacobian of the links center of mass with respect to the base
-            Eigen::Matrix<Scalar, 6, nq> Jci = geometric_jacobian_com(model, q, model.links[i].name);
+            Jci = geometric_jacobian_com(model, q, model.links[i].name);
             // Compute the contribution to the mass matrix of the link
-            model.data.M += Jci.transpose() * Mi * Jci;
-            // Compute the contribution to the potential energy of the link
-            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c =
-                forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].idx);
-            Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
-            model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
+            model.data.mass_matrix += Jci.transpose() * Mi * Jci;
+            Hbi_c  = forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].idx);
+            rMIi_c = Hbi_c.translation();
         }
-        return model.data.M;
+        return model.data.mass_matrix;
     }
 
     /**
@@ -55,14 +55,15 @@ namespace tinyrobotics {
      * @param dq The joint velocity of the robot.
      */
     template <typename Scalar, int nq>
-    void kinetic_energy(Model<Scalar, nq>& model,
-                        const Eigen::Matrix<Scalar, nq, 1>& q,
-                        const Eigen::Matrix<Scalar, nq, 1>& dq) {
+    Scalar kinetic_energy(Model<Scalar, nq>& model,
+                          const Eigen::Matrix<Scalar, nq, 1>& q,
+                          const Eigen::Matrix<Scalar, nq, 1>& dq) {
 
         // Compute the mass matrix
         mass_matrix<Scalar, nq>(model, q);
         // Compute the kinetic energy
-        model.data.T = 0.5 * dq.transpose() * model.data.M * dq;
+        model.data.kinetic_energy = 0.5 * dq.transpose() * model.data.mass_matrix * dq;
+        return model.data.kinetic_energy;
     }
 
     /**
@@ -73,50 +74,46 @@ namespace tinyrobotics {
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      */
     template <typename Scalar, int nq>
-    void potential_energy(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
+    Scalar potential_energy(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset the potential energy
-        model.data.V = 0;
+        model.data.potential_energy = 0;
         // Compute the potential energy
         for (int i = 0; i < model.n_links; i++) {
             // Compute the contribution to the potential energy of the link
             Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c =
                 forward_kinematics_com<Scalar, nq>(model, q, model.base_link_idx, model.links[i].idx);
             Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
-            model.data.V += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
+            model.data.potential_energy += -model.links[i].mass * model.gravity.transpose() * rMIi_c;
         }
+        return model.data.potential_energy;
     }
 
     /**
      * @brief Compute the total energy of the tinyrobotics model.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param p Joint momentum of the robot.
+     * @param dq Joint velocity of the robot.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, 1, 1> total_energy(Model<Scalar, nq>& model,
-                                             const Eigen::Matrix<Scalar, nq, 1>& q,
-                                             const Eigen::Matrix<Scalar, nq, 1>& p) {
-        // Compute the mass matrix and potential energy
-        mass_matrix<Scalar, nq>(model, q);
-
-        // Compute the inverse of the mass matrix
-        Eigen::Matrix<Scalar, nq, nq> b    = Eigen::Matrix<Scalar, nq, nq>::Identity();
-        Eigen::Matrix<Scalar, nq, nq> Minv = model.data.M.ldlt().solve(b);
-        model.data.Minv                    = Minv;
-
+    Scalar total_energy(Model<Scalar, nq>& model,
+                        const Eigen::Matrix<Scalar, nq, 1>& q,
+                        const Eigen::Matrix<Scalar, nq, 1>& dq) {
         // Compute the kinetic energy
-        model.data.T = Scalar(0.5 * p.transpose() * Minv * p);
+        kinetic_energy(model, q, dq);
 
-        // Compute the total energy
-        Eigen::Matrix<Scalar, 1, 1> H = Eigen::Matrix<Scalar, 1, 1>(model.data.T + model.data.V);
-        return H;
+        // Compute the potential energy
+        potential_energy(model, q);
+
+        // Compute and return the total energy (kinetic + potential)
+        return model.data.kinetic_energy + model.data.potential_energy;
     }
 
     /**
      * @brief Apply external forces to the tinyrobotics model
      * @param model tinyrobotics model.
+     * @param Xup The spatial transformation matrices between the ith link and its parent.
      * @param f_in The input force array of the tinyrobotics model.
      * @param f_ext The external force array to be added to the input force array.
      * @return f_out The output force array with the external forces incorporated.
@@ -144,7 +141,6 @@ namespace tinyrobotics {
         return f_out;
     }
 
-
     /**
      * @brief Compute the forward dynamics of the tinyrobotics model via Articulated-Body Algorithm
      * @param m tinyrobotics model.
@@ -160,9 +156,8 @@ namespace tinyrobotics {
                                                   const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                   const Eigen::Matrix<Scalar, nq, 1>& tau,
                                                   const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
-        // Initialize the vectors for the algorithm
-        m.data.gravity.tail(3) = m.gravity;
-        // First pass
+
+        // First pass: compute the spatial acceleration of each body
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
             auto link                      = m.links[m.q_idx[i]];
@@ -190,7 +185,7 @@ namespace tinyrobotics {
             m.data.pA = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
         }
 
-        // Second pass
+        // Second pass: compute the spatial force acting on each body
         for (int i = nq - 1; i >= 0; i--) {
             m.data.U[i] = m.data.IA[i] * m.data.S[i];
             m.data.d[i] = m.data.S[i].transpose() * m.data.U[i];
@@ -204,10 +199,10 @@ namespace tinyrobotics {
             }
         }
 
-        // Third pass
+        // Third pass: compute the joint accelerations
         for (int i = 0; i < nq; i++) {
             if (m.parent[i] == -1) {
-                m.data.a[i] = m.data.Xup[i] * -m.data.gravity + m.data.c[i];
+                m.data.a[i] = m.data.Xup[i] * -m.data.spatial_gravity + m.data.c[i];
             }
             else {
                 m.data.a[i] = m.data.Xup[i] * m.data.a[m.parent[i]] + m.data.c[i];

@@ -26,60 +26,38 @@ namespace tinyrobotics {
         /// @brief Joint acceleration.
         Eigen::Matrix<Scalar, nq, 1> ddq;
 
-        /// @brief Joint Momentum.
-        Eigen::Matrix<Scalar, nq, 1> p;
-
-        /// @brief Joint torque.
+        /// @brief Joint torque/force.
         Eigen::Matrix<Scalar, nq, 1> tau;
 
         /// @brief Mass matrix.
-        Eigen::Matrix<Scalar, nq, nq> M = Eigen::Matrix<Scalar, nq, nq>::Zero();
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mr;
+        Eigen::Matrix<Scalar, nq, nq> mass_matrix = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
         /// @brief Inverse mass matrix.
-        Eigen::Matrix<Scalar, nq, nq> Minv = Eigen::Matrix<Scalar, nq, nq>::Zero();
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Mrinv;
+        Eigen::Matrix<Scalar, nq, nq> inv_mass_matrix = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
         /// @brief Coriolis matrix.
-        Eigen::Matrix<Scalar, nq, nq> C = Eigen::Matrix<Scalar, nq, nq>::Zero();
+        Eigen::Matrix<Scalar, nq, nq> coriolis = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
-        /// @brief Gravity torque vector.
-        Eigen::Matrix<Scalar, nq, 1> g;
+        /// @brief Gravity vector.
+        Eigen::Matrix<Scalar, nq, 1> gravity;
 
         /// @brief Input mapping matrix.
-        Eigen::Matrix<Scalar, nq, nq> Gp = Eigen::Matrix<Scalar, nq, nq>::Identity();
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Gr;
+        Eigen::Matrix<Scalar, nq, nq> input_mapping = Eigen::Matrix<Scalar, nq, nq>::Identity();
 
         /// @brief Damping matrix.
-        Eigen::Matrix<Scalar, nq, nq> Dp = Eigen::Matrix<Scalar, nq, nq>::Zero();
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Dr;
+        Eigen::Matrix<Scalar, nq, nq> damping = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
-        /// @brief Constraint jacobian
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jc;
+        /// @brief Kinetic energy.
+        Scalar kinetic_energy = 0;
 
-        /// @brief Constraint jacobian left annihilator
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> Jcp;
+        /// @brief Potential energy.
+        Scalar potential_energy = 0;
 
-        /// @brief The kinetic co-energy.
-        Scalar T = 0;
-
-        /// @brief The potential energy.
-        Scalar V = 0;
-
-        /// @brief The total_energy (total energy).
-        Scalar H = 0;
-
-        /// @brief The dynamics dx_dt
-        Eigen::Matrix<Scalar, nq + nq, 1> dx_dt;
+        /// @brief Total_energy
+        Scalar total_energy = 0;
 
         /// @brief Vector of forward kinematics Data.
-        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> FK = {};
-
-        /// @brief Number of reduced momentum states
-        int nr = 0;
-
-        /// @brief Vector of redundant momentum states
-        int nz = 0;
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics = {};
 
         /// @brief Spatial transforms from parent to child links.
         std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup =
@@ -120,7 +98,7 @@ namespace tinyrobotics {
             std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
 
         /// @brief Gravity vector in spatial coordinates.
-        Eigen::Matrix<Scalar, 6, 1> gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
+        Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
         /**
          * @brief Casts the data to a new scalar type.
@@ -130,24 +108,35 @@ namespace tinyrobotics {
         template <typename NewScalar>
         Data<NewScalar, nq> cast() {
             Data<NewScalar, nq> new_res;
-            new_res.q     = q.template cast<NewScalar>();
-            new_res.dq    = dq.template cast<NewScalar>();
-            new_res.ddq   = ddq.template cast<NewScalar>();
-            new_res.p     = p.template cast<NewScalar>();
-            new_res.tau   = tau.template cast<NewScalar>();
-            new_res.M     = M.template cast<NewScalar>();
-            new_res.Minv  = Minv.template cast<NewScalar>();
-            new_res.C     = C.template cast<NewScalar>();
-            new_res.g     = g.template cast<NewScalar>();
-            new_res.Gp    = Gp.template cast<NewScalar>();
-            new_res.Dp    = Dp.template cast<NewScalar>();
-            new_res.T     = NewScalar(T);
-            new_res.V     = NewScalar(V);
-            new_res.H     = NewScalar(H);
-            new_res.dx_dt = dx_dt.template cast<NewScalar>();
-            for (int i = 0; i < FK.size(); i++) {
-                new_res.FK[i] = FK[i].template cast<NewScalar>();
+            new_res.q                = q.template cast<NewScalar>();
+            new_res.dq               = dq.template cast<NewScalar>();
+            new_res.ddq              = ddq.template cast<NewScalar>();
+            new_res.tau              = tau.template cast<NewScalar>();
+            new_res.mass_matrix      = mass_matrix.template cast<NewScalar>();
+            new_res.inv_mass_matrix  = inv_mass_matrix.template cast<NewScalar>();
+            new_res.coriolis         = coriolis.template cast<NewScalar>();
+            new_res.gravity          = gravity.template cast<NewScalar>();
+            new_res.input_mapping    = input_mapping.template cast<NewScalar>();
+            new_res.damping          = damping.template cast<NewScalar>();
+            new_res.kinetic_energy   = NewScalar(kinetic_energy);
+            new_res.potential_energy = NewScalar(potential_energy);
+            new_res.total_energy     = NewScalar(total_energy);
+            for (int i = 0; i < forward_kinematics.size(); i++) {
+                new_res.forward_kinematics[i] = forward_kinematics[i].template cast<NewScalar>();
             }
+            for (int i = 0; i < Xup.size(); i++) {
+                new_res.Xup[i] = Xup[i].template cast<NewScalar>();
+                new_res.S[i]   = S[i].template cast<NewScalar>();
+                new_res.v[i]   = v[i].template cast<NewScalar>();
+                new_res.c[i]   = c[i].template cast<NewScalar>();
+                new_res.IA[i]  = IA[i].template cast<NewScalar>();
+                new_res.pA[i]  = pA[i].template cast<NewScalar>();
+                new_res.U[i]   = U[i].template cast<NewScalar>();
+                new_res.d[i]   = NewScalar(d[i]);
+                new_res.u[i]   = NewScalar(u[i]);
+                new_res.a[i]   = a[i].template cast<NewScalar>();
+            }
+            new_res.spatial_gravity = spatial_gravity.template cast<NewScalar>();
             return new_res;
         }
     };

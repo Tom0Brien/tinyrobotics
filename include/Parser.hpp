@@ -504,6 +504,9 @@ namespace tinyrobotics {
                 }
             }
         }
+
+        // Assign spatial gravity vector in models data
+        model.data.spatial_gravity.tail(3) = model.gravity;
     }
 
     /**

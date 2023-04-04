@@ -18,22 +18,24 @@ namespace tinyrobotics {
      * @param q Joint configuration of the robot.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return Stores the transform to all the links in model.data.FK vector.
+     * @return Stores the transform to all the links in model.data.forward_kinematics vector.
      */
     template <typename Scalar, int nq>
     void forward_kinematics(Model<Scalar, nq>& model, const Eigen::Matrix<Scalar, nq, 1>& q) {
-        // Resize the FK vector to store the results for all links
-        model.data.FK.resize(model.n_links, Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity());
+        // Resize the forward_kinematics vector to store the results for all links
+        model.data.forward_kinematics.resize(model.n_links, Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity());
         for (auto const link : model.links) {
             // Compute the transform to the current joint from the parent link (Hpj)
-            model.data.FK[link.idx] = link.joint.parent_transform;
+            model.data.forward_kinematics[link.idx] = link.joint.parent_transform;
             if (link.joint.idx != -1) {
                 // Transform the joint frame by joint value (Hjt)
-                model.data.FK[link.idx] = model.data.FK[link.idx] * link.joint.get_joint_transform(q[link.joint.idx]);
+                model.data.forward_kinematics[link.idx] =
+                    model.data.forward_kinematics[link.idx] * link.joint.get_joint_transform(q[link.joint.idx]);
             }
             if (link.parent != -1) {
                 // Hpt = Hpj * Hjt
-                model.data.FK[link.idx] = model.data.FK[link.parent] * model.data.FK[link.idx];
+                model.data.forward_kinematics[link.idx] =
+                    model.data.forward_kinematics[link.parent] * model.data.forward_kinematics[link.idx];
             }
         }
     }

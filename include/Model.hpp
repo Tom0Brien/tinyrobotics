@@ -43,6 +43,9 @@ namespace tinyrobotics {
         /// @brief Vector of links in the model.
         std::vector<Link<Scalar>> links = {};
 
+        /// @brief Vector of joints in the model.
+        std::vector<Joint<Scalar>> joints = {};
+
         /// @brief Index of the base link in the models links vector.
         int base_link_idx = -1;
 
@@ -51,9 +54,6 @@ namespace tinyrobotics {
 
         /// @brief Vector of parent link indices of the links which are non-fixed.
         std::vector<int> parent = {};
-
-        /// @brief Vector of joints in the model.
-        std::vector<Joint<Scalar>> joints = {};
 
         /// @brief Gravitational acceleration experienced by model.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
@@ -147,7 +147,6 @@ namespace tinyrobotics {
             std::cout << separator << std::endl;
         }
 
-
         /**
          * @brief Get a configuration vector for the model of all zeros.
          * @return Configuration vector of all zeros.
@@ -170,7 +169,6 @@ namespace tinyrobotics {
             q = M_PI * q;
             return q;
         }
-
 
         /**
          * @brief Casts the model to a new scalar type.
