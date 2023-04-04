@@ -14,20 +14,13 @@ using namespace tr;
 TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Create a robot model
     auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
-
     // Create a random configuration
     Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
     // Compute the dynamics
-    auto start = std::chrono::high_resolution_clock::now();
     mass_matrix(robot_model, q);
-
-    auto stop     = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Mass Matrix computation took " << duration.count() << " microseconds" << std::endl;
     // Check that the mass matrix is correct
     Eigen::Matrix<double, 4, 4> M_expected;
     M_expected << 20, 0, 2.5, 2.5, 0, 20, 0, 0, 2.5, 0, 1.25108, 0, 2.5, 0, 0, 1.25;
-
     REQUIRE(robot_model.data.M.isApprox(M_expected, 1e-4));
 };
 
@@ -72,13 +65,7 @@ TEST_CASE("Test hamiltonian dynamics for simple model", "[Dynamics]") {
     p << 1, 2, 3, 4;
     Eigen::Matrix<double, 4, 1> u = robot_model.home_configuration();
     u << 1, 2, 3, 4;
-    // Compute the kinetic, potential and hamiltonian
-    auto start = std::chrono::high_resolution_clock::now();
     forward_dynamics(robot_model, q, p, u);
-    auto stop     = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Hamiltonian Dynamics computation took " << duration.count() << " microseconds"
-              << std::endl;  // Check that the hamiltonian dynamics are correct
     Eigen::Matrix<double, 8, 1> dx_dt_expected;
     dx_dt_expected << 1.0111, 0.5284, 4.2528, 5.3216, 1.0000, -194.2000, -7.5397, 28.1456;
     REQUIRE(robot_model.data.dx_dt.isApprox(dx_dt_expected, 1e-4));
@@ -178,12 +165,5 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for NUgus model"
     q(0)                                     = 10;
     Eigen::Matrix<double, n_joints, 1> tau   = Eigen::Matrix<double, n_joints, 1>::Ones();
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
-    // Start the timer
-    auto start                             = std::chrono::high_resolution_clock::now();
-    Eigen::Matrix<double, n_joints, 1> qdd = forward_dynamics_ab(robot_model, q, qd, tau);
-    // Stop the timer
-    auto stop     = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Forward Dynamics for 20dof robot via Articulated-Body Algorithm computation took " << duration.count()
-              << " microseconds" << std::endl;
+    Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics_ab(robot_model, q, qd, tau);
 }
