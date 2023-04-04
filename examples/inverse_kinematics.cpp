@@ -8,7 +8,7 @@
 #include "../include/Parser.hpp"
 #include "../include/Solver.hpp"
 
-using namespace tr;
+using namespace tinyrobotics;
 
 int main(int argc, char* argv[]) {
     // Load in Model from URDF

@@ -4,4 +4,4 @@
 #include "../include/Math.hpp"
 #include "catch2/catch.hpp"
 
-using namespace tr;
+using namespace tinyrobotics;

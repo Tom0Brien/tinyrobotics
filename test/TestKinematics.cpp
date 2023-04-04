@@ -11,7 +11,7 @@
 
 using namespace ifopt;
 using namespace std::chrono;
-using namespace tr;
+using namespace tinyrobotics;
 
 // Load the robot model from a URDF file
 auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");

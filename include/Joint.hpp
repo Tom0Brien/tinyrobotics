@@ -7,7 +7,7 @@
 /** \file Joint.hpp
  * @brief Contains struct for representing a joint in a tinyrobotics model.
  */
-namespace tr {
+namespace tinyrobotics {
 
     /// @brief The types of joints.
     enum class JointType {
@@ -143,5 +143,5 @@ namespace tr {
     };
 
 
-}  // namespace tr
+}  // namespace tinyrobotics
 #endif

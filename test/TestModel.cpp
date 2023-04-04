@@ -6,7 +6,7 @@
 #include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
 
-using namespace tr;
+using namespace tinyrobotics;
 
 TEST_CASE("Load a model with inertial information", "[Model]") {
     // Create a robot model
@@ -68,13 +68,13 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
 
 TEST_CASE("Create a Model of autodiff type", "[Model]") {
     // Create a robot model
-    auto robot_model = tr::import_urdf<autodiff::real, 4>("data/urdfs/simple.urdf");
+    auto robot_model = tinyrobotics::import_urdf<autodiff::real, 4>("data/urdfs/simple.urdf");
     CHECK(robot_model.name == "compass_gait");
 }
 
 TEST_CASE("Cast a Model from double to float", "[Model]") {
     // Create a robot model
-    auto robot_model_double = tr::import_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model_double = tinyrobotics::import_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Cast the model to a different type
     auto robot_model_float = robot_model_double.template cast<float>();
@@ -102,7 +102,7 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
 
     // Check parsed fixed joint information
     CHECK(robot_model_float.get_joint("hip_joint").name == "hip_joint");
-    CHECK(robot_model_float.get_joint("hip_joint").type == tr::JointType::FIXED);
+    CHECK(robot_model_float.get_joint("hip_joint").type == tinyrobotics::JointType::FIXED);
     CHECK(robot_model_float.get_joint("hip_joint").parent_link_name == "floating_base_z");
     CHECK(robot_model_float.get_joint("hip_joint").child_link_name == "body");
     CHECK(robot_model_float.get_joint("hip_joint").axis == Eigen::Matrix<float, 3, 1>::Zero());
@@ -113,7 +113,7 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
 
     // Check parsed revolute joint information
     CHECK(robot_model_float.get_joint("left_hip_pitch").name == "left_hip_pitch");
-    CHECK(robot_model_float.get_joint("left_hip_pitch").type == tr::JointType::REVOLUTE);
+    CHECK(robot_model_float.get_joint("left_hip_pitch").type == tinyrobotics::JointType::REVOLUTE);
     CHECK(robot_model_float.get_joint("left_hip_pitch").parent_link_name == "body");
     CHECK(robot_model_float.get_joint("left_hip_pitch").child_link_name == "left_leg");
     CHECK(robot_model_float.get_joint("left_hip_pitch").axis == Eigen::Matrix<float, 3, 1>(0, -1, 0));
@@ -124,7 +124,7 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
 
     // Check parsed prismatic joint information
     CHECK(robot_model_float.get_joint("floating_base_x").name == "floating_base_x");
-    CHECK(robot_model_float.get_joint("floating_base_x").type == tr::JointType::PRISMATIC);
+    CHECK(robot_model_float.get_joint("floating_base_x").type == tinyrobotics::JointType::PRISMATIC);
     CHECK(robot_model_float.get_joint("floating_base_x").parent_link_name == "ground");
     CHECK(robot_model_float.get_joint("floating_base_x").child_link_name == "floating_base_x");
     CHECK(robot_model_float.get_joint("floating_base_x").axis == Eigen::Matrix<float, 3, 1>(1, 0, 0));
@@ -137,7 +137,7 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
 
 TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
     // Load the robot model from a URDF file
-    auto robot_model_double = tr::import_urdf<double, 4>("data/urdfs/simple.urdf");
+    auto robot_model_double = tinyrobotics::import_urdf<double, 4>("data/urdfs/simple.urdf");
 
     // Cast the model to a different type
     auto autodiff_model = robot_model_double.template cast<autodiff::real>();
@@ -166,7 +166,7 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
 
     // Check parsed fixed joint information
     CHECK(autodiff_model.get_joint("hip_joint").name == "hip_joint");
-    CHECK(autodiff_model.get_joint("hip_joint").type == tr::JointType::FIXED);
+    CHECK(autodiff_model.get_joint("hip_joint").type == tinyrobotics::JointType::FIXED);
     CHECK(autodiff_model.get_joint("hip_joint").parent_link_name == "floating_base_z");
     CHECK(autodiff_model.get_joint("hip_joint").child_link_name == "body");
     CHECK(autodiff_model.get_joint("hip_joint").axis == Eigen::Matrix<autodiff::real, 3, 1>::Zero());
@@ -177,7 +177,7 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
 
     // Check parsed revolute joint information
     CHECK(autodiff_model.get_joint("left_hip_pitch").name == "left_hip_pitch");
-    CHECK(autodiff_model.get_joint("left_hip_pitch").type == tr::JointType::REVOLUTE);
+    CHECK(autodiff_model.get_joint("left_hip_pitch").type == tinyrobotics::JointType::REVOLUTE);
     CHECK(autodiff_model.get_joint("left_hip_pitch").parent_link_name == "body");
     CHECK(autodiff_model.get_joint("left_hip_pitch").child_link_name == "left_leg");
     CHECK(autodiff_model.get_joint("left_hip_pitch").axis == Eigen::Matrix<autodiff::real, 3, 1>(0, -1, 0));
@@ -188,7 +188,7 @@ TEST_CASE("Cast a Model from double to autodiff::real", "[Model]") {
 
     // Check parsed prismatic joint information
     CHECK(autodiff_model.get_joint("floating_base_x").name == "floating_base_x");
-    CHECK(autodiff_model.get_joint("floating_base_x").type == tr::JointType::PRISMATIC);
+    CHECK(autodiff_model.get_joint("floating_base_x").type == tinyrobotics::JointType::PRISMATIC);
     CHECK(autodiff_model.get_joint("floating_base_x").parent_link_name == "ground");
     CHECK(autodiff_model.get_joint("floating_base_x").child_link_name == "floating_base_x");
     CHECK(autodiff_model.get_joint("floating_base_x").axis == Eigen::Matrix<autodiff::real, 3, 1>(1, 0, 0));

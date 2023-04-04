@@ -18,7 +18,7 @@
 /** \file Model.hpp
  * @brief Contains struct for representing a tinyrobotics model.
  */
-namespace tr {
+namespace tinyrobotics {
 
     /**
      * @brief A tinyrobotics model.
@@ -196,6 +196,6 @@ namespace tr {
             return new_model;
         }
     };
-}  // namespace tr
+}  // namespace tinyrobotics
 
 #endif

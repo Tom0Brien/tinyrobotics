@@ -4,7 +4,7 @@
 #include "../include/Model.hpp"
 #include "../include/Parser.hpp"
 
-using namespace tr;
+using namespace tinyrobotics;
 
 int main(int argc, char* argv[]) {
     // Create a robot model with 4 joints

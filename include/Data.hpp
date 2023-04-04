@@ -7,7 +7,7 @@
 /** \file Data.hpp
  * @brief Contains the Data struct which stores the results of various model algorithms.
  */
-namespace tr {
+namespace tinyrobotics {
 
     /**
      * @brief A data struct for storing results of various model algorithms.
@@ -151,6 +151,6 @@ namespace tr {
             return new_res;
         }
     };
-}  // namespace tr
+}  // namespace tinyrobotics
 
 #endif

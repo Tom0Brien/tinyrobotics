@@ -10,7 +10,7 @@
 /** \file Kinematics.hpp
  * @brief Contains functions for computing various kinematic quantities of a tinyrobotics model.
  */
-namespace tr {
+namespace tinyrobotics {
 
     /**
      * @brief Computes the transform to all the links in the tinyrobotics model.
@@ -413,6 +413,6 @@ namespace tr {
         return rISs / total_mass;
     }
 
-}  // namespace tr
+}  // namespace tinyrobotics
 
 #endif

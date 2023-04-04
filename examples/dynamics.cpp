@@ -16,7 +16,7 @@
 #include "../include/Parser.hpp"
 #include "../include/Solver.hpp"
 
-using namespace tr;
+using namespace tinyrobotics;
 
 std::string swing_foot   = "right_foot";
 std::string planted_foot = "left_foot";

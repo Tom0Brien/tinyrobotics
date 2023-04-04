@@ -10,7 +10,7 @@
 #include "../include/Solver.hpp"
 #include "catch2/catch.hpp"
 
-using namespace tr;
+using namespace tinyrobotics;
 
 TEST_CASE("Test single euler integration step for simple model", "[Solver]") {
     // Create a robot model

@@ -9,7 +9,7 @@
 #include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
 
-using namespace tr;
+using namespace tinyrobotics;
 
 TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Create a robot model

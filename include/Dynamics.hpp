@@ -13,7 +13,7 @@
 /** \file Dynamics.hpp
  * @brief Contains functions for computing the dynamics of a tinyrobotics model.
  */
-namespace tr {
+namespace tinyrobotics {
     /**
      * @brief Compute the mass matrix of the robot model.
      * @param model tinyrobotics model.
@@ -514,6 +514,6 @@ namespace tr {
         return m.data.ddq;
     }
 
-}  // namespace tr
+}  // namespace tinyrobotics
 
 #endif
