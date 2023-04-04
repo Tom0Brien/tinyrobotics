@@ -443,7 +443,7 @@ namespace tr {
 
     /**
      * @brief Compute the forward dynamics of the robot model via Articulated-Body Algorithm
-     * @param model tinyrobotics model.
+     * @param m tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param qd Joint velocity of the robot.
      * @param tau Joint torque of the robot.
@@ -451,76 +451,67 @@ namespace tr {
      * @return Joint accelerations of the model.
      */
     template <typename Scalar, int nq>
-    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(const Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, nq, 1> forward_dynamics_ab(Model<Scalar, nq>& m,
                                                      const Eigen::Matrix<Scalar, nq, 1>& q,
                                                      const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                      const Eigen::Matrix<Scalar, nq, 1>& tau,
                                                      const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
         // Initialize the vectors for the algorithm
-        Eigen::Matrix<Scalar, 6, 1> g = Eigen::Matrix<Scalar, 6, 1>::Zero();
-        g.tail(3)                     = model.gravity;
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> S(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> v(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> c(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> IA(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> pA(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> U(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        std::vector<Scalar> d(nq, 0);
-        std::vector<Scalar> u(nq, 0);
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> a(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-        Eigen::Matrix<Scalar, nq, 1> qdd = Eigen::Matrix<Scalar, nq, 1>::Zero();
-
+        m.data.gravity.tail(3) = m.gravity;
+        // First pass
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            auto link                      = model.links[model.q_idx[i]];
-            S[i]                           = link.joint.S;
-            Eigen::Matrix<Scalar, 6, 1> vJ = S[i] * qd(i);
+            auto link                      = m.links[m.q_idx[i]];
+            m.data.S[i]                    = link.joint.S;
+            Eigen::Matrix<Scalar, 6, 1> vJ = m.data.S[i] * qd(i);
             // Get transform from body to parent
             auto T = link.joint.get_parent_to_child_transform(q(i));
             // Compute the spatial transform from the parent to the current body
-            Xup[i] = homogeneous_to_spatial(T.inverse());
-            // Check if the model.parent link is the base link
-            if (model.parent[i] == -1) {
-                v[i] = vJ;
-                c[i] = Eigen::Matrix<Scalar, 6, 1>::Zero();
+            m.data.Xup[i] = homogeneous_to_spatial(T.inverse());
+            // Check if the m.parent link is the base link
+            if (m.parent[i] == -1) {
+                m.data.v[i] = vJ;
+                m.data.c[i] = Eigen::Matrix<Scalar, 6, 1>::Zero();
             }
             else {
-                v[i] = Xup[i] * v[model.parent[i]] + vJ;
-                c[i] = cross_spatial(v[i]) * vJ;
+                m.data.v[i] = m.data.Xup[i] * m.data.v[m.parent[i]] + vJ;
+                m.data.c[i] = cross_spatial(m.data.v[i]) * vJ;
             }
-            IA[i] = link.I;
-            pA[i] = cross_motion(v[i]) * IA[i] * v[i];
+            m.data.IA[i] = link.I;
+            m.data.pA[i] = cross_motion(m.data.v[i]) * m.data.IA[i] * m.data.v[i];
         }
 
         // Apply external forces if non-zero
         if (f_ext.size() != 0) {
-            pA = apply_external_forces(model, Xup, pA, f_ext);
+            m.data.pA = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
         }
 
+        // Second pass
         for (int i = nq - 1; i >= 0; i--) {
-            U[i] = IA[i] * S[i];
-            d[i] = S[i].transpose() * U[i];
-            u[i] = Scalar(tau(i) - S[i].transpose() * pA[i]);
-            if (model.parent[i] != -1) {
-                Eigen::Matrix<Scalar, 6, 6> Ia = IA[i] - (U[i] / d[i]) * U[i].transpose();
-                Eigen::Matrix<Scalar, 6, 1> pa = pA[i] + Ia * c[i] + U[i] * (u[i] / d[i]);
-                IA[model.parent[i]] += Xup[i].transpose() * Ia * Xup[i];
-                pA[model.parent[i]] += Xup[i].transpose() * pa;
+            m.data.U[i] = m.data.IA[i] * m.data.S[i];
+            m.data.d[i] = m.data.S[i].transpose() * m.data.U[i];
+            m.data.u[i] = Scalar(tau(i) - m.data.S[i].transpose() * m.data.pA[i]);
+            if (m.parent[i] != -1) {
+                Eigen::Matrix<Scalar, 6, 6> Ia = m.data.IA[i] - (m.data.U[i] / m.data.d[i]) * m.data.U[i].transpose();
+                Eigen::Matrix<Scalar, 6, 1> pa =
+                    m.data.pA[i] + Ia * m.data.c[i] + m.data.U[i] * (m.data.u[i] / m.data.d[i]);
+                m.data.IA[m.parent[i]] += m.data.Xup[i].transpose() * Ia * m.data.Xup[i];
+                m.data.pA[m.parent[i]] += m.data.Xup[i].transpose() * pa;
             }
         }
 
+        // Third pass
         for (int i = 0; i < nq; i++) {
-            if (model.parent[i] == -1) {
-                a[i] = Xup[i] * -g + c[i];
+            if (m.parent[i] == -1) {
+                m.data.a[i] = m.data.Xup[i] * -m.data.gravity + m.data.c[i];
             }
             else {
-                a[i] = Xup[i] * a[model.parent[i]] + c[i];
+                m.data.a[i] = m.data.Xup[i] * m.data.a[m.parent[i]] + m.data.c[i];
             }
-            qdd(i) = (u[i] - U[i].transpose() * a[i]) / d[i];
-            a[i]   = a[i] + S[i] * qdd(i);
+            m.data.ddq(i) = (m.data.u[i] - m.data.U[i].transpose() * m.data.a[i]) / m.data.d[i];
+            m.data.a[i]   = m.data.a[i] + m.data.S[i] * m.data.ddq(i);
         }
-        return qdd;
+        return m.data.ddq;
     }
 
 }  // namespace tr

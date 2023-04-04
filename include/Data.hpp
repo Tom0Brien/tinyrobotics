@@ -81,6 +81,47 @@ namespace tr {
         /// @brief Vector of redundant momentum states
         int nz = 0;
 
+        /// @brief Spatial transforms from parent to child links.
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup =
+            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+
+        /// @brief Motion subspace matrices for the joints.
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> S =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Spatial velocities of the robot links.
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> v =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Spatial acceleration bias terms for the robot links.
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> c =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Articulated-body inertia matrices for the robot links.
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> IA =
+            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+
+        /// @brief Articulated-body forces for the robot links.
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> pA =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Spatial force projections for the joints.
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> U =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Joint force inertia terms for the robot links.
+        std::vector<Scalar> d = std::vector<Scalar>(nq, 0);
+
+        /// @brief Joint force bias terms for the robot links.
+        std::vector<Scalar> u = std::vector<Scalar>(nq, 0);
+
+        /// @brief Spatial accelerations of the robot links.
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> a =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Gravity vector in spatial coordinates.
+        Eigen::Matrix<Scalar, 6, 1> gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
+
         /**
          * @brief Casts the data to a new scalar type.
          * @tparam NewScalar scalar type to cast the data to.
