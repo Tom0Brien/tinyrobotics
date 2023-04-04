@@ -1,14 +1,11 @@
 #define CATCH_KINEMATICS
 #include <chrono>
-#include <ifopt/ipopt_solver.h>
-#include <ifopt/problem.h>
 #include <string>
 
 #include "../include/Kinematics.hpp"
 #include "../include/Parser.hpp"
 #include "catch2/catch.hpp"
 
-using namespace ifopt;
 using namespace std::chrono;
 using namespace tinyrobotics;
 
