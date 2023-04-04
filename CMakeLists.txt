@@ -36,23 +36,22 @@ set(TARGET_BIN tinyroboticsExecutable)
 set(TARGET_TEST tinyroboticsTests)
 
 # Source files
-file(GLOB SRC_FILES "include/*.hpp")
-message(STATUS "Found source files: ${SRC_FILES}")
-file(GLOB SRC_BIN "examples/*.cpp")
+file(GLOB SRC_INCLUDES "include/*.hpp")
+file(GLOB SRC_EXAMPLES "examples/*.cpp")
 file(GLOB SRC_TEST "test/*.cpp")
 
 # Static library
-if(SRC_FILES)
-  add_library(${TARGET_LIB} STATIC ${SRC_FILES})
+if(SRC_INCLUDES)
+  add_library(${TARGET_LIB} STATIC ${SRC_INCLUDES})
   target_link_libraries(${TARGET_LIB} ${LIBS})
 endif()
 set_target_properties(${TARGET_LIB} PROPERTIES LINKER_LANGUAGE CXX)
 
 # Examples
-foreach(SRC_FILE ${SRC_BIN})
+foreach(SRC_FILE ${SRC_EXAMPLES})
   get_filename_component(EXAMPLE ${SRC_FILE} NAME_WE)
   add_executable(${EXAMPLE} ${SRC_FILE})
-  if(SRC_FILES)
+  if(SRC_INCLUDES)
     target_link_libraries(${EXAMPLE} ${TARGET_LIB})
   endif()
   target_link_libraries(${EXAMPLE} ${LIBS})
@@ -60,7 +59,7 @@ endforeach()
 
 # Unit tests
 add_executable(${TARGET_TEST} ${SRC_TEST})
-if(SRC_FILES)
+if(SRC_INCLUDES)
   target_link_libraries(${TARGET_TEST} ${TARGET_LIB})
 endif()
 target_link_libraries(${TARGET_TEST} ${LIBS})
@@ -73,3 +72,38 @@ add_custom_target(
   DEPENDS ${TARGET_TEST} ${TARGET_LIB}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMENT "Running tests")
+
+# Create a library target with the include files
+add_library(tinyrobotics SHARED ${SRC_INCLUDES})
+
+# Link libraries to the library target
+target_link_libraries(tinyrobotics PUBLIC ${LIBS})
+
+# Set the installation rules
+install(
+  TARGETS tinyrobotics
+  EXPORT tinyroboticsTargets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES
+  DESTINATION include)
+
+install(DIRECTORY include/ DESTINATION include)
+
+install(
+  EXPORT tinyroboticsTargets
+  FILE tinyroboticsTargets.cmake
+  NAMESPACE tinyrobotics::
+  DESTINATION lib/cmake/tinyrobotics)
+
+# Create a package configuration file for library
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "tinyroboticsConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion)
+
+install(FILES "tinyroboticsConfig.cmake"
+              "${CMAKE_CURRENT_BINARY_DIR}/tinyroboticsConfigVersion.cmake"
+        DESTINATION lib/cmake/TinyRobotics)
