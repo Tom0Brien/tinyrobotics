@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['hamiltonian_0',['hamiltonian',['../Dynamics_8hpp.html#ad02e3987e3ce988f2b0242b4f666e615',1,'tr']]],
-  ['hamiltonian_5fwith_5fconstraints_1',['hamiltonian_with_constraints',['../Dynamics_8hpp.html#a087cefffee1fc7913748c84d0b9123bb',1,'tr']]],
-  ['holonomic_5fconstraints_2',['holonomic_constraints',['../Dynamics_8hpp.html#ac45b3a4af48fd01dd088d3ce7213071c',1,'tr']]],
-  ['holonomic_5freduction_3',['holonomic_reduction',['../Dynamics_8hpp.html#adb4357b146c1cd34a0dd37270aaa7bef',1,'tr']]],
-  ['home_5fconfiguration_4',['home_configuration',['../structtr_1_1Model.html#a5e18a4150467e42e43b8d3fcb480ed6c',1,'tr::Model']]],
-  ['homogeneous_5fto_5fspatial_5',['homogeneous_to_spatial',['../Math_8hpp.html#aea668d996ef1220224ece19b72ad8aed',1,'tr']]]
+  ['import_5furdf_0',['import_urdf',['../Parser_8hpp.html#a6dce03909aa7d9d88bd55a722d28a914',1,'tinyrobotics']]],
+  ['inertia_5fto_5fspatial_1',['inertia_to_spatial',['../Math_8hpp.html#a8f9d7bb76676f8ec5bd49567849fff0e',1,'tinyrobotics']]],
+  ['init_5fdynamics_2',['init_dynamics',['../Parser_8hpp.html#a7c72c1bc9b735062eccff91afa32d3e5',1,'tinyrobotics']]],
+  ['init_5flink_5ftree_3',['init_link_tree',['../Parser_8hpp.html#a124deca9fd4b628486b070adb15e0408',1,'tinyrobotics']]],
+  ['inverse_5fdynamics_4',['inverse_dynamics',['../Dynamics_8hpp.html#acf55a06f27a5305eb33b7bbd39462acd',1,'tinyrobotics']]]
 ];

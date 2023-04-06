@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['n_5fjoints_0',['n_joints',['../structtr_1_1Model.html#a864a0576b3aad0bf1684edc733a6cb91',1,'tr::Model']]],
-  ['n_5flinks_1',['n_links',['../structtr_1_1Model.html#a0c336661aed01aa2abef8a5a09dcddf2',1,'tr::Model']]],
-  ['n_5fq_2',['n_q',['../structtr_1_1Model.html#a004e9980cbf7b2f8ddaa52d75d5d144d',1,'tr::Model']]],
-  ['name_3',['name',['../structtr_1_1Joint.html#ac2b1724543744b388988e5f7143ef847',1,'tr::Joint::name'],['../structtr_1_1Link.html#a02856636054345b8ea303046610325db',1,'tr::Link::name'],['../structtr_1_1Model.html#a3a539148b43a6d4a4442c3040a16da3b',1,'tr::Model::name']]],
-  ['nr_4',['nr',['../structtr_1_1Data.html#a9c500aed32bdbc3a5d0056fc0978271c',1,'tr::Data']]],
-  ['null_5',['null',['../Math_8hpp.html#a736d80fdc36d004add57806fa2d53bbb',1,'tr']]],
-  ['nz_6',['nz',['../structtr_1_1Data.html#afb3a2eb532aca877f458dae42c2e356a',1,'tr::Data']]]
+  ['pa_0',['pA',['../structtinyrobotics_1_1Data.html#a9d09b0191b9159947a47ec083cbb3bd0',1,'tinyrobotics::Data']]],
+  ['parent_1',['parent',['../structtinyrobotics_1_1Link.html#a64839a575353bb3279990e62f30bf047',1,'tinyrobotics::Link::parent'],['../structtinyrobotics_1_1Model.html#a00438fc0fd146458fa428fdc24b184ca',1,'tinyrobotics::Model::parent']]],
+  ['parent_5flink_5fname_2',['parent_link_name',['../structtinyrobotics_1_1Joint.html#a8518dfecc7717f7da84e65e71e0632a2',1,'tinyrobotics::Joint']]],
+  ['parent_5ftransform_3',['parent_transform',['../structtinyrobotics_1_1Joint.html#ad18a51aeecb7305e0694ee65fded1ff1',1,'tinyrobotics::Joint']]],
+  ['parser_2ehpp_4',['Parser.hpp',['../Parser_8hpp.html',1,'']]],
+  ['planar_5',['PLANAR',['../Joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efa537304b851a585f4a26b71f5c40ce40b',1,'tinyrobotics']]],
+  ['potential_5fenergy_6',['potential_energy',['../structtinyrobotics_1_1Data.html#a9e01f86b68a02e45ba1d2fe8ed5b0a2b',1,'tinyrobotics::Data::potential_energy'],['../Dynamics_8hpp.html#a5e05606d38fa81b99fcbf52e720128a2',1,'tinyrobotics::potential_energy(Model&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q)']]],
+  ['prismatic_7',['PRISMATIC',['../Joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efaace8e17dd1560c692929800de207e902',1,'tinyrobotics']]]
 ];

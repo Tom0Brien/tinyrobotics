@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['base_5flink_5fidx_0',['base_link_idx',['../structtr_1_1Model.html#a75bff9e00d5a855f61eeb2b603b598d1',1,'tr::Model']]]
+  ['base_5flink_5fidx_0',['base_link_idx',['../structtinyrobotics_1_1Model.html#acf4c86df2ae52b860fd74cd3fdd10f67',1,'tinyrobotics::Model']]]
 ];

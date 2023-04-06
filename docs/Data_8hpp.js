@@ -1,4 +1,4 @@
 var Data_8hpp =
 [
-    [ "tr::Data< Scalar, nq >", "structtr_1_1Data.html", "structtr_1_1Data" ]
+    [ "tinyrobotics::Data< Scalar, nq >", "structtinyrobotics_1_1Data.html", "structtinyrobotics_1_1Data" ]
 ];

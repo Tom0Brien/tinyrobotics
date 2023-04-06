@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['integrationmethod_0',['IntegrationMethod',['../Solver_8hpp.html#a9bd6e7c2da7e2c0a2d6b48647e22bcc0',1,'tr']]]
+  ['jointtype_0',['JointType',['../Joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134ef',1,'tinyrobotics']]]
 ];

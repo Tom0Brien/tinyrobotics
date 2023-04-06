@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['active_5fconstraints_0',['active_constraints',['../structtr_1_1SolverParams.html#a80afe416b2e5f684f37554a95ca5e2a8',1,'tr::SolverParams']]],
-  ['axis_1',['axis',['../structtr_1_1Joint.html#ad477940f6c838b144509f38645707de7',1,'tr::Joint']]]
+  ['a_0',['a',['../structtinyrobotics_1_1Data.html#a58247b5f67226176840710045a2f6a88',1,'tinyrobotics::Data']]],
+  ['axis_1',['axis',['../structtinyrobotics_1_1Joint.html#a9b4522a6199692ce05b945108c6b524e',1,'tinyrobotics::Joint']]]
 ];

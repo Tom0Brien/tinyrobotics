@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['data_0',['data',['../structtr_1_1Model.html#a7800e7ecd43f0c84992ebc8bb76d9697',1,'tr::Model']]],
-  ['ddq_1',['ddq',['../structtr_1_1Data.html#a913c875a3002d909aec9bb881b33a2e5',1,'tr::Data']]],
-  ['desired_5fpose_2',['desired_pose',['../classtr_1_1IKCost.html#a0a2746d2e64ac6a6dd0fc5df034f2724',1,'tr::IKCost']]],
-  ['dp_3',['Dp',['../structtr_1_1Data.html#ae64d47bcb40df7fb76ff00620e2874c5',1,'tr::Data']]],
-  ['dq_4',['dq',['../structtr_1_1Data.html#afec98609a380c7bb990d6dc7c1ef3af9',1,'tr::Data']]],
-  ['dt_5',['dt',['../structtr_1_1SolverParams.html#a22d2bc34ae067a2d5dd8d59a8b95d993',1,'tr::SolverParams']]],
-  ['dx_5fdt_6',['dx_dt',['../structtr_1_1Data.html#a0db21528a53589c6f99c329fd2813f09',1,'tr::Data']]]
+  ['d_0',['d',['../structtinyrobotics_1_1Data.html#a96d8c7b8f4613f9a52cab09f020d3ff3',1,'tinyrobotics::Data']]],
+  ['damping_1',['damping',['../structtinyrobotics_1_1Data.html#a5d39d7fc458432812a8d03c30f2c0952',1,'tinyrobotics::Data']]],
+  ['data_2',['data',['../structtinyrobotics_1_1Model.html#a28dc9be1ef0942cb0c57763967ea4fdd',1,'tinyrobotics::Model']]],
+  ['ddq_3',['ddq',['../structtinyrobotics_1_1Data.html#a090bf541745262233fb7b6c7f52d8cc6',1,'tinyrobotics::Data']]],
+  ['dq_4',['dq',['../structtinyrobotics_1_1Data.html#a9f4a7a3d22cb6a65f9355e3b1fa78bc1',1,'tinyrobotics::Data']]]
 ];

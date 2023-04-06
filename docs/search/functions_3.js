@@ -1,9 +1,13 @@
 var searchData=
 [
-  ['filljacobianblock_0',['FillJacobianBlock',['../classtr_1_1IKCost.html#a85f0e5e8c171ba4182cd96072acddcb0',1,'tr::IKCost']]],
-  ['forward_5fdynamics_1',['forward_dynamics',['../Dynamics_8hpp.html#af6fa9ea47ea58cc3f461a1056417f02d',1,'tr']]],
-  ['forward_5fdynamics_5fab_2',['forward_dynamics_ab',['../Dynamics_8hpp.html#a671311a5350568b14d9218da2e765815',1,'tr']]],
-  ['forward_5fdynamics_5fwithout_5fconstraints_3',['forward_dynamics_without_constraints',['../Dynamics_8hpp.html#a1484e2cd08dae01d5d8e5b618582d60c',1,'tr']]],
-  ['forward_5fkinematics_4',['forward_kinematics',['../Kinematics_8hpp.html#ab214d7483e620917f6d9693d7cef14a1',1,'tr::forward_kinematics(Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q)'],['../Kinematics_8hpp.html#a22e7ec9c58043f82520ebda18397a9f6',1,'tr::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;target_link_idx, const bool inverse_transform=false)'],['../Kinematics_8hpp.html#a7059e467101c51deaad280b619bd6954',1,'tr::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;target_link_name, const bool inverse_transform=false)'],['../Kinematics_8hpp.html#abce32c28459e8edd1b3c555cd206a7cc',1,'tr::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)'],['../Kinematics_8hpp.html#a5edb327cd36148f92c860f3c10578713',1,'tr::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)']]],
-  ['forward_5fkinematics_5fcom_5',['forward_kinematics_com',['../Kinematics_8hpp.html#a5789efa7634981aac079f22c0a7a38f0',1,'tr::forward_kinematics_com(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const std::string &amp;source_link_name, const std::string &amp;target_link_name)'],['../Kinematics_8hpp.html#acf1e45f61fe9786cbccde4a97a67fd42',1,'tr::forward_kinematics_com(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const int &amp;source_link_idx, const int &amp;target_link_idx)']]]
+  ['geometric_5fjacobian_0',['geometric_jacobian',['../Kinematics_8hpp.html#a0083bed781a1f04578cbeb4c1a5cf8bd',1,'tinyrobotics']]],
+  ['geometric_5fjacobian_5fcom_1',['geometric_jacobian_com',['../Kinematics_8hpp.html#a0affabfdb89d49a7b7be4f4080c950e3',1,'tinyrobotics']]],
+  ['get_5fjoint_2',['get_joint',['../structtinyrobotics_1_1Model.html#a19493ac8dffd614dbeef7134b7991d4b',1,'tinyrobotics::Model']]],
+  ['get_5fjoint_5ftransform_3',['get_joint_transform',['../structtinyrobotics_1_1Joint.html#ab4572fda178593421c1bec68b80478c5',1,'tinyrobotics::Joint']]],
+  ['get_5flink_4',['get_link',['../structtinyrobotics_1_1Model.html#a7b2f37e80dde424f1ffe8e657a13e101',1,'tinyrobotics::Model']]],
+  ['get_5flink_5fidx_5',['get_link_idx',['../Kinematics_8hpp.html#a98552d65f728da7a8e92b3dac1f936f2',1,'tinyrobotics']]],
+  ['get_5fparent_5flink_6',['get_parent_link',['../structtinyrobotics_1_1Model.html#a43e1a4c525affdacb8e8d12ae9ab0887',1,'tinyrobotics::Model']]],
+  ['get_5fparent_5flink_5fname_7',['get_parent_link_name',['../Parser_8hpp.html#a83d85b2fabfe22ed6d77341261007a6b',1,'tinyrobotics']]],
+  ['get_5fparent_5fto_5fchild_5ftransform_8',['get_parent_to_child_transform',['../structtinyrobotics_1_1Joint.html#a9fbcc8f2c9f8be89b40b8cbf16423418',1,'tinyrobotics::Joint']]],
+  ['get_5ftype_9',['get_type',['../structtinyrobotics_1_1Joint.html#a049856da83f7dcfa60e553eeb6c8cd9f',1,'tinyrobotics::Joint']]]
 ];

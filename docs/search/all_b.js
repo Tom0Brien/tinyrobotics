@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['link_0',['Link',['../structtr_1_1Link.html',1,'tr']]],
-  ['link_2ehpp_1',['Link.hpp',['../Link_8hpp.html',1,'']]],
-  ['link_5ffrom_5fxml_2',['link_from_xml',['../Parser_8hpp.html#af95b4eebdb08a2fceeec28f6895ffd10',1,'tr']]],
-  ['links_3',['links',['../structtr_1_1Model.html#a336408820b628d61a7c7fc74efe40d61',1,'tr::Model']]]
+  ['mass_0',['mass',['../structtinyrobotics_1_1Link.html#a1990d2ac6812b2e782d9c13d5cd006a8',1,'tinyrobotics::Link::mass'],['../structtinyrobotics_1_1Model.html#a333976d153de4340c3d3999fb0c56920',1,'tinyrobotics::Model::mass']]],
+  ['mass_5fmatrix_1',['mass_matrix',['../structtinyrobotics_1_1Data.html#ae4de3153ed5750e8ab62b0d05a14716a',1,'tinyrobotics::Data::mass_matrix'],['../Dynamics_8hpp.html#a97df6db4c308e4c58b41a1deb4360196',1,'tinyrobotics::mass_matrix()']]],
+  ['math_2ehpp_2',['Math.hpp',['../Math_8hpp.html',1,'']]],
+  ['model_3',['Model',['../structtinyrobotics_1_1Model.html',1,'tinyrobotics']]],
+  ['model_2ehpp_4',['Model.hpp',['../Model_8hpp.html',1,'']]]
 ];

@@ -1,14 +1,13 @@
 var searchData=
 [
-  ['c_0',['C',['../structtr_1_1Data.html#a084f2e1ade07548b2bc6fa92e34088a5',1,'tr::Data']]],
-  ['cast_1',['cast',['../structtr_1_1Data.html#a9ec4d2adaea5acebc1d84dbf87e6a55d',1,'tr::Data::cast()'],['../structtr_1_1Joint.html#aced2a2674b47b196f1cdb6126fc9c8cc',1,'tr::Joint::cast()'],['../structtr_1_1Link.html#aae7ed76b4bd66bbb64772b3937565e14',1,'tr::Link::cast()'],['../structtr_1_1Model.html#a8f0c35a723f126b0a78c5f12986a4529',1,'tr::Model::cast()']]],
-  ['centre_5fof_5fmass_2',['centre_of_mass',['../structtr_1_1Link.html#a6bff1472bdf118729edd2a5f1b2ced38',1,'tr::Link::centre_of_mass'],['../Kinematics_8hpp.html#aaeda333379b9640bf539f78987e89c16',1,'tr::centre_of_mass()']]],
-  ['child_5flink_5fname_3',['child_link_name',['../structtr_1_1Joint.html#a50ccec525e46a571a688f65af0ab2667',1,'tr::Joint']]],
-  ['child_5flinks_4',['child_links',['../structtr_1_1Link.html#af12ac96111fc545ee891d95c976f3209',1,'tr::Link']]],
-  ['child_5ftransform_5',['child_transform',['../structtr_1_1Joint.html#a9438e8c064ea155749ddd1d83aec7e02',1,'tr::Joint']]],
-  ['compute_5fdynamics_6',['compute_dynamics',['../Dynamics_8hpp.html#aa3a82df4289fdcc9c60946180bf46400',1,'tr']]],
-  ['continuous_7',['CONTINUOUS',['../Joint_8hpp.html#aed42c816c1475f5143d24c37f1769496ab1fa9dd3af034b3ef4291579aa673c07',1,'tr']]],
-  ['cost_8',['cost',['../classtr_1_1IKCost.html#a822694d59b205b41c610db435238fdd0',1,'tr::IKCost']]],
-  ['cross_5fmotion_9',['cross_motion',['../Math_8hpp.html#a59a135ff944a9cc8fed075e5eaa7ff9b',1,'tr']]],
-  ['cross_5fspatial_10',['cross_spatial',['../Math_8hpp.html#ab07951cdf2a6474520f1e550cddd0b79',1,'tr']]]
+  ['c_0',['c',['../structtinyrobotics_1_1Data.html#abdfdd6aae9d81d249cda9f85b73660bd',1,'tinyrobotics::Data']]],
+  ['cast_1',['cast',['../structtinyrobotics_1_1Data.html#ab773662b7a2abb765d65e378c46774af',1,'tinyrobotics::Data::cast()'],['../structtinyrobotics_1_1Joint.html#a339aa67d7a0160f3c2d0d13214ec9af2',1,'tinyrobotics::Joint::cast()'],['../structtinyrobotics_1_1Link.html#af55e2ff6c8b03e966bbcaf501aaf2694',1,'tinyrobotics::Link::cast()'],['../structtinyrobotics_1_1Model.html#ad22f6a00835cc3f3c3c4a876d0b1094f',1,'tinyrobotics::Model::cast()']]],
+  ['centre_5fof_5fmass_2',['centre_of_mass',['../structtinyrobotics_1_1Link.html#ac1f97ab89646a6474fdeff88b7a27966',1,'tinyrobotics::Link::centre_of_mass'],['../Kinematics_8hpp.html#a9e82974dc2296796c2a1ed8379ad09a7',1,'tinyrobotics::centre_of_mass()']]],
+  ['child_5flink_5fname_3',['child_link_name',['../structtinyrobotics_1_1Joint.html#ab8dbdc590228c2ea6d2bda36a30601d9',1,'tinyrobotics::Joint']]],
+  ['child_5flinks_4',['child_links',['../structtinyrobotics_1_1Link.html#a59fe26088daed22877a08fab03ce0a0c',1,'tinyrobotics::Link']]],
+  ['child_5ftransform_5',['child_transform',['../structtinyrobotics_1_1Joint.html#ae962de965ad8c1292c4b8930a6150e12',1,'tinyrobotics::Joint']]],
+  ['continuous_6',['CONTINUOUS',['../Joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efab1fa9dd3af034b3ef4291579aa673c07',1,'tinyrobotics']]],
+  ['coriolis_7',['coriolis',['../structtinyrobotics_1_1Data.html#a48eb846aeda73e046e24a6e74e1fa26e',1,'tinyrobotics::Data']]],
+  ['cross_5fmotion_8',['cross_motion',['../Math_8hpp.html#a84f21ffd47579e9941eb9bc318a847ed',1,'tinyrobotics']]],
+  ['cross_5fspatial_9',['cross_spatial',['../Math_8hpp.html#a8c2e0664105bd4aad3d9ae428472354c',1,'tinyrobotics']]]
 ];

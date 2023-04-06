@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['joint_5ffrom_5fxml_0',['joint_from_xml',['../Parser_8hpp.html#a1b739d6f0753c91bed7da86f3ffa3e85',1,'tr']]]
+  ['kinetic_5fenergy_0',['kinetic_energy',['../Dynamics_8hpp.html#a37e4336364d9d52e55b377c3356c04e4',1,'tinyrobotics']]]
 ];

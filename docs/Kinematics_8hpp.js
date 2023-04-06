@@ -1,17 +1,14 @@
 var Kinematics_8hpp =
 [
-    [ "centre_of_mass", "Kinematics_8hpp.html#aaeda333379b9640bf539f78987e89c16", null ],
-    [ "forward_kinematics", "Kinematics_8hpp.html#a5edb327cd36148f92c860f3c10578713", null ],
-    [ "forward_kinematics", "Kinematics_8hpp.html#a22e7ec9c58043f82520ebda18397a9f6", null ],
-    [ "forward_kinematics", "Kinematics_8hpp.html#abce32c28459e8edd1b3c555cd206a7cc", null ],
-    [ "forward_kinematics", "Kinematics_8hpp.html#a7059e467101c51deaad280b619bd6954", null ],
-    [ "forward_kinematics", "Kinematics_8hpp.html#ab214d7483e620917f6d9693d7cef14a1", null ],
-    [ "forward_kinematics_com", "Kinematics_8hpp.html#acf1e45f61fe9786cbccde4a97a67fd42", null ],
-    [ "forward_kinematics_com", "Kinematics_8hpp.html#a5789efa7634981aac079f22c0a7a38f0", null ],
-    [ "geometric_jacobian", "Kinematics_8hpp.html#ae55245c942227cb5870c75a531ffb6b0", null ],
-    [ "geometric_jacobian", "Kinematics_8hpp.html#afa8a60bab3fc6b34098dacdace203c93", null ],
-    [ "geometric_jacobian_com", "Kinematics_8hpp.html#a8662485164aeffeb8525e96f7e2c8786", null ],
-    [ "rotation", "Kinematics_8hpp.html#a78a075924b5a67d67835ac19b5a23844", null ],
-    [ "translation", "Kinematics_8hpp.html#aed8e04204f2119a37cec7b092abcd1e7", null ],
-    [ "translation", "Kinematics_8hpp.html#a8bc758a8de53ed1a2b69267379bcd539", null ]
+    [ "centre_of_mass", "Kinematics_8hpp.html#a9e82974dc2296796c2a1ed8379ad09a7", null ],
+    [ "forward_kinematics", "Kinematics_8hpp.html#ab34e7976f4b67fcb98507aad6a624332", null ],
+    [ "forward_kinematics", "Kinematics_8hpp.html#ae02f89ac9d820729c640983e087682e2", null ],
+    [ "forward_kinematics", "Kinematics_8hpp.html#a985f737fbd9d1a352e22d9d8edc5b5a3", null ],
+    [ "forward_kinematics_com", "Kinematics_8hpp.html#ab50273344eb2374a62d11769639bc5b6", null ],
+    [ "forward_kinematics_com", "Kinematics_8hpp.html#a56899c8da940e648a724f0f2413a989d", null ],
+    [ "geometric_jacobian", "Kinematics_8hpp.html#a0083bed781a1f04578cbeb4c1a5cf8bd", null ],
+    [ "geometric_jacobian_com", "Kinematics_8hpp.html#a0affabfdb89d49a7b7be4f4080c950e3", null ],
+    [ "get_link_idx", "Kinematics_8hpp.html#a98552d65f728da7a8e92b3dac1f936f2", null ],
+    [ "rotation", "Kinematics_8hpp.html#a950dc87750c531d8bc9240c37a529a81", null ],
+    [ "translation", "Kinematics_8hpp.html#acdadcd0f74e66e590763595b2dd6d406", null ]
 ];

@@ -1,12 +1,8 @@
 var searchData=
 [
-  ['m_0',['M',['../structtr_1_1Data.html#a2871371d419e2760e53b2595057249d4',1,'tr::Data']]],
-  ['mass_1',['mass',['../structtr_1_1Link.html#a22cac9841093534d2c242d4c2dc3d072',1,'tr::Link']]],
-  ['mass_5fmatrix_2',['mass_matrix',['../Dynamics_8hpp.html#af8cb5d5c4333b35f17592b9d885d41c8',1,'tr']]],
-  ['math_2ehpp_3',['Math.hpp',['../Math_8hpp.html',1,'']]],
-  ['minv_4',['Minv',['../structtr_1_1Data.html#a40b51bbf38f87b3e9490e63deec3afd3',1,'tr::Data']]],
-  ['model_5',['model',['../classtr_1_1IKCost.html#a0ef92045f6fac6dee3196c10da81648a',1,'tr::IKCost']]],
-  ['model_6',['Model',['../structtr_1_1Model.html',1,'tr']]],
-  ['model_2ehpp_7',['Model.hpp',['../Model_8hpp.html',1,'']]],
-  ['model_3c_20autodifftype_2c_20nq_20_3e_8',['Model&lt; AutoDiffType, nq &gt;',['../structtr_1_1Model.html',1,'tr']]]
+  ['n_5fjoints_0',['n_joints',['../structtinyrobotics_1_1Model.html#af9a5d39162af33fa99933b95b5c7fb65',1,'tinyrobotics::Model']]],
+  ['n_5flinks_1',['n_links',['../structtinyrobotics_1_1Model.html#a0ea723f843ecbf6e41e6078ff2c3cdea',1,'tinyrobotics::Model']]],
+  ['n_5fq_2',['n_q',['../structtinyrobotics_1_1Model.html#a5e61211ff65a9240b997089fe085cc70',1,'tinyrobotics::Model']]],
+  ['name_3',['name',['../structtinyrobotics_1_1Joint.html#ac0aa8f9ca061e888a4fbd2f19454b3ad',1,'tinyrobotics::Joint::name'],['../structtinyrobotics_1_1Link.html#a0875a3e6da8a59d1687a9cf58996d175',1,'tinyrobotics::Link::name'],['../structtinyrobotics_1_1Model.html#acf30ac26ab2751ea2f9287520f501edf',1,'tinyrobotics::Model::name']]],
+  ['null_4',['null',['../Math_8hpp.html#a9cbd65afc4ab7045dbfe81446be1a832',1,'tinyrobotics']]]
 ];

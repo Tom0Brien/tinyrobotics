@@ -94,12 +94,12 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_README"></a></p>
-<p><b>tinyrobotics</b> is a lightweight C++ library which provides core robotics algorithms and tools.</p>
-<p>The goal of <b>tinyrobotics</b> is to be as simple as possible but still be incredibly fast and versatile.</p>
+<p><b>tinyrobotics</b> is a lightweight C++ library which provides core robotics algorithms for kinematics and dynamics.</p>
+<p>The goal of <b>tinyrobotics</b> is to be as simple as possible while still being incredibly fast and versatile.</p>
 <h1><a class="anchor" id="autotoc_md0"></a>
 Features</h1>
-<h2><a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">Model</a></h2>
-<p>A tinyrobotics <a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">model</a> consists of a collection of links connected via joints. The following functions can be used to build a model, all of which are implemented in <a href="https://tom0brien.github.io/tinyrobotics/Parser_8hpp.html">Parser</a> </p><table class="markdownTable">
+<p>The core algorithms of tinyrobotics are listed below, for detailed documentation on all the available functions, see <a href="https://tom0brien.github.io/tinyrobotics">documentation</a>. </p><h2><a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">Model</a></h2>
+<table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
@@ -110,70 +110,61 @@ Features</h1>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>forward_kinematics</code>   </td><td class="markdownTableBodyNone">Compute transforms between links.    </td></tr>
+<td class="markdownTableBodyNone"><code>forward_kinematics</code>   </td><td class="markdownTableBodyNone">Compute homogeneous transform between links.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>forward_kinematics_com</code>   </td><td class="markdownTableBodyNone">Compute transforms between link and another links centre of mass.    </td></tr>
-<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>translation</code>   </td><td class="markdownTableBodyNone">Compute translation between links.    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>rotation</code>   </td><td class="markdownTableBodyNone">Compute rotation between links.    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>geometric_jacobian</code>   </td><td class="markdownTableBodyNone">Compute geometric jacobian to a link.    </td></tr>
+<td class="markdownTableBodyNone"><code>rotation</code>   </td><td class="markdownTableBodyNone">Compute rotation between links.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>geometric_jacobian_com</code>   </td><td class="markdownTableBodyNone">Compute geometric jacobian to a links centre of mass.    </td></tr>
+<td class="markdownTableBodyNone"><code>geometric_jacobian</code>   </td><td class="markdownTableBodyNone">Compute geometric jacobian to a link from base.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>centre_of_mass</code>   </td><td class="markdownTableBodyNone">Compute centre of mass of model.   </td></tr>
-</table>
-<h2><a href="https://tom0brien.github.io/tinyrobotics/InverseKinematics_8hpp.html">Inverse Kinematics</a></h2>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>inverse_kinematics</code>   </td><td class="markdownTableBodyNone">Solve joint positions to achieve desired pose of model.   </td></tr>
 </table>
 <h2><a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html">Dynamics</a></h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Function   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>forward_dynamics</code>   </td><td class="markdownTableBodyNone">Compute joint accelerations given joint positions and velocities and torques.    </td></tr>
+<td class="markdownTableBodyNone"><code>forward_dynamics</code>   </td><td class="markdownTableBodyNone">Compute joint accelerations given joint positions, velocities and torques.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>inverse_dynamics</code>   </td><td class="markdownTableBodyNone">Compute required joint torques for given motion.    </td></tr>
+<td class="markdownTableBodyNone"><code>inverse_dynamics</code>   </td><td class="markdownTableBodyNone">Compute joint torques given joint positions, velocities and accelerations.    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>mass_matrix</code>   </td><td class="markdownTableBodyNone">Compute mass matrix given joint positions.    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>total_energy</code>   </td><td class="markdownTableBodyNone">Compute total energy (kinetic + potential) given joint positions and velocity.   </td></tr>
+<td class="markdownTableBodyNone"><code>kinetic_energy</code>   </td><td class="markdownTableBodyNone">Compute kinetic energy given joint positions and velocity.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>potential_energy</code>   </td><td class="markdownTableBodyNone">Compute potential energy given joint positions and velocity.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>total_energy</code>   </td><td class="markdownTableBodyNone">Compute total energy (kinetic + potential) given joint positions and velocities.   </td></tr>
 </table>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Install</h1>
 <h2><a class="anchor" id="autotoc_md2"></a>
 1. Install Dependencies</h2>
 <ul>
-<li><a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen</a></li>
+<li><a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen3</a></li>
 <li><a href="https://github.com/catchorg/Catch2">Catch2</a></li>
 <li><a href="https://github.com/leethomason/tinyxml2">TinyXML2</a></li>
-<li><a href="https://github.com/autodiff/autodiff">autodiff</a></li>
-<li><a href="https://github.com/ethz-adrl/ifopt">ifopt</a></li>
 </ul>
 <h2><a class="anchor" id="autotoc_md3"></a>
 2. Build with cmake</h2>
-<div class="fragment"><div class="line">git clone https://github.com/Tom0Brien/tinyrobotics.git &amp;&amp; cd RML</div>
+<div class="fragment"><div class="line">git clone https://github.com/Tom0Brien/tinyrobotics.git &amp;&amp; cd tinyrobotics</div>
 <div class="line">mkdir build &amp;&amp; cd build</div>
 <div class="line">cmake ..</div>
 <div class="line">make</div>
-<div class="line">sudo make install # copies files in this folder to /usr/local/*</div>
+<div class="line">sudo make install # copies files in the include folder to /usr/local/include*</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Examples</h1>
-<p>The code below demonstrates how to load in a URDF model and compute the forward kinematics between two links.</p>
-<div class="fragment"><div class="line"> ++</div>
-<div class="line"><span class="comment">// Create a robot model with 4 joints</span></div>
-<div class="line"><span class="keyword">auto</span> model = import_urdf&lt;double, 4&gt;(<span class="stringliteral">&quot;example.urdf&quot;</span>);</div>
+<p>Numerous examples are provided in the <code>examples</code> folder.</p>
+<p>The code below demonstrates how to load in a URDF model and compute the forward kinematics. </p><div class="fragment"><div class="line"> ++</div>
+<div class="line"><span class="comment">// Create a tinyrobotics model with 4 joints defined in 4_link.urdf</span></div>
+<div class="line"><span class="keyword">auto</span> model = import_urdf&lt;double, 4&gt;(<span class="stringliteral">&quot;4_link.urdf&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Create a configuration vector of all zeros</span></div>
+<div class="line"><span class="comment">// Create a configuration vector of all zeros.</span></div>
 <div class="line"><span class="keyword">auto</span> q = model.home_configuration();</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Compute the forward kinematics to the target frame from the source frame at the home configuration</span></div>
-<div class="line"><span class="keyword">auto</span> H = forward_kinematics(model, q, <span class="keywordtype">string</span>(<span class="stringliteral">&quot;source_frame&quot;</span>), <span class="keywordtype">string</span>(<span class="stringliteral">&quot;target_frame&quot;</span>));</div>
+<div class="line"><span class="comment">// Compute the forward kinematics to the target link (Index 2) from the base frame at the home configuration.</span></div>
+<div class="line"><span class="keyword">auto</span> H = forward_kinematics(model, q, 2);</div>
 </div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

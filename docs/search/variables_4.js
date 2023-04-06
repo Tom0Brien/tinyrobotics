@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['event_5fdetection_0',['event_detection',['../structtr_1_1SolverParams.html#ad8ca403b3f444fdf29bdf1658bc1f3c7',1,'tr::SolverParams']]],
-  ['event_5fis_5fterminal_1',['event_is_terminal',['../structtr_1_1SolverParams.html#a05debf32d9a59345be09fdf01244a6de',1,'tr::SolverParams']]]
+  ['forward_5fkinematics_0',['forward_kinematics',['../structtinyrobotics_1_1Data.html#a8b621eddc0e5f19d54fbb40b5a1a89ae',1,'tinyrobotics::Data']]],
+  ['forward_5fkinematics_5fcom_1',['forward_kinematics_com',['../structtinyrobotics_1_1Data.html#ae83b0f73c5fffe22d7b59a9401736fbd',1,'tinyrobotics::Data']]]
 ];
