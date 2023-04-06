@@ -6,9 +6,8 @@ tinyrobotics
 The goal of **tinyrobotics** is to be as simple as possible while still being incredibly fast and versatile.
 
 ## Features
+The core algorithms of tinyrobotics are listed below, for detailed documentation on all the available functions, see <a href="https://tom0brien.github.io/tinyrobotics">documentation</a>.
 <h2><a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">Model</a></h2>
-
-A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details) consists of a collection of links connected via joints. The following functions can be used to build a model, all of which are implemented in [Parser](https://tom0brien.github.io/tinyrobotics/Parser_8hpp.html)
 
 | Function      | Description                                                                              |
 | ------------- | ---------------------------------------------------------------------------------------- |
@@ -52,8 +51,9 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
   ```
 
 ## Examples
-The code below demonstrates how to load in a URDF model and compute the forward kinematics.
+Numerous examples are provided in the `examples` folder. 
 
+The code below demonstrates how to load in a URDF model and compute the forward kinematics.
 ```c++
 // Create a tinyrobotics model with 4 joints defined in 4_link.urdf
 auto model = import_urdf<double, 4>("4_link.urdf");
