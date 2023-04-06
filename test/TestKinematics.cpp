@@ -19,7 +19,7 @@ TEST_CASE("Test forward kinematics with link names", "[ForwardKinematics]") {
     Eigen::Transform<double, 3, Eigen::Isometry> Hst;
     std::string source_link_idx = "ground";
     std::string target_link_idx = "left_foot";
-    Hst                         = forward_kinematics(robot_model, q, 0, 6);
+    Hst                         = forward_kinematics(robot_model, q, target_link_idx, source_link_idx);
     // Check that the transform is correct
     Eigen::Matrix<double, 4, 4> Hst_expected;
     Hst_expected << -0.9900, 0, -0.1411, 1.1411, 0, 1.0000, 0, 0, 0.1411, 0, -0.9900, 2.9900, 0, 0, 0, 1.0000;
@@ -33,7 +33,7 @@ TEST_CASE("Test forward kinematics with link idx", "[ForwardKinematics]") {
     Eigen::Transform<double, 3, Eigen::Isometry> Hst;
     int target_link_idx = 0;
     int source_link_idx = 6;
-    Hst                 = forward_kinematics(robot_model, q, 0, 6);
+    Hst                 = forward_kinematics(robot_model, q, source_link_idx, target_link_idx);
     // Check that the transform is correct
     Eigen::Matrix<double, 4, 4> Hst_expected;
     Hst_expected << -0.9900, 0, -0.1411, 1.1411, 0, 1.0000, 0, 0, 0.1411, 0, -0.9900, 2.9900, 0, 0, 0, 1.0000;
@@ -47,7 +47,7 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
     Eigen::Transform<double, 3, Eigen::Isometry> Hstc;
     std::string target_link_name = "left_leg";
     std::string source_link_name = "ground";
-    Hstc                         = forward_kinematics_com(robot_model, q, source_link_name, target_link_name);
+    Hstc                         = forward_kinematics_com(robot_model, q, target_link_name, source_link_name);
     // Check that the transform is correct
     Eigen::Matrix<double, 4, 4> Hstc_expected;
     Hstc_expected << -0.9900, 0, -0.1411, 1.0706, 0, 1, 0, 0, 0.1411, 0, -0.9900, 2.4950, 0, 0, 0, 1;

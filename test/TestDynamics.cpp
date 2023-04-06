@@ -8,6 +8,34 @@
 
 using namespace tinyrobotics;
 
+TEST_CASE("Test mass matrix for 2 link model", "[Dynamics]") {
+    // Create a robot model
+    auto robot_model = import_urdf<double, 2>("data/urdfs/2_link.urdf");
+    // Create a random configuration
+    Eigen::Matrix<double, 2, 1> q = robot_model.home_configuration();
+    // Compute the dynamics
+    mass_matrix(robot_model, q);
+    // Check that the mass matrix is correct
+    Eigen::Matrix<double, 2, 2> M_expected;
+    M_expected << 2.6692, 0.8346, 0.8346, 0.3346;
+    REQUIRE(robot_model.data.mass_matrix.isApprox(M_expected, 1e-4));
+};
+
+
+TEST_CASE("Test mass matrix for 4 link model", "[Dynamics]") {
+    // Create a robot model
+    auto robot_model = import_urdf<double, 4>("data/urdfs/4_link.urdf");
+    // Create a random configuration
+    Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
+    // Compute the dynamics
+    mass_matrix(robot_model, q);
+    // Check that the mass matrix is correct
+    Eigen::Matrix<double, 4, 4> M_expected;
+    M_expected << 21.3384, 13.5038, 6.6692, 1.8346, 13.5038, 9.0038, 4.6692, 1.3346, 6.6692, 4.6692, 2.6692, 0.8346,
+        1.8346, 1.3346, 0.8346, 0.3346;
+    REQUIRE(robot_model.data.mass_matrix.isApprox(M_expected, 1e-4));
+};
+
 TEST_CASE("Test mass matrix for simple model", "[Dynamics]") {
     // Create a robot model
     auto robot_model = import_urdf<double, 4>("data/urdfs/simple.urdf");
@@ -135,6 +163,7 @@ TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for compass mode
     tau << 1, 2, 3, 4;
     Eigen::Matrix<double, n_joints, 1> f_ext = Eigen::Matrix<double, n_joints, 1>::Zero();
     Eigen::Matrix<double, n_joints, 1> qdd   = forward_dynamics(robot_model, q, qd, tau);
+    qdd                                      = forward_dynamics(robot_model, q, qd, tau);
 }
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for panda_arm", "[Dynamics]") {
