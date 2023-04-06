@@ -320,7 +320,7 @@ namespace tinyrobotics {
                 }
             }
 
-            if (joint.type == JointType::REVOLUTE || joint.type == JointType::CONTINUOUS) {
+            if (joint.type == JointType::REVOLUTE) {
                 joint.S << joint.axis, 0, 0, 0;
             }
             else if (joint.type == JointType::PRISMATIC) {
@@ -507,6 +507,12 @@ namespace tinyrobotics {
 
         // Assign spatial gravity vector in models data
         model.data.spatial_gravity.tail(3) = model.gravity;
+
+        // Compute the total mass of the model
+        model.mass = 0;
+        for (auto link : model.links) {
+            model.mass += link.mass;
+        }
     }
 
     /**

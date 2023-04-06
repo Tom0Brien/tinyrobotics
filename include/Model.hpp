@@ -58,6 +58,9 @@ namespace tinyrobotics {
         /// @brief Gravitational acceleration experienced by model.
         Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
 
+        /// @brief Total mass of the model.
+        Scalar mass = 0;
+
         /// @brief Stores the results of the models algorithms.
         Data<Scalar, nq> data;
 
@@ -121,6 +124,7 @@ namespace tinyrobotics {
             std::cout << "No. of joints          : " << joints.size() << std::endl;
             std::cout << "No. of actuated joints : " << n_q << std::endl;
             std::cout << "Base link name         : " << links[base_link_idx].name << std::endl << std::endl;
+            std::cout << "Model Mass             : " << mass << std::endl;
             std::cout << std::left << std::setw(spacing) << "Index" << std::setw(spacing) << "Link Name"
                       << std::setw(spacing) << "Joint Name [idx]" << std::setw(spacing) << "Joint Type"
                       << std::setw(spacing) << "Parent Name [idx]" << std::setw(spacing) << "Children Names"

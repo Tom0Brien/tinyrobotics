@@ -59,6 +59,9 @@ namespace tinyrobotics {
         /// @brief Vector of forward kinematics Data.
         std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics = {};
 
+        /// @brief Vector of forward kinematics com Data.
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics_com = {};
+
         /// @brief Spatial transforms from parent to child links.
         std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup =
             std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
