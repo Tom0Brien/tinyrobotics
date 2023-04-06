@@ -1,9 +1,9 @@
 tinyrobotics
 ===========
 
-**tinyrobotics** is a lightweight C++ library which provides core robotics algorithms and tools. 
+**tinyrobotics** is a lightweight C++ library which provides core robotics algorithms for kinematics and dynamics.
 
-The goal of **tinyrobotics** is to be as simple as possible but still be incredibly fast and versatile.
+The goal of **tinyrobotics** is to be as simple as possible while still being incredibly fast and versatile.
 
 ## Features
 <h2><a href="https://tom0brien.github.io/tinyrobotics/structtr_1_1model_1_1Model.html#details">Model</a></h2>
@@ -16,29 +16,29 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
 
 <h2><a href="https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html">Kinematics</a></h2>
 
-| Function                 | Description                                                       |
-| ------------------------ | ----------------------------------------------------------------- |
-| `forward_kinematics`     | Compute transforms between links.                                 |
-| `forward_kinematics_com` | Compute transforms between link and another links centre of mass. |
-| `translation`            | Compute translation between links.                                |
-| `rotation`               | Compute rotation between links.                                   |
-| `geometric_jacobian`     | Compute geometric jacobian to a link.                             |
-| `geometric_jacobian_com` | Compute geometric jacobian to a links centre of mass.             |
-| `centre_of_mass`         | Compute centre of mass of model.                                  |
+| Function                 | Description                                                               |
+| ------------------------ | -----------------------------------------------------------------         |
+| `forward_kinematics`     | Compute homogeneous transform between links.                              |
+| `translation`            | Compute translation between links.                                        |
+| `rotation`               | Compute rotation between links.                                           |
+| `geometric_jacobian`     | Compute geometric jacobian to a link from base.                           |
+| `centre_of_mass`         | Compute centre of mass of model.                                          |
 
 <h2><a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html">Dynamics</a></h2>
 
-| Function           | Description                                                                    |
-| ------------------ | ------------------------------------------------------------------------------ |
-| `forward_dynamics` | Compute joint accelerations given joint positions and velocities and torques.  |
-| `inverse_dynamics` | Compute required joint torques for given motion.                               |
-| `mass_matrix`      | Compute mass matrix given joint positions.                                     |
-| `total_energy`     | Compute total energy (kinetic + potential) given joint positions and velocity. |
+| Function           | Description                                                                     |
+| ------------------ | ------------------------------------------------------------------------------  |
+| `forward_dynamics` | Compute joint accelerations given joint positions, velocities and torques.      |
+| `inverse_dynamics` | Compute joint torques given joint positions, velocities and accelerations.      |
+| `mass_matrix`      | Compute mass matrix given joint positions.                                      |
+| `kinetic_energy`   | Compute kinetic energy given joint positions and velocity.                      |
+| `potential_energy` | Compute potential energy given joint positions and velocity.                    |
+| `total_energy`     | Compute total energy (kinetic + potential) given joint positions and velocities.|
 
 ## Install
 
 ### 1. Install Dependencies
-- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
+- [Eigen3](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [Catch2](https://github.com/catchorg/Catch2)
 - [TinyXML2](https://github.com/leethomason/tinyxml2)
 
@@ -52,18 +52,15 @@ A tinyrobotics [model](https://tom0brien.github.io/tinyrobotics/structtr_1_1mode
   ```
 
 ## Examples
-The code below demonstrates how to load in a URDF model and compute the forward kinematics between two links.
+The code below demonstrates how to load in a URDF model and compute the forward kinematics.
 
 ```c++
-// Create a tinyrobotics model with 4 joints defined in example.urdf
-auto model = import_urdf<double, 4>("example.urdf");
+// Create a tinyrobotics model with 4 joints defined in 4_link.urdf
+auto model = import_urdf<double, 4>("4_link.urdf");
 
-// Create a configuration vector of all zeros
+// Create a configuration vector of all zeros.
 auto q = model.home_configuration();
 
-// Get the target link index
-auto target_idx = model.get_link("target_link").idx;
-
-// Compute the forward kinematics to the target link from the base frame at the home configuration
-auto H = forward_kinematics(model, q, target_idx);
+// Compute the forward kinematics to the target link (Index 2) from the base frame at the home configuration.
+auto H = forward_kinematics(model, q, 2);
 ```
