@@ -125,6 +125,12 @@ namespace tinyrobotics {
         /// @brief Gravity vector in spatial coordinates.
         Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
+        /// @brief Geometric Jacobian.
+        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
+
+        /// @brief Analytical Jacobian (Euler Angles)
+        Eigen::Matrix<Scalar, 6, nq> Ja = Eigen::Matrix<Scalar, 6, nq>::Zero();
+
         /**
          * @brief Casts the data to a new scalar type.
          * @tparam NewScalar scalar type to cast the data to.

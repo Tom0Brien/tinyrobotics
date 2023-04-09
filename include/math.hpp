@@ -8,6 +8,43 @@
  * @brief Contains various math related functions.
  */
 namespace tinyrobotics {
+
+    /**
+     * @brief Manually convert the given rotation matrix to [Roll, Pitch, Yaw] ZYX intrinsic euler angle (Better range
+     * than Eigen conversion).
+     * @param mat Rotation matrix
+     * @return [Roll, Pitch, Yaw] ZYX intrinsic euler angle
+     */
+    template <typename T,
+              typename Scalar                                                                 = typename T::Scalar,
+              std::enable_if_t<((T::RowsAtCompileTime == 3) && (T::ColsAtCompileTime == 3))>* = nullptr>
+    inline Eigen::Matrix<Scalar, 3, 1> rotation_to_rpy(const T& mat) {
+        // Eigen euler angles and with better range
+        return Eigen::Matrix<Scalar, 3, 1>(
+            // Roll
+            std::atan2(mat(2, 1), mat(2, 2)),
+            // Pitch
+            std::atan2(-mat(2, 0), std::sqrt(mat(2, 1) * mat(2, 1) + mat(2, 2) * mat(2, 2))),
+            // Yaw
+            std::atan2(mat(1, 0), mat(0, 0)));
+    }
+
+    /**
+     * @brief Convert given Euler angles in [Roll, Pitch, Yaw] ZYX intrinsic format to rotation matrix
+     * @param angles [Roll, Pitch, Yaw] ZYX intrinsic euler angles
+     * @return Rotation matrix corresponding to given euler angles
+     */
+    template <typename T,
+              typename Scalar                                                                 = typename T::Scalar,
+              std::enable_if_t<((T::RowsAtCompileTime == 3) && (T::ColsAtCompileTime == 1))>* = nullptr>
+    inline Eigen::Matrix<Scalar, 3, 3> rpy_to_rotation(const T& angles) {
+        Eigen::AngleAxis<Scalar> yawRot(angles.z(), Eigen::Matrix<Scalar, 3, 1>::UnitZ());
+        Eigen::AngleAxis<Scalar> pitchRot(angles.y(), Eigen::Matrix<Scalar, 3, 1>::UnitY());
+        Eigen::AngleAxis<Scalar> rollRot(angles.x(), Eigen::Matrix<Scalar, 3, 1>::UnitX());
+        Eigen::Quaternion<Scalar> quat = yawRot * pitchRot * rollRot;
+        return quat.matrix();
+    }
+
     /**
      * @brief Computes the skew of a 3x3 vector.
      * @param input The 3x3 vector.

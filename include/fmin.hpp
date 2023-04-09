@@ -5,6 +5,9 @@
 #include <Eigen/Geometry>
 #include <nlopt.hpp>
 
+/** \file fmin.hpp
+ * @brief Contains various functions for wrapping nonlinear optimization library NLopt for use with Eigen3.
+ */
 namespace tinyrobotics {
 
     /**

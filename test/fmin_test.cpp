@@ -98,3 +98,37 @@ TEST_CASE("Rosenbrock function optimization with wrapper", "[nlopt]") {
     REQUIRE(optimized_solution(0) == Approx(1.0).epsilon(1e-4));
     REQUIRE(optimized_solution(1) == Approx(1.0).epsilon(1e-4));
 }
+
+TEST_CASE("Rosenbrock function optimization with grad and wrapper", "[nlopt]") {
+    const int nv = 2;
+    Eigen::Matrix<double, nv, 1> x;
+    x << -1.2, 1.0;
+
+    // Set up the NLopt optimization problem with Rosenbrock as the objective function
+    nlopt::opt opt(nlopt::LD_SLSQP, nv);
+    ObjectiveFunction<double, nv> obj_fun = rosenbrock;
+    opt.set_min_objective(eigen_objective_wrapper<double, nv>, static_cast<void*>(&obj_fun));
+    opt.set_xtol_rel(1e-8);
+
+    // Convert the initial guess to NLopt format
+    std::vector<double> x0(nv);
+    eigen_to_nlopt(x, x0);
+
+    // Optimize the function using NLopt
+    double minf;
+    // start timer
+    auto start = std::chrono::high_resolution_clock::now();
+    opt.optimize(x0, minf);
+    // stop timer
+    auto stop     = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time taken by function: " << duration.count() << " microseconds" << std::endl;
+
+
+    // Convert the result back to Eigen format
+    nlopt_to_eigen(x0, x);
+
+    // Check that the optimization was successful and the result is close to the expected minimum
+    REQUIRE(x(0) == Approx(1.0).epsilon(1e-4));
+    REQUIRE(x(1) == Approx(1.0).epsilon(1e-4));
+}

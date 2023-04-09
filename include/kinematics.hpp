@@ -102,8 +102,8 @@ namespace tinyrobotics {
      * @brief Computes the homogeneous transform from a source to target link.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @param target_link Target link, which can be an integer (index) or a string (name).
+     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
@@ -154,8 +154,8 @@ namespace tinyrobotics {
      * @brief Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @param target_link Target link, which can be an integer (index) or a string (name).
+     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
@@ -167,13 +167,10 @@ namespace tinyrobotics {
                                                                         const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                         const TargetLink& target_link,
                                                                         const SourceLink& source_link = 0) {
-        const int target_link_idx = get_link_idx(model, target_link);
-        const int source_link_idx = get_link_idx(model, source_link);
-
         // Compute forward kinematics from source {b} to target {t}
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
-            forward_kinematics(model, q, target_link_idx, source_link_idx);
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst = forward_kinematics(model, q, target_link, source_link);
         // Compute forward kinematics from source {s} to CoM {c}
+        const int target_link_idx                        = get_link_idx(model, target_link);
         Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = Hst * model.links[target_link_idx].centre_of_mass;
         // Return transform from source {s} to CoM {c}
         return Hsc;
@@ -183,8 +180,8 @@ namespace tinyrobotics {
      * @brief Computes the translation of the target link from the source link in the source link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @param target_link Target link, which can be an integer (index) or a string (name).
+     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
@@ -196,21 +193,15 @@ namespace tinyrobotics {
                                             const Eigen::Matrix<Scalar, nq, 1>& q,
                                             const TargetLink& target_link,
                                             const SourceLink& source_link = 0) {
-        const int source_link_idx = get_link_idx(model, source_link);
-        const int target_link_idx = get_link_idx(model, target_link);
-
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
-            forward_kinematics(model, q, target_link_idx, source_link_idx);
-        Eigen::Matrix<Scalar, 3, 1> rTSs(Hst.translation());
-        return rTSs;
+        return forward_kinematics(model, q, target_link, source_link).translation();
     }
 
     /**
      * @brief Computes the rotation matrix between the target link and the source link in the source link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @param target_link Target link, which can be an integer (index) or a string (name).
+     * @param source_link Source link, which can be an integer (index) or a string (name).
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
@@ -222,12 +213,7 @@ namespace tinyrobotics {
                                          const Eigen::Matrix<Scalar, nq, 1>& q,
                                          const TargetLink& target_link,
                                          const SourceLink& source_link = 0) {
-        int source_link_idx = get_link_idx(model, source_link);
-        int target_link_idx = get_link_idx(model, target_link);
-
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst =
-            forward_kinematics(model, q, target_link_idx, source_link_idx);
-        return Hst.linear();
+        return Eigen::Matrix<Scalar, 3, 3>(forward_kinematics(model, q, target_link, source_link).rotation());
     }
 
     /**
@@ -241,43 +227,40 @@ namespace tinyrobotics {
      * @return The geometric jacobian of the target link from the base link in the base link frame.
      */
     template <typename Scalar, int nq, typename TargetLink>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(const Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar, nq>& model,
                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                                     const TargetLink& target_link) {
         // Get the target link from the model
         const int target_link_idx = get_link_idx(model, target_link);
         Link<Scalar> current_link = model.links[target_link_idx];
 
-        // Get the base link from the model
-        auto base_link = model.links[model.base_link_idx];
-
         // Compute the displacement of the target link {t} in the base link frame {b}
-        Eigen::Matrix<Scalar, 3, 1> rTBb = translation(model, q, current_link.idx, base_link.idx);
+        Eigen::Matrix<Scalar, 3, 1> rTBb = translation(model, q, current_link.idx, model.base_link_idx);
+
+        // Compute the transform between base {b} and all the links {i} in the kinematic chain
+        forward_kinematics(model, q);
 
         // Initialize the geometric jabobian matrix with zeros
-        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
+        model.data.J.setZero();
         while (current_link.idx != model.base_link_idx) {
-            auto current_joint = current_link.joint;
-            if (current_joint.idx != -1) {
-                // Compute the transform between base {b} and the current link {i}
-                auto Hbi = forward_kinematics(model, q, current_link.idx, base_link.idx);
+            if (current_link.joint.idx != -1) {
                 // Axis of the current joint rotated into the base frame {b}
-                auto zIBb = Hbi.linear() * current_joint.axis;
+                auto zIBb = model.data.forward_kinematics[current_link.idx].linear() * current_link.joint.axis;
                 // Compute the displacement of the current link {i} from the base link frame {b}
-                auto rIBb = Hbi.translation();
-                if (current_joint.type == JointType::PRISMATIC) {
-                    J.block(0, current_joint.idx, 3, 1) = zIBb;
-                    J.block(3, current_joint.idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
+                auto rIBb = model.data.forward_kinematics[current_link.idx].translation();
+                if (current_link.joint.type == JointType::PRISMATIC) {
+                    model.data.J.block(0, current_link.joint.idx, 3, 1) = zIBb;
+                    model.data.J.block(3, current_link.joint.idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
                 }
-                else if (current_joint.type == JointType::REVOLUTE) {
-                    J.block(0, current_joint.idx, 3, 1) = (zIBb).cross(rTBb - rIBb);
-                    J.block(3, current_joint.idx, 3, 1) = zIBb;
+                else if (current_link.joint.type == JointType::REVOLUTE) {
+                    model.data.J.block(0, current_link.joint.idx, 3, 1) = (zIBb).cross(rTBb - rIBb);
+                    model.data.J.block(3, current_link.joint.idx, 3, 1) = zIBb;
                 }
             }
             // Move up the tree to parent towards the base
             current_link = model.links[current_link.parent];
         }
-        return J;
+        return model.data.J;
     }
 
     /**
@@ -328,6 +311,37 @@ namespace tinyrobotics {
             current_link = model.links[current_link.parent];
         }
         return J;
+    }
+
+    /**
+     * @brief Computes the analytical jacobian of the target link from the base link in the base link frame.
+     * @param model tinyrobotics model.
+     * @param q Joint configuration of the robot.
+     * @param target_link Target link, which can be an integer (index) or a string (name).
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
+     * @return The geometric jacobian of the target link from the base link in the base link frame.
+     */
+    template <typename Scalar, int nq, typename TargetLink>
+    Eigen::Matrix<Scalar, 6, nq> analytical_jacobian(Model<Scalar, nq>& model,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                     const TargetLink& target_link) {
+        // Compute the geometric jacobian
+        model.data.J = geometric_jacobian(model, q, target_link);
+
+        auto Rbt     = rotation(model, q, target_link);
+        auto rpy     = Rbt.eulerAngles(2, 1, 0);
+        Scalar phi   = rpy(0);
+        Scalar theta = rpy(1);
+        Scalar psi   = rpy(2);
+
+        Eigen::Matrix<Scalar, 6, 6> E = Eigen::Matrix<Scalar, 6, 6>::Identity();
+        E.block(3, 3, 3, 3) << 1, 0, -sin(theta), 0, cos(phi), cos(theta) * sin(phi), 0, -sin(phi),
+            cos(theta) * cos(phi);
+
+        model.data.Ja = E * model.data.J;
+        return model.data.Ja;
     }
 
     /**
