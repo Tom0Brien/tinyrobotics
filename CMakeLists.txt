@@ -27,9 +27,9 @@ find_package(TinyXML2 REQUIRED)
 set(LIBS Eigen3::Eigen tinyxml2::tinyxml2)
 
 # Target names
-set(TARGET_LIB tinyroboticsLib)
-set(TARGET_BIN tinyroboticsExecutable)
-set(TARGET_TEST tinyroboticsTests)
+set(TARGET_LIB tinyrobotics_lib)
+set(TARGET_BIN tinyrobotics_executable)
+set(TARGET_TEST tinyrobotics_tests)
 
 # Source files
 file(GLOB SRC_INCLUDES "include/*.hpp")
@@ -79,7 +79,7 @@ set_target_properties(tinyrobotics PROPERTIES LINKER_LANGUAGE CXX)
 # Set the installation rules
 install(
   TARGETS tinyrobotics
-  EXPORT tinyroboticsTargets
+  EXPORT tinyrobotics_targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
@@ -89,18 +89,18 @@ install(
 install(DIRECTORY include/ DESTINATION include/tinyrobotics)
 
 install(
-  EXPORT tinyroboticsTargets
-  FILE tinyroboticsTargets.cmake
+  EXPORT tinyrobotics_targets
+  FILE tinyrobotics_targets.cmake
   NAMESPACE tinyrobotics::
   DESTINATION lib/cmake/tinyrobotics)
 
 # Create a package configuration file for library
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  "tinyroboticsConfigVersion.cmake"
+  "tinyrobotics_config_version.cmake"
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY SameMajorVersion)
 
-install(FILES "tinyroboticsConfig.cmake"
-              "${CMAKE_CURRENT_BINARY_DIR}/tinyroboticsConfigVersion.cmake"
+install(FILES "tinyrobotics_config.cmake"
+              "${CMAKE_CURRENT_BINARY_DIR}/tinyrobotics_config_version.cmake"
         DESTINATION lib/cmake/tinyrobotics)
