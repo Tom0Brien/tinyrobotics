@@ -1,8 +1,9 @@
 #define CATCH_KINEMATICS
+#include "../include/kinematics.hpp"
+
 #include <chrono>
 #include <string>
 
-#include "../include/kinematics.hpp"
 #include "../include/parser.hpp"
 #include "catch2/catch.hpp"
 

@@ -22,9 +22,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 find_package(Catch2 2.13 REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(TinyXML2 REQUIRED)
+find_package(NLopt REQUIRED)
 
 # Libraries
-set(LIBS Eigen3::Eigen tinyxml2::tinyxml2)
+set(LIBS Eigen3::Eigen tinyxml2::tinyxml2 ${NLOPT_LIBRARIES})
 
 # Target names
 set(TARGET_LIB tinyrobotics_lib)

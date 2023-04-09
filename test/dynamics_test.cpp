@@ -1,8 +1,9 @@
 #define CATCH_DYNAMICS
+#include "../include/dynamics.hpp"
+
 #include <Eigen/Dense>
 #include <chrono>
 
-#include "../include/dynamics.hpp"
 #include "../include/parser.hpp"
 #include "catch2/catch.hpp"
 
