@@ -2,8 +2,8 @@
 #include <Eigen/Dense>
 #include <chrono>
 
-#include "../include/Dynamics.hpp"
-#include "../include/Parser.hpp"
+#include "../include/dynamics.hpp"
+#include "../include/parser.hpp"
 #include "catch2/catch.hpp"
 
 using namespace tinyrobotics;

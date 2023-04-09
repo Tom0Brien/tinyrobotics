@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-/** \file Data.hpp
+/** \file data.hpp
  * @brief Contains the Data struct which stores the results of various model algorithms.
  */
 namespace tinyrobotics {

@@ -2,9 +2,9 @@
 #include <chrono>
 #include <string>
 
-#include "../include/Dynamics.hpp"
-#include "../include/Kinematics.hpp"
-#include "../include/Parser.hpp"
+#include "../include/dynamics.hpp"
+#include "../include/kinematics.hpp"
+#include "../include/parser.hpp"
 
 using namespace tinyrobotics;
 

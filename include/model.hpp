@@ -11,11 +11,11 @@
 #include <numeric>
 #include <sstream>
 
-#include "Data.hpp"
-#include "Joint.hpp"
-#include "Link.hpp"
+#include "data.hpp"
+#include "joint.hpp"
+#include "link.hpp"
 
-/** \file Model.hpp
+/** \file model.hpp
  * @brief Contains struct for representing a tinyrobotics model.
  */
 namespace tinyrobotics {

@@ -1,13 +1,13 @@
-#ifndef TR_FORWARDKINEMATICS_HPP
-#define TR_FORWARDKINEMATICS_HPP
+#ifndef TR_KINEMATICS_HPP
+#define TR_KINEMATICS_HPP
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "Math.hpp"
-#include "Model.hpp"
+#include "math.hpp"
+#include "model.hpp"
 
-/** \file Kinematics.hpp
+/** \file kinematics.hpp
  * @brief Contains functions for computing various kinematic quantities of a tinyrobotics model.
  */
 namespace tinyrobotics {

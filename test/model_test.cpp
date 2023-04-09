@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <string>
 
-#include "../include/Parser.hpp"
+#include "../include/parser.hpp"
 #include "catch2/catch.hpp"
 
 using namespace tinyrobotics;

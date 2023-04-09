@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-/** \file Joint.hpp
+/** \file joint.hpp
  * @brief Contains struct for representing a joint in a tinyrobotics model.
  */
 namespace tinyrobotics {

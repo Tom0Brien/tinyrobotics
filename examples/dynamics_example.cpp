@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "../include/Dynamics.hpp"
-#include "../include/Model.hpp"
-#include "../include/Parser.hpp"
+#include "../include/dynamics.hpp"
+#include "../include/model.hpp"
+#include "../include/parser.hpp"
 
 
 using namespace tinyrobotics;

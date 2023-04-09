@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "../include/Kinematics.hpp"
-#include "../include/Model.hpp"
-#include "../include/Parser.hpp"
+#include "../include/kinematics.hpp"
+#include "../include/model.hpp"
+#include "../include/parser.hpp"
 
 using namespace tinyrobotics;
 

@@ -3,10 +3,10 @@
 
 #include <tinyxml2.h>
 
-#include "Math.hpp"
-#include "Model.hpp"
+#include "math.hpp"
+#include "model.hpp"
 
-/** \file Parser.hpp
+/** \file parser.hpp
  * @brief Contains various functions for parsing URDF files and strings to create a tinyrobotics model.
  */
 namespace tinyrobotics {

@@ -1,9 +1,9 @@
 #ifndef TR_LINK_HPP
 #define TR_LINK_HPP
 
-#include "Joint.hpp"
+#include "joint.hpp"
 
-/** \file Link.hpp
+/** \file link.hpp
  * @brief Contains struct for representing a joint in a tinyrobotics model.
  */
 namespace tinyrobotics {

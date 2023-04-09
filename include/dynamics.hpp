@@ -5,10 +5,10 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-#include "Kinematics.hpp"
-#include "Model.hpp"
+#include "kinematics.hpp"
+#include "model.hpp"
 
-/** \file Dynamics.hpp
+/** \file dynamics.hpp
  * @brief Contains functions for computing the dynamics of a tinyrobotics model.
  */
 namespace tinyrobotics {

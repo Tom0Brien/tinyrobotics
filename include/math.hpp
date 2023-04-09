@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-/** \file Math.hpp
+/** \file math.hpp
  * @brief Contains various math related functions.
  */
 namespace tinyrobotics {
