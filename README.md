@@ -41,6 +41,10 @@ The core algorithms of tinyrobotics are listed below, for detailed documentation
 - [Catch2](https://github.com/catchorg/Catch2)
 - [TinyXML2](https://github.com/leethomason/tinyxml2)
 
+```bash
+sudo apt install -y libeigen3-dev catch2 libtinyxml2-dev
+```
+
 ### 2. Build with cmake
   ```bash
   git clone https://github.com/Tom0Brien/tinyrobotics.git && cd tinyrobotics
