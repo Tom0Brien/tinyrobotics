@@ -177,6 +177,54 @@ namespace tinyrobotics {
         return Ic;
     }
 
+    /**
+     * @brief Computes the error between two homogeneous transformation matrices.
+     * @param H1 The first homogeneous transformation matrix.
+     * @param H2 The second homogeneous transformation matrix.
+     * @tparam Scalar Scalar type.
+     * @return 6x1 error vector.
+     */
+    template <typename Scalar>
+    Eigen::Matrix<Scalar, 6, 1> homogeneous_error(const Eigen::Transform<Scalar, 3, Eigen::Isometry>& H1,
+                                                  const Eigen::Transform<Scalar, 3, Eigen::Isometry>& H2) {
+
+        Eigen::Matrix<Scalar, 3, 3> R1, R2, Re;
+        Eigen::Matrix<Scalar, 3, 1> d1, d2, eps;
+        Eigen::Matrix<Scalar, 6, 1> e;
+        Scalar eps_norm, t;
+
+        // Break out values
+        R1 = H1.rotation();
+        R2 = H2.rotation();
+        d1 = H1.translation();
+        d2 = H2.translation();
+
+        // Orientation error
+        Re = R1 * R2.transpose();
+
+        // Assign linear error
+        e.head(3) = d1 - d2;
+
+        // Extract diagonal and trace
+        t = Re.trace();
+
+        // Build l variable, and calculate norm
+        eps << Re(2, 1) - Re(1, 2), Re(0, 2) - Re(2, 0), Re(1, 0) - Re(0, 1);
+        eps_norm = eps.norm();
+
+        if (t > -.99 || eps_norm > 1e-10) {
+            if (eps_norm < 1e-3) {
+                e.tail(3) = (0.75 - t / 12) * eps;
+            }
+            else {
+                e.tail(3) = (atan2(eps_norm, t - 1) / eps_norm) * eps;
+            }
+        }
+        else {
+            e.tail(3) = 1.570796326794897 * (Re.diagonal().array() + 1);
+        }
+        return e;
+    }
 }  // namespace tinyrobotics
 
 #endif
