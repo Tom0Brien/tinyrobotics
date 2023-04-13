@@ -99,14 +99,17 @@ namespace tinyrobotics {
         NLOPT,
 
         /// @brief Use NLopt to solve inverse kinematics with autodiff gradient.
-        NLOPT_AUTODIFF
+        NLOPT_AUTODIFF,
+
+        /// @brief Use Levenberg-Marquardt to solve inverse kinematics.
+        LEVENBERG_MARQUARDT
     };
 
     /// @brief Options for inverse kinematics solver.
     template <typename Scalar, int nq>
     struct InverseKinematicsOptions {
         /// @brief Relative tolerance for cost function value
-        Scalar tolerance = 1e-12;
+        Scalar tolerance = 1e-6;
 
         /// @brief Relative tolerance for NLopt optimization variables
         Scalar xtol_rel = 1e-12;
@@ -114,12 +117,14 @@ namespace tinyrobotics {
         /// @brief Maximum number of iterations for optimization
         int max_iterations = 5e3;
 
-        /// @brief Step size for jacobian method
-        Scalar step_size = 1e-1;
-
         /// @brief Inverse kinematics solver method
         InverseKinematicsMethod method = InverseKinematicsMethod::JACOBIAN;
 
+        // ****************** Jacobian Method options ******************
+        /// @brief Step size
+        Scalar step_size = 1e-1;
+
+        // ****************** NLopt Method options ******************
         /// @brief NLopt optimization algorithm to use
         nlopt::algorithm algorithm = nlopt::LD_SLSQP;
 
@@ -128,6 +133,16 @@ namespace tinyrobotics {
 
         /// @brief Weighting matrix for joint change
         Eigen::Matrix<Scalar, nq, nq> W = 1e-3 * Eigen::Matrix<Scalar, nq, nq>::Identity();
+
+        // ****************** Levenberg-Marquardt Method options ******************
+        /// @brief Inital damping factor for Levenberg-Marquardt
+        Scalar initial_damping = 1e-2;
+
+        /// @brief Damping decrease factor for Levenberg-Marquardt
+        Scalar damping_decrease_factor = 1e-1;
+
+        /// @brief Damping increase factor for Levenberg-Marquardt
+        Scalar damping_increase_factor = 2;
     };
 
     /**
@@ -156,23 +171,18 @@ namespace tinyrobotics {
             forward_kinematics(model, q, target_link_name, source_link_name);
 
         // Stack the position and orientation errors
-        Eigen::Matrix<Scalar, 3, 1> translation_error = current_pose.translation() - desired_pose.translation();
-
-        // Compute Angle Axis representation of the rotation error
-        Eigen::AngleAxis<Scalar> v(desired_pose.linear().transpose() * current_pose.linear());
-        Eigen::Matrix<Scalar, 3, 1> rotation_error = v.angle() * v.axis();
-
         Eigen::Matrix<Scalar, 6, 1> pose_error;
-        pose_error << translation_error, rotation_error;
+        pose_error.head(3) << current_pose.translation() - desired_pose.translation();
+        pose_error.tail(3) << current_pose.linear().eulerAngles(0, 1, 2) - desired_pose.linear().eulerAngles(0, 1, 2);
 
         // Compute the cost: q^T*W*q + (k(q) - x*)^TK*(k(q) - x*))), where k(q) is the current pose, x* is the desired
         // pose, and W and K are the weighting matrices
         Eigen::Matrix<Scalar, 1, 1> cost =
-            0.5 * pose_error.transpose() * options.K * pose_error;  // (q - q0).transpose() * options.W * (q - q0);
+            0.5 * pose_error.transpose() * options.K * pose_error + 0.5 * (q - q0).transpose() * options.W * (q - q0);
 
         // Compute the gradient of the cost function TODO: Fix this
         Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q, target_link_name);
-        gradient                       = J.transpose() * options.K * pose_error;
+        gradient                       = J.transpose() * options.K * pose_error + options.W * (q - q0);
 
         return cost(0);
     }
@@ -219,8 +229,8 @@ namespace tinyrobotics {
 
         // Stack the position and orientation errors
         Eigen::Matrix<ADScalar, 6, 1> pose_error;
-        pose_error << current_pose.translation() - desired_pose.translation(),
-            rotation_to_rpy(current_pose.linear()) - rotation_to_rpy(desired_pose.linear());
+        pose_error.head(3) << current_pose.translation() - desired_pose.translation();
+        pose_error.tail(3) << current_pose.linear().eulerAngles(0, 1, 2) - desired_pose.linear().eulerAngles(0, 1, 2);
 
         Eigen::Matrix<ADScalar, 6, 6> K_ad   = options.K.template cast<ADScalar>();
         Eigen::Matrix<ADScalar, nq, nq> W_ad = options.W.template cast<ADScalar>();
@@ -338,14 +348,14 @@ namespace tinyrobotics {
             Eigen::Transform<Scalar, 3, Eigen::Isometry> current_pose =
                 forward_kinematics(model, q_current, target_link_name, source_link_name);
 
-            // Compute the error vector
-            Eigen::Matrix<Scalar, 6, 1> error_vector;
-            error_vector.head(3) = current_pose.translation() - desired_pose.translation();
-            error_vector.tail(3) =
-                current_pose.rotation().eulerAngles(0, 1, 2) - desired_pose.rotation().eulerAngles(0, 1, 2);
+            // Compute the pose error vector
+            Eigen::Matrix<Scalar, 6, 1> pose_error;
+            pose_error.head(3) = current_pose.translation() - desired_pose.translation();
+            pose_error.tail(3) =
+                current_pose.linear().eulerAngles(0, 1, 2) - desired_pose.linear().eulerAngles(0, 1, 2);
 
             // Check if the error is within tolerance
-            if (error_vector.norm() < options.tolerance) {
+            if (pose_error.norm() < options.tolerance) {
                 break;
             }
 
@@ -354,10 +364,93 @@ namespace tinyrobotics {
 
             // Compute the change in configuration
             Eigen::Matrix<Scalar, nq, 1> delta_q =
-                J.completeOrthogonalDecomposition().pseudoInverse() * (-options.step_size * error_vector);
+                J.completeOrthogonalDecomposition().pseudoInverse() * (-options.step_size * pose_error);
 
             // Update the current configuration
             q_current += delta_q;
+        }
+
+        // Return the final configuration
+        return q_current;
+    }
+
+    /**
+     * @brief Solves the inverse kinematics problem between two links using the Levenberg-Marquardt method.
+     * @param model tinyrobotics model.
+     * @param target_link_name {t} Link to which the transform is computed.
+     * @param source_link_name {s} Link from which the transform is computed.
+     * @param desired_pose Desired pose of the target link in the source link frame.
+     * @param q0 The initial guess for the configuration vector.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @return The configuration vector of the robot model which achieves the desired pose.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, nq, 1> inverse_kinematics_levenberg_marquardt(
+        Model<Scalar, nq>& model,
+        const std::string& target_link_name,
+        const std::string& source_link_name,
+        const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+        const Eigen::Matrix<Scalar, nq, 1> q0,
+        const InverseKinematicsOptions<Scalar, nq>& options) {
+
+        // Set the initial guess
+        Eigen::Matrix<Scalar, nq, 1> q_current = q0;
+
+        // Initialize the damping factor
+        Scalar lambda = options.initial_damping;
+
+        // Iterate until the maximum number of iterations is reached
+        for (int iteration = 0; iteration < options.max_iterations; ++iteration) {
+
+            // Compute the current pose
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> current_pose =
+                forward_kinematics(model, q_current, target_link_name, source_link_name);
+
+            // Compute the pose error vector
+            Eigen::Matrix<Scalar, 6, 1> pose_error;
+            pose_error.head(3) = current_pose.translation() - desired_pose.translation();
+            pose_error.tail(3) << current_pose.linear().eulerAngles(0, 1, 2)
+                                      - desired_pose.linear().eulerAngles(0, 1, 2);
+
+            // Check if the error is within tolerance
+            if (pose_error.norm() < options.tolerance) {
+                break;
+            }
+
+            // Compute the Jacobian matrix
+            Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q_current, target_link_name);
+
+            // Compute the Hessian approximation and the gradient
+            Eigen::Matrix<Scalar, nq, nq> H = J.transpose() * J;
+            Eigen::Matrix<Scalar, nq, 1> g  = J.transpose() * pose_error;
+
+            // Levenberg-Marquardt update
+            Eigen::Matrix<Scalar, nq, 1> delta_q =
+                (H + lambda * Eigen::Matrix<Scalar, nq, nq>(H.diagonal().asDiagonal())).ldlt().solve(-g);
+
+
+            // Test the new configuration
+            Eigen::Matrix<Scalar, nq, 1> q_new = q_current + delta_q;
+            Eigen::Transform<Scalar, 3, Eigen::Isometry> new_pose =
+                forward_kinematics(model, q_new, target_link_name, source_link_name);
+
+            // Compute the new error vector
+            Eigen::Matrix<Scalar, 6, 1> new_pose_error;
+            new_pose_error.head(3) = new_pose.translation() - desired_pose.translation();
+            Eigen::AngleAxis<Scalar> new_rot_error(new_pose.rotation().transpose() * desired_pose.rotation());
+            new_pose_error.tail(3) = new_rot_error.angle() * new_rot_error.axis();
+
+            // Check if the new error is smaller than the old error
+            if (new_pose_error.norm() < pose_error.norm()) {
+                // Accept the new configuration
+                q_current = q_new;
+                lambda *= options.damping_decrease_factor;
+            }
+            else {
+                // Reject the new configuration and increase the damping factor
+                lambda *= options.damping_increase_factor;
+            }
         }
 
         // Return the final configuration
@@ -394,6 +487,13 @@ namespace tinyrobotics {
                                                    desired_pose,
                                                    q0,
                                                    options);
+            case InverseKinematicsMethod::LEVENBERG_MARQUARDT:
+                return inverse_kinematics_levenberg_marquardt(model,
+                                                              target_link_name,
+                                                              source_link_name,
+                                                              desired_pose,
+                                                              q0,
+                                                              options);
             default: throw std::runtime_error("Unknown inverse kinematics method");
         }
     }

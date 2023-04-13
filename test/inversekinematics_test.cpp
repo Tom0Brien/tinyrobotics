@@ -135,7 +135,7 @@ TEST_CASE("Rosenbrock function optimization with grad and wrapper", "[nlopt]") {
     REQUIRE(x(1) == Approx(1.0).epsilon(1e-4));
 }
 
-TEST_CASE("Test inverse kinematics for 2-link robot", "[inversekinematics]") {
+TEST_CASE("Test inverse kinematics for 2-link robot with nlopt", "[inversekinematics]") {
     // Load model
     const int n_joints = 2;
     auto link_2        = import_urdf<double, n_joints>("data/urdfs/2_link.urdf");
@@ -150,13 +150,88 @@ TEST_CASE("Test inverse kinematics for 2-link robot", "[inversekinematics]") {
     // Compute the inverse kinematics for the random desired transform
     auto q0 = link_2.home_configuration();
     InverseKinematicsOptions<double, n_joints> options;
+    options.method = InverseKinematicsMethod::NLOPT;
     Eigen::Matrix<double, n_joints, 1> q_solution =
         inverse_kinematics<double, n_joints>(link_2, target_link_name, source_link_name, Hst_desired, q0, options);
     // Compute the forward kinematics for the solution
     Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
     Hst_solution = forward_kinematics(link_2, q_solution, target_link_name, source_link_name);
-
-
     // Check that the solution is close to the desired transform
     REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-3);
+}
+
+TEST_CASE("Test inverse kinematics for 2-link robot with nlopt autodiff", "[inversekinematics]") {
+    // Load model
+    const int n_joints = 2;
+    auto link_2        = import_urdf<double, n_joints>("data/urdfs/2_link.urdf");
+    // Make a random configuration
+    Eigen::Matrix<double, n_joints, 1> q_random;
+    q_random << M_PI / 4, M_PI / 6;
+    // Compute the forward kinematics for the random configuration
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
+    std::string target_link_name = "end_effector";
+    std::string source_link_name = "ground";
+    Hst_desired                  = forward_kinematics(link_2, q_random, target_link_name, source_link_name);
+    // Compute the inverse kinematics for the random desired transform
+    auto q0 = link_2.home_configuration();
+    InverseKinematicsOptions<double, n_joints> options;
+
+    Eigen::Matrix<double, n_joints, 1> q_solution =
+        inverse_kinematics<double, n_joints>(link_2, target_link_name, source_link_name, Hst_desired, q0, options);
+    // Compute the forward kinematics for the solution
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
+    Hst_solution = forward_kinematics(link_2, q_solution, target_link_name, source_link_name);
+    // Check that the solution is close to the desired transform
+    REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-3);
+}
+
+TEST_CASE("Test inverse kinematics for 2-link robot with jacobian method", "[inversekinematics]") {
+    // Load model
+    const int n_joints = 2;
+    auto link_2        = import_urdf<double, n_joints>("data/urdfs/2_link.urdf");
+    // Make a random configuration
+    Eigen::Matrix<double, n_joints, 1> q_random = link_2.random_configuration();
+    // Compute the forward kinematics for the random configuration
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
+    std::string target_link_name = "end_effector";
+    std::string source_link_name = "ground";
+    Hst_desired                  = forward_kinematics(link_2, q_random, target_link_name, source_link_name);
+    // Compute the inverse kinematics for the random desired transform
+    auto q0 = link_2.home_configuration();
+    InverseKinematicsOptions<double, n_joints> options;
+    Eigen::Matrix<double, n_joints, 1> q_solution =
+        inverse_kinematics<double, n_joints>(link_2, target_link_name, source_link_name, Hst_desired, q0, options);
+    // Compute the forward kinematics for the solution
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
+    Hst_solution = forward_kinematics(link_2, q_solution, target_link_name, source_link_name);
+    // Check that the solution is close to the desired transform
+    REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-3);
+    REQUIRE((Hst_desired.linear().eulerAngles(0, 1, 2) - Hst_solution.linear().eulerAngles(0, 1, 2)).squaredNorm()
+            < 1e-3);
+}
+
+TEST_CASE("Test inverse kinematics for 2-link robot with levenberg-marquardt method", "[inversekinematics]") {
+    // Load model
+    const int n_joints = 2;
+    auto link_2        = import_urdf<double, n_joints>("data/urdfs/2_link.urdf");
+    // Make a random configuration
+    Eigen::Matrix<double, n_joints, 1> q_random = link_2.random_configuration();
+    // Compute the forward kinematics for the random configuration
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
+    std::string target_link_name = "end_effector";
+    std::string source_link_name = "ground";
+    Hst_desired                  = forward_kinematics(link_2, q_random, target_link_name, source_link_name);
+    // Compute the inverse kinematics for the random desired transform
+    auto q0 = link_2.home_configuration();
+    InverseKinematicsOptions<double, n_joints> options;
+    options.method = InverseKinematicsMethod::LEVENBERG_MARQUARDT;
+    Eigen::Matrix<double, n_joints, 1> q_solution =
+        inverse_kinematics<double, n_joints>(link_2, target_link_name, source_link_name, Hst_desired, q0, options);
+    // Compute the forward kinematics for the solution
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
+    Hst_solution = forward_kinematics(link_2, q_solution, target_link_name, source_link_name);
+    // Check that the solution is close to the desired transform
+    REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-3);
+    REQUIRE((Hst_desired.linear().eulerAngles(0, 1, 2) - Hst_solution.linear().eulerAngles(0, 1, 2)).squaredNorm()
+            < 1e-3);
 }

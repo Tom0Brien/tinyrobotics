@@ -123,7 +123,7 @@ namespace tinyrobotics {
             std::cout << "No. of links           : " << links.size() << std::endl;
             std::cout << "No. of joints          : " << joints.size() << std::endl;
             std::cout << "No. of actuated joints : " << n_q << std::endl;
-            std::cout << "Base link name         : " << links[base_link_idx].name << std::endl << std::endl;
+            std::cout << "Base link name         : " << links[base_link_idx].name << std::endl;
             std::cout << "Model Mass             : " << mass << std::endl;
             std::cout << std::left << std::setw(spacing) << "Index" << std::setw(spacing) << "Link Name"
                       << std::setw(spacing) << "Joint Name [idx]" << std::setw(spacing) << "Joint Type"

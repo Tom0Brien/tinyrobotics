@@ -164,10 +164,32 @@
         <color rgba="0 0 1 1"/>
       </material>
     </visual>
-
   </link>
 
+  <joint name="end_effector" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="link_4"/>
+    <child link="end_effector"/>
+    <axis xyz="0 0 0"/>
+    <limit
+      lower="-100"
+      upper="100"
+      effort="100"
+      velocity="100" />
+  </joint>
 
-
+  <link name="end_effector">
+     <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+  </link>
 
 </robot>
