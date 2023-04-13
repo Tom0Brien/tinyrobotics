@@ -19,14 +19,16 @@ namespace tinyrobotics {
               typename Scalar                                                                 = typename T::Scalar,
               std::enable_if_t<((T::RowsAtCompileTime == 3) && (T::ColsAtCompileTime == 3))>* = nullptr>
     inline Eigen::Matrix<Scalar, 3, 1> rotation_to_rpy(const T& mat) {
+        using std::atan2;
+        using std::sqrt;
         // Eigen euler angles and with better range
         return Eigen::Matrix<Scalar, 3, 1>(
             // Roll
-            std::atan2(mat(2, 1), mat(2, 2)),
+            atan2(mat(2, 1), mat(2, 2)),
             // Pitch
-            std::atan2(-mat(2, 0), std::sqrt(mat(2, 1) * mat(2, 1) + mat(2, 2) * mat(2, 2))),
+            atan2(-mat(2, 0), sqrt(mat(2, 1) * mat(2, 1) + mat(2, 2) * mat(2, 2))),
             // Yaw
-            std::atan2(mat(1, 0), mat(0, 0)));
+            atan2(mat(1, 0), mat(0, 0)));
     }
 
     /**

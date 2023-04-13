@@ -88,7 +88,6 @@ TEST_CASE("Test geometric_jacobian_com calculations for simple model", "[Forward
 }
 
 TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinematics]") {
-
     auto kuka_model = import_urdf<double, 7>("data/urdfs/kuka.urdf");
     // Create a configuration for the robot
     auto q = kuka_model.home_configuration();

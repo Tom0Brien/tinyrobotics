@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
     model.show_details();
 
     // Generate a random configuration vector
-    auto q = model.random_configuration();
+    auto q = model.home_configuration();
 
     // Define the source and target links
     const std::string source_link_name = "link_2";

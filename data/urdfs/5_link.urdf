@@ -93,7 +93,7 @@
 
   <joint name="link_3" type="revolute">
     <origin xyz="1 0 0" rpy="0 0 0"/>
-    <parent link="link_1"/>
+    <parent link="link_2"/>
     <child link="link_3"/>
     <axis xyz="0 0 1"/>
     <limit
@@ -168,7 +168,7 @@
 
   <joint name="link_5" type="revolute">
     <origin xyz="1 0 0" rpy="1.571 0 0"/>
-    <parent link="link_3"/>
+    <parent link="link_4"/>
     <child link="link_5"/>
     <axis xyz="0 0 1"/>
     <limit

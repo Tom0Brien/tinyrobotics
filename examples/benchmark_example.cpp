@@ -3,6 +3,7 @@
 #include <string>
 
 #include "../include/dynamics.hpp"
+#include "../include/inversekinematics.hpp"
 #include "../include/kinematics.hpp"
 #include "../include/parser.hpp"
 
@@ -10,10 +11,10 @@ using namespace tinyrobotics;
 
 int main(int argc, char* argv[]) {
     // Load model
-    const int n_joints      = 5;
-    auto model              = import_urdf<double, n_joints>("../data/urdfs/5_link.urdf");
-    std::string source_link = "ground";
-    std::string target_link = "link_5";
+    const int n_joints      = 20;
+    auto model              = import_urdf<double, n_joints>("../data/urdfs/nugus.urdf");
+    std::string source_link = "torso";
+    std::string target_link = "left_foot";
 
     // ************ Model Details ************
     model.show_details();
@@ -25,6 +26,16 @@ int main(int argc, char* argv[]) {
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Forward Kinematics: " << duration.count() << " microseconds" << std::endl;
+
+    // ************ Inverse Kinematics ************
+    start = std::chrono::high_resolution_clock::now();
+    InverseKinematicsOptions<double, n_joints> options;
+    options.tolerance = 1e-4;
+    auto q0           = model.home_configuration();
+    auto q_sol        = inverse_kinematics(model, target_link, source_link, H, q0, options);
+    stop              = std::chrono::high_resolution_clock::now();
+    duration          = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Inverse Kinematics: " << duration.count() << " microseconds" << std::endl;
 
     // ************ Geometric Jacobian ************
     start    = std::chrono::high_resolution_clock::now();

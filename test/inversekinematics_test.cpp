@@ -13,40 +13,150 @@
 using namespace std::chrono;
 using namespace tinyrobotics;
 
-TEST_CASE("Test inverse kinematics Kuka with perfect initial condition", "[InverseKinematics]") {
-    auto kuka_model = import_urdf<double, 7>("data/urdfs/kuka.urdf");
+double myvfunc(const std::vector<double>& x, std::vector<double>& grad, void* data) {
+    (void) data;
+    if (!grad.empty()) {
+        grad[0] = 0.0;
+        grad[1] = 0.5 / sqrt(x[1]);
+    }
+    return sqrt(x[1]);
+}
 
-    // Make a random configuration
-    auto q_random = kuka_model.random_configuration();
-    // Compute the forward kinematics for the random configuration
-    Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
-    std::string target_link_name = "kuka_arm_7_link";
-    std::string source_link_name = "calib_kuka_arm_base_link";
-    Hst_desired                  = forward_kinematics(kuka_model, q_random, source_link_name, target_link_name);
-    // Compute the inverse kinematics for the random desired transform
-    auto q0 = q_random + 0.1 * kuka_model.random_configuration();
-    // Start timer
+typedef struct {
+    double a, b;
+} my_constraint_data;
+
+double myvconstraint(const std::vector<double>& x, std::vector<double>& grad, void* data) {
+    my_constraint_data* d = reinterpret_cast<my_constraint_data*>(data);
+    double a = d->a, b = d->b;
+    if (!grad.empty()) {
+        grad[0] = 3 * a * (a * x[0] + b) * (a * x[0] + b);
+        grad[1] = -1.0;
+    }
+    return ((a * x[0] + b) * (a * x[0] + b) * (a * x[0] + b) - x[1]);
+}
+
+double rosenbrock(const Eigen::Matrix<double, 2, 1>& x, Eigen::Matrix<double, 2, 1>& grad, void* /*data*/) {
+    double fx = (1 - x(0)) * (1 - x(0)) + 100 * (x(1) - x(0) * x(0)) * (x(1) - x(0) * x(0));
+
+    if (grad.size() > 0) {
+        grad(0) = -2 * (1 - x(0)) - 400 * x(0) * (x(1) - x(0) * x(0));
+        grad(1) = 200 * (x(1) - x(0) * x(0));
+    }
+
+    return fx;
+}
+
+
+TEST_CASE("Rosenbrock function optimization", "[nlopt]") {
+    nlopt::opt opt("LD_MMA", 2);
+    std::vector<double> lb(2);
+    lb[0] = -HUGE_VAL;
+    lb[1] = 0;
+    opt.set_lower_bounds(lb);
+    opt.set_min_objective(myvfunc, NULL);
+    my_constraint_data data[2] = {{2, 0}, {-1, 1}};
+    opt.add_inequality_constraint(myvconstraint, &data[0], 1e-9);
+    opt.add_inequality_constraint(myvconstraint, &data[1], 1e-9);
+    opt.set_xtol_rel(1e-12);
+
+    std::vector<double> x(2);
+    x[0] = 1.234;
+    x[1] = 5.678;
+    double minf;
+
+    // Optimize
+    nlopt::result result = opt.optimize(x, minf);
+
+    // Check the results
+    REQUIRE(x[0] == Approx(0.3333333348).epsilon(1e-4));
+    REQUIRE(x[1] == Approx(0.2962962891).epsilon(1e-4));
+}
+
+TEST_CASE("Rosenbrock function optimization with wrapper", "[nlopt]") {
+    // Create the NLopt optimizer and set the algorithm
+    nlopt::opt opt(nlopt::LN_COBYLA, 2);
+
+    // Set the objective function
+    ObjectiveFunction<double, 2> obj_fun = rosenbrock;
+    opt.set_min_objective(eigen_objective_wrapper<double, 2>, &obj_fun);
+
+    // Set the optimization tolerances
+    opt.set_xtol_rel(1e-12);
+    opt.set_ftol_rel(1e-12);
+
+    // Set the initial guess
+    Eigen::VectorXd x0(2);
+    x0 << -1.2, 1.0;
+    std::vector<double> x_initial(2);
+    eigen_to_nlopt<double, 2>(x0, x_initial);
+
+    // Optimize
+    double minf;
+    nlopt::result result = opt.optimize(x_initial, minf);
+
+    // Convert the optimized solution back to an Eigen vector
+    Eigen::Matrix<double, 2, 1> optimized_solution(2);
+    nlopt_to_eigen<double, 2>(x_initial, optimized_solution);
+
+    // Check that the optimization was successful and the result is close to the expected minimum
+    REQUIRE(optimized_solution(0) == Approx(1.0).epsilon(1e-4));
+    REQUIRE(optimized_solution(1) == Approx(1.0).epsilon(1e-4));
+}
+
+TEST_CASE("Rosenbrock function optimization with grad and wrapper", "[nlopt]") {
+    const int nv = 2;
+    Eigen::Matrix<double, nv, 1> x;
+    x << -1.2, 1.0;
+
+    // Set up the NLopt optimization problem with Rosenbrock as the objective function
+    nlopt::opt opt(nlopt::LD_SLSQP, nv);
+    ObjectiveFunction<double, nv> obj_fun = rosenbrock;
+    opt.set_min_objective(eigen_objective_wrapper<double, nv>, static_cast<void*>(&obj_fun));
+    opt.set_xtol_rel(1e-8);
+
+    // Convert the initial guess to NLopt format
+    std::vector<double> x0(nv);
+    eigen_to_nlopt(x, x0);
+
+    // Optimize the function using NLopt
+    double minf;
+    // start timer
     auto start = std::chrono::high_resolution_clock::now();
-    Eigen::Matrix<double, 7, 1> q_solution =
-        inverse_kinematics<double, 7>(kuka_model, source_link_name, target_link_name, Hst_desired, q0);
-    // Stop timer
+    opt.optimize(x0, minf);
+    // stop timer
     auto stop     = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Duration microseconds: " << duration.count() << std::endl;
+    // Convert the result back to Eigen format
+    nlopt_to_eigen(x0, x);
+
+    // Check that the optimization was successful and the result is close to the expected minimum
+    REQUIRE(x(0) == Approx(1.0).epsilon(1e-4));
+    REQUIRE(x(1) == Approx(1.0).epsilon(1e-4));
+}
+
+TEST_CASE("Test inverse kinematics for 2-link robot", "[inversekinematics]") {
+    // Load model
+    const int n_joints = 2;
+    auto link_2        = import_urdf<double, n_joints>("data/urdfs/2_link.urdf");
+    // Make a random configuration
+    Eigen::Matrix<double, n_joints, 1> q_random;
+    q_random << M_PI / 4, M_PI / 6;
+    // Compute the forward kinematics for the random configuration
+    Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
+    std::string target_link_name = "end_effector";
+    std::string source_link_name = "ground";
+    Hst_desired                  = forward_kinematics(link_2, q_random, target_link_name, source_link_name);
+    // Compute the inverse kinematics for the random desired transform
+    auto q0 = link_2.home_configuration();
+    InverseKinematicsOptions<double, n_joints> options;
+    Eigen::Matrix<double, n_joints, 1> q_solution =
+        inverse_kinematics<double, n_joints>(link_2, target_link_name, source_link_name, Hst_desired, q0, options);
     // Compute the forward kinematics for the solution
     Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
-    Hst_solution = forward_kinematics(kuka_model, q_solution, source_link_name, target_link_name);
+    Hst_solution = forward_kinematics(link_2, q_solution, target_link_name, source_link_name);
 
-    // Compute the euler angles for current
-    Eigen::Matrix<double, 3, 3> Rst_solution = Hst_solution.linear();
-
-    // Compute the euler angles for desired
-    Eigen::Matrix<double, 3, 3> Rst_desired = Hst_desired.linear();
-
-    Eigen::Matrix<double, 3, 3> R_error = Rst_desired * Rst_solution.transpose();
-    double orientation_error            = (Eigen::Matrix<double, 3, 3>::Identity() - R_error).diagonal().sum();
 
     // Check that the solution is close to the desired transform
-    REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-2);
-    // REQUIRE(orientation_error < 1e-2);
+    REQUIRE((Hst_desired.translation() - Hst_solution.translation()).squaredNorm() < 1e-3);
 }
