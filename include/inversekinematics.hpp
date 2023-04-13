@@ -197,7 +197,7 @@ namespace tinyrobotics {
         Eigen::Matrix<Scalar, 1, 1> cost =
             0.5 * pose_error.transpose() * options.K * pose_error + 0.5 * (q - q0).transpose() * options.W * (q - q0);
 
-        // Compute the gradient of the cost function TODO: Fix this
+        // Compute the gradient of the cost function
         Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q, target_link_name);
         gradient                       = J.transpose() * options.K * pose_error + options.W * (q - q0);
 
@@ -440,7 +440,6 @@ namespace tinyrobotics {
             // Levenberg-Marquardt update
             Eigen::Matrix<Scalar, nq, 1> delta_q =
                 (H + lambda * Eigen::Matrix<Scalar, nq, nq>(H.diagonal().asDiagonal())).ldlt().solve(-g);
-
 
             // Test the new configuration
             Eigen::Matrix<Scalar, nq, 1> q_new = q_current + delta_q;

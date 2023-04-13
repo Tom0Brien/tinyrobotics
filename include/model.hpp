@@ -40,12 +40,6 @@ namespace tinyrobotics {
         /// @brief Number of configuration coordinates (degrees of freedom) in the model.
         int n_q = 0;
 
-        /// @brief Vector of links in the model.
-        std::vector<Link<Scalar>> links = {};
-
-        /// @brief Vector of joints in the model.
-        std::vector<Joint<Scalar>> joints = {};
-
         /// @brief Index of the base link in the models links vector.
         int base_link_idx = -1;
 
@@ -60,6 +54,12 @@ namespace tinyrobotics {
 
         /// @brief Total mass of the model.
         Scalar mass = 0;
+
+        /// @brief Vector of links in the model.
+        std::vector<Link<Scalar>> links = {};
+
+        /// @brief Vector of joints in the model.
+        std::vector<Joint<Scalar>> joints = {};
 
         /// @brief Stores the results of the models algorithms.
         Data<Scalar, nq> data;
@@ -181,6 +181,7 @@ namespace tinyrobotics {
          */
         template <typename NewScalar>
         Model<NewScalar, nq> cast() {
+
             Model<NewScalar, nq> new_model = Model<NewScalar, nq>();
             new_model.name                 = name;
             new_model.n_links              = n_links;
@@ -188,11 +189,12 @@ namespace tinyrobotics {
             new_model.n_q                  = n_q;
             new_model.base_link_idx        = base_link_idx;
             new_model.gravity              = gravity.template cast<NewScalar>();
-            for (auto& joint : joints) {
-                new_model.joints.push_back(joint.template cast<NewScalar>());
-            }
+            new_model.mass                 = NewScalar(mass);
             for (auto& link : links) {
                 new_model.links.push_back(link.template cast<NewScalar>());
+            }
+            for (auto& joint : joints) {
+                new_model.joints.push_back(joint.template cast<NewScalar>());
             }
             new_model.data = data.template cast<NewScalar>();
             return new_model;

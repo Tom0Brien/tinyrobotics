@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     InverseKinematicsOptions<double, n_joints> options;
     options.max_iterations = 2000;
     options.tolerance      = 1e-12;
-    options.method         = InverseKinematicsMethod::NLOPT_AUTODIFF;
+    options.method         = InverseKinematicsMethod::LEVENBERG_MARQUARDT;
     auto q0                = model.home_configuration();
     auto q_sol             = inverse_kinematics(model, target_link, source_link, H, q0, options);
     stop                   = std::chrono::high_resolution_clock::now();
