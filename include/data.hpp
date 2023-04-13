@@ -100,7 +100,7 @@ namespace tinyrobotics {
         std::vector<Eigen::Matrix<Scalar, 6, 1>> a =
             std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
 
-        /// @brief
+        /// @brief Homogeneous transformation matrix
         Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
         /// @brief
@@ -121,15 +121,11 @@ namespace tinyrobotics {
         std::vector<Eigen::Matrix<Scalar, 6, 6>> IC =
             std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
 
-
         /// @brief Gravity vector in spatial coordinates.
         Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
         /// @brief Geometric Jacobian.
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
-
-        /// @brief Analytical Jacobian (Euler Angles)
-        Eigen::Matrix<Scalar, 6, nq> Ja = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
         /**
          * @brief Casts the data to a new scalar type.
@@ -152,7 +148,13 @@ namespace tinyrobotics {
             new_res.kinetic_energy   = NewScalar(kinetic_energy);
             new_res.potential_energy = NewScalar(potential_energy);
             new_res.total_energy     = NewScalar(total_energy);
+            new_res.C                = C.template cast<NewScalar>();
+            new_res.fh               = fh.template cast<NewScalar>();
+            new_res.spatial_gravity  = spatial_gravity.template cast<NewScalar>();
+            new_res.J                = J.template cast<NewScalar>();
+            new_res.forward_kinematics.resize(forward_kinematics.size());
             for (int i = 0; i < forward_kinematics.size(); i++) {
+
                 new_res.forward_kinematics[i] = forward_kinematics[i].template cast<NewScalar>();
             }
             for (int i = 0; i < Xup.size(); i++) {
@@ -170,9 +172,6 @@ namespace tinyrobotics {
                 new_res.fvp[i] = fvp[i].template cast<NewScalar>();
                 new_res.IC[i]  = IC[i].template cast<NewScalar>();
             }
-            new_res.C               = C.template cast<NewScalar>();
-            new_res.fh              = fh.template cast<NewScalar>();
-            new_res.spatial_gravity = spatial_gravity.template cast<NewScalar>();
             return new_res;
         }
     };
