@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['model_0',['Model',['../structtr_1_1Model.html',1,'tr']]],
-  ['model_3c_20autodifftype_2c_20nq_20_3e_1',['Model&lt; AutoDiffType, nq &gt;',['../structtr_1_1Model.html',1,'tr']]]
+  ['model_0',['Model',['../structtinyrobotics_1_1Model.html',1,'tinyrobotics']]],
+  ['my_5fconstraint_5fdata_1',['my_constraint_data',['../structmy__constraint__data.html',1,'']]]
 ];

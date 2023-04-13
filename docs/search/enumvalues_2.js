@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['planar_0',['PLANAR',['../Joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efa537304b851a585f4a26b71f5c40ce40b',1,'tinyrobotics']]],
-  ['prismatic_1',['PRISMATIC',['../Joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efaace8e17dd1560c692929800de207e902',1,'tinyrobotics']]]
+  ['jacobian_0',['JACOBIAN',['../inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2ab86901c03c7833ecb978328d373151fb',1,'tinyrobotics']]]
 ];

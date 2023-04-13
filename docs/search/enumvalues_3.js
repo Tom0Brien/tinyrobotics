@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['revolute_0',['REVOLUTE',['../Joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efa06ec593fa63e118e8d2d0fd58c223acf',1,'tinyrobotics']]]
+  ['levenberg_5fmarquardt_0',['LEVENBERG_MARQUARDT',['../inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2a1f058942f87b3559ca2adbc037f16a5c',1,'tinyrobotics']]]
 ];

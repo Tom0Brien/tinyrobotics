@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mass_5fmatrix_0',['mass_matrix',['../Dynamics_8hpp.html#a97df6db4c308e4c58b41a1deb4360196',1,'tinyrobotics']]]
+  ['link_5ffrom_5fxml_0',['link_from_xml',['../parser_8hpp.html#ae988f3e4aab458d71a34c048e16db1bd',1,'tinyrobotics']]]
 ];

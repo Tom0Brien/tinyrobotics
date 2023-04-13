@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['import_5furdf_0',['import_urdf',['../Parser_8hpp.html#a6dce03909aa7d9d88bd55a722d28a914',1,'tinyrobotics']]],
-  ['inertia_5fto_5fspatial_1',['inertia_to_spatial',['../Math_8hpp.html#a8f9d7bb76676f8ec5bd49567849fff0e',1,'tinyrobotics']]],
-  ['init_5fdynamics_2',['init_dynamics',['../Parser_8hpp.html#a7c72c1bc9b735062eccff91afa32d3e5',1,'tinyrobotics']]],
-  ['init_5flink_5ftree_3',['init_link_tree',['../Parser_8hpp.html#a124deca9fd4b628486b070adb15e0408',1,'tinyrobotics']]],
-  ['inverse_5fdynamics_4',['inverse_dynamics',['../Dynamics_8hpp.html#acf55a06f27a5305eb33b7bbd39462acd',1,'tinyrobotics']]]
+  ['home_5fconfiguration_0',['home_configuration',['../structtinyrobotics_1_1Model.html#ac731d829a47352feb6b61c9ca188cddd',1,'tinyrobotics::Model']]],
+  ['homogeneous_5ferror_1',['homogeneous_error',['../math_8hpp.html#adf6e3b09db9f328f91da47894d1e7baf',1,'tinyrobotics']]],
+  ['homogeneous_5fto_5fspatial_2',['homogeneous_to_spatial',['../math_8hpp.html#a68c28ce5a76ae504245a4b28bfddb134',1,'tinyrobotics']]]
 ];

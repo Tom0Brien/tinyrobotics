@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['tau_0',['tau',['../structtinyrobotics_1_1Data.html#a0cdc27783685cb9b8c941e37f9d1a1b0',1,'tinyrobotics::Data']]],
-  ['total_5fenergy_1',['total_energy',['../structtinyrobotics_1_1Data.html#a154550c79f20a7be66605fdfe259ef36',1,'tinyrobotics::Data']]],
-  ['type_2',['type',['../structtinyrobotics_1_1Joint.html#ab6cfed578d48128ce576d515a3d88e9c',1,'tinyrobotics::Joint']]]
+  ['s_0',['S',['../structtinyrobotics_1_1Data.html#af9497d5a480ec3c68fe53e4644a6fed5',1,'tinyrobotics::Data::S'],['../structtinyrobotics_1_1Joint.html#af24c482710fa421c9a78988d1346eb81',1,'tinyrobotics::Joint::S']]],
+  ['spatial_5fgravity_1',['spatial_gravity',['../structtinyrobotics_1_1Data.html#a9829970cba03c3666ab253e6976e481c',1,'tinyrobotics::Data']]],
+  ['step_5fsize_2',['step_size',['../structtinyrobotics_1_1InverseKinematicsOptions.html#adddf8a4164cb40f9d3bf024d4f3f0743',1,'tinyrobotics::InverseKinematicsOptions']]]
 ];

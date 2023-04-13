@@ -1,8 +1,11 @@
 var searchData=
 [
-  ['n_5fjoints_0',['n_joints',['../structtinyrobotics_1_1Model.html#af9a5d39162af33fa99933b95b5c7fb65',1,'tinyrobotics::Model']]],
-  ['n_5flinks_1',['n_links',['../structtinyrobotics_1_1Model.html#a0ea723f843ecbf6e41e6078ff2c3cdea',1,'tinyrobotics::Model']]],
-  ['n_5fq_2',['n_q',['../structtinyrobotics_1_1Model.html#a5e61211ff65a9240b997089fe085cc70',1,'tinyrobotics::Model']]],
-  ['name_3',['name',['../structtinyrobotics_1_1Joint.html#ac0aa8f9ca061e888a4fbd2f19454b3ad',1,'tinyrobotics::Joint::name'],['../structtinyrobotics_1_1Link.html#a0875a3e6da8a59d1687a9cf58996d175',1,'tinyrobotics::Link::name'],['../structtinyrobotics_1_1Model.html#acf30ac26ab2751ea2f9287520f501edf',1,'tinyrobotics::Model::name']]],
-  ['null_4',['null',['../Math_8hpp.html#a9cbd65afc4ab7045dbfe81446be1a832',1,'tinyrobotics']]]
+  ['mass_0',['mass',['../structtinyrobotics_1_1Link.html#a1990d2ac6812b2e782d9c13d5cd006a8',1,'tinyrobotics::Link::mass'],['../structtinyrobotics_1_1Model.html#a333976d153de4340c3d3999fb0c56920',1,'tinyrobotics::Model::mass']]],
+  ['mass_5fmatrix_1',['mass_matrix',['../structtinyrobotics_1_1Data.html#ae4de3153ed5750e8ab62b0d05a14716a',1,'tinyrobotics::Data::mass_matrix'],['../dynamics_8hpp.html#a97df6db4c308e4c58b41a1deb4360196',1,'tinyrobotics::mass_matrix()']]],
+  ['math_2ehpp_2',['math.hpp',['../math_8hpp.html',1,'']]],
+  ['max_5fiterations_3',['max_iterations',['../structtinyrobotics_1_1InverseKinematicsOptions.html#a23f8fbb4ac10998738a6b3847aa6a3a6',1,'tinyrobotics::InverseKinematicsOptions']]],
+  ['method_4',['method',['../structtinyrobotics_1_1InverseKinematicsOptions.html#a17df84f85f1efeb89f140a2c1c1833cb',1,'tinyrobotics::InverseKinematicsOptions']]],
+  ['model_5',['Model',['../structtinyrobotics_1_1Model.html',1,'tinyrobotics']]],
+  ['model_2ehpp_6',['model.hpp',['../model_8hpp.html',1,'']]],
+  ['my_5fconstraint_5fdata_7',['my_constraint_data',['../structmy__constraint__data.html',1,'']]]
 ];

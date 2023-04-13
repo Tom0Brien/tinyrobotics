@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('structtinyrobotics_1_1Model.html','');
 <p>A tinyrobotics model.  
  <a href="structtinyrobotics_1_1Model.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="Model_8hpp_source.html">Model.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="model_8hpp_source.html">model.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -147,14 +147,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>n_joints</b> = 0</td><
 int&#160;</td><td class="memItemRight" valign="bottom"><b>n_q</b> = 0</td></tr>
 <tr class="memdesc:a5e61211ff65a9240b997089fe085cc70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of configuration coordinates (degrees of freedom) in the model. <br /></td></tr>
 <tr class="separator:a5e61211ff65a9240b997089fe085cc70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc361832b63a01e3eb674c79fc12982e"><td class="memItemLeft" align="right" valign="top"><a id="afc361832b63a01e3eb674c79fc12982e" name="afc361832b63a01e3eb674c79fc12982e"></a>
-std::vector&lt; <a class="el" href="structtinyrobotics_1_1Link.html">Link</a>&lt; Scalar &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>links</b> = {}</td></tr>
-<tr class="memdesc:afc361832b63a01e3eb674c79fc12982e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of links in the model. <br /></td></tr>
-<tr class="separator:afc361832b63a01e3eb674c79fc12982e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b1348ae6fe9c222b386cd4d82936d61"><td class="memItemLeft" align="right" valign="top"><a id="a3b1348ae6fe9c222b386cd4d82936d61" name="a3b1348ae6fe9c222b386cd4d82936d61"></a>
-std::vector&lt; <a class="el" href="structtinyrobotics_1_1Joint.html">Joint</a>&lt; Scalar &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>joints</b> = {}</td></tr>
-<tr class="memdesc:a3b1348ae6fe9c222b386cd4d82936d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of joints in the model. <br /></td></tr>
-<tr class="separator:a3b1348ae6fe9c222b386cd4d82936d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf4c86df2ae52b860fd74cd3fdd10f67"><td class="memItemLeft" align="right" valign="top"><a id="acf4c86df2ae52b860fd74cd3fdd10f67" name="acf4c86df2ae52b860fd74cd3fdd10f67"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>base_link_idx</b> = -1</td></tr>
 <tr class="memdesc:acf4c86df2ae52b860fd74cd3fdd10f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of the base link in the models links vector. <br /></td></tr>
@@ -175,6 +167,14 @@ Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memItemRight" valign="b
 Scalar&#160;</td><td class="memItemRight" valign="bottom"><b>mass</b> = 0</td></tr>
 <tr class="memdesc:a333976d153de4340c3d3999fb0c56920"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total mass of the model. <br /></td></tr>
 <tr class="separator:a333976d153de4340c3d3999fb0c56920"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc361832b63a01e3eb674c79fc12982e"><td class="memItemLeft" align="right" valign="top"><a id="afc361832b63a01e3eb674c79fc12982e" name="afc361832b63a01e3eb674c79fc12982e"></a>
+std::vector&lt; <a class="el" href="structtinyrobotics_1_1Link.html">Link</a>&lt; Scalar &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>links</b> = {}</td></tr>
+<tr class="memdesc:afc361832b63a01e3eb674c79fc12982e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of links in the model. <br /></td></tr>
+<tr class="separator:afc361832b63a01e3eb674c79fc12982e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b1348ae6fe9c222b386cd4d82936d61"><td class="memItemLeft" align="right" valign="top"><a id="a3b1348ae6fe9c222b386cd4d82936d61" name="a3b1348ae6fe9c222b386cd4d82936d61"></a>
+std::vector&lt; <a class="el" href="structtinyrobotics_1_1Joint.html">Joint</a>&lt; Scalar &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>joints</b> = {}</td></tr>
+<tr class="memdesc:a3b1348ae6fe9c222b386cd4d82936d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of joints in the model. <br /></td></tr>
+<tr class="separator:a3b1348ae6fe9c222b386cd4d82936d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28dc9be1ef0942cb0c57763967ea4fdd"><td class="memItemLeft" align="right" valign="top"><a id="a28dc9be1ef0942cb0c57763967ea4fdd" name="a28dc9be1ef0942cb0c57763967ea4fdd"></a>
 <a class="el" href="structtinyrobotics_1_1Data.html">Data</a>&lt; Scalar, nq &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>data</b></td></tr>
 <tr class="memdesc:a28dc9be1ef0942cb0c57763967ea4fdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the results of the models algorithms. <br /></td></tr>
@@ -401,7 +401,7 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/<a class="el" href="Model_8hpp_source.html">Model.hpp</a></li>
+<li>include/<a class="el" href="model_8hpp_source.html">model.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

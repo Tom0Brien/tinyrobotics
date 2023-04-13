@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['kinematics_2ehpp_0',['Kinematics.hpp',['../Kinematics_8hpp.html',1,'']]]
+  ['joint_2ehpp_0',['joint.hpp',['../joint_8hpp.html',1,'']]]
 ];

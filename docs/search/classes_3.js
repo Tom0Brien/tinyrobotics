@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['model_0',['Model',['../structtinyrobotics_1_1Model.html',1,'tinyrobotics']]]
+  ['link_0',['Link',['../structtinyrobotics_1_1Link.html',1,'tinyrobotics']]]
 ];
