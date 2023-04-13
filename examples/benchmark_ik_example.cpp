@@ -21,14 +21,14 @@ std::string method_to_string(InverseKinematicsMethod method) {
 
 int main(int argc, char* argv[]) {
     // Load model
-    const int n_joints = 5;
-    auto link_5        = import_urdf<double, n_joints>("../data/urdfs/5_link.urdf");
+    const int n_joints = 20;
+    auto link_5        = import_urdf<double, n_joints>("../data/urdfs/nugus.urdf");
     // Make a random configuration
     Eigen::Matrix<double, n_joints, 1> q_random = link_5.random_configuration();
     // Compute the forward kinematics for the random configuration
     Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
-    std::string target_link_name = "end_effector";
-    std::string source_link_name = "ground";
+    std::string target_link_name = "torso";
+    std::string source_link_name = "left_foot";
     Hst_desired                  = forward_kinematics(link_5, q_random, target_link_name, source_link_name);
     // Compute the inverse kinematics for the random desired transform
     auto q0 = link_5.home_configuration();
