@@ -9,14 +9,14 @@
 using namespace tinyrobotics;
 
 std::string method_to_string(InverseKinematicsMethod method) {
-    static std::map<InverseKinematicsMethod, std::string> methodNames = {
+    static std::map<InverseKinematicsMethod, std::string> method_names = {
         {InverseKinematicsMethod::JACOBIAN, "JACOBIAN"},
         {InverseKinematicsMethod::NLOPT, "NLOPT"},
         {InverseKinematicsMethod::NLOPT_AUTODIFF, "NLOPT_AUTODIFF"},
         {InverseKinematicsMethod::LEVENBERG_MARQUARDT, "LEVENBERG_MARQUARDT"},
         {InverseKinematicsMethod::PARTICLE_SWARM, "PARTICLE_SWARM"}};
 
-    return methodNames[method];
+    return method_names[method];
 }
 
 int main(int argc, char* argv[]) {
