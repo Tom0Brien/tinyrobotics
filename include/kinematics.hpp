@@ -230,24 +230,26 @@ namespace tinyrobotics {
     Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar, nq>& model,
                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                                     const TargetLink& target_link) {
-        // Get the target link from the model
-        const int target_link_idx = get_link_idx(model, target_link);
-        Link<Scalar> current_link = model.links[target_link_idx];
-
-        // Compute the displacement of the target link {t} in the base link frame {b}
-        Eigen::Matrix<Scalar, 3, 1> rTBb = translation(model, q, current_link.idx, model.base_link_idx);
-
         // Compute the transform between base {b} and all the links {i} in the kinematic chain
         forward_kinematics(model, q);
 
-        // Initialize the geometric jabobian matrix with zeros
+        // Get the target link from the model
+        const int target_link_idx = get_link_idx(model, target_link);
+
+        // Get the displacement of the target link {t} in the base link frame {b}
+        Eigen::Matrix<Scalar, 3, 1> rTBb = model.data.forward_kinematics[target_link_idx].translation();
+
+        // Initialize variables
         model.data.J.setZero();
+        Eigen::Matrix<Scalar, 3, 1> zIBb;
+        Eigen::Matrix<Scalar, 3, 1> rIBb;
+        Link<Scalar> current_link = model.links[target_link_idx];
         while (current_link.idx != model.base_link_idx) {
             if (current_link.joint.idx != -1) {
                 // Axis of the current joint rotated into the base frame {b}
-                auto zIBb = model.data.forward_kinematics[current_link.idx].linear() * current_link.joint.axis;
+                zIBb = model.data.forward_kinematics[current_link.idx].linear() * current_link.joint.axis;
                 // Compute the displacement of the current link {i} from the base link frame {b}
-                auto rIBb = model.data.forward_kinematics[current_link.idx].translation();
+                rIBb = model.data.forward_kinematics[current_link.idx].translation();
                 if (current_link.joint.type == JointType::PRISMATIC) {
                     model.data.J.block(0, current_link.joint.idx, 3, 1) = zIBb;
                     model.data.J.block(3, current_link.joint.idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();

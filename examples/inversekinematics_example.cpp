@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     Eigen::Matrix<double, n_joints, 1> q_solution =
         inverse_kinematics<double, n_joints>(link_5, target_link_name, source_link_name, Hst_desired, q0, options);
     auto stop     = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
     // Compute the forward kinematics for the solution
     Eigen::Transform<double, 3, Eigen::Isometry> Hst_solution;
@@ -45,5 +45,5 @@ int main(int argc, char* argv[]) {
     std::cout << "Orientation error: "
               << (rotation_to_rpy(Hst_solution.rotation()) - rotation_to_rpy(Hst_desired.rotation())).squaredNorm()
               << std::endl;
-    std::cout << "Time taken by inverse kinematics: " << duration.count() << " milliseconds" << std::endl;
+    std::cout << "Time taken by inverse kinematics: " << duration.count() << " microseconds" << std::endl;
 }

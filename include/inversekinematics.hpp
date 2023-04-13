@@ -92,17 +92,20 @@ namespace tinyrobotics {
 
     /// @brief Solver methods for inverse kinematics.
     enum class InverseKinematicsMethod {
-        /// @brief Use gradient descent to solve inverse kinematics.
+        /// @brief Jacobian method.
         JACOBIAN,
 
-        /// @brief Use NLopt to solve inverse kinematics.
+        /// @brief NLopt method.
         NLOPT,
 
-        /// @brief Use NLopt to solve inverse kinematics with autodiff gradient.
+        /// @brief NLopt method with autodiff gradient.
         NLOPT_AUTODIFF,
 
-        /// @brief Use Levenberg-Marquardt to solve inverse kinematics.
-        LEVENBERG_MARQUARDT
+        /// @brief Levenberg-Marquardt method.
+        LEVENBERG_MARQUARDT,
+
+        /// @brief Particle swarm optimization method.
+        PARTICLE_SWARM
     };
 
     /// @brief Options for inverse kinematics solver.
@@ -143,6 +146,22 @@ namespace tinyrobotics {
 
         /// @brief Damping increase factor for Levenberg-Marquardt
         Scalar damping_increase_factor = 2;
+
+        // ****************** Particle Swarm Optimization Method options ******************
+        /// @brief Number of particles in the swarm
+        int num_particles = 5e1;
+
+        /// @brief Inertia weight (omega) for updating particle velocities
+        Scalar omega = 1e-1;
+
+        /// @brief Cognitive weight (c1) for updating particle velocities
+        Scalar c1 = 1e-1;
+
+        /// @brief Social weight (c2) for updating particle velocities
+        Scalar c2 = 1e-1;
+
+        /// @brief Scale for initializing particle positions around the initial guess
+        Scalar init_position_scale = 1e-1;
     };
 
     /**
@@ -170,10 +189,8 @@ namespace tinyrobotics {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> current_pose =
             forward_kinematics(model, q, target_link_name, source_link_name);
 
-        // Stack the position and orientation errors
-        Eigen::Matrix<Scalar, 6, 1> pose_error;
-        pose_error.head(3) << current_pose.translation() - desired_pose.translation();
-        pose_error.tail(3) << current_pose.linear().eulerAngles(0, 1, 2) - desired_pose.linear().eulerAngles(0, 1, 2);
+        // Compute the pose error
+        Eigen::Matrix<Scalar, 6, 1> pose_error = homogeneous_error(current_pose, desired_pose);
 
         // Compute the cost: q^T*W*q + (k(q) - x*)^TK*(k(q) - x*))), where k(q) is the current pose, x* is the desired
         // pose, and W and K are the weighting matrices
@@ -224,13 +241,14 @@ namespace tinyrobotics {
         }
 
         // Compute the current pose
-        Eigen::Transform<ADScalar, 3, Eigen::Isometry> current_pose =
+        Eigen::Transform<ADScalar, 3, Eigen::Isometry> current_pose_ad =
             forward_kinematics(model_ad, q_ad, target_link_name, source_link_name);
 
+        // Cast the desired pose to ADScalar
+        Eigen::Transform<ADScalar, 3, Eigen::Isometry> desired_pose_ad = desired_pose.template cast<ADScalar>();
+
         // Stack the position and orientation errors
-        Eigen::Matrix<ADScalar, 6, 1> pose_error;
-        pose_error.head(3) << current_pose.translation() - desired_pose.translation();
-        pose_error.tail(3) << current_pose.linear().eulerAngles(0, 1, 2) - desired_pose.linear().eulerAngles(0, 1, 2);
+        Eigen::Matrix<ADScalar, 6, 1> pose_error = homogeneous_error(current_pose_ad, desired_pose_ad);
 
         Eigen::Matrix<ADScalar, 6, 6> K_ad   = options.K.template cast<ADScalar>();
         Eigen::Matrix<ADScalar, nq, nq> W_ad = options.W.template cast<ADScalar>();
@@ -238,7 +256,7 @@ namespace tinyrobotics {
         // Compute the cost: q^T*W*q + (k(q) - x*)^TK*(k(q) - x*))), where k(q) is the current pose, x* is the desired
         // pose, and W and K are the weighting matrices
         Eigen::Matrix<ADScalar, 1, 1> cost =
-            pose_error.transpose() * K_ad * pose_error + (q_ad - q0_ad).transpose() * W_ad * (q_ad - q0_ad);
+            0.5 * pose_error.transpose() * K_ad * pose_error + 0.5 * (q_ad - q0_ad).transpose() * W_ad * (q_ad - q0_ad);
 
         // Extract the gradient from the gradient_ad
         for (int i = 0; i < nq; ++i) {
@@ -349,10 +367,7 @@ namespace tinyrobotics {
                 forward_kinematics(model, q_current, target_link_name, source_link_name);
 
             // Compute the pose error vector
-            Eigen::Matrix<Scalar, 6, 1> pose_error;
-            pose_error.head(3) = current_pose.translation() - desired_pose.translation();
-            pose_error.tail(3) =
-                current_pose.linear().eulerAngles(0, 1, 2) - desired_pose.linear().eulerAngles(0, 1, 2);
+            Eigen::Matrix<Scalar, 6, 1> pose_error = homogeneous_error(current_pose, desired_pose);
 
             // Check if the error is within tolerance
             if (pose_error.norm() < options.tolerance) {
@@ -408,10 +423,7 @@ namespace tinyrobotics {
                 forward_kinematics(model, q_current, target_link_name, source_link_name);
 
             // Compute the pose error vector
-            Eigen::Matrix<Scalar, 6, 1> pose_error;
-            pose_error.head(3) = current_pose.translation() - desired_pose.translation();
-            pose_error.tail(3) << current_pose.linear().eulerAngles(0, 1, 2)
-                                      - desired_pose.linear().eulerAngles(0, 1, 2);
+            Eigen::Matrix<Scalar, 6, 1> pose_error = homogeneous_error(current_pose, desired_pose);
 
             // Check if the error is within tolerance
             if (pose_error.norm() < options.tolerance) {
@@ -458,6 +470,85 @@ namespace tinyrobotics {
     }
 
     /**
+     * @brief Solves the inverse kinematics problem between two links using Particle Swarm Optimization.
+     * @param model tinyrobotics model.
+     * @param target_link_name {t} Link to which the transform is computed.
+     * @param source_link_name {s} Link from which the transform is computed.
+     * @param desired_pose Desired pose of the target link in the source link frame.
+     * @param q0 The initial guess for the configuration vector.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @return The configuration vector of the robot model which achieves the desired pose.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, nq, 1> inverse_kinematics_pso(
+        Model<Scalar, nq>& model,
+        const std::string& target_link_name,
+        const std::string& source_link_name,
+        const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+        const Eigen::Matrix<Scalar, nq, 1> q0,
+        const InverseKinematicsOptions<Scalar, nq>& options) {
+        // Particle Swarm Optimization parameters
+        int num_particles = options.num_particles;
+        Scalar omega      = options.omega;
+        Scalar c1         = options.c1;
+        Scalar c2         = options.c2;
+
+        // Initialize particles and velocities
+        std::vector<Eigen::Matrix<Scalar, nq, 1>> particles(num_particles, q0);
+        std::vector<Eigen::Matrix<Scalar, nq, 1>> velocities(num_particles, Eigen::Matrix<Scalar, nq, 1>::Zero());
+        std::vector<Scalar> fitness_values(num_particles, std::numeric_limits<Scalar>::max());
+        Eigen::Matrix<Scalar, nq, 1> best_global_position = q0;
+        Scalar best_global_fitness                        = std::numeric_limits<Scalar>::max();
+
+        // Initialize particles
+        for (int i = 0; i < num_particles; ++i) {
+            particles[i] = q0 + options.init_position_scale * Eigen::Matrix<Scalar, nq, 1>::Random();
+        }
+
+        // Main optimization loop
+        for (int iteration = 0; iteration < options.max_iterations; ++iteration) {
+            for (int i = 0; i < num_particles; ++i) {
+                // Evaluate the fitness of the particle
+                Eigen::Transform<Scalar, 3, Eigen::Isometry> current_pose =
+                    forward_kinematics(model, particles[i], target_link_name, source_link_name);
+                Scalar fitness_value = homogeneous_error(current_pose, desired_pose).squaredNorm();
+
+                // Update the best position of the particle
+                if (fitness_value < fitness_values[i]) {
+                    fitness_values[i] = fitness_value;
+                }
+
+                // Update the best global position
+                if (fitness_value < best_global_fitness) {
+                    best_global_fitness  = fitness_value;
+                    best_global_position = particles[i];
+                }
+            }
+
+            // Update the particles' velocities and positions
+            for (int i = 0; i < num_particles; ++i) {
+                // Update the velocity
+                velocities[i] =
+                    omega * velocities[i]
+                    + c1 * Eigen::Matrix<Scalar, nq, 1>::Random().cwiseProduct(particles[i] - best_global_position)
+                    + c2 * Eigen::Matrix<Scalar, nq, 1>::Random().cwiseProduct(best_global_position - particles[i]);
+
+                // Update the position
+                particles[i] += velocities[i];
+            }
+
+            // Check if the error is within tolerance
+            if (best_global_fitness < options.tolerance) {
+                break;
+            }
+        }
+
+        // Return the best global position
+        return best_global_position;
+    }
+
+    /**
      * @brief Solves the inverse kinematics problem between two links using user specified method.
      * @param model tinyrobotics model.
      * @param target_link_name {t} Link to which the transform is computed.
@@ -494,6 +585,8 @@ namespace tinyrobotics {
                                                               desired_pose,
                                                               q0,
                                                               options);
+            case InverseKinematicsMethod::PARTICLE_SWARM:
+                return inverse_kinematics_pso(model, target_link_name, source_link_name, desired_pose, q0, options);
             default: throw std::runtime_error("Unknown inverse kinematics method");
         }
     }
