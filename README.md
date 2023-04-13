@@ -18,6 +18,7 @@ The core algorithms of tinyrobotics are listed below, for detailed documentation
 | Function                 | Description                                                               |
 | ------------------------ | -----------------------------------------------------------------         |
 | `forward_kinematics`     | Compute homogeneous transform between links.                              |
+| `inverse_kinematics`     | Solve joint positions for desired pose between links.                     |
 | `translation`            | Compute translation between links.                                        |
 | `rotation`               | Compute rotation between links.                                           |
 | `geometric_jacobian`     | Compute geometric jacobian to a link from base.                           |
@@ -40,6 +41,7 @@ The core algorithms of tinyrobotics are listed below, for detailed documentation
 - [Eigen3](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [Catch2](https://github.com/catchorg/Catch2)
 - [TinyXML2](https://github.com/leethomason/tinyxml2)
+- [NLopt](https://github.com/stevengj/nlopt)
 
 ```bash
 sudo apt install -y libeigen3-dev catch2 libtinyxml2-dev
@@ -59,12 +61,12 @@ Numerous examples are provided in the `examples` folder.
 
 The code below demonstrates how to load in a URDF model and compute the forward kinematics.
 ```c++
-// Create a tinyrobotics model with 4 joints defined in 4_link.urdf
+// Create a tinyrobotics model with 4 joints using URDF file defined in 4_link.urdf
 auto model = import_urdf<double, 4>("4_link.urdf");
 
-// Create a configuration vector of all zeros.
+// Create a home configuration vector (all zeros).
 auto q = model.home_configuration();
 
-// Compute the forward kinematics to the target link (Index 2) from the base frame at the home configuration.
+// Compute the forward kinematics to the link 2 from the base frame at the home configuration.
 auto H = forward_kinematics(model, q, 2);
 ```
