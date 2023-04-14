@@ -246,7 +246,7 @@ TEST_CASE("Test inverse kinematics for nugus robot with nlopt optimisation metho
     // Compute the inverse kinematics for the random desired transform
     auto q0 = nugus.home_configuration();
     InverseKinematicsOptions<double, n_joints> options;
-    options.method = InverseKinematicsMethod::PARTICLE_SWARM;
+    options.method = InverseKinematicsMethod::NLOPT;
     Eigen::Matrix<double, n_joints, 1> q_solution =
         inverse_kinematics<double, n_joints>(nugus, target_link_name, source_link_name, Hst_desired, q0, options);
     // Compute the forward kinematics for the solution
