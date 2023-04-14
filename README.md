@@ -1,5 +1,5 @@
-tinyrobotics
-===========
+![image](https://user-images.githubusercontent.com/41043317/231810128-a1c5257d-8b27-4a82-838d-a1c588b8e913.png)
+---
 
 **tinyrobotics** is a lightweight C++ library which provides core robotics algorithms for kinematics and dynamics.
 
