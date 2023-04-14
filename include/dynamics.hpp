@@ -86,13 +86,12 @@ namespace tinyrobotics {
     Scalar potential_energy(Model<Scalar, nq>& m, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset the potential energy
         m.data.potential_energy = 0;
+        // Compute the forward kinematics to centre of mass of all links
+        forward_kinematics_com(m, q);
         // Compute the potential energy
-        for (int i = 0; i < m.n_links; i++) {
-            // Compute the contribution to the potential energy of the link
-            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbi_c =
-                forward_kinematics_com<Scalar, nq>(m, q, m.base_link_idx, m.links[i].idx);
-            Eigen::Matrix<Scalar, 3, 1> rMIi_c = Hbi_c.translation();
-            m.data.potential_energy += -m.links[i].mass * m.gravity.transpose() * rMIi_c;
+        for (auto const link : m.links) {
+            m.data.potential_energy +=
+                -link.mass * m.gravity.transpose() * m.data.forward_kinematics_com[link.idx].translation();
         }
         return m.data.potential_energy;
     }

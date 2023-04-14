@@ -153,9 +153,10 @@ namespace tinyrobotics {
             new_res.spatial_gravity  = spatial_gravity.template cast<NewScalar>();
             new_res.J                = J.template cast<NewScalar>();
             new_res.forward_kinematics.resize(forward_kinematics.size());
+            new_res.forward_kinematics_com.resize(forward_kinematics_com.size());
             for (int i = 0; i < forward_kinematics.size(); i++) {
-
-                new_res.forward_kinematics[i] = forward_kinematics[i].template cast<NewScalar>();
+                new_res.forward_kinematics[i]     = forward_kinematics[i].template cast<NewScalar>();
+                new_res.forward_kinematics_com[i] = forward_kinematics_com[i].template cast<NewScalar>();
             }
             for (int i = 0; i < Xup.size(); i++) {
                 new_res.Xup[i] = Xup[i].template cast<NewScalar>();

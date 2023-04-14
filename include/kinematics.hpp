@@ -143,6 +143,8 @@ namespace tinyrobotics {
         // Compute forward kinematics for all the links
         forward_kinematics(model, q);
         // Compute transform to centre of mass of all the forward kinematics results
+        model.data.forward_kinematics_com.resize(model.n_links,
+                                                 Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity());
         for (auto const link : model.links) {
             model.data.forward_kinematics_com[link.idx] =
                 model.data.forward_kinematics[link.idx] * model.links[link.idx].centre_of_mass;
