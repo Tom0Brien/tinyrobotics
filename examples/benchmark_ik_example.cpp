@@ -14,8 +14,8 @@ std::string method_to_string(InverseKinematicsMethod method) {
         {InverseKinematicsMethod::NLOPT, "NLOPT"},
         {InverseKinematicsMethod::NLOPT_AUTODIFF, "NLOPT_AUTODIFF"},
         {InverseKinematicsMethod::LEVENBERG_MARQUARDT, "LEVENBERG_MARQUARDT"},
-        {InverseKinematicsMethod::PARTICLE_SWARM, "PARTICLE_SWARM"}};
-
+        {InverseKinematicsMethod::PARTICLE_SWARM, "PARTICLE_SWARM"},
+        {InverseKinematicsMethod::BFGS, "BFGS"}};
     return method_names[method];
 }
 
@@ -33,14 +33,15 @@ int main(int argc, char* argv[]) {
     Hst_desired                  = forward_kinematics(link_5, q_random, target_link_name, source_link_name);
     // Compute the inverse kinematics for the random desired transform
     InverseKinematicsOptions<double, n_joints> options;
-    options.max_iterations = 2000;
-    options.tolerance      = 1e-4;
+    options.max_iterations = 1000;
+    options.tolerance      = 1e-5;
 
     std::vector<InverseKinematicsMethod> methods = {InverseKinematicsMethod::JACOBIAN,
                                                     InverseKinematicsMethod::NLOPT,
                                                     InverseKinematicsMethod::NLOPT_AUTODIFF,
                                                     InverseKinematicsMethod::LEVENBERG_MARQUARDT,
-                                                    InverseKinematicsMethod::PARTICLE_SWARM};
+                                                    InverseKinematicsMethod::PARTICLE_SWARM,
+                                                    InverseKinematicsMethod::BFGS};
 
     for (const auto& method : methods) {
         options.method = method;

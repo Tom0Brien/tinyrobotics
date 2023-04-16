@@ -127,6 +127,9 @@ namespace tinyrobotics {
         /// @brief Geometric Jacobian.
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
+        /// @brief Hessian Product H*dq
+        Eigen::Matrix<Scalar, 6, nq> H_dq = Eigen::Matrix<Scalar, 6, nq>::Zero();
+
         /**
          * @brief Casts the data to a new scalar type.
          * @tparam NewScalar scalar type to cast the data to.
@@ -155,7 +158,9 @@ namespace tinyrobotics {
             new_res.forward_kinematics.resize(forward_kinematics.size());
             new_res.forward_kinematics_com.resize(forward_kinematics_com.size());
             for (int i = 0; i < forward_kinematics.size(); i++) {
-                new_res.forward_kinematics[i]     = forward_kinematics[i].template cast<NewScalar>();
+                new_res.forward_kinematics[i] = forward_kinematics[i].template cast<NewScalar>();
+            }
+            for (int i = 0; i < forward_kinematics_com.size(); i++) {
                 new_res.forward_kinematics_com[i] = forward_kinematics_com[i].template cast<NewScalar>();
             }
             for (int i = 0; i < Xup.size(); i++) {

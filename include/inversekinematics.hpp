@@ -105,7 +105,10 @@ namespace tinyrobotics {
         LEVENBERG_MARQUARDT,
 
         /// @brief Particle swarm optimization method.
-        PARTICLE_SWARM
+        PARTICLE_SWARM,
+
+        /// @brief BFGS method.
+        BFGS
     };
 
     /// @brief Options for inverse kinematics solver.
@@ -548,6 +551,65 @@ namespace tinyrobotics {
     }
 
     /**
+     * @brief Solves the inverse kinematics problem between two links using Broyden-Fletcher-Goldfarb-Shanno (BFGS).
+     * @param model tinyrobotics model.
+     * @param target_link_name {t} Link to which the transform is computed.
+     * @param source_link_name {s} Link from which the transform is computed.
+     * @param desired_pose Desired pose of the target link in the source link frame.
+     * @param q0 The initial guess for the configuration vector.
+     * @tparam Scalar type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @return The configuration vector of the robot model which achieves the desired pose.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, nq, 1> inverse_kinematics_bfgs(
+        Model<Scalar, nq>& model,
+        const std::string& target_link_name,
+        const std::string& source_link_name,
+        const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+        const Eigen::Matrix<Scalar, nq, 1> q0,
+        const InverseKinematicsOptions<Scalar, nq>& options) {
+
+        Eigen::Matrix<Scalar, nq, 1> q = q0;
+        Eigen::Matrix<Scalar, nq, 1> grad;
+        Eigen::Matrix<Scalar, nq, nq> inverse_hessian = Eigen::Matrix<Scalar, nq, nq>::Identity();
+
+        for (int iteration = 0; iteration < options.max_iterations; ++iteration) {
+            // Compute the gradient and cost using the provided cost function
+            Scalar cost_value = cost(q, model, target_link_name, source_link_name, desired_pose, q0, grad, options);
+
+            if (grad.norm() < options.tolerance)
+                break;
+
+            Eigen::Matrix<Scalar, nq, 1> direction = -inverse_hessian * grad;
+            Scalar alpha                           = 1.0;
+            Eigen::Matrix<Scalar, nq, 1> grad_new;
+            Scalar cost_new;
+            // Line search with backtracking
+            do {
+                alpha *= 0.5;
+                Eigen::Matrix<Scalar, nq, 1> q_new = q + alpha * direction;
+                cost_new = cost(q_new, model, target_link_name, source_link_name, desired_pose, q0, grad_new, options);
+            } while (cost_new > cost_value + options.step_size * alpha * grad.dot(direction));
+
+            Eigen::Matrix<Scalar, nq, 1> q_new = q + alpha * direction;
+
+            Eigen::Matrix<Scalar, nq, 1> s = q_new - q;
+            Eigen::Matrix<Scalar, nq, 1> y = grad_new - grad;
+            Scalar rho                     = 1.0 / y.dot(s);
+
+            Eigen::Matrix<Scalar, nq, nq> I = Eigen::Matrix<Scalar, nq, nq>::Identity();
+            inverse_hessian = (I - rho * s * y.transpose()) * inverse_hessian * (I - rho * y * s.transpose())
+                              + rho * s * s.transpose();
+
+            q    = q_new;
+            grad = grad_new;
+        }
+
+        return q;
+    }
+
+    /**
      * @brief Solves the inverse kinematics problem between two links using user specified method.
      * @param model tinyrobotics model.
      * @param target_link_name {t} Link to which the transform is computed.
@@ -586,6 +648,8 @@ namespace tinyrobotics {
                                                               options);
             case InverseKinematicsMethod::PARTICLE_SWARM:
                 return inverse_kinematics_pso(model, target_link_name, source_link_name, desired_pose, q0, options);
+            case InverseKinematicsMethod::BFGS:
+                return inverse_kinematics_bfgs(model, target_link_name, source_link_name, desired_pose, q0, options);
             default: throw std::runtime_error("Unknown inverse kinematics method");
         }
     }
