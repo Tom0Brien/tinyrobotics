@@ -31,8 +31,8 @@ int main(int argc, char* argv[]) {
     // ************ Inverse Kinematics ************
     start = std::chrono::high_resolution_clock::now();
     InverseKinematicsOptions<double, n_joints> options;
-    options.max_iterations = 2000;
-    options.tolerance      = 1e-12;
+    options.max_iterations = 1000;
+    options.tolerance      = 1e-4;
     options.method         = InverseKinematicsMethod::LEVENBERG_MARQUARDT;
     auto q0                = model.home_configuration();
     auto q_sol             = inverse_kinematics(model, target_link, source_link, H, q0, options);

@@ -137,7 +137,7 @@ namespace tinyrobotics {
         /// @brief Weighting matrix for pose error
         Eigen::Matrix<Scalar, 6, 6> K = Eigen::Matrix<Scalar, 6, 6>::Identity();
 
-        /// @brief Weighting matrix for joint change
+        /// @brief Weighting matrix for joint displacement from initial configuration
         Eigen::Matrix<Scalar, nq, nq> W = 1e-3 * Eigen::Matrix<Scalar, nq, nq>::Identity();
 
         // ****************** Levenberg-Marquardt Method options ******************
@@ -152,7 +152,7 @@ namespace tinyrobotics {
 
         // ****************** Particle Swarm Optimization Method options ******************
         /// @brief Number of particles in the swarm
-        int num_particles = 5e1;
+        int num_particles = 5e2;
 
         /// @brief Inertia weight (omega) for updating particle velocities
         Scalar omega = 1e-1;
