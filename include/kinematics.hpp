@@ -318,37 +318,6 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the analytical jacobian of the target link from the base link in the base link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return The geometric jacobian of the target link from the base link in the base link frame.
-     */
-    template <typename Scalar, int nq, typename TargetLink>
-    Eigen::Matrix<Scalar, 6, nq> analytical_jacobian(Model<Scalar, nq>& model,
-                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                     const TargetLink& target_link) {
-        // Compute the geometric jacobian
-        model.data.J = geometric_jacobian(model, q, target_link);
-
-        auto Rbt     = rotation(model, q, target_link);
-        auto rpy     = Rbt.eulerAngles(2, 1, 0);
-        Scalar phi   = rpy(0);
-        Scalar theta = rpy(1);
-        Scalar psi   = rpy(2);
-
-        Eigen::Matrix<Scalar, 6, 6> E = Eigen::Matrix<Scalar, 6, 6>::Identity();
-        E.block(3, 3, 3, 3) << 1, 0, -sin(theta), 0, cos(phi), cos(theta) * sin(phi), 0, -sin(phi),
-            cos(theta) * cos(phi);
-
-        model.data.Ja = E * model.data.J;
-        return model.data.Ja;
-    }
-
-    /**
      * @brief Computes the centre of mass expressed in source link frame.
      * @param model tinyrobotics model.
      * @param q The configuration vector of the robot model.
