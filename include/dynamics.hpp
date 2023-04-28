@@ -168,7 +168,6 @@ namespace tinyrobotics {
         // First pass: compute the spatial acceleration of each body
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            m.links[m.q_idx[i]].joint.S    = m.links[m.q_idx[i]].joint.S;
             Eigen::Matrix<Scalar, 6, 1> vJ = m.links[m.q_idx[i]].joint.S * qd(i);
             // Get transform from body to parent
             m.data.T = m.links[m.q_idx[i]].joint.get_parent_to_child_transform(q(i));
