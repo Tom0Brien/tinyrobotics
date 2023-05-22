@@ -63,14 +63,15 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the transform to the target from the base link.
+     * @brief Computes the transform between target and the base link. The transform converts points in target
+     * frame to the base link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return Homogeneous transform between the base and the target link.
+     * @return Homogeneous transform between the target and the base link.
      */
     template <typename Scalar, int nq, typename TargetLink>
     Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics(const Model<Scalar, nq>& model,
@@ -94,12 +95,12 @@ namespace tinyrobotics {
             // Move up the tree to parent link
             current_link = model.links[current_link.parent];
         }
-        // Return transform Hbt, which is transform from base {b} to target {t}
         return Htb.inverse();
     }
 
     /**
-     * @brief Computes the homogeneous transform from a source to target link.
+     * @brief Computes the transform between target and the source link. The transform converts points in target
+     * frame to the source link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
@@ -108,7 +109,7 @@ namespace tinyrobotics {
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
      * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Homogeneous transform from source {s} to target {t} link.
+     * @return Homogeneous transform between the target and the source link.
      */
     template <typename Scalar, int nq, typename TargetLink, typename SourceLink>
     Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics(const Model<Scalar, nq>& model,
@@ -129,12 +130,12 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the transform to centre of mass of all the links in the tinyrobotics model.
+     * @brief Computes the transform between centre of mass of each link and the source link.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return Stores the transform to all the links in model.data.forward_kinematics.
+     * @return Vector of homogeneous transforms between the centre of mass of each link and the source link.
      */
     template <typename Scalar, int nq>
     std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics_com(
@@ -153,7 +154,8 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the transform between source link {s} and target {t} centre of mass (CoM) {c}.
+     * @brief Computes the transform between source link and target centre of mass. The transform converts points in the
+     * target links centre of mass frame into the source link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
@@ -162,7 +164,7 @@ namespace tinyrobotics {
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
      * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Homogeneous transform from source link {s} to target link centre of mass {c}.
+     * @return Homogeneous transform from source link to target link centre of mass.
      */
     template <typename Scalar, int nq, typename TargetLink, typename SourceLink = int>
     Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(const Model<Scalar, nq>& model,
@@ -179,7 +181,7 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the translation of the target link from the source link in the source link frame.
+     * @brief Computes the translation to the target link from the source link expressed in the source link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
@@ -188,7 +190,7 @@ namespace tinyrobotics {
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
      * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Translation of the target link from the source link in the source link frame.
+     * @return Translation to the target link from the source link expressed in the source link frame.
      */
     template <typename Scalar, int nq, typename TargetLink, typename SourceLink = int>
     Eigen::Matrix<Scalar, 3, 1> translation(const Model<Scalar, nq>& model,
@@ -199,7 +201,8 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the rotation matrix between the target link and the source link in the source link frame.
+     * @brief Computes the rotation matrix between the target link and the source link. The rotation matrix rotates
+     * points in the target link frame into the source link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
@@ -208,7 +211,7 @@ namespace tinyrobotics {
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
      * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Rotation matrix between the target link and the source link in the source link frame.
+     * @return Rotation matrix between the target link and the source link.
      */
     template <typename Scalar, int nq, typename TargetLink, typename SourceLink = int>
     Eigen::Matrix<Scalar, 3, 3> rotation(const Model<Scalar, nq>& model,
@@ -219,14 +222,14 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the geometric jacobian of the target link from the base link in the base link frame.
+     * @brief Computes the geometric jacobian of the target link from the base link, in the base link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return The geometric jacobian of the target link from the base link in the base link frame.
+     * @return The geometric jacobian of the target link from the base link, in the base link frame.
      */
     template <typename Scalar, int nq, typename TargetLink>
     Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar, nq>& model,
@@ -268,7 +271,7 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the geometric jacobian relative to the base for the specified target link's center of mass.
+     * @brief Computes the geometric jacobian of the target links from the base link, in the base link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
