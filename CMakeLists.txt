@@ -7,6 +7,9 @@ project(tinyrobotics VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Add an option to enable test building or not
+option(BUILD_TESTS "Build tests" ON)
+
 # Force coloured compiler output
 add_compile_options(-fdiagnostics-color)
 
@@ -55,20 +58,22 @@ foreach(SRC_FILE ${SRC_EXAMPLES})
 endforeach()
 
 # Unit tests
-add_executable(${TARGET_TEST} ${SRC_TEST})
-if(SRC_INCLUDES)
-  target_link_libraries(${TARGET_TEST} ${TARGET_LIB})
-endif()
-target_link_libraries(${TARGET_TEST} ${LIBS})
-target_link_libraries(${TARGET_TEST} Catch2::Catch2)
+if(BUILD_TESTS)
+  add_executable(${TARGET_TEST} ${SRC_TEST})
+  if(SRC_INCLUDES)
+    target_link_libraries(${TARGET_TEST} ${TARGET_LIB})
+  endif()
+  target_link_libraries(${TARGET_TEST} ${LIBS})
+  target_link_libraries(${TARGET_TEST} Catch2::Catch2)
 
-# Run unit tests after building executables
-add_custom_target(
-  run_tests ALL
-  COMMAND ${TARGET_TEST} --use-colour yes
-  DEPENDS ${TARGET_TEST} ${TARGET_LIB}
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  COMMENT "Running tests")
+  # Run unit tests after building executables
+  add_custom_target(
+    run_tests ALL
+    COMMAND ${TARGET_TEST} --use-colour yes
+    DEPENDS ${TARGET_TEST} ${TARGET_LIB}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running tests")
+endif()
 
 # Create a library target with the include files
 add_library(tinyrobotics SHARED ${SRC_INCLUDES})
