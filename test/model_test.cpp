@@ -13,7 +13,6 @@ TEST_CASE("Load a model with inertial information", "[Model]") {
     CHECK(robot_model.name == "compass_gait");
 
     CHECK(robot_model.links.size() == 9);
-    CHECK(robot_model.joints.size() == 8);
 
     // Check parsed link information
     CHECK(robot_model.get_link("ground").name == "ground");
@@ -74,7 +73,6 @@ TEST_CASE("Cast a Model from double to float", "[Model]") {
     CHECK(robot_model_float.name == "compass_gait");
 
     CHECK(robot_model_float.links.size() == 9);
-    CHECK(robot_model_float.joints.size() == 8);
 
     // Check parsed link information
     CHECK(robot_model_float.get_link("ground").name == "ground");

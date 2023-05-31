@@ -34,9 +34,6 @@ namespace tinyrobotics {
         /// @brief Number of links in the model.
         int n_links = 0;
 
-        /// @brief Number of joints in the model.
-        int n_joints = 0;
-
         /// @brief Number of configuration coordinates (degrees of freedom) in the model.
         int n_q = 0;
 
@@ -57,9 +54,6 @@ namespace tinyrobotics {
 
         /// @brief Vector of links in the model.
         std::vector<Link<Scalar>> links = {};
-
-        /// @brief Vector of joints in the model.
-        std::vector<Joint<Scalar>> joints = {};
 
         /// @brief Stores the results of the models algorithms.
         Data<Scalar, nq> data;
@@ -121,7 +115,6 @@ namespace tinyrobotics {
             std::cout << separator << std::endl;
             std::cout << "Model name             : " << name << std::endl;
             std::cout << "No. of links           : " << links.size() << std::endl;
-            std::cout << "No. of joints          : " << joints.size() << std::endl;
             std::cout << "No. of actuated joints : " << n_q << std::endl;
             std::cout << "Base link name         : " << links[base_link_idx].name << std::endl;
             std::cout << "Model Mass             : " << mass << std::endl;
@@ -185,16 +178,12 @@ namespace tinyrobotics {
             Model<NewScalar, nq> new_model = Model<NewScalar, nq>();
             new_model.name                 = name;
             new_model.n_links              = n_links;
-            new_model.n_joints             = n_joints;
             new_model.n_q                  = n_q;
             new_model.base_link_idx        = base_link_idx;
             new_model.gravity              = gravity.template cast<NewScalar>();
             new_model.mass                 = NewScalar(mass);
             for (auto& link : links) {
                 new_model.links.push_back(link.template cast<NewScalar>());
-            }
-            for (auto& joint : joints) {
-                new_model.joints.push_back(joint.template cast<NewScalar>());
             }
             new_model.data = data.template cast<NewScalar>();
             return new_model;

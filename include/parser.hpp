@@ -363,12 +363,12 @@ namespace tinyrobotics {
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      */
     template <typename Scalar, int nq>
-    void init_link_tree(Model<Scalar, nq>& model) {
+    void init_link_tree(Model<Scalar, nq>& model, std::vector<Joint<Scalar>>& joints) {
         // Initialize the joint count to zero
         model.n_q = 0;
 
         // Iterate over each joint in the model
-        for (auto joint : model.joints) {
+        for (auto joint : joints) {
             // Check that the joint has a parent link and a child link specified
             std::string parent_link_name = joint.parent_link_name;
             if (parent_link_name.empty()) {
@@ -570,25 +570,26 @@ namespace tinyrobotics {
         }
 
         // Parse the joints
+        std::vector<Joint<Scalar>> joints;
         for (tinyxml2::XMLElement* joint_xml = robot_xml->FirstChildElement("joint"); joint_xml;
              joint_xml                       = joint_xml->NextSiblingElement("joint")) {
             Joint<Scalar> joint = joint_from_xml<Scalar>(joint_xml);
-            if (model.get_joint(joint.name).joint_id != -1) {
-                throw std::runtime_error("Error: Duplicate joints '" + joint.name + "' found");
+            for (auto& joint_ : joints) {
+                if (joint.name == joint_.name) {
+                    throw std::runtime_error("Error: Duplicate joints '" + joint.name + "' found");
+                }
             }
-            joint.joint_id = model.joints.size();
-            model.joints.push_back(joint);
+            joints.push_back(joint);
         }
 
         // Initialize the link tree and find the base link index (should be -1)
-        init_link_tree(model);
+        init_link_tree(model, joints);
 
         // Initialize the q_idx and parent_map
         init_dynamics(model);
 
         // Set the number of joints and links
-        model.n_joints = model.joints.size();
-        model.n_links  = model.links.size();
+        model.n_links = model.links.size();
 
         return model;
     }
