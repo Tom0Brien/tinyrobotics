@@ -7,7 +7,7 @@ project(tinyrobotics VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Add an option to enable test building or not
+# Option to enable test building or not
 option(BUILD_TESTS "Build tests" ON)
 
 # Force coloured compiler output
@@ -22,7 +22,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Find required packages
-find_package(Catch2 2.13 REQUIRED)
+if(BUILD_TESTS)
+  find_package(Catch2 REQUIRED)
+endif()
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(TinyXML2 REQUIRED)
 find_package(NLopt REQUIRED)
