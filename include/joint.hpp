@@ -3,6 +3,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <iostream>
 
 /** \file joint.hpp
  * @brief Contains struct for representing a joint in a tinyrobotics model.
