@@ -24,8 +24,10 @@ Checks: >
   -readability-uppercase-literal-suffix,
   -readability-magic-numbers,
   -readability-redundant-string-init,
+  -readability-identifier-length,
   modernize-*,
-  -modernize-use-trailing-return-type
+  -modernize-use-trailing-return-type,
+  -modernize-use-nodiscard
 WarningsAsErrors: ""
 HeaderFilterRegex: ".*"
 AnalyzeTemporaryDtors: false

@@ -296,7 +296,6 @@ TEST_CASE("Test inverse kinematics for nugus robot with all IK methods", "[inver
     options.tolerance                            = 1e-5;
     std::vector<InverseKinematicsMethod> methods = {InverseKinematicsMethod::JACOBIAN,
                                                     InverseKinematicsMethod::NLOPT,
-                                                    InverseKinematicsMethod::NLOPT_AUTODIFF,
                                                     InverseKinematicsMethod::LEVENBERG_MARQUARDT,
                                                     InverseKinematicsMethod::PARTICLE_SWARM,
                                                     InverseKinematicsMethod::BFGS};

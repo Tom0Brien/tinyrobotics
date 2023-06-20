@@ -72,7 +72,7 @@ namespace tinyrobotics {
 
         // Convert input from NLopt format to Eigen format
         Eigen::Map<const Eigen::Matrix<Scalar, nv, 1>> eigen_x(x, n);
-        Eigen::Matrix<Scalar, nv, 1> eigen_grad;
+        Eigen::Matrix<Scalar, nv, 1> eigen_grad = Eigen::Matrix<Scalar, nv, 1>::Zero();
 
         if (grad) {
             eigen_grad.resize(n);
@@ -97,9 +97,6 @@ namespace tinyrobotics {
 
         /// @brief NLopt method.
         NLOPT,
-
-        /// @brief NLopt method with autodiff gradient.
-        NLOPT_AUTODIFF,
 
         /// @brief Levenberg-Marquardt method.
         LEVENBERG_MARQUARDT,
@@ -207,69 +204,6 @@ namespace tinyrobotics {
         return cost(0);
     }
 
-
-    /**
-     * @brief Cost function for general inverse kinematics with autodiff jacobian.
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 Initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
-    template <typename Scalar, int nq>
-    Scalar cost_autodiff(const Eigen::Matrix<Scalar, nq, 1>& q,
-                         Model<Scalar, nq>& model,
-                         const std::string& target_link_name,
-                         const std::string& source_link_name,
-                         const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-                         const Eigen::Matrix<Scalar, nq, 1>& q0,
-                         Eigen::Matrix<Scalar, nq, 1>& gradient,
-                         const InverseKinematicsOptions<Scalar, nq>& options) {
-
-        using ADScalar = Eigen::AutoDiffScalar<Eigen::Matrix<Scalar, nq, 1>>;
-
-        // Cast model to Eigen::AutoDiffScalar
-        Model<ADScalar, nq> model_ad = model.template cast<ADScalar>();
-
-        // Initialize q_ad with derivatives
-        Eigen::Matrix<ADScalar, nq, 1> q_ad;
-        Eigen::Matrix<ADScalar, nq, 1> q0_ad;
-        for (int i = 0; i < nq; ++i) {
-            q_ad[i]                  = ADScalar(q[i]);
-            q_ad[i].derivatives()[i] = 1.0;
-            q0_ad[i]                 = ADScalar(q0[i]);
-        }
-
-        // Compute the current pose
-        Eigen::Transform<ADScalar, 3, Eigen::Isometry> current_pose_ad =
-            forward_kinematics(model_ad, q_ad, target_link_name, source_link_name);
-
-        // Cast the desired pose to ADScalar
-        Eigen::Transform<ADScalar, 3, Eigen::Isometry> desired_pose_ad = desired_pose.template cast<ADScalar>();
-
-        // Stack the position and orientation errors
-        Eigen::Matrix<ADScalar, 6, 1> pose_error = homogeneous_error(current_pose_ad, desired_pose_ad);
-
-        Eigen::Matrix<ADScalar, 6, 6> K_ad   = options.K.template cast<ADScalar>();
-        Eigen::Matrix<ADScalar, nq, nq> W_ad = options.W.template cast<ADScalar>();
-
-        // Compute the cost: q^T*W*q + (k(q) - x*)^TK*(k(q) - x*))), where k(q) is the current pose, x* is the desired
-        // pose, and W and K are the weighting matrices
-        Eigen::Matrix<ADScalar, 1, 1> cost =
-            0.5 * pose_error.transpose() * K_ad * pose_error + 0.5 * (q_ad - q0_ad).transpose() * W_ad * (q_ad - q0_ad);
-
-        // Extract the gradient from the gradient_ad
-        for (int i = 0; i < nq; ++i) {
-            gradient[i] = cost[0].derivatives()[i];
-        }
-
-        // Return the value of the cost function
-        return Scalar(cost(0).value());
-    }
-
     /**
      * @brief Solves the inverse kinematics problem between two links using NLopt.
      * @param model tinyrobotics model.
@@ -300,13 +234,7 @@ namespace tinyrobotics {
             // Compute the cost and gradient
             Eigen::Matrix<Scalar, nq, 1> gradient;
             Scalar cost_value = 0.0;
-            if (options.method == InverseKinematicsMethod::NLOPT_AUTODIFF) {
-                cost_value =
-                    cost_autodiff(q, model, target_link_name, source_link_name, desired_pose, q0, gradient, options);
-            }
-            else {
-                cost_value = cost(q, model, target_link_name, source_link_name, desired_pose, q0, gradient, options);
-            }
+            cost_value        = cost(q, model, target_link_name, source_link_name, desired_pose, q0, gradient, options);
 
             // Pass the gradient to NLopt
             for (int i = 0; i < nq; ++i) {
@@ -578,8 +506,9 @@ namespace tinyrobotics {
             // Compute the gradient and cost using the provided cost function
             Scalar cost_value = cost(q, model, target_link_name, source_link_name, desired_pose, q0, grad, options);
 
-            if (grad.norm() < options.tolerance)
+            if (grad.norm() < options.tolerance) {
                 break;
+            }
 
             Eigen::Matrix<Scalar, nq, 1> direction = -inverse_hessian * grad;
             Scalar alpha                           = 1.0;
@@ -629,8 +558,6 @@ namespace tinyrobotics {
                                                     const InverseKinematicsOptions<Scalar, nq>& options) {
         switch (options.method) {
             case InverseKinematicsMethod::NLOPT:
-                return inverse_kinematics_nlopt(model, target_link_name, source_link_name, desired_pose, q0, options);
-            case InverseKinematicsMethod::NLOPT_AUTODIFF:
                 return inverse_kinematics_nlopt(model, target_link_name, source_link_name, desired_pose, q0, options);
             case InverseKinematicsMethod::JACOBIAN:
                 return inverse_kinematics_jacobian(model,
