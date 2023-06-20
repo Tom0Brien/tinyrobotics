@@ -453,7 +453,6 @@ namespace tinyrobotics {
                     auto child_link = model.links[child_link_idx];
                     for (int j = 0; j < model.links.size(); j++) {
                         if (model.links[j].name == child_link.name) {
-                            // TODO: IMPLEMENT SOMETHING LIKE THIS
                             model.links[j].joint.X = model.links[j].joint.X * link.joint.X;
                             break;
                         }
