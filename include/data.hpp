@@ -18,16 +18,16 @@ namespace tinyrobotics {
     struct Data {
 
         /// @brief Joint configuration.
-        Eigen::Matrix<Scalar, nq, 1> q;
+        Eigen::Matrix<Scalar, nq, 1> q = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /// @brief Joint velocity.
-        Eigen::Matrix<Scalar, nq, 1> dq;
+        Eigen::Matrix<Scalar, nq, 1> dq = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /// @brief Joint acceleration.
-        Eigen::Matrix<Scalar, nq, 1> ddq;
+        Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /// @brief Joint torque/force.
-        Eigen::Matrix<Scalar, nq, 1> tau;
+        Eigen::Matrix<Scalar, nq, 1> tau = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /// @brief Mass matrix.
         Eigen::Matrix<Scalar, nq, nq> mass_matrix = Eigen::Matrix<Scalar, nq, nq>::Zero();
@@ -39,7 +39,7 @@ namespace tinyrobotics {
         Eigen::Matrix<Scalar, nq, nq> coriolis = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
         /// @brief Gravity vector.
-        Eigen::Matrix<Scalar, nq, 1> gravity;
+        Eigen::Matrix<Scalar, nq, 1> gravity = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /// @brief Input mapping matrix.
         Eigen::Matrix<Scalar, nq, nq> input_mapping = Eigen::Matrix<Scalar, nq, nq>::Identity();
