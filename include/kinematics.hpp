@@ -23,7 +23,7 @@ namespace tinyrobotics {
      * @throws std::invalid_argument if the TargetLink type is not int or std::string.
      */
     template <typename Scalar, int nq, typename TargetLink>
-    const int get_link_idx(const Model<Scalar, nq>& model, const TargetLink& target_link) {
+    int get_link_idx(const Model<Scalar, nq>& model, const TargetLink& target_link) {
         if constexpr (std::is_integral<TargetLink>::value) {
             return static_cast<int>(target_link);
         }
