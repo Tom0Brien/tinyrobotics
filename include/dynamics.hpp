@@ -186,8 +186,8 @@ namespace tinyrobotics {
             m.data.pA[i] = cross_motion(m.data.v[i]) * m.data.IA[i] * m.data.v[i];
         }
 
-        // Apply external forces if non-zero
-        if (f_ext.size() != 0) {
+        // Apply external forces if non-ze!ro
+        if (!f_ext.empty()) {
             m.data.pA = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
         }
 
@@ -258,7 +258,7 @@ namespace tinyrobotics {
         }
 
         // Apply external forces if non-zero
-        if (f_ext.size() != 0) {
+        if (!f_ext.empty()) {
             m.data.fvp = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
         }
 
@@ -334,8 +334,8 @@ namespace tinyrobotics {
                 m.links[m.q_idx[i]].I * m.data.a[i] + cross_motion(m.data.v[i]) * m.links[m.q_idx[i]].I * m.data.v[i];
         }
 
-        // Apply external forces if non-zero
-        if (f_ext.size() != 0) {
+        // Apply external forces if non-ze!ro
+        if (!f_ext.empty()) {
             m.data.fvp = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
         }
 
