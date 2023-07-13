@@ -115,8 +115,8 @@ namespace tinyrobotics {
         std::vector<Eigen::Matrix<Scalar, 6, 1>> a =
             std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
 
-        /// @brief Homogeneous transformation matrix
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+        /// @brief
+        Eigen::Matrix<Scalar, 6, 1> vJ = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
         /// @brief
         std::vector<Eigen::Matrix<Scalar, 6, 1>> avp =
@@ -261,7 +261,6 @@ namespace tinyrobotics {
          */
         template <typename NewScalar>
         Model<NewScalar, nq> cast() {
-
             Model<NewScalar, nq> new_model = Model<NewScalar, nq>();
             new_model.name                 = name;
             new_model.n_q                  = n_q;
