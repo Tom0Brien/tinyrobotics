@@ -22,39 +22,40 @@ namespace tinyrobotics {
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, nq> mass_matrix(Model<Scalar, nq>& m, const Eigen::Matrix<Scalar, nq, 1>& q) {
-        // First pass
+        // Reset mass matrix to zero
+        m.mass_matrix.setZero();
+
+        // First pass:
         for (int i = 0; i < nq; i++) {
             // Get transform from body to parent
             Eigen::Transform<Scalar, 3, Eigen::Isometry> T =
-                m.links[m.q_idx[i]].joint.get_parent_to_child_transform(q(i));
+                m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i));
             // Compute the spatial transform from the parent to the current body
-            m.data.Xup[i] = homogeneous_to_spatial(T.inverse());
-            m.data.IC[i]  = m.links[m.q_idx[i]].I;
+            m.Xup[i] = homogeneous_to_spatial(T.inverse());
+            m.IC[i]  = m.links[m.q_map[i]].I;
         }
 
-        // Second pass
+        // Second pass:
         for (int i = nq - 1; i >= 0; i--) {
             if (m.parent[i] != -1) {
-                m.data.IC[m.parent[i]] =
-                    m.data.IC[m.parent[i]] + m.data.Xup[i].transpose() * m.data.IC[i] * m.data.Xup[i];
+                m.IC[m.parent[i]] = m.IC[m.parent[i]] + m.Xup[i].transpose() * m.IC[i] * m.Xup[i];
             }
         }
 
-        // Third pass
-        m.data.mass_matrix.setZero();
+        // Third pass:
         for (int i = 0; i < nq; i++) {
-            m.data.fh                = m.data.IC[i] * m.links[m.q_idx[i]].joint.S;
-            m.data.mass_matrix(i, i) = m.links[m.q_idx[i]].joint.S.transpose() * m.data.fh;
-            int j                    = i;
+            m.fh                = m.IC[i] * m.links[m.q_map[i]].joint.S;
+            m.mass_matrix(i, i) = m.links[m.q_map[i]].joint.S.transpose() * m.fh;
+            int j               = i;
             while (m.parent[j] > -1) {
-                m.data.fh                = m.data.Xup[j].transpose() * m.data.fh;
-                j                        = m.parent[j];
-                m.data.mass_matrix(i, j) = m.links[m.q_idx[j]].joint.S.transpose() * m.data.fh;
-                m.data.mass_matrix(j, i) = m.data.mass_matrix(i, j);
+                m.fh                = m.Xup[j].transpose() * m.fh;
+                j                   = m.parent[j];
+                m.mass_matrix(i, j) = m.links[m.q_map[j]].joint.S.transpose() * m.fh;
+                m.mass_matrix(j, i) = m.mass_matrix(i, j);
             }
         }
 
-        return m.data.mass_matrix;
+        return m.mass_matrix;
     }
 
     /**
@@ -67,12 +68,12 @@ namespace tinyrobotics {
     Scalar kinetic_energy(Model<Scalar, nq>& m,
                           const Eigen::Matrix<Scalar, nq, 1>& q,
                           const Eigen::Matrix<Scalar, nq, 1>& dq) {
-
         // Compute the mass matrix
         mass_matrix<Scalar, nq>(m, q);
+
         // Compute the kinetic energy
-        m.data.kinetic_energy = 0.5 * dq.transpose() * m.data.mass_matrix * dq;
-        return m.data.kinetic_energy;
+        m.kinetic_energy = Scalar(0.5) * dq.transpose() * m.mass_matrix * dq;
+        return m.kinetic_energy;
     }
 
     /**
@@ -85,15 +86,16 @@ namespace tinyrobotics {
     template <typename Scalar, int nq>
     Scalar potential_energy(Model<Scalar, nq>& m, const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset the potential energy
-        m.data.potential_energy = 0;
+        m.potential_energy = 0;
+
         // Compute the forward kinematics to centre of mass of all links
         forward_kinematics_com(m, q);
+
         // Compute the potential energy
         for (auto const link : m.links) {
-            m.data.potential_energy +=
-                -link.mass * m.gravity.transpose() * m.data.forward_kinematics_com[link.idx].translation();
+            m.potential_energy += -link.mass * m.gravity.transpose() * m.forward_kinematics_com[link.idx].translation();
         }
-        return m.data.potential_energy;
+        return m.potential_energy;
     }
 
     /**
@@ -115,7 +117,7 @@ namespace tinyrobotics {
         potential_energy(m, q);
 
         // Compute and return the total energy (kinetic + potential)
-        return m.data.kinetic_energy + m.data.potential_energy;
+        return m.kinetic_energy + m.potential_energy;
     }
 
     /**
@@ -137,7 +139,7 @@ namespace tinyrobotics {
 
         f_out = f_in;
         for (int i = 0; i < nq; i++) {
-            const auto link = m.links[m.q_idx[i]];
+            const auto link = m.links[m.q_map[i]];
             if (m.parent[i] == -1) {
                 Xa[i] = Xup[i];
             }
@@ -168,55 +170,54 @@ namespace tinyrobotics {
         // First pass: compute the spatial acceleration of each body
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            Eigen::Matrix<Scalar, 6, 1> vJ = m.links[m.q_idx[i]].joint.S * qd(i);
+            Eigen::Matrix<Scalar, 6, 1> vJ = m.links[m.q_map[i]].joint.S * qd(i);
             // Get transform from body to parent
-            m.data.T = m.links[m.q_idx[i]].joint.get_parent_to_child_transform(q(i));
+            m.T = m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i));
             // Compute the spatial transform from the parent to the current body
-            m.data.Xup[i] = homogeneous_to_spatial(m.data.T.inverse());
+            m.Xup[i] = homogeneous_to_spatial(m.T.inverse());
             // Check if the m.parent link is the base link
             if (m.parent[i] == -1) {
-                m.data.v[i] = vJ;
-                m.data.c[i] = Eigen::Matrix<Scalar, 6, 1>::Zero();
+                m.v[i] = vJ;
+                m.c[i] = Eigen::Matrix<Scalar, 6, 1>::Zero();
             }
             else {
-                m.data.v[i] = m.data.Xup[i] * m.data.v[m.parent[i]] + vJ;
-                m.data.c[i] = cross_spatial(m.data.v[i]) * vJ;
+                m.v[i] = m.Xup[i] * m.v[m.parent[i]] + vJ;
+                m.c[i] = cross_spatial(m.v[i]) * vJ;
             }
-            m.data.IA[i] = m.links[m.q_idx[i]].I;
-            m.data.pA[i] = cross_motion(m.data.v[i]) * m.data.IA[i] * m.data.v[i];
+            m.IA[i] = m.links[m.q_map[i]].I;
+            m.pA[i] = cross_motion(m.v[i]) * m.IA[i] * m.v[i];
         }
 
-        // Apply external forces if non-ze!ro
+        // Apply external forces if non-zero
         if (!f_ext.empty()) {
-            m.data.pA = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
+            m.pA = apply_external_forces(m, m.Xup, m.pA, f_ext);
         }
 
         // Second pass: compute the spatial force acting on each body
         for (int i = nq - 1; i >= 0; i--) {
-            m.data.U[i] = m.data.IA[i] * m.links[m.q_idx[i]].joint.S;
-            m.data.d[i] = m.links[m.q_idx[i]].joint.S.transpose() * m.data.U[i];
-            m.data.u[i] = Scalar(tau(i) - m.links[m.q_idx[i]].joint.S.transpose() * m.data.pA[i]);
+            m.U[i] = m.IA[i] * m.links[m.q_map[i]].joint.S;
+            m.d[i] = m.links[m.q_map[i]].joint.S.transpose() * m.U[i];
+            m.u[i] = Scalar(tau(i) - m.links[m.q_map[i]].joint.S.transpose() * m.pA[i]);
             if (m.parent[i] != -1) {
-                Eigen::Matrix<Scalar, 6, 6> Ia = m.data.IA[i] - (m.data.U[i] / m.data.d[i]) * m.data.U[i].transpose();
-                Eigen::Matrix<Scalar, 6, 1> pa =
-                    m.data.pA[i] + Ia * m.data.c[i] + m.data.U[i] * (m.data.u[i] / m.data.d[i]);
-                m.data.IA[m.parent[i]] += m.data.Xup[i].transpose() * Ia * m.data.Xup[i];
-                m.data.pA[m.parent[i]] += m.data.Xup[i].transpose() * pa;
+                Eigen::Matrix<Scalar, 6, 6> Ia = m.IA[i] - (m.U[i] / m.d[i]) * m.U[i].transpose();
+                Eigen::Matrix<Scalar, 6, 1> pa = m.pA[i] + Ia * m.c[i] + m.U[i] * (m.u[i] / m.d[i]);
+                m.IA[m.parent[i]] += m.Xup[i].transpose() * Ia * m.Xup[i];
+                m.pA[m.parent[i]] += m.Xup[i].transpose() * pa;
             }
         }
 
         // Third pass: compute the joint accelerations
         for (int i = 0; i < nq; i++) {
             if (m.parent[i] == -1) {
-                m.data.a[i] = m.data.Xup[i] * -m.data.spatial_gravity + m.data.c[i];
+                m.a[i] = m.Xup[i] * -m.spatial_gravity + m.c[i];
             }
             else {
-                m.data.a[i] = m.data.Xup[i] * m.data.a[m.parent[i]] + m.data.c[i];
+                m.a[i] = m.Xup[i] * m.a[m.parent[i]] + m.c[i];
             }
-            m.data.ddq(i) = (m.data.u[i] - m.data.U[i].transpose() * m.data.a[i]) / m.data.d[i];
-            m.data.a[i]   = m.data.a[i] + m.links[m.q_idx[i]].joint.S * m.data.ddq(i);
+            m.ddq(i) = (m.u[i] - m.U[i].transpose() * m.a[i]) / m.d[i];
+            m.a[i]   = m.a[i] + m.links[m.q_map[i]].joint.S * m.ddq(i);
         }
-        return m.data.ddq;
+        return m.ddq;
     }
 
     /**
@@ -234,64 +235,62 @@ namespace tinyrobotics {
                                                       const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                       const Eigen::Matrix<Scalar, nq, 1>& tau,
                                                       const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
-        // First pass
+        // First pass:
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            Eigen::Matrix<Scalar, 6, 1> vJ = m.links[m.q_idx[i]].joint.S * qd(i);
+            Eigen::Matrix<Scalar, 6, 1> vJ = m.links[m.q_map[i]].joint.S * qd(i);
             // Get transform from body to parent
             Eigen::Transform<Scalar, 3, Eigen::Isometry> T =
-                m.links[m.q_idx[i]].joint.get_parent_to_child_transform(q(i));
+                m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i));
             // Compute the spatial transform from the parent to the current body
-            m.data.Xup[i] = homogeneous_to_spatial(T.inverse());
+            m.Xup[i] = homogeneous_to_spatial(T.inverse());
             // Check if the m.parent link is the base link
             if (m.parent[i] == -1) {
-                m.data.v[i]   = vJ;
-                m.data.avp[i] = m.data.Xup[i] * -m.data.spatial_gravity;
+                m.v[i]   = vJ;
+                m.avp[i] = m.Xup[i] * -m.spatial_gravity;
             }
             else {
-                m.data.v[i]   = m.data.Xup[i] * m.data.v[m.parent[i]] + vJ;
-                m.data.avp[i] = m.data.Xup[i] * m.data.avp[m.parent[i]] + cross_spatial(m.data.v[i]) * vJ;
+                m.v[i]   = m.Xup[i] * m.v[m.parent[i]] + vJ;
+                m.avp[i] = m.Xup[i] * m.avp[m.parent[i]] + cross_spatial(m.v[i]) * vJ;
             }
-            m.data.fvp[i] =
-                m.links[m.q_idx[i]].I * m.data.avp[i] + cross_motion(m.data.v[i]) * m.links[m.q_idx[i]].I * m.data.v[i];
-            m.data.IC[i] = m.links[m.q_idx[i]].I;
+            m.fvp[i] = m.links[m.q_map[i]].I * m.avp[i] + cross_motion(m.v[i]) * m.links[m.q_map[i]].I * m.v[i];
+            m.IC[i]  = m.links[m.q_map[i]].I;
         }
 
         // Apply external forces if non-zero
         if (!f_ext.empty()) {
-            m.data.fvp = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
+            m.fvp = apply_external_forces(m, m.Xup, m.pA, f_ext);
         }
 
-        // Second pass
+        // Second pass:
         for (int i = nq - 1; i >= 0; i--) {
-            m.data.C(i, 0) = m.links[m.q_idx[i]].joint.S.transpose() * m.data.fvp[i];
+            m.C(i, 0) = m.links[m.q_map[i]].joint.S.transpose() * m.fvp[i];
             if (m.parent[i] != -1) {
-                m.data.fvp[m.parent[i]] = m.data.fvp[m.parent[i]] + m.data.Xup[i].transpose() * m.data.fvp[i];
+                m.fvp[m.parent[i]] = m.fvp[m.parent[i]] + m.Xup[i].transpose() * m.fvp[i];
             }
         }
 
-        // Third pass
+        // Third pass:
         for (int i = nq - 1; i >= 0; i--) {
             if (m.parent[i] != -1) {
-                m.data.IC[m.parent[i]] =
-                    m.data.IC[m.parent[i]] + m.data.Xup[i].transpose() * m.data.IC[i] * m.data.Xup[i];
+                m.IC[m.parent[i]] = m.IC[m.parent[i]] + m.Xup[i].transpose() * m.IC[i] * m.Xup[i];
             }
         }
 
         for (int i = 0; i < nq; i++) {
-            m.data.fh                = m.data.IC[i] * m.links[m.q_idx[i]].joint.S;
-            m.data.mass_matrix(i, i) = m.links[m.q_idx[i]].joint.S.transpose() * m.data.fh;
-            int j                    = i;
+            m.fh                = m.IC[i] * m.links[m.q_map[i]].joint.S;
+            m.mass_matrix(i, i) = m.links[m.q_map[i]].joint.S.transpose() * m.fh;
+            int j               = i;
             while (m.parent[j] != -1) {
-                m.data.fh                = m.data.Xup[j].transpose() * m.data.fh;
-                j                        = m.parent[j];
-                m.data.mass_matrix(i, j) = m.links[m.q_idx[j]].joint.S.transpose() * m.data.fh;
-                m.data.mass_matrix(j, i) = m.data.mass_matrix(i, j);
+                m.fh                = m.Xup[j].transpose() * m.fh;
+                j                   = m.parent[j];
+                m.mass_matrix(i, j) = m.links[m.q_map[j]].joint.S.transpose() * m.fh;
+                m.mass_matrix(j, i) = m.mass_matrix(i, j);
             }
         }
 
         // Compute qdd with inverse mass using LDLT
-        Eigen::Matrix<Scalar, nq, 1> qdd = m.data.mass_matrix.ldlt().solve(tau - m.data.C);
+        Eigen::Matrix<Scalar, nq, 1> qdd = m.mass_matrix.ldlt().solve(tau - m.C);
 
         return qdd;
     }
@@ -310,43 +309,42 @@ namespace tinyrobotics {
                                                   const Eigen::Matrix<Scalar, nq, 1>& qd,
                                                   const Eigen::Matrix<Scalar, nq, 1>& qdd,
                                                   const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
-        // First pass
+        // First pass:
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            m.links[m.q_idx[i]].joint.S    = m.links[m.q_idx[i]].joint.S;
-            Eigen::Matrix<Scalar, 6, 1> vJ = m.links[m.q_idx[i]].joint.S * qd(i);
+            m.links[m.q_map[i]].joint.S    = m.links[m.q_map[i]].joint.S;
+            Eigen::Matrix<Scalar, 6, 1> vJ = m.links[m.q_map[i]].joint.S * qd(i);
             // Get transform from body to parent
             Eigen::Transform<Scalar, 3, Eigen::Isometry> T =
-                m.links[m.q_idx[i]].joint.get_parent_to_child_transform(q(i));
+                m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i));
             // Compute the spatial transform from the parent to the current body
-            m.data.Xup[i] = homogeneous_to_spatial(T.inverse());
+            m.Xup[i] = homogeneous_to_spatial(T.inverse());
             // Check if the m.parent link is the base link
             if (m.parent[i] == -1) {
-                m.data.v[i] = vJ;
-                m.data.a[i] = m.data.Xup[i] * -m.data.spatial_gravity + m.links[m.q_idx[i]].joint.S * qdd(i);
+                m.v[i] = vJ;
+                m.a[i] = m.Xup[i] * -m.spatial_gravity + m.links[m.q_map[i]].joint.S * qdd(i);
             }
             else {
-                m.data.v[i] = m.data.Xup[i] * m.data.v[m.parent[i]] + vJ;
-                m.data.a[i] = m.data.Xup[i] * m.data.a[m.parent[i]] + m.links[m.q_idx[i]].joint.S * qdd(i)
-                              + cross_spatial(m.data.v[i]) * vJ;
+                m.v[i] = m.Xup[i] * m.v[m.parent[i]] + vJ;
+                m.a[i] =
+                    m.Xup[i] * m.a[m.parent[i]] + m.links[m.q_map[i]].joint.S * qdd(i) + cross_spatial(m.v[i]) * vJ;
             }
-            m.data.fvp[i] =
-                m.links[m.q_idx[i]].I * m.data.a[i] + cross_motion(m.data.v[i]) * m.links[m.q_idx[i]].I * m.data.v[i];
+            m.fvp[i] = m.links[m.q_map[i]].I * m.a[i] + cross_motion(m.v[i]) * m.links[m.q_map[i]].I * m.v[i];
         }
 
-        // Apply external forces if non-ze!ro
+        // Apply external forces if non-zero
         if (!f_ext.empty()) {
-            m.data.fvp = apply_external_forces(m, m.data.Xup, m.data.pA, f_ext);
+            m.fvp = apply_external_forces(m, m.Xup, m.pA, f_ext);
         }
 
-        // Second pass
+        // Second pass:
         for (int i = nq - 1; i >= 0; i--) {
-            m.data.tau(i, 0) = m.links[m.q_idx[i]].joint.S.transpose() * m.data.fvp[i];
+            m.tau(i, 0) = m.links[m.q_map[i]].joint.S.transpose() * m.fvp[i];
             if (m.parent[i] != -1) {
-                m.data.fvp[m.parent[i]] = m.data.fvp[m.parent[i]] + m.data.Xup[i].transpose() * m.data.fvp[i];
+                m.fvp[m.parent[i]] = m.fvp[m.parent[i]] + m.Xup[i].transpose() * m.fvp[i];
             }
         }
-        return m.data.tau;
+        return m.tau;
     }
 
 }  // namespace tinyrobotics

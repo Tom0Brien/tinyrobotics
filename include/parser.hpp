@@ -471,13 +471,13 @@ namespace tinyrobotics {
             }
             else if (link.idx != model.base_link_idx) {
                 // Add the index of this actuatable link to the list of dynamic link indices
-                model.q_idx.push_back(link.idx);
+                model.q_map.push_back(link.idx);
             }
         }
         // For each dynamic link, find the index of its parent link in the dynamic link indices
-        for (int i = 0; i < model.q_idx.size(); i++) {
+        for (int i = 0; i < model.q_map.size(); i++) {
             // Get the dynamic link
-            auto link = model.links[model.q_idx[i]];
+            auto link = model.links[model.q_map[i]];
             // Get the parent link which isn't fixed
             auto parent_link = model.links[link.parent];
             while (parent_link.joint.type == JointType::FIXED) {
@@ -489,10 +489,10 @@ namespace tinyrobotics {
                 model.parent.push_back(-1);
             }
             else {
-                // Find the parent link in the q_idx
+                // Find the parent link in the q_map
                 bool found = false;
-                for (int j = 0; j < model.q_idx.size(); j++) {
-                    if (model.q_idx[j] == parent_link.idx) {
+                for (int j = 0; j < model.q_map.size(); j++) {
+                    if (model.q_map[j] == parent_link.idx) {
                         model.parent.push_back(j);
                         found = true;
                         break;
@@ -505,7 +505,7 @@ namespace tinyrobotics {
         }
 
         // Assign spatial gravity vector in models data
-        model.data.spatial_gravity.tail(3) = model.gravity;
+        model.spatial_gravity.tail(3) = model.gravity;
 
         // Compute the total mass of the model
         model.mass = 0;
@@ -584,11 +584,8 @@ namespace tinyrobotics {
         // Initialize the link tree and find the base link index (should be -1)
         init_link_tree(model, joints);
 
-        // Initialize the q_idx and parent_map
+        // Initialize the q_map and parent_map
         init_dynamics(model);
-
-        // Set the number of joints and links
-        model.n_links = model.links.size();
 
         return model;
     }
