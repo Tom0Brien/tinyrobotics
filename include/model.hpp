@@ -6,11 +6,8 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <map>
-#include <memory>
-#include <numeric>
-#include <sstream>
 
+#include "inversekinematics.hpp"
 #include "joint.hpp"
 #include "link.hpp"
 
@@ -63,19 +60,137 @@ namespace tinyrobotics {
         /// @brief Total_energy
         Scalar total_energy = 0;
 
+        // **************** Kinematics ****************
+
         /// @brief Vector of forward kinematics data
         std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics = {};
 
-        /// @brief Vector of forward kinematics com data
+        /// @brief Vector of forward kinematics c data
         std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics_com = {};
+
+        /// @brief Geometric Jacobian
+        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
+
+        template <typename TargetLink>
+        int getLinkIndex(const TargetLink& target_link);
+
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forwardKinematics(
+            const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        template <typename TargetLink>
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                       const TargetLink& target_link);
+
+        template <typename TargetLink, typename SourceLink>
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                       const TargetLink& target_link,
+                                                                       const SourceLink& source_link);
+
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forwardKinematicsCOM(
+            const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        template <typename TargetLink, typename SourceLink>
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematicsCOM(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                          const TargetLink& target_link,
+                                                                          const SourceLink& source_link = 0);
+
+        template <typename TargetLink>
+        Eigen::Matrix<Scalar, 6, nq> jacobian(const Eigen::Matrix<Scalar, nq, 1>& q, const TargetLink& target_link);
+
+        template <typename TargetLink>
+        Eigen::Matrix<Scalar, 6, nq> jacobianCOM(const Eigen::Matrix<Scalar, nq, 1>& q, const TargetLink& target_link);
+
+        template <typename SourceLink = int>
+        Eigen::Matrix<Scalar, 3, 1> centreOfMass(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                 const SourceLink& source_link = 0);
+
+        // **************** Inverse Kinematics ****************
+
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematics(const std::string& target_link_name,
+                                                       const std::string& source_link_name,
+                                                       const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+                                                       const Eigen::Matrix<Scalar, nq, 1> q0,
+                                                       const InverseKinematicsOptions<Scalar, nq>& options);
+
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsBFGS(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsPSO(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsLevenbergMarquardt(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsJacobian(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsNLOPT(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        Scalar cost(const Eigen::Matrix<Scalar, nq, 1>& q,
+                    const std::string& target_link_name,
+                    const std::string& source_link_name,
+                    const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+                    const Eigen::Matrix<Scalar, nq, 1>& q0,
+                    Eigen::Matrix<Scalar, nq, 1>& gradient,
+                    const InverseKinematicsOptions<Scalar, nq>& options);
+
+
+        // **************** Dynamics ****************
+        Eigen::Matrix<Scalar, nq, nq> massMatrix(const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        Scalar kineticEnergy(const Eigen::Matrix<Scalar, nq, 1>& q, const Eigen::Matrix<Scalar, nq, 1>& dq);
+
+        Scalar potentialEnergy(const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        Scalar totalEnergy(const Eigen::Matrix<Scalar, nq, 1>& q, const Eigen::Matrix<Scalar, nq, 1>& dq);
+
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> applyExternalForces(
+            const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
+            const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_in,
+            const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+
+        Eigen::Matrix<Scalar, nq, 1> forwardDynamics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& tau,
+                                                     const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+
+        Eigen::Matrix<Scalar, nq, 1> forwardDynamicsCRB(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                        const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                        const Eigen::Matrix<Scalar, nq, 1>& tau,
+                                                        const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+
+        Eigen::Matrix<Scalar, nq, 1> inverseDynamics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& qdd,
+                                                     const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+
 
         /// @brief Joint acceleration.
         Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /// @brief Joint torque/force.
         Eigen::Matrix<Scalar, nq, 1> tau = Eigen::Matrix<Scalar, nq, 1>::Zero();
-
-        /// **************** Pre-allcoated variables for dynamics algorithms ****************
 
         /// @brief Spatial transforms from parent to child links
         std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup =
@@ -139,18 +254,12 @@ namespace tinyrobotics {
         /// @brief Gravity vector in spatial coordinates
         Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
-        /// @brief Geometric Jacobian
-        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
-
-        /// @brief Hessian Product H*dq
-        Eigen::Matrix<Scalar, 6, nq> H_dq = Eigen::Matrix<Scalar, 6, nq>::Zero();
-
         /**
          * @brief Get a link in the model by name.
          * @param name Name of the link.
          * @return Link in the model.
          */
-        Link<Scalar> get_link(const std::string& name) const {
+        Link<Scalar> getLink(const std::string& name) const {
             for (auto link : links) {
                 if (link.name == name) {
                     return link;
@@ -166,7 +275,7 @@ namespace tinyrobotics {
          * @return Parent link of the link.
          *
          */
-        Link<Scalar> get_parent_link(const std::string& name) const {
+        Link<Scalar> getParentLink(const std::string& name) const {
             for (auto link : links) {
                 if (link.name == name) {
                     return links[link.parent];
@@ -183,7 +292,7 @@ namespace tinyrobotics {
          * @return Joint in the model.
          *
          */
-        Joint<Scalar> get_joint(const std::string& name) const {
+        Joint<Scalar> getJoint(const std::string& name) const {
             for (auto link : links) {
                 if (link.joint.name == name) {
                     return link.joint;
@@ -196,7 +305,7 @@ namespace tinyrobotics {
         /**
          * @brief Display details of the model.
          */
-        void show_details() {
+        void showDetails() {
             const int spacing = 25;
             const std::string separator(150, '*');
             std::cout << separator << std::endl;
@@ -235,7 +344,7 @@ namespace tinyrobotics {
          * @brief Get a configuration vector for the model of all zeros.
          * @return Configuration vector of all zeros.
          */
-        Eigen::Matrix<Scalar, nq, 1> home_configuration() const {
+        Eigen::Matrix<Scalar, nq, 1> homeConfiguration() const {
             assert(n_q > 0);
             Eigen::Matrix<Scalar, nq, 1> q(n_q);
             q.setZero();
@@ -246,7 +355,7 @@ namespace tinyrobotics {
          * @brief Get a random configuration vector for the model.
          * @return Random configuration vector.
          */
-        Eigen::Matrix<Scalar, nq, 1> random_configuration() const {
+        Eigen::Matrix<Scalar, nq, 1> randomConfiguration() const {
             assert(n_q > 0);
             Eigen::Matrix<Scalar, nq, 1> q(n_q);
             q.setRandom();
@@ -304,6 +413,11 @@ namespace tinyrobotics {
             return new_model;
         }
     };
+
 }  // namespace tinyrobotics
+#include "dynamics.hxx"
+#include "inversekinematics.hxx"
+#include "kinematics.hxx"
+
 
 #endif

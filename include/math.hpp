@@ -185,8 +185,8 @@ namespace tinyrobotics {
      * @return 6x1 error vector.
      */
     template <typename Scalar>
-    Eigen::Matrix<Scalar, 6, 1> homogeneous_error(const Eigen::Transform<Scalar, 3, Eigen::Isometry>& H1,
-                                                  const Eigen::Transform<Scalar, 3, Eigen::Isometry>& H2) {
+    Eigen::Matrix<Scalar, 6, 1> homogeneousError(const Eigen::Transform<Scalar, 3, Eigen::Isometry>& H1,
+                                                 const Eigen::Transform<Scalar, 3, Eigen::Isometry>& H2) {
         Eigen::Matrix<Scalar, 6, 1> e = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
         // Translational error

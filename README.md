@@ -11,29 +11,27 @@ The core algorithms of tinyrobotics are listed below, for detailed documentation
 
 | Function      | Description                                                                              |
 | ------------- | ---------------------------------------------------------------------------------------- |
-| `import_urdf` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
+| `importURDF` | Generate a tinyrobotics model from a [URDF](http://wiki.ros.org/urdf) robot description. |
 
 <h2><a href="https://tom0brien.github.io/tinyrobotics/Kinematics_8hpp.html">Kinematics</a></h2>
 
 | Function                 | Description                                                               |
 | ------------------------ | -----------------------------------------------------------------         |
-| `forward_kinematics`     | Compute homogeneous transform between links.                              |
-| `inverse_kinematics`     | Solve joint positions for desired pose between links.                     |
-| `translation`            | Compute translation between links.                                        |
-| `rotation`               | Compute rotation between links.                                           |
-| `geometric_jacobian`     | Compute geometric jacobian to a link from base.                           |
-| `centre_of_mass`         | Compute centre of mass of model.                                          |
+| `forwardKinematics`     | Compute homogeneous transform between links.                              |
+| `inverseKinematics`     | Solve joint positions for desired pose between links.                     |
+| `jacobian`     | Compute geometric jacobian to a link from base.                           |
+| `centreOfMass`         | Compute centre of mass of model.                                          |
 
 <h2><a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html">Dynamics</a></h2>
 
 | Function           | Description                                                                     |
 | ------------------ | ------------------------------------------------------------------------------  |
-| `forward_dynamics` | Compute joint accelerations given joint positions, velocities and torques.      |
-| `inverse_dynamics` | Compute joint torques given joint positions, velocities and accelerations.      |
-| `mass_matrix`      | Compute mass matrix given joint positions.                                      |
-| `kinetic_energy`   | Compute kinetic energy given joint positions and velocity.                      |
-| `potential_energy` | Compute potential energy given joint positions and velocity.                    |
-| `total_energy`     | Compute total energy (kinetic + potential) given joint positions and velocities.|
+| `forwardDynamics` | Compute joint accelerations given joint positions, velocities and torques.      |
+| `inverseDynamics` | Compute joint torques given joint positions, velocities and accelerations.      |
+| `massMatrix`      | Compute mass matrix given joint positions.                                      |
+| `kineticEnergy`   | Compute kinetic energy given joint positions and velocity.                      |
+| `potentialEnergy` | Compute potential energy given joint positions and velocity.                    |
+| `totalEnergy`     | Compute total energy (kinetic + potential) given joint positions and velocities.|
 
 ## Install
 
@@ -62,10 +60,10 @@ Numerous examples are provided in the `examples` folder.
 The code below demonstrates how to load in a URDF model and compute the forward kinematics.
 ```c++
 // Create a tinyrobotics model with 4 joints using URDF file defined in 4_link.urdf
-auto model = import_urdf<double, 4>("4_link.urdf");
+auto model = importURDF<double, 4>("4_link.urdf");
 
 // Create a home configuration vector (all zeros).
-auto q = model.home_configuration();
+auto q = model.homeConfiguration();
 
 // Compute the forward kinematics to the link 2 from the base frame at the home configuration.
 auto H = forward_kinematics(model, q, 2);

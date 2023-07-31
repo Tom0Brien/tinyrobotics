@@ -152,7 +152,7 @@ namespace tinyrobotics {
             // Add the centre of mass to the link
             tinyxml2::XMLElement* o = i->FirstChildElement("origin");
             if (o != nullptr) {
-                link.centre_of_mass = transform_from_xml<Scalar>(o);
+                link.centreOfMass = transform_from_xml<Scalar>(o);
             }
             // Add the mass to the link
             tinyxml2::XMLElement* mass_xml = i->FirstChildElement("mass");
@@ -229,7 +229,7 @@ namespace tinyrobotics {
         }
 
         // Add the spatial inertia to the link
-        link.I = inertia_to_spatial<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
+        link.I = inertia_to_spatial<Scalar>(link.mass, link.centreOfMass.translation(), link.inertia);
 
         return link;
     }
@@ -386,7 +386,7 @@ namespace tinyrobotics {
             }
 
             // Get references to the child and parent links associated with the joint
-            auto child_link = model.get_link(child_link_name);
+            auto child_link = model.getLink(child_link_name);
             if (child_link.idx == -1) {
                 std::ostringstream error_msg;
                 error_msg << "Error while constructing model! Child link [" << child_link_name << "] of joint ["
@@ -394,7 +394,7 @@ namespace tinyrobotics {
                 throw std::runtime_error(error_msg.str());
             }
 
-            auto parent_link = model.get_link(parent_link_name);
+            auto parent_link = model.getLink(parent_link_name);
             if (parent_link.idx == -1) {
                 std::ostringstream error_msg;
                 error_msg << "Error while constructing model! Parent link [" << parent_link_name << "] of joint ["
@@ -520,7 +520,7 @@ namespace tinyrobotics {
      * @return The URDF parsed Model object.
      */
     template <typename Scalar, int nq>
-    Model<Scalar, nq> import_urdf(const std::string& path_to_urdf) {
+    Model<Scalar, nq> importURDF(const std::string& path_to_urdf) {
         // Open the URDF file
         std::ifstream input_file(path_to_urdf);
         if (!input_file.is_open()) {
@@ -558,7 +558,7 @@ namespace tinyrobotics {
         for (tinyxml2::XMLElement* link_xml = robot_xml->FirstChildElement("link"); link_xml;
              link_xml                       = link_xml->NextSiblingElement("link")) {
             Link<Scalar> link = link_from_xml<Scalar>(link_xml);
-            if (model.get_link(link.name).idx != -1) {
+            if (model.getLink(link.name).idx != -1) {
                 throw std::runtime_error("Error: Duplicate links '" + link.name + "' found");
             }
             link.idx = model.links.size();
