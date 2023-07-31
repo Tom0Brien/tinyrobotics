@@ -55,46 +55,46 @@ TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
     REQUIRE(Hstc.matrix().isApprox(Hstc_expected, 1e-4));
 }
 
-TEST_CASE("Test geometric_jacobian calculations for simple model", "[ForwardKinematics]") {
+TEST_CASE("Test jacobian calculations for simple model", "[ForwardKinematics]") {
     // Create a configuration for the robot
     auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     // Compute the geometric jacobian of robot with respect to the ground
     std::string target_link_name  = "left_foot";
-    Eigen::Matrix<double, 6, 4> J = geometric_jacobian(robot_model, q, target_link_name);
+    Eigen::Matrix<double, 6, 4> J = jacobian(robot_model, q, target_link_name);
     // Check that the geometric jacobian is correct
     Eigen::Matrix<double, 6, 4> J_expected;
     J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;
     REQUIRE(J.isApprox(J_expected, 1e-4));
     // Test for another target link
     target_link_name = "right_foot";
-    J                = geometric_jacobian(robot_model, q, target_link_name);
+    J                = jacobian(robot_model, q, target_link_name);
     // Check that the geometric jacobian is correct
     J_expected << 1.0, 0, 0, -0.6536, 0, 0, 0, 0, 0, 1.0, 0, -0.7568, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0;
     REQUIRE(J.isApprox(J_expected, 1e-4));
 }
 
-TEST_CASE("Test geometric_jacobian_com calculations for simple model", "[ForwardKinematics]") {
+TEST_CASE("Test jacobian_com calculations for simple model", "[ForwardKinematics]") {
     // Create a configuration for the robot
     auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     // Compute the geometric jacobian of robot with respect to the ground
     std::string target_link_name  = "left_foot";
-    Eigen::Matrix<double, 6, 4> J = geometric_jacobian_com(robot_model, q, target_link_name);
+    Eigen::Matrix<double, 6, 4> J = jacobian_com(robot_model, q, target_link_name);
     // Check that the geometric jacobian is correct
     Eigen::Matrix<double, 6, 4> J_expected;
     J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;
     REQUIRE(J.isApprox(J_expected, 1e-4));
 }
 
-TEST_CASE("Test geometric_jacobian calculations for kuka model", "[ForwardKinematics]") {
+TEST_CASE("Test jacobian calculations for kuka model", "[ForwardKinematics]") {
     auto kuka_model = import_urdf<double, 7>("data/urdfs/kuka.urdf");
     // Create a configuration for the robot
     auto q = kuka_model.home_configuration();
     q << 1, 2, 3, 4, 5, 6, 7;
     // Compute the geometric jacobian of robot with respect to the ground
     std::string target_link_name = "kuka_arm_7_link";
-    auto J                       = geometric_jacobian(kuka_model, q, target_link_name);
+    auto J                       = jacobian(kuka_model, q, target_link_name);
     // Check that the geometric jacobian is correct
     Eigen::Matrix<double, 6, 7> J_expected;
     J_expected << 0.2175, -0.1519, -0.3056, -0.2059, -0.0038, 0.0767, 0, -0.1046, -0.2365, 0.1816, -0.3988, -0.0209,

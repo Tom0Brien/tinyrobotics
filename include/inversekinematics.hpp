@@ -198,7 +198,7 @@ namespace tinyrobotics {
             0.5 * pose_error.transpose() * options.K * pose_error + 0.5 * (q - q0).transpose() * options.W * (q - q0);
 
         // Compute the gradient of the cost function
-        Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q, target_link_name);
+        Eigen::Matrix<Scalar, 6, nq> J = jacobian(model, q, target_link_name);
         gradient                       = J.transpose() * options.K * pose_error + options.W * (q - q0);
 
         return cost(0);
@@ -306,7 +306,7 @@ namespace tinyrobotics {
             }
 
             // Compute the Jacobian matrix
-            Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q_current, target_link_name);
+            Eigen::Matrix<Scalar, 6, nq> J = jacobian(model, q_current, target_link_name);
 
             // Compute the change in configuration
             Eigen::Matrix<Scalar, nq, 1> delta_q =
@@ -362,7 +362,7 @@ namespace tinyrobotics {
             }
 
             // Compute the Jacobian matrix
-            Eigen::Matrix<Scalar, 6, nq> J = geometric_jacobian(model, q_current, target_link_name);
+            Eigen::Matrix<Scalar, 6, nq> J = jacobian(model, q_current, target_link_name);
 
             // Compute the Hessian approximation and the gradient
             Eigen::Matrix<Scalar, nq, nq> H = J.transpose() * J;

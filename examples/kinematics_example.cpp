@@ -28,28 +28,12 @@ int main(int argc, char* argv[]) {
     auto H2 = forward_kinematics(model, q, target_link_name, source_link_name);
     std::cout << "Transform from link_2 -> link_5: \n" << H2.matrix() << std::endl;
 
-    // Compute just the translation of the link_5 from the base link at a random configuration
-    auto p = translation(model, q, target_link_name);
-    std::cout << "Translation from base -> link_5: \n" << p << std::endl;
-
-    // Compute just the translation of the link_5 from link_2 at a random configuration
-    auto p2 = translation(model, q, target_link_name, source_link_name);
-    std::cout << "Translation from link_2 -> link_5: \n" << p2 << std::endl;
-
-    // Compute just the rotation of the link_5 from the base link at a random configuration
-    auto R = rotation(model, q, target_link_name);
-    std::cout << "Rotation from base -> link_5: \n" << R.matrix() << std::endl;
-
-    // Compute just the rotation of the link_5 from link_2 at a random configuration
-    auto R2 = rotation(model, q, target_link_name, source_link_name);
-    std::cout << "Rotation from link_2 -> link_5: \n" << R2.matrix() << std::endl;
-
     // Compute the geometric Jacobian to link_5 at the random configuration
-    auto J = geometric_jacobian(model, q, target_link_name);
+    auto J = jacobian(model, q, target_link_name);
     std::cout << "J: \n" << J << std::endl;
 
     // Compute the geometric Jacobian to link_5's COM at the random configuration
-    auto Jcom = geometric_jacobian_com(model, q, target_link_name);
+    auto Jcom = jacobian_com(model, q, target_link_name);
     std::cout << "Jcom: \n" << Jcom << std::endl;
 
     // Compute the centre of mass of the robot from the base link at the random configuration

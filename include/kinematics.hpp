@@ -181,47 +181,6 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the translation to the target link from the source link expressed in the source link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @param source_link Source link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Translation to the target link from the source link expressed in the source link frame.
-     */
-    template <typename Scalar, int nq, typename TargetLink, typename SourceLink = int>
-    Eigen::Matrix<Scalar, 3, 1> translation(const Model<Scalar, nq>& model,
-                                            const Eigen::Matrix<Scalar, nq, 1>& q,
-                                            const TargetLink& target_link,
-                                            const SourceLink& source_link = 0) {
-        return forward_kinematics(model, q, target_link, source_link).translation();
-    }
-
-    /**
-     * @brief Computes the rotation matrix between the target link and the source link. The rotation matrix rotates
-     * points in the target link frame into the source link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @param source_link Source link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Rotation matrix between the target link and the source link.
-     */
-    template <typename Scalar, int nq, typename TargetLink, typename SourceLink = int>
-    Eigen::Matrix<Scalar, 3, 3> rotation(const Model<Scalar, nq>& model,
-                                         const Eigen::Matrix<Scalar, nq, 1>& q,
-                                         const TargetLink& target_link,
-                                         const SourceLink& source_link = 0) {
-        return Eigen::Matrix<Scalar, 3, 3>(forward_kinematics(model, q, target_link, source_link).rotation());
-    }
-
-    /**
      * @brief Computes the geometric jacobian of the target link from the base link, in the base link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
@@ -232,9 +191,9 @@ namespace tinyrobotics {
      * @return The geometric jacobian of the target link from the base link, in the base link frame.
      */
     template <typename Scalar, int nq, typename TargetLink>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian(Model<Scalar, nq>& model,
-                                                    const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                    const TargetLink& target_link) {
+    Eigen::Matrix<Scalar, 6, nq> jacobian(Model<Scalar, nq>& model,
+                                          const Eigen::Matrix<Scalar, nq, 1>& q,
+                                          const TargetLink& target_link) {
         // Compute the transform between base {b} and all the links {i} in the kinematic chain
         forward_kinematics(model, q);
 
@@ -281,9 +240,9 @@ namespace tinyrobotics {
      * @return The geometric jacobian of the target link from the base link in the base link frame.
      */
     template <typename Scalar, int nq, typename TargetLink>
-    Eigen::Matrix<Scalar, 6, nq> geometric_jacobian_com(const Model<Scalar, nq>& model,
-                                                        const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                        const TargetLink& target_link) {
+    Eigen::Matrix<Scalar, 6, nq> jacobian_com(const Model<Scalar, nq>& model,
+                                              const Eigen::Matrix<Scalar, nq, 1>& q,
+                                              const TargetLink& target_link) {
         // Get the target link from the model
         const int target_link_idx = get_link_idx(model, target_link);
         Link<Scalar> current_link = model.links[target_link_idx];

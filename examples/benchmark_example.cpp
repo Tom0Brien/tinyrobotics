@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 
     // ************ Geometric Jacobian ************
     start    = std::chrono::high_resolution_clock::now();
-    auto J   = geometric_jacobian(model, q, target_link);
+    auto J   = jacobian(model, q, target_link);
     stop     = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Geometric Jacobian: " << duration.count() << " microseconds" << std::endl;
