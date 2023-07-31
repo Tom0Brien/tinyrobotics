@@ -1,12 +1,5 @@
 namespace tinyrobotics {
 
-    /**
-     * @brief Compute the mass matrix of the tinyrobotics model.
-     * @param m tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, nq> Model<Scalar, nq>::massMatrix(const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset mass matrix to zero
@@ -42,12 +35,6 @@ namespace tinyrobotics {
         return mass_matrix;
     }
 
-    /**
-     * @brief Compute the kinetic_energy of the tinyrobotics model.
-     * @param m tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param dq The joint velocity of the robot.
-     */
     template <typename Scalar, int nq>
     Scalar Model<Scalar, nq>::kineticEnergy(const Eigen::Matrix<Scalar, nq, 1>& q,
                                             const Eigen::Matrix<Scalar, nq, 1>& dq) {
@@ -59,13 +46,6 @@ namespace tinyrobotics {
         return kinetic_energy;
     }
 
-    /**
-     * @brief Compute the potentialEnergy of the tinyrobotics model.
-     * @param m tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     */
     template <typename Scalar, int nq>
     Scalar Model<Scalar, nq>::potentialEnergy(const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Reset the potential energy
@@ -81,14 +61,6 @@ namespace tinyrobotics {
         return potential_energy;
     }
 
-    /**
-     * @brief Compute the total energy of the tinyrobotics model.
-     * @param m tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param dq Joint velocity of the robot.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     */
     template <typename Scalar, int nq>
     Scalar Model<Scalar, nq>::totalEnergy(const Eigen::Matrix<Scalar, nq, 1>& q,
                                           const Eigen::Matrix<Scalar, nq, 1>& dq) {
@@ -97,14 +69,6 @@ namespace tinyrobotics {
         return total_energy;
     }
 
-    /**
-     * @brief Apply external forces to the tinyrobotics model
-     * @param m tinyrobotics model.
-     * @param Xup The spatial transformation matrices between the ith link and its parent.
-     * @param f_in The input force array of the tinyrobotics model.
-     * @param f_external The external force array to be added to the input force array.
-     * @return f_out The output force array with the external forces incorporated.
-     */
     template <typename Scalar, int nq>
     std::vector<Eigen::Matrix<Scalar, 6, 1>> Model<Scalar, nq>::applyExternalForces(
         const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
@@ -127,15 +91,6 @@ namespace tinyrobotics {
         return f_out;
     }
 
-    /**
-     * @brief Compute the forward dynamics of the tinyrobotics model via Articulated-Body Algorithm
-     * @param m tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param qd Joint velocity of the robot.
-     * @param tau Joint torque of the robot.
-     * @param f_external External forces acting on the robot.
-     * @return Joint accelerations of the model.
-     */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::forwardDynamics(
         const Eigen::Matrix<Scalar, nq, 1>& q,
@@ -194,15 +149,6 @@ namespace tinyrobotics {
         return ddq;
     }
 
-    /**
-     * @brief Compute the forward dynamics of the tinyrobotics model via Composite-Rigid-Body Algorithm
-     * @param m tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param qd Joint velocity of the robot.
-     * @param tau Joint torque of the robot.
-     * @param f_external External forces acting on the robot.
-     * @return Joint accelerations of the model.
-     */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::forwardDynamicsCRB(
         const Eigen::Matrix<Scalar, nq, 1>& q,
@@ -266,14 +212,6 @@ namespace tinyrobotics {
         return qdd;
     }
 
-    /**
-     * @brief Compute the inverse dynamics of a tinyrobotics model
-     * @param m tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param qd Joint velocity of the robot.
-     * @param f_external External forces acting on the robot.
-     * @return tau
-     */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::inverseDynamics(
         const Eigen::Matrix<Scalar, nq, 1>& q,

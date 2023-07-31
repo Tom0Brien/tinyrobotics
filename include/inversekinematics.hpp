@@ -8,9 +8,6 @@
 
 #include "math.hpp"
 
-/** \file inversekinematics.hpp
- * @brief Contains inverse kinematics algorithms.
- */
 namespace tinyrobotics {
 
     /**

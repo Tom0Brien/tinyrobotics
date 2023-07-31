@@ -1,14 +1,5 @@
 namespace tinyrobotics {
-    /**
-     * @brief Retrieves the index of the target link in the tinyrobotics model.
-     * @param model tinyrobotics model.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return Index of the target link in the model.
-     * @throws std::invalid_argument if the TargetLink type is not int or std::string.
-     */
+
     template <typename Scalar, int nq>
     template <typename TargetLink>
     int Model<Scalar, nq>::getLinkIndex(const TargetLink& target_link) {
@@ -23,19 +14,6 @@ namespace tinyrobotics {
         }
     }
 
-    /**
-     * @brief Computes the transform between target and the source link. The transform converts points in target
-     * frame to the source link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @param source_link Source link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Homogeneous transform between the target and the source link.
-     */
     template <typename Scalar, int nq>
     template <typename TargetLink, typename SourceLink>
     Eigen::Transform<Scalar, 3, Eigen::Isometry> Model<Scalar, nq>::forwardKinematics(
@@ -52,14 +30,6 @@ namespace tinyrobotics {
         return Hst;
     }
 
-    /**
-     * @brief Computes the transform to all the links in the tinyrobotics model.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return Stores the transform to all the links in forward_kinematics.
-     */
     template <typename Scalar, int nq>
     std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> Model<Scalar, nq>::forwardKinematics(
         const Eigen::Matrix<Scalar, nq, 1>& q) {
@@ -77,17 +47,7 @@ namespace tinyrobotics {
         return forward_kinematics;
     }
 
-    /**
-     * @brief Computes the transform between target and the base link. The transform converts points in target
-     * frame to the base link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return Homogeneous transform between the target and the base link.
-     */
+
     template <typename Scalar, int nq>
     template <typename TargetLink>
     Eigen::Transform<Scalar, 3, Eigen::Isometry> Model<Scalar, nq>::forwardKinematics(
@@ -113,14 +73,6 @@ namespace tinyrobotics {
         return Htb.inverse();
     }
 
-    /**
-     * @brief Computes the transform between centre of mass of each link and the source link.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return Vector of homogeneous transforms between the centre of mass of each link and the source link.
-     */
     template <typename Scalar, int nq>
     std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> Model<Scalar, nq>::forwardKinematicsCOM(
         const Eigen::Matrix<Scalar, nq, 1>& q) {
@@ -134,19 +86,6 @@ namespace tinyrobotics {
         return forward_kinematics_com;
     }
 
-    /**
-     * @brief Computes the transform between source link and target centre of mass. The transform converts points in the
-     * target links centre of mass frame into the source link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @param source_link Source link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Homogeneous transform from source link to target link centre of mass.
-     */
     template <typename Scalar, int nq>
     template <typename TargetLink, typename SourceLink>
     Eigen::Transform<Scalar, 3, Eigen::Isometry> Model<Scalar, nq>::forwardKinematicsCOM(
@@ -160,16 +99,6 @@ namespace tinyrobotics {
         return Hsc;
     }
 
-    /**
-     * @brief Computes the geometric jacobian of the target link from the base link, in the base link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return The geometric jacobian of the target link from the base link, in the base link frame.
-     */
     template <typename Scalar, int nq>
     template <typename TargetLink>
     Eigen::Matrix<Scalar, 6, nq> Model<Scalar, nq>::jacobian(const Eigen::Matrix<Scalar, nq, 1>& q,
@@ -209,16 +138,6 @@ namespace tinyrobotics {
         return J;
     }
 
-    /**
-     * @brief Computes the geometric jacobian of the target links from the base link, in the base link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return The geometric jacobian of the target link from the base link in the base link frame.
-     */
     template <typename Scalar, int nq>
     template <typename TargetLink>
     Eigen::Matrix<Scalar, 6, nq> Model<Scalar, nq>::jacobianCOM(const Eigen::Matrix<Scalar, nq, 1>& q,
@@ -258,30 +177,18 @@ namespace tinyrobotics {
         return J;
     }
 
-    /**
-     * @brief Computes the centre of mass expressed in source link frame.
-     * @param model tinyrobotics model.
-     * @param q The configuration vector of the robot model.
-     * @param source_link Source link, which can be an integer (index) or a string (name), from which the centre of mass
-     * is expressed.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return The centre of mass position expressed in source link frame.
-     */
     template <typename Scalar, int nq>
     template <typename SourceLink>
     Eigen::Matrix<Scalar, 3, 1> Model<Scalar, nq>::centreOfMass(const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                 const SourceLink& source_link) {
         // Initialize the centre of mass as zero
-        Eigen::Matrix<Scalar, 3, 1> rCSs = Eigen::Matrix<Scalar, 3, 1>::Zero();
-        for (auto link : links) {
-            // Compute the transform from the source link to the CoM of the link
-            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = forwardKinematicsCOM(q, link.name, source_link);
-            // Compute the centre of mass of the link
-            rCSs = rCSs + Hsc.translation() * link.mass;
-        }
+        centre_of_mass.setZero();
         // Compute the centre of mass from the source link
-        return rCSs / mass;
+        for (auto link : links) {
+            centre_of_mass += forwardKinematicsCOM(q, link.name, source_link).translation() * link.mass;
+        }
+        centre_of_mass /= mass;
+        return centre_of_mass;
     }
+
 }  // namespace tinyrobotics

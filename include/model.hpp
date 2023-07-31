@@ -11,19 +11,18 @@
 #include "joint.hpp"
 #include "link.hpp"
 
-/** \file model.hpp
- * @brief Contains struct for representing a tinyrobotics model.
- */
 namespace tinyrobotics {
 
     /**
      * @brief A tinyrobotics model.
      * @details A tinyrobotics model is a collection of links and joints that represents a robot.
      * @tparam Scalar The scalar type for the model.
-     * @tparam nq The number of configuration coordinates (number of degrees of freedom).
      */
     template <typename Scalar, int nq>
     struct Model {
+
+        // ******************************** Model ********************************
+
         /// @brief Name of the model
         std::string name = "";
 
@@ -39,220 +38,8 @@ namespace tinyrobotics {
         /// @brief Vector of parent link indices of the links which have a non-fixed joints
         std::vector<int> parent = {};
 
-        /// @brief Gravitational acceleration vector experienced by model
-        Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
-
-        /// @brief Total mass of the model
-        Scalar mass = 0;
-
         /// @brief Vector of links in the model
         std::vector<Link<Scalar>> links = {};
-
-        /// @brief Mass matrix
-        Eigen::Matrix<Scalar, nq, nq> mass_matrix = Eigen::Matrix<Scalar, nq, nq>::Zero();
-
-        /// @brief Kinetic energy
-        Scalar kinetic_energy = 0;
-
-        /// @brief Potential energy
-        Scalar potential_energy = 0;
-
-        /// @brief Total_energy
-        Scalar total_energy = 0;
-
-        // **************** Kinematics ****************
-
-        /// @brief Vector of forward kinematics data
-        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics = {};
-
-        /// @brief Vector of forward kinematics c data
-        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics_com = {};
-
-        /// @brief Geometric Jacobian
-        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
-
-        template <typename TargetLink>
-        int getLinkIndex(const TargetLink& target_link);
-
-        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forwardKinematics(
-            const Eigen::Matrix<Scalar, nq, 1>& q);
-
-        template <typename TargetLink>
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematics(const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                       const TargetLink& target_link);
-
-        template <typename TargetLink, typename SourceLink>
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematics(const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                       const TargetLink& target_link,
-                                                                       const SourceLink& source_link);
-
-        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forwardKinematicsCOM(
-            const Eigen::Matrix<Scalar, nq, 1>& q);
-
-        template <typename TargetLink, typename SourceLink>
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematicsCOM(const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                                          const TargetLink& target_link,
-                                                                          const SourceLink& source_link = 0);
-
-        template <typename TargetLink>
-        Eigen::Matrix<Scalar, 6, nq> jacobian(const Eigen::Matrix<Scalar, nq, 1>& q, const TargetLink& target_link);
-
-        template <typename TargetLink>
-        Eigen::Matrix<Scalar, 6, nq> jacobianCOM(const Eigen::Matrix<Scalar, nq, 1>& q, const TargetLink& target_link);
-
-        template <typename SourceLink = int>
-        Eigen::Matrix<Scalar, 3, 1> centreOfMass(const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                 const SourceLink& source_link = 0);
-
-        // **************** Inverse Kinematics ****************
-
-        Eigen::Matrix<Scalar, nq, 1> inverseKinematics(const std::string& target_link_name,
-                                                       const std::string& source_link_name,
-                                                       const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-                                                       const Eigen::Matrix<Scalar, nq, 1> q0,
-                                                       const InverseKinematicsOptions<Scalar, nq>& options);
-
-        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsBFGS(
-            const std::string& target_link_name,
-            const std::string& source_link_name,
-            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-            const Eigen::Matrix<Scalar, nq, 1> q0,
-            const InverseKinematicsOptions<Scalar, nq>& options);
-
-        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsPSO(
-            const std::string& target_link_name,
-            const std::string& source_link_name,
-            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-            const Eigen::Matrix<Scalar, nq, 1> q0,
-            const InverseKinematicsOptions<Scalar, nq>& options);
-
-        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsLevenbergMarquardt(
-            const std::string& target_link_name,
-            const std::string& source_link_name,
-            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-            const Eigen::Matrix<Scalar, nq, 1> q0,
-            const InverseKinematicsOptions<Scalar, nq>& options);
-
-        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsJacobian(
-            const std::string& target_link_name,
-            const std::string& source_link_name,
-            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-            const Eigen::Matrix<Scalar, nq, 1> q0,
-            const InverseKinematicsOptions<Scalar, nq>& options);
-
-        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsNLOPT(
-            const std::string& target_link_name,
-            const std::string& source_link_name,
-            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-            const Eigen::Matrix<Scalar, nq, 1> q0,
-            const InverseKinematicsOptions<Scalar, nq>& options);
-
-        Scalar cost(const Eigen::Matrix<Scalar, nq, 1>& q,
-                    const std::string& target_link_name,
-                    const std::string& source_link_name,
-                    const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
-                    const Eigen::Matrix<Scalar, nq, 1>& q0,
-                    Eigen::Matrix<Scalar, nq, 1>& gradient,
-                    const InverseKinematicsOptions<Scalar, nq>& options);
-
-
-        // **************** Dynamics ****************
-        Eigen::Matrix<Scalar, nq, nq> massMatrix(const Eigen::Matrix<Scalar, nq, 1>& q);
-
-        Scalar kineticEnergy(const Eigen::Matrix<Scalar, nq, 1>& q, const Eigen::Matrix<Scalar, nq, 1>& dq);
-
-        Scalar potentialEnergy(const Eigen::Matrix<Scalar, nq, 1>& q);
-
-        Scalar totalEnergy(const Eigen::Matrix<Scalar, nq, 1>& q, const Eigen::Matrix<Scalar, nq, 1>& dq);
-
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> applyExternalForces(
-            const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
-            const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_in,
-            const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
-
-        Eigen::Matrix<Scalar, nq, 1> forwardDynamics(const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                     const Eigen::Matrix<Scalar, nq, 1>& qd,
-                                                     const Eigen::Matrix<Scalar, nq, 1>& tau,
-                                                     const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
-
-        Eigen::Matrix<Scalar, nq, 1> forwardDynamicsCRB(const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                        const Eigen::Matrix<Scalar, nq, 1>& qd,
-                                                        const Eigen::Matrix<Scalar, nq, 1>& tau,
-                                                        const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
-
-        Eigen::Matrix<Scalar, nq, 1> inverseDynamics(const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                     const Eigen::Matrix<Scalar, nq, 1>& qd,
-                                                     const Eigen::Matrix<Scalar, nq, 1>& qdd,
-                                                     const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
-
-
-        /// @brief Joint acceleration.
-        Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
-
-        /// @brief Joint torque/force.
-        Eigen::Matrix<Scalar, nq, 1> tau = Eigen::Matrix<Scalar, nq, 1>::Zero();
-
-        /// @brief Spatial transforms from parent to child links
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup =
-            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
-
-        /// @brief Motion subspace matrices for the joints
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> S =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief Spatial velocities of the robot links
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> v =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief Spatial acceleration bias terms for the robot links
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> c =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief Articulated-body inertia matrices for the robot links
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> IA =
-            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
-
-        /// @brief Articulated-body forces for the robot links
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> pA =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief Spatial force projections for the joints
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> U =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief Joint force inertia terms for the robot links
-        std::vector<Scalar> d = std::vector<Scalar>(nq, 0);
-
-        /// @brief Joint force bias terms for the robot links
-        std::vector<Scalar> u = std::vector<Scalar>(nq, 0);
-
-        /// @brief Spatial accelerations of the robot links
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> a =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief
-        Eigen::Matrix<Scalar, 6, 1> vJ = Eigen::Matrix<Scalar, 6, 1>::Zero();
-
-        /// @brief
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> avp =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> fvp =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief
-        Eigen::Matrix<Scalar, nq, 1> C = Eigen::Matrix<Scalar, nq, 1>::Zero();
-
-        /// @brief
-        Eigen::Matrix<Scalar, 6, 1> fh = Eigen::Matrix<Scalar, 6, 1>::Zero();
-
-        /// @brief
-        std::vector<Eigen::Matrix<Scalar, 6, 6>> IC =
-            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
-
-        /// @brief Gravity vector in spatial coordinates
-        Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
         /**
          * @brief Get a link in the model by name.
@@ -266,23 +53,6 @@ namespace tinyrobotics {
                 }
             }
             // No link was found
-            return Link<Scalar>();
-        }
-
-        /**
-         * @brief Get the parent link of a link in the model by name.
-         * @param link_idx Index of the link in the model.
-         * @return Parent link of the link.
-         *
-         */
-        Link<Scalar> getParentLink(const std::string& name) const {
-            for (auto link : links) {
-                if (link.name == name) {
-                    return links[link.parent];
-                }
-            }
-            // No link was found
-            throw std::runtime_error("Error! Parent of Link [" + name + "] not found!");
             return Link<Scalar>();
         }
 
@@ -412,12 +182,419 @@ namespace tinyrobotics {
             }
             return new_model;
         }
-    };
 
+        // ******************************** Kinematics ********************************
+
+        /// @brief Vector of forward kinematics transforms for all links
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics = {};
+
+        /// @brief Vector of forward kinematics transforms for all links centre of masses
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics_com = {};
+
+        /// @brief Jacobian
+        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
+
+        /// @brief Centre of mass of the model
+        Eigen::Matrix<Scalar, 3, 1> centre_of_mass = Eigen::Matrix<Scalar, 3, 1>::Zero();
+
+        /**
+         * @brief Retrieves the index of the target link in the tinyrobotics model.
+         * @param model tinyrobotics model.
+         * @param target_link Target link, which can be an integer (index) or a string (name).
+         * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
+         * @return Index of the target link in the model.
+         * @throws std::invalid_argument if the TargetLink type is not int or std::string.
+         */
+        template <typename TargetLink>
+        int getLinkIndex(const TargetLink& target_link);
+
+        /**
+         * @brief Computes the transform to all the links in the tinyrobotics model.
+         * @param model tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @return Stores the transform to all the links in forward_kinematics.
+         */
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forwardKinematics(
+            const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        /**
+         * @brief Computes the transform between target and the base link. The transform converts points in target
+         * frame to the base link frame.
+         * @param model tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param target_link Target link, which can be an integer (index) or a string (name).
+         * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
+         * @return Homogeneous transform between the target and the base link.
+         */
+        template <typename TargetLink>
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                       const TargetLink& target_link);
+
+        /**
+         * @brief Computes the transform between target and the source link. The transform converts points in target
+         * frame to the source link frame.
+         * @param model tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param target_link Target link, which can be an integer (index) or a string (name).
+         * @param source_link Source link, which can be an integer (index) or a string (name).
+         * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
+         * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
+         * @return Homogeneous transform between the target and the source link.
+         */
+        template <typename TargetLink, typename SourceLink>
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                       const TargetLink& target_link,
+                                                                       const SourceLink& source_link);
+
+
+        /**
+         * @brief Computes the transform between centre of mass of each link and the source link.
+         * @param model tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @return Vector of homogeneous transforms between the centre of mass of each link and the source link.
+         */
+        std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forwardKinematicsCOM(
+            const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        /**
+         * @brief Computes the transform between source link and target centre of mass. The transform converts points in
+         * the target links centre of mass frame into the source link frame.
+         * @param model tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param target_link Target link, which can be an integer (index) or a string (name).
+         * @param source_link Source link, which can be an integer (index) or a string (name).
+         * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
+         * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
+         * @return Homogeneous transform from source link to target link centre of mass.
+         */
+        template <typename TargetLink, typename SourceLink>
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> forwardKinematicsCOM(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                                          const TargetLink& target_link,
+                                                                          const SourceLink& source_link = 0);
+
+        /**
+         * @brief Computes the geometric jacobian of the target link from the base link, in the base link frame.
+         * @param model tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param target_link Target link, which can be an integer (index) or a string (name).
+         * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
+         * @return The geometric jacobian of the target link from the base link, in the base link frame.
+         */
+        template <typename TargetLink>
+        Eigen::Matrix<Scalar, 6, nq> jacobian(const Eigen::Matrix<Scalar, nq, 1>& q, const TargetLink& target_link);
+
+        /**
+         * @brief Computes the geometric jacobian of the target links from the base link, in the base link frame.
+         * @param model tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param target_link Target link, which can be an integer (index) or a string (name).
+         * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
+         * @return The geometric jacobian of the target link from the base link in the base link frame.
+         */
+        template <typename TargetLink>
+        Eigen::Matrix<Scalar, 6, nq> jacobianCOM(const Eigen::Matrix<Scalar, nq, 1>& q, const TargetLink& target_link);
+
+
+        /**
+         * @brief Computes the centre of mass expressed in source link frame.
+         * @param model tinyrobotics model.
+         * @param q The configuration vector of the robot model.
+         * @param source_link Source link, which can be an integer (index) or a string (name), from which the centre of
+         * mass is expressed.
+         * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
+         * @return The centre of mass position expressed in source link frame.
+         */
+        template <typename SourceLink = int>
+        Eigen::Matrix<Scalar, 3, 1> centreOfMass(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                 const SourceLink& source_link = 0);
+
+        /**
+         * @brief Solves the inverse kinematics problem between two links using user specified method.
+         * @param model tinyrobotics model.
+         * @param target_link_name {t} Link to which the transform is computed.
+         * @param source_link_name {s} Link from which the transform is computed.
+         * @param desired_pose Desired pose of the target link in the source link frame.
+         * @param q0 The initial guess for the configuration vector.
+         * @return The configuration vector of the robot model which achieves the desired pose.
+         */
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematics(const std::string& target_link_name,
+                                                       const std::string& source_link_name,
+                                                       const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+                                                       const Eigen::Matrix<Scalar, nq, 1> q0,
+                                                       const InverseKinematicsOptions<Scalar, nq>& options);
+
+        /**
+         * @brief Solves the inverse kinematics problem between two links using Broyden-Fletcher-Goldfarb-Shanno (BFGS).
+         * @param model tinyrobotics model.
+         * @param target_link_name {t} Link to which the transform is computed.
+         * @param source_link_name {s} Link from which the transform is computed.
+         * @param desired_pose Desired pose of the target link in the source link frame.
+         * @param q0 The initial guess for the configuration vector.
+         * @return The configuration vector of the robot model which achieves the desired pose.
+         */
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsBFGS(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        /**
+         * @brief Solves the inverse kinematics problem between two links using Particle Swarm Optimization.
+         * @param model tinyrobotics model.
+         * @param target_link_name {t} Link to which the transform is computed.
+         * @param source_link_name {s} Link from which the transform is computed.
+         * @param desired_pose Desired pose of the target link in the source link frame.
+         * @param q0 The initial guess for the configuration vector.
+         * @return The configuration vector of the robot model which achieves the desired pose.
+         */
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsPSO(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        /**
+         * @brief Solves the inverse kinematics problem between two links using the Levenberg-Marquardt method.
+         * @param model tinyrobotics model.
+         * @param target_link_name {t} Link to which the transform is computed.
+         * @param source_link_name {s} Link from which the transform is computed.
+         * @param desired_pose Desired pose of the target link in the source link frame.
+         * @param q0 The initial guess for the configuration vector.
+         * @return The configuration vector of the robot model which achieves the desired pose.
+         */
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsLevenbergMarquardt(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        /**
+         * @brief Solves the inverse kinematics problem between two links using the Jacobian method.
+         * @param model tinyrobotics model.
+         * @param target_link_name {t} Link to which the transform is computed.
+         * @param source_link_name {s} Link from which the transform is computed.
+         * @param desired_pose Desired pose of the target link in the source link frame.
+         * @param q0 The initial guess for the configuration vector.
+         * @return The configuration vector of the robot model which achieves the desired pose.
+         */
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsJacobian(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        /**
+         * @brief Solves the inverse kinematics problem between two links using NLopt.
+         * @param model tinyrobotics model.
+         * @param target_link_name {t} Link to which the transform is computed.
+         * @param source_link_name {s} Link from which the transform is computed.
+         * @param desired_pose Desired pose of the target link in the source link frame.
+         * @param q0 The initial guess for the configuration vector.
+         * @return The configuration vector of the robot model which achieves the desired pose.
+         */
+        Eigen::Matrix<Scalar, nq, 1> inverseKinematicsNLOPT(
+            const std::string& target_link_name,
+            const std::string& source_link_name,
+            const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+            const Eigen::Matrix<Scalar, nq, 1> q0,
+            const InverseKinematicsOptions<Scalar, nq>& options);
+
+        /**
+         * @brief Cost function for general inverse kinematics with analytical jacobian.
+         * @param model tinyrobotics model.
+         * @param target_link_name {t} Link to which the transform is computed.
+         * @param source_link_name {s} Link from which the transform is computed.
+         * @param desired_pose Desired pose of the target link in the source link frame.
+         * @param q0 Initial guess for the configuration vector.
+         * @return The configuration vector of the robot model which achieves the desired pose.
+         */
+        Scalar cost(const Eigen::Matrix<Scalar, nq, 1>& q,
+                    const std::string& target_link_name,
+                    const std::string& source_link_name,
+                    const Eigen::Transform<Scalar, 3, Eigen::Isometry>& desired_pose,
+                    const Eigen::Matrix<Scalar, nq, 1>& q0,
+                    Eigen::Matrix<Scalar, nq, 1>& gradient,
+                    const InverseKinematicsOptions<Scalar, nq>& options);
+
+
+        // ********************************  Dynamics ********************************
+
+        /// @brief Gravitational acceleration vector experienced by model
+        Eigen::Matrix<Scalar, 3, 1> gravity = {0, 0, -9.81};
+
+        /// @brief Gravitational acceleration vector in spatial coordinates
+        Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
+
+        /// @brief Total mass of the model
+        Scalar mass = 0;
+
+        /// @brief Joint accelerations
+        Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
+
+        /// @brief Joint torques/forces
+        Eigen::Matrix<Scalar, nq, 1> tau = Eigen::Matrix<Scalar, nq, 1>::Zero();
+
+        /// @brief Mass matrix
+        Eigen::Matrix<Scalar, nq, nq> mass_matrix = Eigen::Matrix<Scalar, nq, nq>::Zero();
+
+        /// @brief Kinetic energy
+        Scalar kinetic_energy = 0;
+
+        /// @brief Potential energy
+        Scalar potential_energy = 0;
+
+        /// @brief Total_energy
+        Scalar total_energy = 0;
+
+        /// @brief Spatial transforms from parent to child links
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> Xup =
+            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+
+        /// @brief Motion subspace matrices for the joints
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> S =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Spatial velocities of the models links
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> v =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Spatial acceleration bias terms for the models links
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> c =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Articulated-body inertia matrices for the models links
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> IA =
+            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+
+        /// @brief Articulated-body forces for the models links
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> pA =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Spatial force projections for the joints
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> U =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief Joint force inertia terms for the models links
+        std::vector<Scalar> d = std::vector<Scalar>(nq, 0);
+
+        /// @brief Joint force bias terms for the models links
+        std::vector<Scalar> u = std::vector<Scalar>(nq, 0);
+
+        /// @brief Spatial accelerations of the models links
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> a =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief
+        Eigen::Matrix<Scalar, 6, 1> vJ = Eigen::Matrix<Scalar, 6, 1>::Zero();
+
+        /// @brief
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> avp =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> fvp =
+            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
+
+        /// @brief
+        Eigen::Matrix<Scalar, nq, 1> C = Eigen::Matrix<Scalar, nq, 1>::Zero();
+
+        /// @brief
+        Eigen::Matrix<Scalar, 6, 1> fh = Eigen::Matrix<Scalar, 6, 1>::Zero();
+
+        /// @brief
+        std::vector<Eigen::Matrix<Scalar, 6, 6>> IC =
+            std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
+
+        /**
+         * @brief Compute the mass matrix of the tinyrobotics model.
+         * @param m tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         */
+        Eigen::Matrix<Scalar, nq, nq> massMatrix(const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        /**
+         * @brief Compute the kinetic_energy of the tinyrobotics model.
+         * @param m tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param dq The joint velocity of the robot.
+         */
+        Scalar kineticEnergy(const Eigen::Matrix<Scalar, nq, 1>& q, const Eigen::Matrix<Scalar, nq, 1>& dq);
+
+        /**
+         * @brief Compute the potentialEnergy of the tinyrobotics model.
+         * @param m tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         */
+        Scalar potentialEnergy(const Eigen::Matrix<Scalar, nq, 1>& q);
+
+        /**
+         * @brief Compute the total energy of the tinyrobotics model.
+         * @param m tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param dq Joint velocity of the robot.
+         */
+        Scalar totalEnergy(const Eigen::Matrix<Scalar, nq, 1>& q, const Eigen::Matrix<Scalar, nq, 1>& dq);
+
+        /**
+         * @brief Apply external forces to the tinyrobotics model
+         * @param m tinyrobotics model.
+         * @param Xup The spatial transformation matrices between the ith link and its parent.
+         * @param f_in The input force array of the tinyrobotics model.
+         * @param f_external The external force array to be added to the input force array.
+         * @return f_out The output force array with the external forces incorporated.
+         */
+        std::vector<Eigen::Matrix<Scalar, 6, 1>> applyExternalForces(
+            const std::vector<Eigen::Matrix<Scalar, 6, 6>>& Xup,
+            const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_in,
+            const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+
+        /**
+         * @brief Compute the forward dynamics of the tinyrobotics model via Articulated-Body Algorithm
+         * @param m tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param qd Joint velocity of the robot.
+         * @param tau Joint torque of the robot.
+         * @param f_external External forces acting on the robot.
+         * @return Joint accelerations of the model.
+         */
+        Eigen::Matrix<Scalar, nq, 1> forwardDynamics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& tau,
+                                                     const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+
+        /**
+         * @brief Compute the forward dynamics of the tinyrobotics model via Composite-Rigid-Body Algorithm
+         * @param m tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param qd Joint velocity of the robot.
+         * @param tau Joint torque of the robot.
+         * @param f_external External forces acting on the robot.
+         * @return Joint accelerations of the model.
+         */
+        Eigen::Matrix<Scalar, nq, 1> forwardDynamicsCRB(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                        const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                        const Eigen::Matrix<Scalar, nq, 1>& tau,
+                                                        const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+
+        /**
+         * @brief Compute the inverse dynamics of a tinyrobotics model
+         * @param m tinyrobotics model.
+         * @param q Joint configuration of the robot.
+         * @param qd Joint velocity of the robot.
+         * @param f_external External forces acting on the robot.
+         * @return tau
+         */
+        Eigen::Matrix<Scalar, nq, 1> inverseDynamics(const Eigen::Matrix<Scalar, nq, 1>& q,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                     const Eigen::Matrix<Scalar, nq, 1>& qdd,
+                                                     const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {});
+    };
 }  // namespace tinyrobotics
 #include "dynamics.hxx"
 #include "inversekinematics.hxx"
 #include "kinematics.hxx"
-
-
 #endif

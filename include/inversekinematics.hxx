@@ -1,19 +1,5 @@
-#include <nlopt.hpp>
-#include <unsupported/Eigen/AutoDiff>
-
 namespace tinyrobotics {
 
-    /**
-     * @brief Cost function for general inverse kinematics with analytical jacobian.
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 Initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
     template <typename Scalar, int nq>
     Scalar Model<Scalar, nq>::cost(const Eigen::Matrix<Scalar, nq, 1>& q,
                                    const std::string& target_link_name,
@@ -42,17 +28,7 @@ namespace tinyrobotics {
         return cost(0);
     }
 
-    /**
-     * @brief Solves the inverse kinematics problem between two links using NLopt.
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 The initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
+
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::inverseKinematicsNLOPT(
         const std::string& target_link_name,
@@ -104,17 +80,7 @@ namespace tinyrobotics {
         return optimized_solution;
     }
 
-    /**
-     * @brief Solves the inverse kinematics problem between two links using the Jacobian method.
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 The initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
+
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::inverseKinematicsJacobian(
         const std::string& target_link_name,
@@ -156,17 +122,7 @@ namespace tinyrobotics {
         return q_current;
     }
 
-    /**
-     * @brief Solves the inverse kinematics problem between two links using the Levenberg-Marquardt method.
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 The initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
+
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::inverseKinematicsLevenbergMarquardt(
         const std::string& target_link_name,
@@ -234,17 +190,7 @@ namespace tinyrobotics {
         return q_current;
     }
 
-    /**
-     * @brief Solves the inverse kinematics problem between two links using Particle Swarm Optimization.
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 The initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
+
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::inverseKinematicsPSO(
         const std::string& target_link_name,
@@ -312,17 +258,6 @@ namespace tinyrobotics {
         return best_global_position;
     }
 
-    /**
-     * @brief Solves the inverse kinematics problem between two links using Broyden-Fletcher-Goldfarb-Shanno (BFGS).
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 The initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::inverseKinematicsBFGS(
         const std::string& target_link_name,
@@ -371,17 +306,6 @@ namespace tinyrobotics {
         return q;
     }
 
-    /**
-     * @brief Solves the inverse kinematics problem between two links using user specified method.
-     * @param model tinyrobotics model.
-     * @param target_link_name {t} Link to which the transform is computed.
-     * @param source_link_name {s} Link from which the transform is computed.
-     * @param desired_pose Desired pose of the target link in the source link frame.
-     * @param q0 The initial guess for the configuration vector.
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return The configuration vector of the robot model which achieves the desired pose.
-     */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> Model<Scalar, nq>::inverseKinematics(
         const std::string& target_link_name,
@@ -407,4 +331,5 @@ namespace tinyrobotics {
             default: throw std::runtime_error("Unknown inverse kinematics method");
         }
     }
+
 }  // namespace tinyrobotics
