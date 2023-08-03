@@ -20,7 +20,7 @@ The core algorithms of tinyrobotics are listed below, for detailed documentation
 | `forward_kinematics`     | Compute homogeneous transform between links.                              |
 | `inverse_kinematics`     | Solve joint positions for desired pose between links.                     |
 | `jacobian`     | Compute geometric jacobian to a link from base.                           |
-| `centre_of_mass`         | Compute centre of mass of model.                                          |
+| `center_of_mass`         | Compute center of mass of model.                                          |
 
 <h2><a href="https://tom0brien.github.io/tinyrobotics/Dynamics_8hpp.html">Dynamics</a></h2>
 

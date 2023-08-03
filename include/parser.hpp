@@ -149,10 +149,10 @@ namespace tinyrobotics {
 
         tinyxml2::XMLElement* i = xml->FirstChildElement("inertial");
         if (i != nullptr) {
-            // Add the centre of mass to the link
+            // Add the center of mass to the link
             tinyxml2::XMLElement* o = i->FirstChildElement("origin");
             if (o != nullptr) {
-                link.centre_of_mass = transform_from_xml<Scalar>(o);
+                link.center_of_mass = transform_from_xml<Scalar>(o);
             }
             // Add the mass to the link
             tinyxml2::XMLElement* mass_xml = i->FirstChildElement("mass");
@@ -229,7 +229,7 @@ namespace tinyrobotics {
         }
 
         // Add the spatial inertia to the link
-        link.I = inertia_to_spatial<Scalar>(link.mass, link.centre_of_mass.translation(), link.inertia);
+        link.I = inertia_to_spatial<Scalar>(link.mass, link.center_of_mass.translation(), link.inertia);
 
         return link;
     }

@@ -85,7 +85,7 @@ namespace tinyrobotics {
         // Reset the potential energy
         m.potential_energy = Scalar(0.0);
 
-        // Compute the forward kinematics to centre of mass of all links
+        // Compute the forward kinematics to center of mass of all links
         forward_kinematics_com(m, q);
 
         // Compute the potential energy

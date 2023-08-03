@@ -36,12 +36,12 @@ int main(int argc, char* argv[]) {
     auto Jcom = jacobian_com(model, q, target_link_name);
     std::cout << "Jcom: \n" << Jcom << std::endl;
 
-    // Compute the centre of mass of the robot from the base link at the random configuration
-    auto com = centre_of_mass(model, q);
+    // Compute the center of mass of the robot from the base link at the random configuration
+    auto com = center_of_mass(model, q);
     std::cout << "CoM from base frame: \n" << com << std::endl;
 
-    // Compute the centre of mass of the robot from link_2 at the random configuration
-    auto com2 = centre_of_mass(model, q, source_link_name);
+    // Compute the center of mass of the robot from link_2 at the random configuration
+    auto com2 = center_of_mass(model, q, source_link_name);
     std::cout << "CoM from link_2 frame: \n" << com2 << std::endl;
 
     return EXIT_SUCCESS;

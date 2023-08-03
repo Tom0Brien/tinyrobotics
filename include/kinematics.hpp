@@ -130,12 +130,12 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the transform between centre of mass of each link and the source link.
+     * @brief Computes the transform between center of mass of each link and the source link.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @return Vector of homogeneous transforms between the centre of mass of each link and the source link.
+     * @return Vector of homogeneous transforms between the center of mass of each link and the source link.
      */
     template <typename Scalar, int nq>
     std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics_com(
@@ -143,19 +143,19 @@ namespace tinyrobotics {
         const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Compute forward kinematics for all the links
         forward_kinematics(model, q);
-        // Compute transform to centre of mass of all the forward kinematics results
+        // Compute transform to center of mass of all the forward kinematics results
         model.forward_kinematics_com.resize(model.links.size(),
                                             Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity());
         for (auto const link : model.links) {
             model.forward_kinematics_com[link.idx] =
-                model.forward_kinematics[link.idx] * model.links[link.idx].centre_of_mass;
+                model.forward_kinematics[link.idx] * model.links[link.idx].center_of_mass;
         }
         return model.forward_kinematics_com;
     }
 
     /**
-     * @brief Computes the transform between source link and target centre of mass. The transform converts points in the
-     * target links centre of mass frame into the source link frame.
+     * @brief Computes the transform between source link and target center of mass. The transform converts points in the
+     * target links center of mass frame into the source link frame.
      * @param model tinyrobotics model.
      * @param q Joint configuration of the robot.
      * @param target_link Target link, which can be an integer (index) or a string (name).
@@ -164,7 +164,7 @@ namespace tinyrobotics {
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
      * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return Homogeneous transform from source link to target link centre of mass.
+     * @return Homogeneous transform from source link to target link center of mass.
      */
     template <typename Scalar, int nq, typename TargetLink, typename SourceLink = int>
     Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics_com(const Model<Scalar, nq>& model,
@@ -175,7 +175,7 @@ namespace tinyrobotics {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst = forward_kinematics(model, q, target_link, source_link);
         // Compute forward kinematics from source {s} to CoM {c}
         const int target_link_idx                        = get_link_idx(model, target_link);
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = Hst * model.links[target_link_idx].centre_of_mass;
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = Hst * model.links[target_link_idx].center_of_mass;
         // Return transform from source {s} to CoM {c}
         return Hsc;
     }
@@ -280,30 +280,26 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the centre of mass expressed in source link frame.
+     * @brief Computes the center of mass expressed in source link frame.
      * @param model tinyrobotics model.
      * @param q The configuration vector of the robot model.
-     * @param source_link Source link, which can be an integer (index) or a string (name), from which the centre of mass
+     * @param source_link Source link, which can be an integer (index) or a string (name), from which the center of mass
      * is expressed.
      * @tparam Scalar type of the tinyrobotics model.
      * @tparam nq Number of configuration coordinates (degrees of freedom).
      * @tparam SourceLink Type of source_link parameter, which can be int or std::string.
-     * @return The centre of mass position expressed in source link frame.
+     * @return The center of mass position expressed in source link frame.
      */
     template <typename Scalar, int nq, typename SourceLink = int>
-    Eigen::Matrix<Scalar, 3, 1> centre_of_mass(const Model<Scalar, nq>& model,
+    Eigen::Matrix<Scalar, 3, 1> center_of_mass(Model<Scalar, nq>& model,
                                                const Eigen::Matrix<Scalar, nq, 1>& q,
                                                const SourceLink& source_link = 0) {
-        // Initialize the centre of mass as zero
-        Eigen::Matrix<Scalar, 3, 1> rCSs = Eigen::Matrix<Scalar, 3, 1>::Zero();
+        model.center_of_mass.setZero();
         for (auto link : model.links) {
-            // Compute the transform from the source link to the CoM of the link
-            Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = forward_kinematics_com(model, q, link.name, source_link);
-            // Compute the centre of mass of the link
-            rCSs = rCSs + Hsc.translation() * link.mass;
+            model.center_of_mass += forward_kinematics_com(model, q, link.name, source_link).translation() * link.mass;
         }
-        // Compute the centre of mass  from the source link
-        return rCSs / model.mass;
+        model.center_of_mass /= model.mass;
+        return model.center_of_mass;
     }
 
 }  // namespace tinyrobotics

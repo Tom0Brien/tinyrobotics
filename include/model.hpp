@@ -69,6 +69,9 @@ namespace tinyrobotics {
         /// @brief Vector of forward kinematics com data
         std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics_com = {};
 
+        /// @brief center of mass position
+        Eigen::Matrix<Scalar, 3, 1> center_of_mass = Eigen::Matrix<Scalar, 3, 1>::Zero();
+
         /// @brief Joint acceleration.
         Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
 

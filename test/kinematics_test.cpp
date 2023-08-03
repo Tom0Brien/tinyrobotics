@@ -41,7 +41,7 @@ TEST_CASE("Test forward kinematics with link idx", "[ForwardKinematics]") {
     REQUIRE(Hst.matrix().isApprox(Hst_expected, 1e-4));
 };
 
-TEST_CASE("Test forward kinematics to centre of mass", "[ForwardKinematics]") {
+TEST_CASE("Test forward kinematics to center of mass", "[ForwardKinematics]") {
     // Compute FK for a given configuration
     auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
@@ -104,15 +104,15 @@ TEST_CASE("Test jacobian calculations for kuka model", "[ForwardKinematics]") {
     REQUIRE(J.isApprox(J_expected, 1e-4));
 }
 
-TEST_CASE("Test centre of mass", "[ForwardKinematics]") {
+TEST_CASE("Test center of mass", "[ForwardKinematics]") {
     // Compute FK for a given configuration
     auto q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
     Eigen::Matrix<double, 3, 1> rCBb;
     std::string source_link_idx = "ground";
     std::string target_link_idx = "left_foot";
-    rCBb                        = centre_of_mass(robot_model, q, std::string("ground"));
-    // Check that the centre of mass is correct
+    rCBb                        = center_of_mass(robot_model, q, std::string("ground"));
+    // Check that the center of mass is correct
     Eigen::Matrix<double, 3, 1> rCBb_expected;
     rCBb_expected << 923.0397e-003, 0.0000e+000, 2.2055e+000;
     REQUIRE(rCBb.isApprox(rCBb_expected, 1e-4));

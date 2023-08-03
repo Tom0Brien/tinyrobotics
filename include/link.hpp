@@ -28,7 +28,7 @@ namespace tinyrobotics {
         std::vector<int> child_links = {};
 
         /// @brief Center of mass of the link.
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> centre_of_mass =
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> center_of_mass =
             Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
 
         /// @brief Inertia matrix of the link [kg m^2].
@@ -63,7 +63,7 @@ namespace tinyrobotics {
             new_link.idx             = idx;
             new_link.parent          = parent;
             new_link.child_links     = child_links;
-            new_link.centre_of_mass  = centre_of_mass.template cast<NewScalar>();
+            new_link.center_of_mass  = center_of_mass.template cast<NewScalar>();
             new_link.inertia         = inertia.template cast<NewScalar>();
             new_link.mass            = NewScalar(mass);
             new_link.joint           = joint.template cast<NewScalar>();
