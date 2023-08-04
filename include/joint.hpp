@@ -23,7 +23,7 @@ namespace tinyrobotics {
 
     /**
      * @brief Represents a joint in a tinyrobotics model which connects two links.
-     * @tparam Scalar The scalar type of the joint
+     * @tparam Scalar Scalar type of the joint
      */
     template <typename Scalar>
     struct Joint {
@@ -89,25 +89,10 @@ namespace tinyrobotics {
         Eigen::Transform<Scalar, 3, Eigen::Isometry> get_joint_transform(const Scalar& q) const {
             Eigen::Transform<Scalar, 3, Eigen::Isometry> T = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
             switch (type) {
-                case JointType::REVOLUTE: {
-                    T.linear() = Eigen::AngleAxis<Scalar>(q, Eigen::Matrix<Scalar, 3, 1>(axis[0], axis[1], axis[2]))
-                                     .toRotationMatrix();
-                    return T;
-                    break;
-                }
-                case JointType::PRISMATIC: {
-                    T.translation() = q * Eigen::Matrix<Scalar, 3, 1>(axis[0], axis[1], axis[2]);
-                    return T;
-                    break;
-                }
-                case JointType::FIXED: {
-                    return T;
-                    break;
-                }
-                default: {
-                    std::cout << "Joint type not supported." << std::endl;
-                    break;
-                }
+                case JointType::REVOLUTE: T.linear() = Eigen::AngleAxis<Scalar>(q, axis).toRotationMatrix(); break;
+                case JointType::PRISMATIC: T.translation() = q * axis; break;
+                case JointType::FIXED: break;
+                default: throw std::runtime_error("Joint type not supported.");
             }
             return T;
         }
@@ -139,6 +124,7 @@ namespace tinyrobotics {
             new_joint.parent_link_name = parent_link_name;
             new_joint.child_link_name  = child_link_name;
             new_joint.X                = X.template cast<NewScalar>();
+            new_joint.S                = S.template cast<NewScalar>();
             return new_joint;
         }
     };
