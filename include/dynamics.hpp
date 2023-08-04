@@ -132,7 +132,7 @@ namespace tinyrobotics {
      * @brief Compute the forward dynamics of the tinyrobotics model via Articulated-Body Algorithm
      * @param m tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param qd Joint velocity of the robot.
+     * @param dq Joint velocity of the robot.
      * @param tau Joint torque of the robot.
      * @param f_ext External forces acting on the robot.
      * @return Joint accelerations of the model.
@@ -140,12 +140,12 @@ namespace tinyrobotics {
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> forward_dynamics(Model<Scalar, nq>& m,
                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                  const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                  const Eigen::Matrix<Scalar, nq, 1>& dq,
                                                   const Eigen::Matrix<Scalar, nq, 1>& tau,
                                                   const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            m.vJ = m.links[m.q_map[i]].joint.S * qd(i);
+            m.vJ = m.links[m.q_map[i]].joint.S * dq(i);
             // Compute the spatial transform from the parent to the current body
             m.Xup[i] = homogeneous_to_spatial(m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i)).inverse());
             // Check if the m.parent link is the base link
@@ -195,7 +195,7 @@ namespace tinyrobotics {
      * @brief Compute the forward dynamics of the tinyrobotics model via Composite-Rigid-Body Algorithm
      * @param m tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param qd Joint velocity of the robot.
+     * @param dq Joint velocity of the robot.
      * @param tau Joint torque of the robot.
      * @param f_ext External forces acting on the robot.
      * @return Joint accelerations of the model.
@@ -203,12 +203,12 @@ namespace tinyrobotics {
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> forward_dynamics_crb(Model<Scalar, nq>& m,
                                                       const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                      const Eigen::Matrix<Scalar, nq, 1>& qd,
+                                                      const Eigen::Matrix<Scalar, nq, 1>& dq,
                                                       const Eigen::Matrix<Scalar, nq, 1>& tau,
                                                       const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            m.vJ = m.links[m.q_map[i]].joint.S * qd(i);
+            m.vJ = m.links[m.q_map[i]].joint.S * dq(i);
             // Compute the spatial transform from the parent to the current body
             m.Xup[i] = homogeneous_to_spatial(m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i)).inverse());
             // Check if the m.parent link is the base link
@@ -261,30 +261,30 @@ namespace tinyrobotics {
      * @brief Compute the inverse dynamics of a tinyrobotics model
      * @param m tinyrobotics model.
      * @param q Joint configuration of the robot.
-     * @param qd Joint velocity of the robot.
+     * @param dq Joint velocity of the robot.
      * @param f_ext External forces acting on the robot.
      * @return tau
      */
     template <typename Scalar, int nq>
     Eigen::Matrix<Scalar, nq, 1> inverse_dynamics(Model<Scalar, nq>& m,
                                                   const Eigen::Matrix<Scalar, nq, 1>& q,
-                                                  const Eigen::Matrix<Scalar, nq, 1>& qd,
-                                                  const Eigen::Matrix<Scalar, nq, 1>& qdd,
+                                                  const Eigen::Matrix<Scalar, nq, 1>& dq,
+                                                  const Eigen::Matrix<Scalar, nq, 1>& ddq,
                                                   const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
         for (int i = 0; i < nq; i++) {
             // Compute the joint transform and motion subspace matrices
-            m.vJ = m.links[m.q_map[i]].joint.S * qd(i);
+            m.vJ = m.links[m.q_map[i]].joint.S * dq(i);
             // Compute the spatial transform from the parent to the current body
             m.Xup[i] = homogeneous_to_spatial(m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i)).inverse());
             // Check if the m.parent link is the base link
             if (m.parent[i] == -1) {
                 m.v[i] = m.vJ;
-                m.a[i] = m.Xup[i] * -m.spatial_gravity + m.links[m.q_map[i]].joint.S * qdd(i);
+                m.a[i] = m.Xup[i] * -m.spatial_gravity + m.links[m.q_map[i]].joint.S * ddq(i);
             }
             else {
                 m.v[i] = m.Xup[i] * m.v[m.parent[i]] + m.vJ;
                 m.a[i] =
-                    m.Xup[i] * m.a[m.parent[i]] + m.links[m.q_map[i]].joint.S * qdd(i) + cross_spatial(m.v[i]) * m.vJ;
+                    m.Xup[i] * m.a[m.parent[i]] + m.links[m.q_map[i]].joint.S * ddq(i) + cross_spatial(m.v[i]) * m.vJ;
             }
             m.fvp[i] = m.links[m.q_map[i]].I * m.a[i] + cross_motion(m.v[i]) * m.links[m.q_map[i]].I * m.v[i];
         }
