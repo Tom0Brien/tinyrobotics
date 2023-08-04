@@ -32,10 +32,6 @@ int main(int argc, char* argv[]) {
     auto J = jacobian(model, q, target_link_name);
     std::cout << "J: \n" << J << std::endl;
 
-    // Compute the geometric Jacobian to link_5's COM at the random configuration
-    auto Jcom = jacobian_com(model, q, target_link_name);
-    std::cout << "Jcom: \n" << Jcom << std::endl;
-
     // Compute the center of mass of the robot from the base link at the random configuration
     auto com = center_of_mass(model, q);
     std::cout << "CoM from base frame: \n" << com << std::endl;

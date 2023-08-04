@@ -77,22 +77,16 @@ namespace tinyrobotics {
     Eigen::Transform<Scalar, 3, Eigen::Isometry> forward_kinematics(const Model<Scalar, nq>& model,
                                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                     const TargetLink& target_link) {
-        // Get the target link
-        const int target_link_idx = get_link_idx(model, target_link);
-        Link<Scalar> current_link = model.links[target_link_idx];
+        Link<Scalar> current_link = model.links[get_link_idx(model, target_link)];
 
-        // Build kinematic tree from target_link {t} to base {b}
+        // Build kinematic tree from base {b} to target {t} link
         Eigen::Transform<Scalar, 3, Eigen::Isometry> Htb = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
         while (current_link.idx != model.base_link_idx) {
-            Eigen::Transform<Scalar, 3, Eigen::Isometry> H = Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity();
+            // Apply joint transform if joint is actuatable
             if (current_link.joint.idx != -1) {
-                // Transform the joint frame by joint value (Hpt)
-                H = current_link.joint.get_joint_transform(q[current_link.joint.idx]);
+                Htb = Htb * current_link.joint.get_joint_transform(q[current_link.joint.idx]).inverse();
             }
-            Htb = Htb * H.inverse();
-            // Apply inverse joint transform as we are going back up tree
-            Htb = Htb * current_link.joint.parent_transform.inverse();
-            // Move up the tree to parent link
+            Htb          = Htb * current_link.joint.parent_transform.inverse();
             current_link = model.links[current_link.parent];
         }
         return Htb.inverse();
@@ -116,17 +110,8 @@ namespace tinyrobotics {
                                                                     const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                     const TargetLink& target_link,
                                                                     const SourceLink& source_link) {
-        const int target_link_idx = get_link_idx(model, target_link);
-        const int source_link_idx = get_link_idx(model, source_link);
-
-        // Build kinematic tree from source {s} to base {b} frame
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbs = forward_kinematics(model, q, source_link_idx);
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsb = Hbs.inverse();
-        // Build kinematic tree from base {b} to target {t} frame
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbt = forward_kinematics(model, q, target_link_idx);
-        // Compute transform between source {s} and target {t} frames
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst = Hsb * Hbt;
-        return Hst;
+        return forward_kinematics(model, q, get_link_idx(model, source_link)).inverse()
+               * forward_kinematics(model, q, get_link_idx(model, target_link));
     }
 
     /**
@@ -143,9 +128,9 @@ namespace tinyrobotics {
         const Eigen::Matrix<Scalar, nq, 1>& q) {
         // Compute forward kinematics for all the links
         forward_kinematics(model, q);
-        // Compute transform to center of mass of all the forward kinematics results
         model.forward_kinematics_com.resize(model.links.size(),
                                             Eigen::Transform<Scalar, 3, Eigen::Isometry>::Identity());
+        // Apply center of mass transform for each link
         for (auto const link : model.links) {
             model.forward_kinematics_com[link.idx] =
                 model.forward_kinematics[link.idx] * model.links[link.idx].center_of_mass;
@@ -171,13 +156,9 @@ namespace tinyrobotics {
                                                                         const Eigen::Matrix<Scalar, nq, 1>& q,
                                                                         const TargetLink& target_link,
                                                                         const SourceLink& source_link = 0) {
-        // Compute forward kinematics from source {b} to target {t}
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hst = forward_kinematics(model, q, target_link, source_link);
-        // Compute forward kinematics from source {s} to CoM {c}
-        const int target_link_idx                        = get_link_idx(model, target_link);
-        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hsc = Hst * model.links[target_link_idx].center_of_mass;
-        // Return transform from source {s} to CoM {c}
-        return Hsc;
+        // Apply center of mass transform to forward kinematics between source and target link
+        return forward_kinematics(model, q, target_link, source_link)
+               * model.links[get_link_idx(model, target_link)].center_of_mass;
     }
 
     /**
@@ -194,25 +175,19 @@ namespace tinyrobotics {
     Eigen::Matrix<Scalar, 6, nq> jacobian(Model<Scalar, nq>& model,
                                           const Eigen::Matrix<Scalar, nq, 1>& q,
                                           const TargetLink& target_link) {
-        // Compute the transform between base {b} and all the links {i} in the kinematic chain
+        // Compute forward kinematics for all the links
         forward_kinematics(model, q);
 
-        // Get the target link from the model
-        const int target_link_idx = get_link_idx(model, target_link);
-
-        // Get the displacement of the target link {t} in the base link frame {b}
-        Eigen::Matrix<Scalar, 3, 1> rTBb = model.forward_kinematics[target_link_idx].translation();
-
-        // Initialize variables
         model.J.setZero();
         Eigen::Matrix<Scalar, 3, 1> zIBb;
         Eigen::Matrix<Scalar, 3, 1> rIBb;
-        Link<Scalar> current_link = model.links[target_link_idx];
+        Link<Scalar> current_link        = model.links[get_link_idx(model, target_link)];
+        Eigen::Matrix<Scalar, 3, 1> rTBb = model.forward_kinematics[current_link.idx].translation();
+
+        // Compute the jacobian
         while (current_link.idx != model.base_link_idx) {
             if (current_link.joint.idx != -1) {
-                // Axis of the current joint rotated into the base frame {b}
                 zIBb = model.forward_kinematics[current_link.idx].linear() * current_link.joint.axis;
-                // Compute the displacement of the current link {i} from the base link frame {b}
                 rIBb = model.forward_kinematics[current_link.idx].translation();
                 if (current_link.joint.type == JointType::PRISMATIC) {
                     model.J.block(0, current_link.joint.idx, 3, 1) = zIBb;
