@@ -70,7 +70,6 @@ namespace tinyrobotics {
         return X;
     }
 
-
     /**
      * @brief Spatial coordinate transform from roll-pitch-yaw angles.
      * @param rpy The roll-pitch-yaw angles.
@@ -85,7 +84,6 @@ namespace tinyrobotics {
         X.block(3, 3, 3, 3)           = E;
         return X;
     }
-
 
     /**
      * @brief Spatial coordinate transform from homogeneous transformation matrix.
@@ -102,7 +100,6 @@ namespace tinyrobotics {
         return X;
     }
 
-
     /**
      * @brief Spatial inertia matrix from inertia parameters.
      * @param m Mass of link.
@@ -115,13 +112,12 @@ namespace tinyrobotics {
     Eigen::Matrix<Scalar, 6, 6> inertia_to_spatial(const Scalar m,
                                                    const Eigen::Matrix<Scalar, 3, 1>& c,
                                                    const Eigen::Matrix<Scalar, 3, 3>& I) {
-        Eigen::Matrix<Scalar, 6, 6> Ic;
-        Eigen::Matrix<Scalar, 3, 3> C = skew(c);
-        Ic.setZero();
-        Ic.block(0, 0, 3, 3) = I + m * C * C.transpose();
-        Ic.block(0, 3, 3, 3) = m * C;
-        Ic.block(3, 0, 3, 3) = m * C.transpose();
-        Ic.block(3, 3, 3, 3) = m * Eigen::Matrix<Scalar, 3, 3>::Identity();
+        Eigen::Matrix<Scalar, 6, 6> Ic = Eigen::Matrix<Scalar, 6, 6>::Zero();
+        Eigen::Matrix<Scalar, 3, 3> C  = skew(c);
+        Ic.block(0, 0, 3, 3)           = I + m * C * C.transpose();
+        Ic.block(0, 3, 3, 3)           = m * C;
+        Ic.block(3, 0, 3, 3)           = m * C.transpose();
+        Ic.block(3, 3, 3, 3)           = m * Eigen::Matrix<Scalar, 3, 3>::Identity();
         return Ic;
     }
 
@@ -142,9 +138,7 @@ namespace tinyrobotics {
 
         // Orientation error
         Eigen::Matrix<Scalar, 3, 3> Re = H1.rotation() * H2.rotation().transpose();
-
-        // Extract trace
-        Scalar t = Re.trace();
+        Scalar t                       = Re.trace();
         Eigen::Matrix<Scalar, 3, 1> eps(Re(2, 1) - Re(1, 2), Re(0, 2) - Re(2, 0), Re(1, 0) - Re(0, 1));
         Scalar eps_norm = eps.norm();
         if (t > -.99 || eps_norm > 1e-10) {

@@ -108,37 +108,33 @@ namespace tinyrobotics {
         std::vector<Eigen::Matrix<Scalar, 6, 1>> a =
             std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
 
-        /// @brief
+        /// @brief Joint spatial velocities
         Eigen::Matrix<Scalar, 6, 1> vJ = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
-        /// @brief
-        std::vector<Eigen::Matrix<Scalar, 6, 1>> avp =
-            std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
-
-        /// @brief
+        /// @brief Joint spatial forces
         std::vector<Eigen::Matrix<Scalar, 6, 1>> fvp =
             std::vector<Eigen::Matrix<Scalar, 6, 1>>(nq, Eigen::Matrix<Scalar, 6, 1>::Zero());
 
-        /// @brief
+        /// @brief Bias force vector
         Eigen::Matrix<Scalar, nq, 1> C = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
-        /// @brief
+        /// @brief Force term for intermediately storing the result
         Eigen::Matrix<Scalar, 6, 1> fh = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
-        /// @brief
+        /// @brief Articulated-body inertias
         std::vector<Eigen::Matrix<Scalar, 6, 6>> IC =
             std::vector<Eigen::Matrix<Scalar, 6, 6>>(nq, Eigen::Matrix<Scalar, 6, 6>::Zero());
 
         /// @brief Gravity vector in spatial coordinates
         Eigen::Matrix<Scalar, 6, 1> spatial_gravity = Eigen::Matrix<Scalar, 6, 1>::Zero();
 
-        /// @brief Geometric Jacobian
+        /// @brief Jacobian
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
-        /// @brief Joint acceleration.
+        /// @brief Joint acceleration
         Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
-        /// @brief Joint torque/force.
+        /// @brief Joint torque/force
         Eigen::Matrix<Scalar, nq, 1> tau = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /**

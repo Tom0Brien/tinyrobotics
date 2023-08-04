@@ -144,7 +144,9 @@ namespace tinyrobotics {
                                                   const Eigen::Matrix<Scalar, nq, 1>& tau,
                                                   const std::vector<Eigen::Matrix<Scalar, 6, 1>>& f_ext = {}) {
         for (int i = 0; i < nq; i++) {
-            m.vJ     = m.links[m.q_map[i]].joint.S * qd(i);
+            // Compute the joint transform and motion subspace matrices
+            m.vJ = m.links[m.q_map[i]].joint.S * qd(i);
+            // Compute the spatial transform from the parent to the current body
             m.Xup[i] = homogeneous_to_spatial(m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i)).inverse());
             // Check if the m.parent link is the base link
             if (m.parent[i] == -1) {
@@ -211,14 +213,14 @@ namespace tinyrobotics {
             m.Xup[i] = homogeneous_to_spatial(m.links[m.q_map[i]].joint.get_parent_to_child_transform(q(i)).inverse());
             // Check if the m.parent link is the base link
             if (m.parent[i] == -1) {
-                m.v[i]   = m.vJ;
-                m.avp[i] = m.Xup[i] * -m.spatial_gravity;
+                m.v[i] = m.vJ;
+                m.a[i] = m.Xup[i] * -m.spatial_gravity;
             }
             else {
-                m.v[i]   = m.Xup[i] * m.v[m.parent[i]] + m.vJ;
-                m.avp[i] = m.Xup[i] * m.avp[m.parent[i]] + cross_spatial(m.v[i]) * m.vJ;
+                m.v[i] = m.Xup[i] * m.v[m.parent[i]] + m.vJ;
+                m.a[i] = m.Xup[i] * m.a[m.parent[i]] + cross_spatial(m.v[i]) * m.vJ;
             }
-            m.fvp[i] = m.links[m.q_map[i]].I * m.avp[i] + cross_motion(m.v[i]) * m.links[m.q_map[i]].I * m.v[i];
+            m.fvp[i] = m.links[m.q_map[i]].I * m.a[i] + cross_motion(m.v[i]) * m.links[m.q_map[i]].I * m.v[i];
             m.IC[i]  = m.links[m.q_map[i]].I;
         }
 
