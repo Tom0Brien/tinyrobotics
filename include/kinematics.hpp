@@ -219,9 +219,10 @@ namespace tinyrobotics {
     Eigen::Matrix<Scalar, 3, 1> center_of_mass(Model<Scalar, nq>& model,
                                                const Eigen::Matrix<Scalar, nq, 1>& q,
                                                const SourceLink& source_link = 0) {
+        forward_kinematics_com(model, q);
         model.center_of_mass.setZero();
         for (auto link : model.links) {
-            model.center_of_mass += forward_kinematics_com(model, q, link.name, source_link).translation() * link.mass;
+            model.center_of_mass += model.forward_kinematics_com[link.idx].translation() * link.mass;
         }
         model.center_of_mass /= model.mass;
         return model.center_of_mass;

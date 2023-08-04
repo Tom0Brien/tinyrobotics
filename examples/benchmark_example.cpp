@@ -28,6 +28,13 @@ int main(int argc, char* argv[]) {
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << "Forward Kinematics: " << duration.count() << " microseconds" << std::endl;
 
+    // ************ Center of Mass ************
+    start    = std::chrono::high_resolution_clock::now();
+    auto com = center_of_mass(model, q);
+    stop     = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Center of Mass: " << duration.count() << " microseconds" << std::endl;
+
     // ************ Inverse Kinematics ************
     start = std::chrono::high_resolution_clock::now();
     InverseKinematicsOptions<double, n_joints> options;
