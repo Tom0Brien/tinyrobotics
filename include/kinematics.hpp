@@ -205,56 +205,6 @@ namespace tinyrobotics {
     }
 
     /**
-     * @brief Computes the geometric jacobian of the target links from the base link, in the base link frame.
-     * @param model tinyrobotics model.
-     * @param q Joint configuration of the robot.
-     * @param target_link Target link, which can be an integer (index) or a string (name).
-     * @tparam Scalar type of the tinyrobotics model.
-     * @tparam nq Number of configuration coordinates (degrees of freedom).
-     * @tparam TargetLink Type of target_link parameter, which can be int or std::string.
-     * @return The geometric jacobian of the target link from the base link in the base link frame.
-     */
-    template <typename Scalar, int nq, typename TargetLink>
-    Eigen::Matrix<Scalar, 6, nq> jacobian_com(const Model<Scalar, nq>& model,
-                                              const Eigen::Matrix<Scalar, nq, 1>& q,
-                                              const TargetLink& target_link) {
-        // Get the target link from the model
-        const int target_link_idx = get_link_idx(model, target_link);
-        Link<Scalar> current_link = model.links[target_link_idx];
-
-        // Get the base link from the model
-        auto base_link = model.links[model.base_link_idx];
-
-        // Compute the displacement of the target link {t} in the base link frame {b}
-        Eigen::Matrix<Scalar, 3, 1> rTcBb = forward_kinematics_com(model, q, target_link, base_link.name).translation();
-
-        // Initialize the geometric jabobian matrix with zeros
-        Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
-        while (current_link.idx != model.base_link_idx) {
-            auto current_joint = current_link.joint;
-            if (current_joint.idx != -1) {
-                // Compute the transform between base {b} and the current link {i}
-                auto Hbi = forward_kinematics(model, q, current_link.name, base_link.name);
-                // Axis of the current joint rotated into the base frame {b}
-                auto zIBb = Hbi.linear() * current_joint.axis;
-                // Compute the displacement of the current link {i} from the base link frame {b}
-                auto rIBb = Hbi.translation();
-                if (current_joint.type == JointType::PRISMATIC) {
-                    J.block(0, current_joint.idx, 3, 1) = zIBb;
-                    J.block(3, current_joint.idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
-                }
-                else if (current_joint.type == JointType::REVOLUTE) {
-                    J.block(0, current_joint.idx, 3, 1) = (zIBb).cross(rTcBb - rIBb);
-                    J.block(3, current_joint.idx, 3, 1) = zIBb;
-                }
-            }
-            // Move up the tree to parent towards the base
-            current_link = model.links[current_link.parent];
-        }
-        return J;
-    }
-
-    /**
      * @brief Computes the center of mass expressed in source link frame.
      * @param model tinyrobotics model.
      * @param q The configuration vector of the robot model.
