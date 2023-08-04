@@ -1,5 +1,6 @@
 #include <chrono>
 #include <iostream>
+#include <map>
 
 #include "../include/inversekinematics.hpp"
 #include "../include/kinematics.hpp"
