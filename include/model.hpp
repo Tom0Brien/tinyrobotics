@@ -51,6 +51,8 @@ namespace tinyrobotics {
         /// @brief Vector of links in the model
         std::vector<Link<Scalar>> links = {};
 
+        /// **************** Pre-allcoated variables for kinematics algorithms ****************
+
         /// @brief Mass matrix
         Eigen::Matrix<Scalar, nq, nq> mass_matrix = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
@@ -65,12 +67,6 @@ namespace tinyrobotics {
 
         /// @brief center of mass position
         Eigen::Matrix<Scalar, 3, 1> center_of_mass = Eigen::Matrix<Scalar, 3, 1>::Zero();
-
-        /// @brief Joint acceleration.
-        Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
-
-        /// @brief Joint torque/force.
-        Eigen::Matrix<Scalar, nq, 1> tau = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /// **************** Pre-allcoated variables for dynamics algorithms ****************
 
@@ -139,8 +135,11 @@ namespace tinyrobotics {
         /// @brief Geometric Jacobian
         Eigen::Matrix<Scalar, 6, nq> J = Eigen::Matrix<Scalar, 6, nq>::Zero();
 
-        /// @brief Hessian Product H*dq
-        Eigen::Matrix<Scalar, 6, nq> H_dq = Eigen::Matrix<Scalar, 6, nq>::Zero();
+        /// @brief Joint acceleration.
+        Eigen::Matrix<Scalar, nq, 1> ddq = Eigen::Matrix<Scalar, nq, 1>::Zero();
+
+        /// @brief Joint torque/force.
+        Eigen::Matrix<Scalar, nq, 1> tau = Eigen::Matrix<Scalar, nq, 1>::Zero();
 
         /**
          * @brief Get a link in the model by name.
@@ -233,22 +232,16 @@ namespace tinyrobotics {
          * @return Configuration vector of all zeros.
          */
         Eigen::Matrix<Scalar, nq, 1> home_configuration() const {
-            assert(n_q > 0);
-            Eigen::Matrix<Scalar, nq, 1> q(n_q);
-            q.setZero();
-            return q;
+            return Eigen::Matrix<Scalar, nq, 1>::Zero(n_q);
         }
 
         /**
          * @brief Get a random configuration vector for the model.
-         * @return Random configuration vector.
+         * @param range Range of the random values. Values will be between -range and range.
+         * @return Configuration vector of random values between -pi and pi.
          */
-        Eigen::Matrix<Scalar, nq, 1> random_configuration() const {
-            assert(n_q > 0);
-            Eigen::Matrix<Scalar, nq, 1> q(n_q);
-            q.setRandom();
-            q = M_PI * q;
-            return q;
+        Eigen::Matrix<Scalar, nq, 1> random_configuration(Scalar range = M_PI) const {
+            return range * Eigen::Matrix<Scalar, nq, 1>::Random(n_q);
         }
 
         /**

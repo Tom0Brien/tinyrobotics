@@ -46,6 +46,7 @@ namespace tinyrobotics {
                 m.mass_matrix(j, i) = m.mass_matrix(i, j);
             }
         }
+
         return m.mass_matrix;
     }
 
