@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['u_0',['U',['../structtinyrobotics_1_1Data.html#ac5b5c767183662d04847e58e49a2e9b2',1,'tinyrobotics::Data']]],
-  ['u_1',['u',['../structtinyrobotics_1_1Data.html#a56d3fe3cf9503b162133c8f5c6ae2d19',1,'tinyrobotics::Data']]]
+  ['u_0',['u',['../structtinyrobotics_1_1Model.html#ada3bb00fc8221d86c7bf29d92c885f1c',1,'tinyrobotics::Model']]],
+  ['u_1',['U',['../structtinyrobotics_1_1Model.html#a722717198839ee94ed2aeb987899eab7',1,'tinyrobotics::Model']]]
 ];

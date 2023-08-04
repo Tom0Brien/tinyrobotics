@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['s_0',['S',['../structtinyrobotics_1_1Data.html#af9497d5a480ec3c68fe53e4644a6fed5',1,'tinyrobotics::Data::S'],['../structtinyrobotics_1_1Joint.html#af24c482710fa421c9a78988d1346eb81',1,'tinyrobotics::Joint::S']]],
-  ['show_5fdetails_1',['show_details',['../structtinyrobotics_1_1Model.html#a8f31fd3757c6b44a4a62a43f8c650e47',1,'tinyrobotics::Model']]],
-  ['skew_2',['skew',['../math_8hpp.html#a50bce602443823ecadc3b968b4438f93',1,'tinyrobotics::skew(const Eigen::Matrix&lt; Scalar, 3, 3 &gt; &amp;input)'],['../math_8hpp.html#a82471aad353f6b8f538f4e656b3d4453',1,'tinyrobotics::skew(const Eigen::Matrix&lt; Scalar, 3, 1 &gt; &amp;input)']]],
-  ['spatial_5fgravity_3',['spatial_gravity',['../structtinyrobotics_1_1Data.html#a9829970cba03c3666ab253e6976e481c',1,'tinyrobotics::Data']]],
-  ['spatial_5ftransform_5ffrom_5fxml_4',['spatial_transform_from_xml',['../parser_8hpp.html#af704551ba257f5803e081f4351214ad4',1,'tinyrobotics']]],
-  ['step_5fsize_5',['step_size',['../structtinyrobotics_1_1InverseKinematicsOptions.html#adddf8a4164cb40f9d3bf024d4f3f0743',1,'tinyrobotics::InverseKinematicsOptions']]]
+  ['random_5fconfiguration_0',['random_configuration',['../structtinyrobotics_1_1Model.html#afb08bc08311f35a3c16b3f4b5762f00d',1,'tinyrobotics::Model']]],
+  ['revolute_1',['REVOLUTE',['../joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efa06ec593fa63e118e8d2d0fd58c223acf',1,'tinyrobotics']]],
+  ['rot_5ffrom_5fstring_2',['rot_from_string',['../parser_8hpp.html#ac568ed353a7b16d34e0db71cffb73413',1,'tinyrobotics']]],
+  ['rpy_5fto_5fspatial_3',['rpy_to_spatial',['../math_8hpp.html#a8270e5de303ec4a4733b36256a0ecf44',1,'tinyrobotics']]]
 ];

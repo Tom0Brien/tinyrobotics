@@ -2,7 +2,7 @@ var structtinyrobotics_1_1Link =
 [
     [ "add_child_link_idx", "structtinyrobotics_1_1Link.html#ab858ce4c5c1f9030a341c3427221fa4e", null ],
     [ "cast", "structtinyrobotics_1_1Link.html#af55e2ff6c8b03e966bbcaf501aaf2694", null ],
-    [ "centre_of_mass", "structtinyrobotics_1_1Link.html#ac1f97ab89646a6474fdeff88b7a27966", null ],
+    [ "center_of_mass", "structtinyrobotics_1_1Link.html#a87fb15d60a39517b51d0a97e1efe7c3d", null ],
     [ "child_links", "structtinyrobotics_1_1Link.html#a59fe26088daed22877a08fab03ce0a0c", null ],
     [ "idx", "structtinyrobotics_1_1Link.html#a1551f28d0a5231ef16dc13c49cd1ead4", null ],
     [ "inertia", "structtinyrobotics_1_1Link.html#a3175ecb8534dce9484ee6f0303e1b8a4", null ],

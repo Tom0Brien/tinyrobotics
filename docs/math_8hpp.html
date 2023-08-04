@@ -105,14 +105,6 @@ $(document).ready(function(){initNavTree('math_8hpp.html',''); initResizable(); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a0235cb7f0f72125b9048d084c881bc39"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Scalar  = typename T::Scalar, std::enable_if_t&lt;((T::RowsAtCompileTime==3) &amp;&amp;(T::ColsAtCompileTime==3))&gt; *  = nullptr&gt; </td></tr>
-<tr class="memitem:a0235cb7f0f72125b9048d084c881bc39"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="math_8hpp.html#a0235cb7f0f72125b9048d084c881bc39">tinyrobotics::rotation_to_rpy</a> (const T &amp;mat)</td></tr>
-<tr class="memdesc:a0235cb7f0f72125b9048d084c881bc39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manually convert the given rotation matrix to [Roll, Pitch, Yaw] ZYX intrinsic euler angle (Better range than Eigen conversion).  <br /></td></tr>
-<tr class="separator:a0235cb7f0f72125b9048d084c881bc39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adea183c70e4a8599e6e59080201d2929"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Scalar  = typename T::Scalar, std::enable_if_t&lt;((T::RowsAtCompileTime==3) &amp;&amp;(T::ColsAtCompileTime==1))&gt; *  = nullptr&gt; </td></tr>
-<tr class="memitem:adea183c70e4a8599e6e59080201d2929"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="math_8hpp.html#adea183c70e4a8599e6e59080201d2929">tinyrobotics::rpy_to_rotation</a> (const T &amp;angles)</td></tr>
-<tr class="memdesc:adea183c70e4a8599e6e59080201d2929"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert given Euler angles in [Roll, Pitch, Yaw] ZYX intrinsic format to rotation matrix.  <br /></td></tr>
-<tr class="separator:adea183c70e4a8599e6e59080201d2929"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50bce602443823ecadc3b968b4438f93"><td class="memTemplParams" colspan="2">template&lt;typename Scalar &gt; </td></tr>
 <tr class="memitem:a50bce602443823ecadc3b968b4438f93"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="math_8hpp.html#a50bce602443823ecadc3b968b4438f93">tinyrobotics::skew</a> (const Eigen::Matrix&lt; Scalar, 3, 3 &gt; &amp;input)</td></tr>
 <tr class="memdesc:a50bce602443823ecadc3b968b4438f93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the skew of a 3x3 vector.  <br /></td></tr>
@@ -121,10 +113,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a82471aad353f6b8f538f4e656b3d4453"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 3, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="math_8hpp.html#a82471aad353f6b8f538f4e656b3d4453">tinyrobotics::skew</a> (const Eigen::Matrix&lt; Scalar, 3, 1 &gt; &amp;input)</td></tr>
 <tr class="memdesc:a82471aad353f6b8f538f4e656b3d4453"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the skew matrix for a 3x1 vector.  <br /></td></tr>
 <tr class="separator:a82471aad353f6b8f538f4e656b3d4453"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cbd65afc4ab7045dbfe81446be1a832"><td class="memTemplParams" colspan="2">template&lt;typename Scalar &gt; </td></tr>
-<tr class="memitem:a9cbd65afc4ab7045dbfe81446be1a832"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, Eigen::Dynamic, Eigen::Dynamic &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="math_8hpp.html#a9cbd65afc4ab7045dbfe81446be1a832">tinyrobotics::null</a> (const Eigen::Matrix&lt; Scalar, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;A)</td></tr>
-<tr class="memdesc:a9cbd65afc4ab7045dbfe81446be1a832"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes an orthonormal basis for the null space of a matrix.  <br /></td></tr>
-<tr class="separator:a9cbd65afc4ab7045dbfe81446be1a832"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c2e0664105bd4aad3d9ae428472354c"><td class="memTemplParams" colspan="2">template&lt;typename Scalar &gt; </td></tr>
 <tr class="memitem:a8c2e0664105bd4aad3d9ae428472354c"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, 6, 6 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="math_8hpp.html#a8c2e0664105bd4aad3d9ae428472354c">tinyrobotics::cross_spatial</a> (const Eigen::Matrix&lt; Scalar, 6, 1 &gt; &amp;v)</td></tr>
 <tr class="memdesc:a8c2e0664105bd4aad3d9ae428472354c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the 6x6 cross-product matrix for a 6D spatial vector.  <br /></td></tr>
@@ -358,115 +346,6 @@ template&lt;typename Scalar &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Spatial inertia matrix. </dd></dl>
-
-</div>
-</div>
-<a id="a9cbd65afc4ab7045dbfe81446be1a832" name="a9cbd65afc4ab7045dbfe81446be1a832"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9cbd65afc4ab7045dbfe81446be1a832">&#9670;&#160;</a></span>null()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, Eigen::Dynamic, Eigen::Dynamic &gt; tinyrobotics::null </td>
-          <td>(</td>
-          <td class="paramtype">const Eigen::Matrix&lt; Scalar, Eigen::Dynamic, Eigen::Dynamic &gt; &amp;&#160;</td>
-          <td class="paramname"><em>A</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Computes an orthonormal basis for the null space of a matrix. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">A</td><td>Input matrix. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Scalar</td><td>Scalar type. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The orthonormal basis for the null space of A. </dd></dl>
-
-</div>
-</div>
-<a id="a0235cb7f0f72125b9048d084c881bc39" name="a0235cb7f0f72125b9048d084c881bc39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0235cb7f0f72125b9048d084c881bc39">&#9670;&#160;</a></span>rotation_to_rpy()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename Scalar  = typename T::Scalar, std::enable_if_t&lt;((T::RowsAtCompileTime==3) &amp;&amp;(T::ColsAtCompileTime==3))&gt; *  = nullptr&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 1 &gt; tinyrobotics::rotation_to_rpy </td>
-          <td>(</td>
-          <td class="paramtype">const T &amp;&#160;</td>
-          <td class="paramname"><em>mat</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Manually convert the given rotation matrix to [Roll, Pitch, Yaw] ZYX intrinsic euler angle (Better range than Eigen conversion). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mat</td><td>Rotation matrix </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>[Roll, Pitch, Yaw] ZYX intrinsic euler angle </dd></dl>
-
-</div>
-</div>
-<a id="adea183c70e4a8599e6e59080201d2929" name="adea183c70e4a8599e6e59080201d2929"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adea183c70e4a8599e6e59080201d2929">&#9670;&#160;</a></span>rpy_to_rotation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename Scalar  = typename T::Scalar, std::enable_if_t&lt;((T::RowsAtCompileTime==3) &amp;&amp;(T::ColsAtCompileTime==1))&gt; *  = nullptr&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar, 3, 3 &gt; tinyrobotics::rpy_to_rotation </td>
-          <td>(</td>
-          <td class="paramtype">const T &amp;&#160;</td>
-          <td class="paramname"><em>angles</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Convert given Euler angles in [Roll, Pitch, Yaw] ZYX intrinsic format to rotation matrix. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">angles</td><td>[Roll, Pitch, Yaw] ZYX intrinsic euler angles </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Rotation matrix corresponding to given euler angles </dd></dl>
 
 </div>
 </div>

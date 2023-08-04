@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['jacobian_0',['JACOBIAN',['../inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2ab86901c03c7833ecb978328d373151fb',1,'tinyrobotics']]]
+  ['fixed_0',['FIXED',['../joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efac6e6dc18b53b4c2681394b9d8aefcec7',1,'tinyrobotics']]],
+  ['floating_1',['FLOATING',['../joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efa8bc27034f643005ec2eb9133de22220e',1,'tinyrobotics']]]
 ];

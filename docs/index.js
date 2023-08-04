@@ -1,12 +1,9 @@
 var index =
 [
-    [ "Motivation", "index.html#autotoc_md27", null ],
-    [ "Features", "index.html#autotoc_md28", null ],
-    [ "Examples", "index.html#autotoc_md29", null ],
-    [ "Installation", "index.html#autotoc_md30", [
-      [ "Choosing a layout", "index.html#autotoc_md31", null ],
-      [ "Further installation instructions:", "index.html#autotoc_md32", null ]
+    [ "Features", "index.html#autotoc_md0", null ],
+    [ "Install", "index.html#autotoc_md1", [
+      [ "1. Install Dependencies", "index.html#autotoc_md2", null ],
+      [ "2. Build with cmake", "index.html#autotoc_md3", null ]
     ] ],
-    [ "Browser support", "index.html#autotoc_md33", null ],
-    [ "Credits", "index.html#autotoc_md34", null ]
+    [ "Examples", "index.html#autotoc_md4", null ]
 ];

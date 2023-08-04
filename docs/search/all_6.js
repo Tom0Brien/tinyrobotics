@@ -1,14 +1,11 @@
 var searchData=
 [
-  ['geometric_5fjacobian_0',['geometric_jacobian',['../kinematics_8hpp.html#a94561eb6f55e48f0dab911f870f38c28',1,'tinyrobotics']]],
-  ['geometric_5fjacobian_5fcom_1',['geometric_jacobian_com',['../kinematics_8hpp.html#a0affabfdb89d49a7b7be4f4080c950e3',1,'tinyrobotics']]],
-  ['get_5fjoint_2',['get_joint',['../structtinyrobotics_1_1Model.html#a19493ac8dffd614dbeef7134b7991d4b',1,'tinyrobotics::Model']]],
-  ['get_5fjoint_5ftransform_3',['get_joint_transform',['../structtinyrobotics_1_1Joint.html#ab4572fda178593421c1bec68b80478c5',1,'tinyrobotics::Joint']]],
-  ['get_5flink_4',['get_link',['../structtinyrobotics_1_1Model.html#a7b2f37e80dde424f1ffe8e657a13e101',1,'tinyrobotics::Model']]],
-  ['get_5flink_5fidx_5',['get_link_idx',['../kinematics_8hpp.html#a98552d65f728da7a8e92b3dac1f936f2',1,'tinyrobotics']]],
-  ['get_5fparent_5flink_6',['get_parent_link',['../structtinyrobotics_1_1Model.html#a43e1a4c525affdacb8e8d12ae9ab0887',1,'tinyrobotics::Model']]],
-  ['get_5fparent_5flink_5fname_7',['get_parent_link_name',['../parser_8hpp.html#a83d85b2fabfe22ed6d77341261007a6b',1,'tinyrobotics']]],
-  ['get_5fparent_5fto_5fchild_5ftransform_8',['get_parent_to_child_transform',['../structtinyrobotics_1_1Joint.html#a9fbcc8f2c9f8be89b40b8cbf16423418',1,'tinyrobotics::Joint']]],
-  ['get_5ftype_9',['get_type',['../structtinyrobotics_1_1Joint.html#a049856da83f7dcfa60e553eeb6c8cd9f',1,'tinyrobotics::Joint']]],
-  ['gravity_10',['gravity',['../structtinyrobotics_1_1Data.html#a5e9c73ba9884c0cc53f63a3578ef9ccc',1,'tinyrobotics::Data::gravity'],['../structtinyrobotics_1_1Model.html#ac126fa01c9b0245cbdf0474e3f04aa89',1,'tinyrobotics::Model::gravity']]]
+  ['fh_0',['fh',['../structtinyrobotics_1_1Model.html#a864aca2ccab551c68f894a2e4f40407b',1,'tinyrobotics::Model']]],
+  ['fixed_1',['FIXED',['../joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efac6e6dc18b53b4c2681394b9d8aefcec7',1,'tinyrobotics']]],
+  ['floating_2',['FLOATING',['../joint_8hpp.html#a5310e402b8aab01cb3dbca76dd8134efa8bc27034f643005ec2eb9133de22220e',1,'tinyrobotics']]],
+  ['forward_5fdynamics_3',['forward_dynamics',['../dynamics_8hpp.html#a18284242db463272c8d3c8837f104bb8',1,'tinyrobotics']]],
+  ['forward_5fdynamics_5fcrb_4',['forward_dynamics_crb',['../dynamics_8hpp.html#a7aca14467bbf3a6c2bea3d266fc31ef9',1,'tinyrobotics']]],
+  ['forward_5fkinematics_5',['forward_kinematics',['../structtinyrobotics_1_1Model.html#ad6c04c3f315d557747fecf12ec557390',1,'tinyrobotics::Model::forward_kinematics'],['../kinematics_8hpp.html#a985f737fbd9d1a352e22d9d8edc5b5a3',1,'tinyrobotics::forward_kinematics(Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q)'],['../kinematics_8hpp.html#ab34e7976f4b67fcb98507aad6a624332',1,'tinyrobotics::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const TargetLink &amp;target_link)'],['../kinematics_8hpp.html#ae02f89ac9d820729c640983e087682e2',1,'tinyrobotics::forward_kinematics(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const TargetLink &amp;target_link, const SourceLink &amp;source_link)']]],
+  ['forward_5fkinematics_5fcom_6',['forward_kinematics_com',['../structtinyrobotics_1_1Model.html#a7222743522f2dceceba0124e29cad05d',1,'tinyrobotics::Model::forward_kinematics_com'],['../kinematics_8hpp.html#a56899c8da940e648a724f0f2413a989d',1,'tinyrobotics::forward_kinematics_com(Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q)'],['../kinematics_8hpp.html#ab50273344eb2374a62d11769639bc5b6',1,'tinyrobotics::forward_kinematics_com(const Model&lt; Scalar, nq &gt; &amp;model, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const TargetLink &amp;target_link, const SourceLink &amp;source_link=0)']]],
+  ['fvp_7',['fvp',['../structtinyrobotics_1_1Model.html#acb5e08450efc0bab1d3502b2295b600f',1,'tinyrobotics::Model']]]
 ];

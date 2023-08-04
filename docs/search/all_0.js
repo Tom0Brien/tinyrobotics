@@ -1,9 +1,4 @@
 var searchData=
 [
-  ['a_0',['a',['../structtinyrobotics_1_1Data.html#a58247b5f67226176840710045a2f6a88',1,'tinyrobotics::Data']]],
-  ['add_5fchild_5flink_5fidx_1',['add_child_link_idx',['../structtinyrobotics_1_1Link.html#ab858ce4c5c1f9030a341c3427221fa4e',1,'tinyrobotics::Link']]],
-  ['algorithm_2',['algorithm',['../structtinyrobotics_1_1InverseKinematicsOptions.html#a217d54342f2e979abfd1f03f8c1d6452',1,'tinyrobotics::InverseKinematicsOptions']]],
-  ['analytical_5fjacobian_3',['analytical_jacobian',['../kinematics_8hpp.html#a6183a63735420b9cf6fd6a1ff13b8d28',1,'tinyrobotics']]],
-  ['apply_5fexternal_5fforces_4',['apply_external_forces',['../dynamics_8hpp.html#ac0232f81d6981977f21c55f064d93938',1,'tinyrobotics']]],
-  ['axis_5',['axis',['../structtinyrobotics_1_1Joint.html#a9b4522a6199692ce05b945108c6b524e',1,'tinyrobotics::Joint']]]
+  ['_3cimg_20src_3d_22https_3a_2f_2fuser_2dimages_2egithubusercontent_2ecom_2f41043317_2f231810128_2da1c5257d_2d8b27_2d4a82_2d838d_2da1c588b8e913_2epng_22_20alt_3d_22image_22_2f_3e_0',['&lt;img src=&quot;https://user-images.githubusercontent.com/41043317/231810128-a1c5257d-8b27-4a82-838d-a1c588b8e913.png&quot; alt=&quot;image&quot;/&gt;',['../index.html',1,'']]]
 ];

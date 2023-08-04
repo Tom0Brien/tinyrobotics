@@ -25,12 +25,7 @@
 var NAVTREE =
 [
   [ "tinyrobotics", "index.html", [
-    [ "Features", "index.html#autotoc_md0", null ],
-    [ "Install", "index.html#autotoc_md1", [
-      [ "1. Install Dependencies", "index.html#autotoc_md2", null ],
-      [ "2. Build with cmake", "index.html#autotoc_md3", null ]
-    ] ],
-    [ "Examples", "index.html#autotoc_md4", null ],
+    [ "<img src=\"https://user-images.githubusercontent.com/41043317/231810128-a1c5257d-8b27-4a82-838d-a1c588b8e913.png\" alt=\"image\"/>", "index.html", "index" ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],

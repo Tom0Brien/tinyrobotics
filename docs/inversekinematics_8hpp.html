@@ -129,10 +129,10 @@ Enumerations</h2></td></tr>
 <tr class="memitem:ae1c37b01731c99fdb401faf3e77833f2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2">tinyrobotics::InverseKinematicsMethod</a> { <br />
 &#160;&#160;<a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2ab86901c03c7833ecb978328d373151fb">JACOBIAN</a>
 , <a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2a71fd377f6e71b824af42b99798a00b5a">NLOPT</a>
-, <a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2a3fd08a974520668d1c68630f786d02b7">NLOPT_AUTODIFF</a>
 , <a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2a1f058942f87b3559ca2adbc037f16a5c">LEVENBERG_MARQUARDT</a>
+, <a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2a7f1a205245f67ce729c81494b447c56e">PARTICLE_SWARM</a>
 , <br />
-&#160;&#160;<a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2a7f1a205245f67ce729c81494b447c56e">PARTICLE_SWARM</a>
+&#160;&#160;<a class="el" href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2a3f37d7bdfabf29c7996e9d2a2ce6cbcb">BFGS</a>
 <br />
  }</td></tr>
 <tr class="memdesc:ae1c37b01731c99fdb401faf3e77833f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solver methods for inverse kinematics.  <a href="inversekinematics_8hpp.html#ae1c37b01731c99fdb401faf3e77833f2">More...</a><br /></td></tr>
@@ -156,10 +156,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ad730f2cb07825519add253adf75c15a9"><td class="memTemplItemLeft" align="right" valign="top">Scalar&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="inversekinematics_8hpp.html#ad730f2cb07825519add253adf75c15a9">tinyrobotics::cost</a> (const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, <a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const std::string &amp;target_link_name, const std::string &amp;source_link_name, const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;desired_pose, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q0, Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;gradient, const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;options)</td></tr>
 <tr class="memdesc:ad730f2cb07825519add253adf75c15a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cost function for general inverse kinematics with analytical jacobian.  <br /></td></tr>
 <tr class="separator:ad730f2cb07825519add253adf75c15a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba10d92b73eb4d734dde42c9ed19afb2"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:aba10d92b73eb4d734dde42c9ed19afb2"><td class="memTemplItemLeft" align="right" valign="top">Scalar&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="inversekinematics_8hpp.html#aba10d92b73eb4d734dde42c9ed19afb2">tinyrobotics::cost_autodiff</a> (const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, <a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const std::string &amp;target_link_name, const std::string &amp;source_link_name, const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;desired_pose, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q0, Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;gradient, const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;options)</td></tr>
-<tr class="memdesc:aba10d92b73eb4d734dde42c9ed19afb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cost function for general inverse kinematics with autodiff jacobian.  <br /></td></tr>
-<tr class="separator:aba10d92b73eb4d734dde42c9ed19afb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2bfd9a947905ac929fc39f1489df364"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
 <tr class="memitem:af2bfd9a947905ac929fc39f1489df364"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="inversekinematics_8hpp.html#af2bfd9a947905ac929fc39f1489df364">tinyrobotics::inverse_kinematics_nlopt</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const std::string &amp;target_link_name, const std::string &amp;source_link_name, const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;desired_pose, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; q0, const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;options)</td></tr>
 <tr class="memdesc:af2bfd9a947905ac929fc39f1489df364"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves the inverse kinematics problem between two links using NLopt.  <br /></td></tr>
@@ -176,6 +172,10 @@ Functions</h2></td></tr>
 <tr class="memitem:ab780429f48cfa3cdd52635a9c42ac96a"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="inversekinematics_8hpp.html#ab780429f48cfa3cdd52635a9c42ac96a">tinyrobotics::inverse_kinematics_pso</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const std::string &amp;target_link_name, const std::string &amp;source_link_name, const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;desired_pose, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; q0, const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;options)</td></tr>
 <tr class="memdesc:ab780429f48cfa3cdd52635a9c42ac96a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves the inverse kinematics problem between two links using Particle Swarm Optimization.  <br /></td></tr>
 <tr class="separator:ab780429f48cfa3cdd52635a9c42ac96a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a710ae0764b082f586d60f5e5d08108d6"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:a710ae0764b082f586d60f5e5d08108d6"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="inversekinematics_8hpp.html#a710ae0764b082f586d60f5e5d08108d6">tinyrobotics::inverse_kinematics_bfgs</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const std::string &amp;target_link_name, const std::string &amp;source_link_name, const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;desired_pose, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; q0, const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;options)</td></tr>
+<tr class="memdesc:a710ae0764b082f586d60f5e5d08108d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves the inverse kinematics problem between two links using Broyden-Fletcher-Goldfarb-Shanno (BFGS).  <br /></td></tr>
+<tr class="separator:a710ae0764b082f586d60f5e5d08108d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53ab1c30659249fa82f16b761a49c076"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
 <tr class="memitem:a53ab1c30659249fa82f16b761a49c076"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="inversekinematics_8hpp.html#a53ab1c30659249fa82f16b761a49c076">tinyrobotics::inverse_kinematics</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;model, const std::string &amp;target_link_name, const std::string &amp;source_link_name, const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;desired_pose, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; q0, const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;options)</td></tr>
 <tr class="memdesc:a53ab1c30659249fa82f16b761a49c076"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves the inverse kinematics problem between two links using user specified method.  <br /></td></tr>
@@ -236,11 +236,11 @@ template&lt;typename Scalar , int nv&gt; </div>
 </td></tr>
 <tr><td class="fieldname"><a id="ae1c37b01731c99fdb401faf3e77833f2a71fd377f6e71b824af42b99798a00b5a" name="ae1c37b01731c99fdb401faf3e77833f2a71fd377f6e71b824af42b99798a00b5a"></a>NLOPT&#160;</td><td class="fielddoc"><p>NLopt method. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ae1c37b01731c99fdb401faf3e77833f2a3fd08a974520668d1c68630f786d02b7" name="ae1c37b01731c99fdb401faf3e77833f2a3fd08a974520668d1c68630f786d02b7"></a>NLOPT_AUTODIFF&#160;</td><td class="fielddoc"><p>NLopt method with autodiff gradient. </p>
-</td></tr>
 <tr><td class="fieldname"><a id="ae1c37b01731c99fdb401faf3e77833f2a1f058942f87b3559ca2adbc037f16a5c" name="ae1c37b01731c99fdb401faf3e77833f2a1f058942f87b3559ca2adbc037f16a5c"></a>LEVENBERG_MARQUARDT&#160;</td><td class="fielddoc"><p>Levenberg-Marquardt method. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ae1c37b01731c99fdb401faf3e77833f2a7f1a205245f67ce729c81494b447c56e" name="ae1c37b01731c99fdb401faf3e77833f2a7f1a205245f67ce729c81494b447c56e"></a>PARTICLE_SWARM&#160;</td><td class="fielddoc"><p>Particle swarm optimization method. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae1c37b01731c99fdb401faf3e77833f2a3f37d7bdfabf29c7996e9d2a2ce6cbcb" name="ae1c37b01731c99fdb401faf3e77833f2a3f37d7bdfabf29c7996e9d2a2ce6cbcb"></a>BFGS&#160;</td><td class="fielddoc"><p>BFGS method. </p>
 </td></tr>
 </table>
 
@@ -312,92 +312,6 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div><div class="memdoc">
 
 <p>Cost function for general inverse kinematics with analytical jacobian. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">model</td><td>tinyrobotics model. </td></tr>
-    <tr><td class="paramname">target_link_name</td><td>{t} Link to which the transform is computed. </td></tr>
-    <tr><td class="paramname">source_link_name</td><td>{s} Link from which the transform is computed. </td></tr>
-    <tr><td class="paramname">desired_pose</td><td>Desired pose of the target link in the source link frame. </td></tr>
-    <tr><td class="paramname">q0</td><td>Initial guess for the configuration vector. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Scalar</td><td>type of the tinyrobotics model. </td></tr>
-    <tr><td class="paramname">nq</td><td>Number of configuration coordinates (degrees of freedom). </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The configuration vector of the robot model which achieves the desired pose. </dd></dl>
-
-</div>
-</div>
-<a id="aba10d92b73eb4d734dde42c9ed19afb2" name="aba10d92b73eb4d734dde42c9ed19afb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba10d92b73eb4d734dde42c9ed19afb2">&#9670;&#160;</a></span>cost_autodiff()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Scalar , int nq&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Scalar tinyrobotics::cost_autodiff </td>
-          <td>(</td>
-          <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>q</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
-          <td class="paramname"><em>model</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>target_link_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>source_link_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;&#160;</td>
-          <td class="paramname"><em>desired_pose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>q0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>gradient</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
-          <td class="paramname"><em>options</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Cost function for general inverse kinematics with autodiff jacobian. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>tinyrobotics model. </td></tr>
@@ -595,6 +509,80 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div><div class="memdoc">
 
 <p>Solves the inverse kinematics problem between two links using user specified method. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>tinyrobotics model. </td></tr>
+    <tr><td class="paramname">target_link_name</td><td>{t} Link to which the transform is computed. </td></tr>
+    <tr><td class="paramname">source_link_name</td><td>{s} Link from which the transform is computed. </td></tr>
+    <tr><td class="paramname">desired_pose</td><td>Desired pose of the target link in the source link frame. </td></tr>
+    <tr><td class="paramname">q0</td><td>The initial guess for the configuration vector. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Scalar</td><td>type of the tinyrobotics model. </td></tr>
+    <tr><td class="paramname">nq</td><td>Number of configuration coordinates (degrees of freedom). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The configuration vector of the robot model which achieves the desired pose. </dd></dl>
+
+</div>
+</div>
+<a id="a710ae0764b082f586d60f5e5d08108d6" name="a710ae0764b082f586d60f5e5d08108d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a710ae0764b082f586d60f5e5d08108d6">&#9670;&#160;</a></span>inverse_kinematics_bfgs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::Matrix&lt; Scalar, nq, 1 &gt; tinyrobotics::inverse_kinematics_bfgs </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramname"><em>model</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>target_link_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>source_link_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &amp;&#160;</td>
+          <td class="paramname"><em>desired_pose</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td>
+          <td class="paramname"><em>q0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structtinyrobotics_1_1InverseKinematicsOptions.html">InverseKinematicsOptions</a>&lt; Scalar, nq &gt; &amp;&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Solves the inverse kinematics problem between two links using Broyden-Fletcher-Goldfarb-Shanno (BFGS). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>tinyrobotics model. </td></tr>

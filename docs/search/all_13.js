@@ -1,12 +1,9 @@
 var searchData=
 [
-  ['t_0',['T',['../structtinyrobotics_1_1Data.html#a1e33676fd0c1c326bcc6e889c0ab55d3',1,'tinyrobotics::Data']]],
-  ['tau_1',['tau',['../structtinyrobotics_1_1Data.html#a0cdc27783685cb9b8c941e37f9d1a1b0',1,'tinyrobotics::Data']]],
-  ['tinyrobotics_2',['tinyrobotics',['../index.html',1,'']]],
-  ['tolerance_3',['tolerance',['../structtinyrobotics_1_1InverseKinematicsOptions.html#adc2b0166d9e596bc8a830325b8a3cd72',1,'tinyrobotics::InverseKinematicsOptions']]],
-  ['total_5fenergy_4',['total_energy',['../structtinyrobotics_1_1Data.html#a154550c79f20a7be66605fdfe259ef36',1,'tinyrobotics::Data::total_energy'],['../dynamics_8hpp.html#a20814361cd1b5416dc47e3f119e0a2f0',1,'tinyrobotics::total_energy(Model&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;dq)']]],
-  ['transform_5ffrom_5fxml_5',['transform_from_xml',['../parser_8hpp.html#a7f7f57829237493f208da2e247e66468',1,'tinyrobotics']]],
-  ['translation_6',['translation',['../kinematics_8hpp.html#acdadcd0f74e66e590763595b2dd6d406',1,'tinyrobotics']]],
-  ['translation_5fto_5fspatial_7',['translation_to_spatial',['../math_8hpp.html#a5d51b01b8f74cf164eb6c25386851c9e',1,'tinyrobotics']]],
-  ['type_8',['type',['../structtinyrobotics_1_1Joint.html#ab6cfed578d48128ce576d515a3d88e9c',1,'tinyrobotics::Joint']]]
+  ['s_0',['S',['../structtinyrobotics_1_1Joint.html#af24c482710fa421c9a78988d1346eb81',1,'tinyrobotics::Joint::S'],['../structtinyrobotics_1_1Model.html#adbe60d3c0fd977f604f0108662da2b92',1,'tinyrobotics::Model::S']]],
+  ['show_5fdetails_1',['show_details',['../structtinyrobotics_1_1Model.html#a8f31fd3757c6b44a4a62a43f8c650e47',1,'tinyrobotics::Model']]],
+  ['skew_2',['skew',['../math_8hpp.html#a50bce602443823ecadc3b968b4438f93',1,'tinyrobotics::skew(const Eigen::Matrix&lt; Scalar, 3, 3 &gt; &amp;input)'],['../math_8hpp.html#a82471aad353f6b8f538f4e656b3d4453',1,'tinyrobotics::skew(const Eigen::Matrix&lt; Scalar, 3, 1 &gt; &amp;input)']]],
+  ['spatial_5fgravity_3',['spatial_gravity',['../structtinyrobotics_1_1Model.html#a935378cb1060004958550c7c387deb27',1,'tinyrobotics::Model']]],
+  ['spatial_5ftransform_5ffrom_5fxml_4',['spatial_transform_from_xml',['../parser_8hpp.html#af704551ba257f5803e081f4351214ad4',1,'tinyrobotics']]],
+  ['step_5fsize_5',['step_size',['../structtinyrobotics_1_1InverseKinematicsOptions.html#adddf8a4164cb40f9d3bf024d4f3f0743',1,'tinyrobotics::InverseKinematicsOptions']]]
 ];

@@ -121,9 +121,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>show_details</b> ()</
 <tr class="memitem:ac731d829a47352feb6b61c9ca188cddd"><td class="memItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#ac731d829a47352feb6b61c9ca188cddd">home_configuration</a> () const</td></tr>
 <tr class="memdesc:ac731d829a47352feb6b61c9ca188cddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a configuration vector for the model of all zeros.  <br /></td></tr>
 <tr class="separator:ac731d829a47352feb6b61c9ca188cddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7125164195f9af7b4e3ea60401bfc005"><td class="memItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#a7125164195f9af7b4e3ea60401bfc005">random_configuration</a> () const</td></tr>
-<tr class="memdesc:a7125164195f9af7b4e3ea60401bfc005"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a random configuration vector for the model.  <br /></td></tr>
-<tr class="separator:a7125164195f9af7b4e3ea60401bfc005"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb08bc08311f35a3c16b3f4b5762f00d"><td class="memItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#afb08bc08311f35a3c16b3f4b5762f00d">random_configuration</a> (Scalar range=M_PI) const</td></tr>
+<tr class="memdesc:afb08bc08311f35a3c16b3f4b5762f00d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a random configuration vector for the model.  <br /></td></tr>
+<tr class="separator:afb08bc08311f35a3c16b3f4b5762f00d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad22f6a00835cc3f3c3c4a876d0b1094f"><td class="memTemplParams" colspan="2">template&lt;typename NewScalar &gt; </td></tr>
 <tr class="memitem:ad22f6a00835cc3f3c3c4a876d0b1094f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; NewScalar, nq &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#ad22f6a00835cc3f3c3c4a876d0b1094f">cast</a> ()</td></tr>
 <tr class="memdesc:ad22f6a00835cc3f3c3c4a876d0b1094f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Casts the model to a new scalar type.  <br /></td></tr>
@@ -131,18 +131,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>show_details</b> ()</
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:acf30ac26ab2751ea2f9287520f501edf"><td class="memItemLeft" align="right" valign="top"><a id="acf30ac26ab2751ea2f9287520f501edf" name="acf30ac26ab2751ea2f9287520f501edf"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b> = &quot;&quot;</td></tr>
-<tr class="memdesc:acf30ac26ab2751ea2f9287520f501edf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the model. <br /></td></tr>
+<tr class="memitem:acf30ac26ab2751ea2f9287520f501edf"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#acf30ac26ab2751ea2f9287520f501edf">name</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:acf30ac26ab2751ea2f9287520f501edf"><td class="mdescLeft">&#160;</td><td class="mdescRight">**************** <a class="el" href="structtinyrobotics_1_1Model.html" title="A tinyrobotics model.">Model</a> Information ****************  <br /></td></tr>
 <tr class="separator:acf30ac26ab2751ea2f9287520f501edf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ea723f843ecbf6e41e6078ff2c3cdea"><td class="memItemLeft" align="right" valign="top"><a id="a0ea723f843ecbf6e41e6078ff2c3cdea" name="a0ea723f843ecbf6e41e6078ff2c3cdea"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>n_links</b> = 0</td></tr>
-<tr class="memdesc:a0ea723f843ecbf6e41e6078ff2c3cdea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of links in the model. <br /></td></tr>
-<tr class="separator:a0ea723f843ecbf6e41e6078ff2c3cdea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9a5d39162af33fa99933b95b5c7fb65"><td class="memItemLeft" align="right" valign="top"><a id="af9a5d39162af33fa99933b95b5c7fb65" name="af9a5d39162af33fa99933b95b5c7fb65"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>n_joints</b> = 0</td></tr>
-<tr class="memdesc:af9a5d39162af33fa99933b95b5c7fb65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of joints in the model. <br /></td></tr>
-<tr class="separator:af9a5d39162af33fa99933b95b5c7fb65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e61211ff65a9240b997089fe085cc70"><td class="memItemLeft" align="right" valign="top"><a id="a5e61211ff65a9240b997089fe085cc70" name="a5e61211ff65a9240b997089fe085cc70"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>n_q</b> = 0</td></tr>
 <tr class="memdesc:a5e61211ff65a9240b997089fe085cc70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of configuration coordinates (degrees of freedom) in the model. <br /></td></tr>
@@ -151,17 +142,17 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>n_q</b> = 0</td></tr>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>base_link_idx</b> = -1</td></tr>
 <tr class="memdesc:acf4c86df2ae52b860fd74cd3fdd10f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of the base link in the models links vector. <br /></td></tr>
 <tr class="separator:acf4c86df2ae52b860fd74cd3fdd10f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af78b803001197bf5d3df4d3ccfd5feae"><td class="memItemLeft" align="right" valign="top"><a id="af78b803001197bf5d3df4d3ccfd5feae" name="af78b803001197bf5d3df4d3ccfd5feae"></a>
-std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>q_idx</b> = {}</td></tr>
-<tr class="memdesc:af78b803001197bf5d3df4d3ccfd5feae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of indices of links in the models link vector that have a non-fixed joint. <br /></td></tr>
-<tr class="separator:af78b803001197bf5d3df4d3ccfd5feae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e79ad2924830786da405183d178f2c0"><td class="memItemLeft" align="right" valign="top"><a id="a0e79ad2924830786da405183d178f2c0" name="a0e79ad2924830786da405183d178f2c0"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>q_map</b> = {}</td></tr>
+<tr class="memdesc:a0e79ad2924830786da405183d178f2c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map to indices of links in the models link vector that have a non-fixed joints. <br /></td></tr>
+<tr class="separator:a0e79ad2924830786da405183d178f2c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00438fc0fd146458fa428fdc24b184ca"><td class="memItemLeft" align="right" valign="top"><a id="a00438fc0fd146458fa428fdc24b184ca" name="a00438fc0fd146458fa428fdc24b184ca"></a>
 std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>parent</b> = {}</td></tr>
-<tr class="memdesc:a00438fc0fd146458fa428fdc24b184ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of parent link indices of the links which are non-fixed. <br /></td></tr>
+<tr class="memdesc:a00438fc0fd146458fa428fdc24b184ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of parent link indices of the links which have a non-fixed joints. <br /></td></tr>
 <tr class="separator:a00438fc0fd146458fa428fdc24b184ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac126fa01c9b0245cbdf0474e3f04aa89"><td class="memItemLeft" align="right" valign="top"><a id="ac126fa01c9b0245cbdf0474e3f04aa89" name="ac126fa01c9b0245cbdf0474e3f04aa89"></a>
 Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>gravity</b> = {0, 0, -9.81}</td></tr>
-<tr class="memdesc:ac126fa01c9b0245cbdf0474e3f04aa89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gravitational acceleration experienced by model. <br /></td></tr>
+<tr class="memdesc:ac126fa01c9b0245cbdf0474e3f04aa89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gravitational acceleration vector experienced by model. <br /></td></tr>
 <tr class="separator:ac126fa01c9b0245cbdf0474e3f04aa89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a333976d153de4340c3d3999fb0c56920"><td class="memItemLeft" align="right" valign="top"><a id="a333976d153de4340c3d3999fb0c56920" name="a333976d153de4340c3d3999fb0c56920"></a>
 Scalar&#160;</td><td class="memItemRight" valign="bottom"><b>mass</b> = 0</td></tr>
@@ -171,14 +162,91 @@ Scalar&#160;</td><td class="memItemRight" valign="bottom"><b>mass</b> = 0</td></
 std::vector&lt; <a class="el" href="structtinyrobotics_1_1Link.html">Link</a>&lt; Scalar &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>links</b> = {}</td></tr>
 <tr class="memdesc:afc361832b63a01e3eb674c79fc12982e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of links in the model. <br /></td></tr>
 <tr class="separator:afc361832b63a01e3eb674c79fc12982e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b1348ae6fe9c222b386cd4d82936d61"><td class="memItemLeft" align="right" valign="top"><a id="a3b1348ae6fe9c222b386cd4d82936d61" name="a3b1348ae6fe9c222b386cd4d82936d61"></a>
-std::vector&lt; <a class="el" href="structtinyrobotics_1_1Joint.html">Joint</a>&lt; Scalar &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>joints</b> = {}</td></tr>
-<tr class="memdesc:a3b1348ae6fe9c222b386cd4d82936d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of joints in the model. <br /></td></tr>
-<tr class="separator:a3b1348ae6fe9c222b386cd4d82936d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28dc9be1ef0942cb0c57763967ea4fdd"><td class="memItemLeft" align="right" valign="top"><a id="a28dc9be1ef0942cb0c57763967ea4fdd" name="a28dc9be1ef0942cb0c57763967ea4fdd"></a>
-<a class="el" href="structtinyrobotics_1_1Data.html">Data</a>&lt; Scalar, nq &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>data</b></td></tr>
-<tr class="memdesc:a28dc9be1ef0942cb0c57763967ea4fdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the results of the models algorithms. <br /></td></tr>
-<tr class="separator:a28dc9be1ef0942cb0c57763967ea4fdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7d166a928b5a17bc2393aede2f8b116"><td class="memItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, nq &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#ab7d166a928b5a17bc2393aede2f8b116">mass_matrix</a> = Eigen::Matrix&lt;Scalar, nq, nq&gt;::Zero()</td></tr>
+<tr class="memdesc:ab7d166a928b5a17bc2393aede2f8b116"><td class="mdescLeft">&#160;</td><td class="mdescRight">**************** Pre-allcoated variables for kinematics algorithms ****************  <br /></td></tr>
+<tr class="separator:ab7d166a928b5a17bc2393aede2f8b116"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28ad234ec4b930b10589e241dc7be593"><td class="memItemLeft" align="right" valign="top"><a id="a28ad234ec4b930b10589e241dc7be593" name="a28ad234ec4b930b10589e241dc7be593"></a>
+Scalar&#160;</td><td class="memItemRight" valign="bottom"><b>potential_energy</b> = 0</td></tr>
+<tr class="memdesc:a28ad234ec4b930b10589e241dc7be593"><td class="mdescLeft">&#160;</td><td class="mdescRight">Potential energy. <br /></td></tr>
+<tr class="separator:a28ad234ec4b930b10589e241dc7be593"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6c04c3f315d557747fecf12ec557390"><td class="memItemLeft" align="right" valign="top"><a id="ad6c04c3f315d557747fecf12ec557390" name="ad6c04c3f315d557747fecf12ec557390"></a>
+std::vector&lt; Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>forward_kinematics</b> = {}</td></tr>
+<tr class="memdesc:ad6c04c3f315d557747fecf12ec557390"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of forward kinematics data. <br /></td></tr>
+<tr class="separator:ad6c04c3f315d557747fecf12ec557390"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7222743522f2dceceba0124e29cad05d"><td class="memItemLeft" align="right" valign="top"><a id="a7222743522f2dceceba0124e29cad05d" name="a7222743522f2dceceba0124e29cad05d"></a>
+std::vector&lt; Eigen::Transform&lt; Scalar, 3, Eigen::Isometry &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>forward_kinematics_com</b> = {}</td></tr>
+<tr class="memdesc:a7222743522f2dceceba0124e29cad05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector of forward kinematics com data. <br /></td></tr>
+<tr class="separator:a7222743522f2dceceba0124e29cad05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac05d8a0df3ad50f9c652dda73ae1876e"><td class="memItemLeft" align="right" valign="top"><a id="ac05d8a0df3ad50f9c652dda73ae1876e" name="ac05d8a0df3ad50f9c652dda73ae1876e"></a>
+Eigen::Matrix&lt; Scalar, 3, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>center_of_mass</b> = Eigen::Matrix&lt;Scalar, 3, 1&gt;::Zero()</td></tr>
+<tr class="memdesc:ac05d8a0df3ad50f9c652dda73ae1876e"><td class="mdescLeft">&#160;</td><td class="mdescRight">center of mass position <br /></td></tr>
+<tr class="separator:ac05d8a0df3ad50f9c652dda73ae1876e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32e095211201ef56b8934879d13c700c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 6 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#a32e095211201ef56b8934879d13c700c">Xup</a></td></tr>
+<tr class="memdesc:a32e095211201ef56b8934879d13c700c"><td class="mdescLeft">&#160;</td><td class="mdescRight">**************** Pre-allcoated variables for dynamics algorithms ****************  <br /></td></tr>
+<tr class="separator:a32e095211201ef56b8934879d13c700c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbe60d3c0fd977f604f0108662da2b92"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#adbe60d3c0fd977f604f0108662da2b92">S</a></td></tr>
+<tr class="memdesc:adbe60d3c0fd977f604f0108662da2b92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Motion subspace matrices for the joints.  <br /></td></tr>
+<tr class="separator:adbe60d3c0fd977f604f0108662da2b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bf4cd5b7031b2645ce2f7da805a8518"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#a4bf4cd5b7031b2645ce2f7da805a8518">v</a></td></tr>
+<tr class="memdesc:a4bf4cd5b7031b2645ce2f7da805a8518"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spatial velocities of the robot links.  <br /></td></tr>
+<tr class="separator:a4bf4cd5b7031b2645ce2f7da805a8518"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa79a566cb8dfecb5faa4cc42a29b70d0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#aa79a566cb8dfecb5faa4cc42a29b70d0">c</a></td></tr>
+<tr class="memdesc:aa79a566cb8dfecb5faa4cc42a29b70d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spatial acceleration bias terms for the robot links.  <br /></td></tr>
+<tr class="separator:aa79a566cb8dfecb5faa4cc42a29b70d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0145bb1abcaf63c8fc003a96f18809c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 6 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#ac0145bb1abcaf63c8fc003a96f18809c">IA</a></td></tr>
+<tr class="memdesc:ac0145bb1abcaf63c8fc003a96f18809c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Articulated-body inertia matrices for the robot links.  <br /></td></tr>
+<tr class="separator:ac0145bb1abcaf63c8fc003a96f18809c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad08d4785fc86fbb04016220c2740e40c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#ad08d4785fc86fbb04016220c2740e40c">pA</a></td></tr>
+<tr class="memdesc:ad08d4785fc86fbb04016220c2740e40c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Articulated-body forces for the robot links.  <br /></td></tr>
+<tr class="separator:ad08d4785fc86fbb04016220c2740e40c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a722717198839ee94ed2aeb987899eab7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#a722717198839ee94ed2aeb987899eab7">U</a></td></tr>
+<tr class="memdesc:a722717198839ee94ed2aeb987899eab7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spatial force projections for the joints.  <br /></td></tr>
+<tr class="separator:a722717198839ee94ed2aeb987899eab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ae58a6b6cb0611112b880fb211ac174"><td class="memItemLeft" align="right" valign="top"><a id="a4ae58a6b6cb0611112b880fb211ac174" name="a4ae58a6b6cb0611112b880fb211ac174"></a>
+std::vector&lt; Scalar &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>d</b> = std::vector&lt;Scalar&gt;(nq, 0)</td></tr>
+<tr class="memdesc:a4ae58a6b6cb0611112b880fb211ac174"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structtinyrobotics_1_1Joint.html" title="Represents a joint in a tinyrobotics model which connects two links.">Joint</a> force inertia terms for the robot links. <br /></td></tr>
+<tr class="separator:a4ae58a6b6cb0611112b880fb211ac174"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada3bb00fc8221d86c7bf29d92c885f1c"><td class="memItemLeft" align="right" valign="top"><a id="ada3bb00fc8221d86c7bf29d92c885f1c" name="ada3bb00fc8221d86c7bf29d92c885f1c"></a>
+std::vector&lt; Scalar &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>u</b> = std::vector&lt;Scalar&gt;(nq, 0)</td></tr>
+<tr class="memdesc:ada3bb00fc8221d86c7bf29d92c885f1c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structtinyrobotics_1_1Joint.html" title="Represents a joint in a tinyrobotics model which connects two links.">Joint</a> force bias terms for the robot links. <br /></td></tr>
+<tr class="separator:ada3bb00fc8221d86c7bf29d92c885f1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecc9e7befab14d563e19759c2d1e12c2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#aecc9e7befab14d563e19759c2d1e12c2">a</a></td></tr>
+<tr class="memdesc:aecc9e7befab14d563e19759c2d1e12c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spatial accelerations of the robot links.  <br /></td></tr>
+<tr class="separator:aecc9e7befab14d563e19759c2d1e12c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adced9389d2dffd96b4df1f8f648dc5a5"><td class="memItemLeft" align="right" valign="top"><a id="adced9389d2dffd96b4df1f8f648dc5a5" name="adced9389d2dffd96b4df1f8f648dc5a5"></a>
+Eigen::Matrix&lt; Scalar, 6, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vJ</b> = Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero()</td></tr>
+<tr class="memdesc:adced9389d2dffd96b4df1f8f648dc5a5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structtinyrobotics_1_1Joint.html" title="Represents a joint in a tinyrobotics model which connects two links.">Joint</a> spatial velocities. <br /></td></tr>
+<tr class="separator:adced9389d2dffd96b4df1f8f648dc5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb5e08450efc0bab1d3502b2295b600f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#acb5e08450efc0bab1d3502b2295b600f">fvp</a></td></tr>
+<tr class="memdesc:acb5e08450efc0bab1d3502b2295b600f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structtinyrobotics_1_1Joint.html" title="Represents a joint in a tinyrobotics model which connects two links.">Joint</a> spatial forces.  <br /></td></tr>
+<tr class="separator:acb5e08450efc0bab1d3502b2295b600f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3328e3b8b982f1a403eb40ea0eb9f74"><td class="memItemLeft" align="right" valign="top"><a id="ad3328e3b8b982f1a403eb40ea0eb9f74" name="ad3328e3b8b982f1a403eb40ea0eb9f74"></a>
+Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>C</b> = Eigen::Matrix&lt;Scalar, nq, 1&gt;::Zero()</td></tr>
+<tr class="memdesc:ad3328e3b8b982f1a403eb40ea0eb9f74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bias force vector. <br /></td></tr>
+<tr class="separator:ad3328e3b8b982f1a403eb40ea0eb9f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a864aca2ccab551c68f894a2e4f40407b"><td class="memItemLeft" align="right" valign="top"><a id="a864aca2ccab551c68f894a2e4f40407b" name="a864aca2ccab551c68f894a2e4f40407b"></a>
+Eigen::Matrix&lt; Scalar, 6, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fh</b> = Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero()</td></tr>
+<tr class="memdesc:a864aca2ccab551c68f894a2e4f40407b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Force term for intermediately storing the result. <br /></td></tr>
+<tr class="separator:a864aca2ccab551c68f894a2e4f40407b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af05e1d01f8326e74e39806e5e96b31f7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 6 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyrobotics_1_1Model.html#af05e1d01f8326e74e39806e5e96b31f7">IC</a></td></tr>
+<tr class="memdesc:af05e1d01f8326e74e39806e5e96b31f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Articulated-body inertias.  <br /></td></tr>
+<tr class="separator:af05e1d01f8326e74e39806e5e96b31f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a935378cb1060004958550c7c387deb27"><td class="memItemLeft" align="right" valign="top"><a id="a935378cb1060004958550c7c387deb27" name="a935378cb1060004958550c7c387deb27"></a>
+Eigen::Matrix&lt; Scalar, 6, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>spatial_gravity</b> = Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero()</td></tr>
+<tr class="memdesc:a935378cb1060004958550c7c387deb27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gravity vector in spatial coordinates. <br /></td></tr>
+<tr class="separator:a935378cb1060004958550c7c387deb27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1967d6049d3ae71d8d89efe6c03ad85f"><td class="memItemLeft" align="right" valign="top"><a id="a1967d6049d3ae71d8d89efe6c03ad85f" name="a1967d6049d3ae71d8d89efe6c03ad85f"></a>
+Eigen::Matrix&lt; Scalar, 6, nq &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>J</b> = Eigen::Matrix&lt;Scalar, 6, nq&gt;::Zero()</td></tr>
+<tr class="memdesc:a1967d6049d3ae71d8d89efe6c03ad85f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobian. <br /></td></tr>
+<tr class="separator:a1967d6049d3ae71d8d89efe6c03ad85f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa15b089f87eeb271ed9a3f56f73d42a1"><td class="memItemLeft" align="right" valign="top"><a id="aa15b089f87eeb271ed9a3f56f73d42a1" name="aa15b089f87eeb271ed9a3f56f73d42a1"></a>
+Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ddq</b> = Eigen::Matrix&lt;Scalar, nq, 1&gt;::Zero()</td></tr>
+<tr class="memdesc:aa15b089f87eeb271ed9a3f56f73d42a1"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structtinyrobotics_1_1Joint.html" title="Represents a joint in a tinyrobotics model which connects two links.">Joint</a> acceleration. <br /></td></tr>
+<tr class="separator:aa15b089f87eeb271ed9a3f56f73d42a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad075f8c20f949014e23c86eeb05e0859"><td class="memItemLeft" align="right" valign="top"><a id="ad075f8c20f949014e23c86eeb05e0859" name="ad075f8c20f949014e23c86eeb05e0859"></a>
+Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tau</b> = Eigen::Matrix&lt;Scalar, nq, 1&gt;::Zero()</td></tr>
+<tr class="memdesc:ad075f8c20f949014e23c86eeb05e0859"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structtinyrobotics_1_1Joint.html" title="Represents a joint in a tinyrobotics model which connects two links.">Joint</a> torque/force. <br /></td></tr>
+<tr class="separator:ad075f8c20f949014e23c86eeb05e0859"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Scalar, int nq&gt;<br />
@@ -370,8 +438,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a7125164195f9af7b4e3ea60401bfc005" name="a7125164195f9af7b4e3ea60401bfc005"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7125164195f9af7b4e3ea60401bfc005">&#9670;&#160;</a></span>random_configuration()</h2>
+<a id="afb08bc08311f35a3c16b3f4b5762f00d" name="afb08bc08311f35a3c16b3f4b5762f00d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb08bc08311f35a3c16b3f4b5762f00d">&#9670;&#160;</a></span>random_configuration()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -384,7 +452,8 @@ template&lt;typename Scalar , int nq&gt; </div>
         <tr>
           <td class="memname">Eigen::Matrix&lt; Scalar, nq, 1 &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::random_configuration </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">Scalar&#160;</td>
+          <td class="paramname"><em>range</em> = <code>M_PI</code></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -396,7 +465,253 @@ template&lt;typename Scalar , int nq&gt; </div>
 </div><div class="memdoc">
 
 <p>Get a random configuration vector for the model. </p>
-<dl class="section return"><dt>Returns</dt><dd>Random configuration vector. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">range</td><td>Range of the random values. Values will be between -range and range. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Configuration vector of random values between -pi and pi. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aecc9e7befab14d563e19759c2d1e12c2" name="aecc9e7befab14d563e19759c2d1e12c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecc9e7befab14d563e19759c2d1e12c2">&#9670;&#160;</a></span>a</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::a</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Spatial accelerations of the robot links. </p>
+
+</div>
+</div>
+<a id="aa79a566cb8dfecb5faa4cc42a29b70d0" name="aa79a566cb8dfecb5faa4cc42a29b70d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa79a566cb8dfecb5faa4cc42a29b70d0">&#9670;&#160;</a></span>c</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::c</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Spatial acceleration bias terms for the robot links. </p>
+
+</div>
+</div>
+<a id="acb5e08450efc0bab1d3502b2295b600f" name="acb5e08450efc0bab1d3502b2295b600f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb5e08450efc0bab1d3502b2295b600f">&#9670;&#160;</a></span>fvp</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::fvp</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero())</div>
+</div><!-- fragment -->
+<p><a class="el" href="structtinyrobotics_1_1Joint.html" title="Represents a joint in a tinyrobotics model which connects two links.">Joint</a> spatial forces. </p>
+
+</div>
+</div>
+<a id="ac0145bb1abcaf63c8fc003a96f18809c" name="ac0145bb1abcaf63c8fc003a96f18809c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0145bb1abcaf63c8fc003a96f18809c">&#9670;&#160;</a></span>IA</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 6&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::IA</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 6&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 6&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Articulated-body inertia matrices for the robot links. </p>
+
+</div>
+</div>
+<a id="af05e1d01f8326e74e39806e5e96b31f7" name="af05e1d01f8326e74e39806e5e96b31f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af05e1d01f8326e74e39806e5e96b31f7">&#9670;&#160;</a></span>IC</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 6&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::IC</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 6&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 6&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Articulated-body inertias. </p>
+
+</div>
+</div>
+<a id="ab7d166a928b5a17bc2393aede2f8b116" name="ab7d166a928b5a17bc2393aede2f8b116"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7d166a928b5a17bc2393aede2f8b116">&#9670;&#160;</a></span>mass_matrix</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::Matrix&lt;Scalar, nq, nq&gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::mass_matrix = Eigen::Matrix&lt;Scalar, nq, nq&gt;::Zero()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>**************** Pre-allcoated variables for kinematics algorithms **************** </p>
+<p>Mass matrix </p>
+
+</div>
+</div>
+<a id="acf30ac26ab2751ea2f9287520f501edf" name="acf30ac26ab2751ea2f9287520f501edf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf30ac26ab2751ea2f9287520f501edf">&#9670;&#160;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::name = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>**************** <a class="el" href="structtinyrobotics_1_1Model.html" title="A tinyrobotics model.">Model</a> Information **************** </p>
+<p>Name of the model </p>
+
+</div>
+</div>
+<a id="ad08d4785fc86fbb04016220c2740e40c" name="ad08d4785fc86fbb04016220c2740e40c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad08d4785fc86fbb04016220c2740e40c">&#9670;&#160;</a></span>pA</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::pA</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Articulated-body forces for the robot links. </p>
+
+</div>
+</div>
+<a id="adbe60d3c0fd977f604f0108662da2b92" name="adbe60d3c0fd977f604f0108662da2b92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbe60d3c0fd977f604f0108662da2b92">&#9670;&#160;</a></span>S</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::S</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Motion subspace matrices for the joints. </p>
+
+</div>
+</div>
+<a id="a722717198839ee94ed2aeb987899eab7" name="a722717198839ee94ed2aeb987899eab7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a722717198839ee94ed2aeb987899eab7">&#9670;&#160;</a></span>U</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::U</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Spatial force projections for the joints. </p>
+
+</div>
+</div>
+<a id="a4bf4cd5b7031b2645ce2f7da805a8518" name="a4bf4cd5b7031b2645ce2f7da805a8518"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bf4cd5b7031b2645ce2f7da805a8518">&#9670;&#160;</a></span>v</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::v</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 1&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 1&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>Spatial velocities of the robot links. </p>
+
+</div>
+</div>
+<a id="a32e095211201ef56b8934879d13c700c" name="a32e095211201ef56b8934879d13c700c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32e095211201ef56b8934879d13c700c">&#9670;&#160;</a></span>Xup</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Scalar , int nq&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 6&gt; &gt; <a class="el" href="structtinyrobotics_1_1Model.html">tinyrobotics::Model</a>&lt; Scalar, nq &gt;::Xup</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">            std::vector&lt;Eigen::Matrix&lt;Scalar, 6, 6&gt;&gt;(nq, Eigen::Matrix&lt;Scalar, 6, 6&gt;::Zero())</div>
+</div><!-- fragment -->
+<p>**************** Pre-allcoated variables for dynamics algorithms **************** </p>
+<p>Spatial transforms from parent to child links </p>
 
 </div>
 </div>
