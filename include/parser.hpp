@@ -142,9 +142,7 @@ namespace tinyrobotics {
             link.name = std::string(name_char);
         }
         else {
-            std::ostringstream error_msg;
-            error_msg << "Error! Link without a name attribute detected!";
-            throw std::runtime_error(error_msg.str());
+            throw std::runtime_error("Error! Link without a name attribute detected!");
         }
 
         tinyxml2::XMLElement* i = xml->FirstChildElement("inertial");
@@ -154,6 +152,7 @@ namespace tinyrobotics {
             if (o != nullptr) {
                 link.center_of_mass = transform_from_xml<Scalar>(o);
             }
+
             // Add the mass to the link
             tinyxml2::XMLElement* mass_xml = i->FirstChildElement("mass");
             if (mass_xml != nullptr) {
@@ -162,26 +161,22 @@ namespace tinyrobotics {
                         link.mass = std::stod(mass_xml->Attribute("value"));
                     }
                     catch (std::invalid_argument& e) {
-                        std::ostringstream error_msg;
-                        error_msg << "Error while parsing link '" << get_parent_link_name(i) << "': inertial mass ["
-                                  << mass_xml->Attribute("value") << "] is not a valid double: " << e.what() << "!";
-                        throw std::runtime_error(error_msg.str());
+                        throw std::runtime_error("Error while parsing link '" + std::string(get_parent_link_name(i))
+                                                 + "': inertial mass [" + mass_xml->Attribute("value")
+                                                 + "] is not a valid double: " + e.what() + "!");
                     }
                 }
                 else {
-                    std::ostringstream error_msg;
-                    error_msg << "Error while parsing link '" << get_parent_link_name(i)
-                              << "' <mass> element must have a value attribute!";
-                    throw std::runtime_error(error_msg.str());
+                    throw std::runtime_error("Error while parsing link '" + std::string(get_parent_link_name(i))
+                                             + "' <mass> element must have a value attribute!");
                 }
             }
             else {
-                std::ostringstream error_msg;
-                error_msg << "Error while parsing link '" << get_parent_link_name(i)
-                          << "' inertial element must have a <mass> element!";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error while parsing link '" + std::string(get_parent_link_name(i))
+                                         + "' inertial element must have a <mass> element!");
             }
         }
+
         // Add the inertia to the link
         tinyxml2::XMLElement* inertia_xml = i->FirstChildElement("inertia");
         if (inertia_xml != nullptr) {
@@ -215,17 +210,13 @@ namespace tinyrobotics {
                 }
             }
             else {
-                std::ostringstream error_msg;
-                error_msg << "Error while parsing link '" << get_parent_link_name(i)
-                          << "' <inertia> element must have ixx,ixy,ixz,iyy,iyz,izz attributes!";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error while parsing link '" + std::string(get_parent_link_name(i))
+                                         + "' <inertia> element must have ixx,ixy,ixz,iyy,iyz,izz attributes!");
             }
         }
         else {
-            std::ostringstream error_msg;
-            error_msg << "Error while parsing link '" << get_parent_link_name(i)
-                      << "' inertial element must have a <inertia> element!";
-            throw std::runtime_error(error_msg.str());
+            throw std::runtime_error("Error while parsing link '" + std::string(get_parent_link_name(i))
+                                     + "' inertial element must have a <inertia> element!");
         }
 
         // Add the spatial inertia to the link
@@ -327,7 +318,7 @@ namespace tinyrobotics {
                 joint.S << 0, 0, 0, joint.axis;
             }
         }
-
+        // TODO: Add additional joint properties
         // tinyxml2::XMLElement *prop_xml = xml->FirstChildElement("dynamics");
         // if (prop_xml != nullptr) {
         //     joint.dynamics = JointDynamics::fromXml(prop_xml);
@@ -372,43 +363,32 @@ namespace tinyrobotics {
             // Check that the joint has a parent link and a child link specified
             std::string parent_link_name = joint.parent_link_name;
             if (parent_link_name.empty()) {
-                std::ostringstream error_msg;
-                error_msg << "Error while constructing model! Joint [" << joint.name
-                          << "] is missing a parent link specification.";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error while constructing model! Joint [" + joint.name
+                                         + "] is missing a parent link specification.");
             }
             std::string child_link_name = joint.child_link_name;
             if (child_link_name.empty()) {
-                std::ostringstream error_msg;
-                error_msg << "Error while constructing model! Joint [" << joint.name
-                          << "] is missing a child link specification.";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error while constructing model! Joint [" + joint.name
+                                         + "] is missing a child link specification.");
             }
 
             // Get references to the child and parent links associated with the joint
             auto child_link = model.get_link(child_link_name);
             if (child_link.idx == -1) {
-                std::ostringstream error_msg;
-                error_msg << "Error while constructing model! Child link [" << child_link_name << "] of joint ["
-                          << joint.name << "] not found";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error while constructing model! Child link [" + child_link_name
+                                         + "] of joint [" + joint.name + "] not found");
             }
 
             auto parent_link = model.get_link(parent_link_name);
             if (parent_link.idx == -1) {
-                std::ostringstream error_msg;
-                error_msg << "Error while constructing model! Parent link [" << parent_link_name << "] of joint ["
-                          << joint.name << "] not found";
-                throw std::runtime_error(error_msg.str());
+                throw std::runtime_error("Error while constructing model! Parent link [" + parent_link_name
+                                         + "] of joint [" + joint.name + "] not found");
             }
 
-            // Set the parent link index for the child link and add the child link index to the parent link's list
-            // of child link indices
             child_link.parent = parent_link.idx;
             parent_link.add_child_link_idx(child_link.idx);
 
-            // If the joint is of type REVOLUTE or PRISMATIC, add its index in the configuration vector and
-            // increment the configuration vector size
+            // Only if the joint is of type REVOLUTE or PRISMATIC, add its index in the configuration vector
             if (joint.type == JointType::REVOLUTE || joint.type == JointType::PRISMATIC) {
                 joint.idx = model.n_q;
                 model.n_q++;
