@@ -128,18 +128,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ac0232f81d6981977f21c55f064d93938"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dynamics_8hpp.html#ac0232f81d6981977f21c55f064d93938">tinyrobotics::apply_external_forces</a> (const <a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;m, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 6 &gt; &gt; &amp;Xup, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_in, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_ext)</td></tr>
 <tr class="memdesc:ac0232f81d6981977f21c55f064d93938"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply external forces to the tinyrobotics model.  <br /></td></tr>
 <tr class="separator:ac0232f81d6981977f21c55f064d93938"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18284242db463272c8d3c8837f104bb8"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a18284242db463272c8d3c8837f104bb8"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dynamics_8hpp.html#a18284242db463272c8d3c8837f104bb8">tinyrobotics::forward_dynamics</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;qd, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;tau, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_ext={})</td></tr>
-<tr class="memdesc:a18284242db463272c8d3c8837f104bb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the forward dynamics of the tinyrobotics model via Articulated-Body Algorithm.  <br /></td></tr>
-<tr class="separator:a18284242db463272c8d3c8837f104bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7aca14467bbf3a6c2bea3d266fc31ef9"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:a7aca14467bbf3a6c2bea3d266fc31ef9"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dynamics_8hpp.html#a7aca14467bbf3a6c2bea3d266fc31ef9">tinyrobotics::forward_dynamics_crb</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;qd, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;tau, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_ext={})</td></tr>
-<tr class="memdesc:a7aca14467bbf3a6c2bea3d266fc31ef9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the forward dynamics of the tinyrobotics model via Composite-Rigid-Body Algorithm.  <br /></td></tr>
-<tr class="separator:a7aca14467bbf3a6c2bea3d266fc31ef9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf55a06f27a5305eb33b7bbd39462acd"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
-<tr class="memitem:acf55a06f27a5305eb33b7bbd39462acd"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dynamics_8hpp.html#acf55a06f27a5305eb33b7bbd39462acd">tinyrobotics::inverse_dynamics</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;qd, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;qdd, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_ext={})</td></tr>
-<tr class="memdesc:acf55a06f27a5305eb33b7bbd39462acd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the inverse dynamics of a tinyrobotics model.  <br /></td></tr>
-<tr class="separator:acf55a06f27a5305eb33b7bbd39462acd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4c6d72c226fc5b7eb4b1891b8966cc9"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:ad4c6d72c226fc5b7eb4b1891b8966cc9"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dynamics_8hpp.html#ad4c6d72c226fc5b7eb4b1891b8966cc9">tinyrobotics::forward_dynamics</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;dq, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;tau, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_ext={})</td></tr>
+<tr class="memdesc:ad4c6d72c226fc5b7eb4b1891b8966cc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the forward dynamics of the tinyrobotics model via Articulated-Body Algorithm.  <br /></td></tr>
+<tr class="separator:ad4c6d72c226fc5b7eb4b1891b8966cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad69b19d4df5e760b0ef883d3e487402c"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:ad69b19d4df5e760b0ef883d3e487402c"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dynamics_8hpp.html#ad69b19d4df5e760b0ef883d3e487402c">tinyrobotics::forward_dynamics_crb</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;dq, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;tau, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_ext={})</td></tr>
+<tr class="memdesc:ad69b19d4df5e760b0ef883d3e487402c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the forward dynamics of the tinyrobotics model via Composite-Rigid-Body Algorithm.  <br /></td></tr>
+<tr class="separator:ad69b19d4df5e760b0ef883d3e487402c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe82e4763c1a0825d956de448cef4537"><td class="memTemplParams" colspan="2">template&lt;typename Scalar , int nq&gt; </td></tr>
+<tr class="memitem:afe82e4763c1a0825d956de448cef4537"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar, nq, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dynamics_8hpp.html#afe82e4763c1a0825d956de448cef4537">tinyrobotics::inverse_dynamics</a> (<a class="el" href="structtinyrobotics_1_1Model.html">Model</a>&lt; Scalar, nq &gt; &amp;m, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;q, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;dq, const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;ddq, const std::vector&lt; Eigen::Matrix&lt; Scalar, 6, 1 &gt; &gt; &amp;f_ext={})</td></tr>
+<tr class="memdesc:afe82e4763c1a0825d956de448cef4537"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the inverse dynamics of a tinyrobotics model.  <br /></td></tr>
+<tr class="separator:afe82e4763c1a0825d956de448cef4537"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains functions for computing the dynamics of a tinyrobotics model. </p>
@@ -198,8 +198,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a18284242db463272c8d3c8837f104bb8" name="a18284242db463272c8d3c8837f104bb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18284242db463272c8d3c8837f104bb8">&#9670;&#160;</a></span>forward_dynamics()</h2>
+<a id="ad4c6d72c226fc5b7eb4b1891b8966cc9" name="ad4c6d72c226fc5b7eb4b1891b8966cc9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4c6d72c226fc5b7eb4b1891b8966cc9">&#9670;&#160;</a></span>forward_dynamics()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,7 +222,7 @@ template&lt;typename Scalar , int nq&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>qd</em>, </td>
+          <td class="paramname"><em>dq</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -249,7 +249,7 @@ template&lt;typename Scalar , int nq&gt; </div>
   <table class="params">
     <tr><td class="paramname">m</td><td>tinyrobotics model. </td></tr>
     <tr><td class="paramname">q</td><td>Joint configuration of the robot. </td></tr>
-    <tr><td class="paramname">qd</td><td>Joint velocity of the robot. </td></tr>
+    <tr><td class="paramname">dq</td><td>Joint velocity of the robot. </td></tr>
     <tr><td class="paramname">tau</td><td>Joint torque of the robot. </td></tr>
     <tr><td class="paramname">f_ext</td><td>External forces acting on the robot. </td></tr>
   </table>
@@ -259,8 +259,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="a7aca14467bbf3a6c2bea3d266fc31ef9" name="a7aca14467bbf3a6c2bea3d266fc31ef9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7aca14467bbf3a6c2bea3d266fc31ef9">&#9670;&#160;</a></span>forward_dynamics_crb()</h2>
+<a id="ad69b19d4df5e760b0ef883d3e487402c" name="ad69b19d4df5e760b0ef883d3e487402c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad69b19d4df5e760b0ef883d3e487402c">&#9670;&#160;</a></span>forward_dynamics_crb()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -283,7 +283,7 @@ template&lt;typename Scalar , int nq&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>qd</em>, </td>
+          <td class="paramname"><em>dq</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -310,7 +310,7 @@ template&lt;typename Scalar , int nq&gt; </div>
   <table class="params">
     <tr><td class="paramname">m</td><td>tinyrobotics model. </td></tr>
     <tr><td class="paramname">q</td><td>Joint configuration of the robot. </td></tr>
-    <tr><td class="paramname">qd</td><td>Joint velocity of the robot. </td></tr>
+    <tr><td class="paramname">dq</td><td>Joint velocity of the robot. </td></tr>
     <tr><td class="paramname">tau</td><td>Joint torque of the robot. </td></tr>
     <tr><td class="paramname">f_ext</td><td>External forces acting on the robot. </td></tr>
   </table>
@@ -320,8 +320,8 @@ template&lt;typename Scalar , int nq&gt; </div>
 
 </div>
 </div>
-<a id="acf55a06f27a5305eb33b7bbd39462acd" name="acf55a06f27a5305eb33b7bbd39462acd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf55a06f27a5305eb33b7bbd39462acd">&#9670;&#160;</a></span>inverse_dynamics()</h2>
+<a id="afe82e4763c1a0825d956de448cef4537" name="afe82e4763c1a0825d956de448cef4537"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe82e4763c1a0825d956de448cef4537">&#9670;&#160;</a></span>inverse_dynamics()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -344,13 +344,13 @@ template&lt;typename Scalar , int nq&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>qd</em>, </td>
+          <td class="paramname"><em>dq</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Eigen::Matrix&lt; Scalar, nq, 1 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>qdd</em>, </td>
+          <td class="paramname"><em>ddq</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -371,7 +371,7 @@ template&lt;typename Scalar , int nq&gt; </div>
   <table class="params">
     <tr><td class="paramname">m</td><td>tinyrobotics model. </td></tr>
     <tr><td class="paramname">q</td><td>Joint configuration of the robot. </td></tr>
-    <tr><td class="paramname">qd</td><td>Joint velocity of the robot. </td></tr>
+    <tr><td class="paramname">dq</td><td>Joint velocity of the robot. </td></tr>
     <tr><td class="paramname">f_ext</td><td>External forces acting on the robot. </td></tr>
   </table>
   </dd>

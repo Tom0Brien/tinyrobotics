@@ -138,7 +138,7 @@ Features</h1>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Install</h1>
 <h2><a class="anchor" id="autotoc_md2"></a>
-1. Install Dependencies</h2>
+1. Install dependencies</h2>
 <ul>
 <li><a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">Eigen3</a></li>
 <li><a href="https://github.com/catchorg/Catch2">Catch2</a></li>
@@ -147,24 +147,61 @@ Install</h1>
 </ul>
 <div class="fragment"><div class="line">sudo apt install -y libeigen3-dev catch2 libtinyxml2-dev</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
-2. Build with cmake</h2>
+2. Build and install with cmake</h2>
 <div class="fragment"><div class="line">git clone https://github.com/Tom0Brien/tinyrobotics.git &amp;&amp; cd tinyrobotics</div>
 <div class="line">mkdir build &amp;&amp; cd build</div>
 <div class="line">cmake ..</div>
 <div class="line">make</div>
 <div class="line">sudo make install # copies files in the include folder to /usr/local/include*</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
-Examples</h1>
-<p>Numerous examples are provided in the <code>examples</code> folder.</p>
-<p>The code below demonstrates how to load in a URDF model and compute the forward kinematics. </p><div class="fragment"><div class="line"> ++</div>
-<div class="line"><span class="comment">// Create a tinyrobotics model with 4 joints using URDF file defined in 4_link.urdf</span></div>
-<div class="line"><span class="keyword">auto</span> model = import_urdf&lt;double, 4&gt;(<span class="stringliteral">&quot;4_link.urdf&quot;</span>);</div>
+Example</h1>
+<p>The code below demonstrates how to generate a model via a URDF and use kinematics and dynamics functions. Numerous other examples are provided in the <code>examples</code> folder.</p>
+<div class="fragment"><div class="line">++</div>
+<div class="line">   <span class="comment">// Parse URDF</span></div>
+<div class="line">   <span class="keyword">const</span> <span class="keywordtype">int</span> n_joints      = 5;</div>
+<div class="line">   <span class="keyword">auto</span> model              = import_urdf&lt;double, n_joints&gt;(<span class="stringliteral">&quot;5_link.urdf&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Create a home configuration vector (all zeros).</span></div>
-<div class="line"><span class="keyword">auto</span> q = model.home_configuration();</div>
+<div class="line">   <span class="comment">// Create test configuration, velocity, acceleration and torque vectors</span></div>
+<div class="line">   <span class="keyword">auto</span> q = model.random_configuration();</div>
+<div class="line">   <span class="keyword">auto</span> dq = Eigen::Matrix&lt;double, n_joints, 1&gt;::Zero();</div>
+<div class="line">   <span class="keyword">auto</span> ddq = Eigen::Matrix&lt;double, n_joints, 1&gt;::Zero();</div>
+<div class="line">   <span class="keyword">auto</span> tau = Eigen::Matrix&lt;double, n_joints, 1&gt;::Zero();</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Compute the forward kinematics to the link 2 from the base frame at the home configuration.</span></div>
-<div class="line"><span class="keyword">auto</span> H = forward_kinematics(model, q, 2);</div>
+<div class="line">   <span class="comment">// Forward Kinematics</span></div>
+<div class="line">   std::string source_link = <span class="stringliteral">&quot;base&quot;</span>;</div>
+<div class="line">   std::string target_link = <span class="stringliteral">&quot;end_effector&quot;</span>;</div>
+<div class="line">   <span class="keyword">auto</span> H = forward_kinematics(model, q, target_link, source_link);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Center of Mass</span></div>
+<div class="line">   <span class="keyword">auto</span> com = center_of_mass(model, q);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Inverse Kinematics</span></div>
+<div class="line">   InverseKinematicsOptions&lt;double, n_joints&gt; options;</div>
+<div class="line">   options.max_iterations = 1000;</div>
+<div class="line">   options.tolerance      = 1e-4;</div>
+<div class="line">   options.method         = InverseKinematicsMethod::LEVENBERG_MARQUARDT;</div>
+<div class="line">   <span class="keyword">auto</span> q_solution             = inverse_kinematics(model, target_link, source_link, H, q, options);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Jacobian</span></div>
+<div class="line">   <span class="keyword">auto</span> J = jacobian(model, q, target_link);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Forward Dynamics</span></div>
+<div class="line">   <span class="keyword">auto</span> acceleration = forward_dynamics(model, q, dq, tau);</div>
+<div class="line">  </div>
+<div class="line">   <span class="comment">// Inverse Dynamics</span></div>
+<div class="line">   <span class="keyword">auto</span> torque = inverse_dynamics(model, q, dq, ddq);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Mass Matrix</span></div>
+<div class="line">   <span class="keyword">auto</span> M = mass_matrix(model, q);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Kinetic Energy</span></div>
+<div class="line">   <span class="keyword">auto</span> T = kinetic_energy(model, q, dq);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Potential Energy</span></div>
+<div class="line">   <span class="keyword">auto</span> V = potential_energy(model, q);</div>
+<div class="line"> </div>
+<div class="line">   <span class="comment">// Total Energy</span></div>
+<div class="line">   <span class="keyword">auto</span> E = total_energy(model, q, q);</div>
 </div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

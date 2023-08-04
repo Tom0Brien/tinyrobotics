@@ -10,7 +10,7 @@ var searchData=
   ['init_5flink_5ftree_7',['init_link_tree',['../parser_8hpp.html#a68984c36822905c560b4f6c9356202fd',1,'tinyrobotics']]],
   ['init_5fposition_5fscale_8',['init_position_scale',['../structtinyrobotics_1_1InverseKinematicsOptions.html#a00e6525ca4ec75ec8805a1d7094145bb',1,'tinyrobotics::InverseKinematicsOptions']]],
   ['initial_5fdamping_9',['initial_damping',['../structtinyrobotics_1_1InverseKinematicsOptions.html#a87b97d113b212b9c73db8fb21f68b3d9',1,'tinyrobotics::InverseKinematicsOptions']]],
-  ['inverse_5fdynamics_10',['inverse_dynamics',['../dynamics_8hpp.html#acf55a06f27a5305eb33b7bbd39462acd',1,'tinyrobotics']]],
+  ['inverse_5fdynamics_10',['inverse_dynamics',['../dynamics_8hpp.html#afe82e4763c1a0825d956de448cef4537',1,'tinyrobotics']]],
   ['inverse_5fkinematics_11',['inverse_kinematics',['../inversekinematics_8hpp.html#a53ab1c30659249fa82f16b761a49c076',1,'tinyrobotics']]],
   ['inverse_5fkinematics_5fbfgs_12',['inverse_kinematics_bfgs',['../inversekinematics_8hpp.html#a710ae0764b082f586d60f5e5d08108d6',1,'tinyrobotics']]],
   ['inverse_5fkinematics_5fjacobian_13',['inverse_kinematics_jacobian',['../inversekinematics_8hpp.html#a1b6c65c8a6fc5380762ac74c6c982412',1,'tinyrobotics']]],
