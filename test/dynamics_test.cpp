@@ -71,14 +71,12 @@ TEST_CASE("Test kinetic, potential and total energy computation for simple model
     // Create a random configuration
     Eigen::Matrix<double, 4, 1> q = robot_model.home_configuration();
     q << 1, 2, 3, 4;
-    Eigen::Matrix<double, 4, 1> p;
-    p << 1, 2, 3, 4;
-    // Compute the kinetic, potential and total_energy
-    total_energy(robot_model, q, p);
+    Eigen::Matrix<double, 4, 1> dq;
+    dq << 1, 2, 3, 4;
     // Check that the kinetic, potential and total_energy are correct
-    REQUIRE(robot_model.kinetic_energy - 83.1250 < 1e-2);
-    REQUIRE(robot_model.potential_energy - 432.7102 < 1e-2);
-    REQUIRE(robot_model.total_energy - 515.8352 < 1e-2);
+    REQUIRE(std::abs(kinetic_energy(robot_model, q, dq) - 38.6444) < 1e-3);
+    REQUIRE(std::abs(potential_energy(robot_model, q) - 432.7102) < 1e-3);
+    REQUIRE(std::abs(total_energy(robot_model, q, dq) - 471.3546) < 1e-3);
 };
 
 TEST_CASE("Test Forward Dynamics via Articulated-Body Algorithm for 2 link model", "[Dynamics]") {

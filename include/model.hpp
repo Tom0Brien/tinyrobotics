@@ -54,14 +54,8 @@ namespace tinyrobotics {
         /// @brief Mass matrix
         Eigen::Matrix<Scalar, nq, nq> mass_matrix = Eigen::Matrix<Scalar, nq, nq>::Zero();
 
-        /// @brief Kinetic energy
-        Scalar kinetic_energy = 0;
-
         /// @brief Potential energy
         Scalar potential_energy = 0;
-
-        /// @brief Total_energy
-        Scalar total_energy = 0;
 
         /// @brief Vector of forward kinematics data
         std::vector<Eigen::Transform<Scalar, 3, Eigen::Isometry>> forward_kinematics = {};
@@ -274,9 +268,7 @@ namespace tinyrobotics {
                 new_model.links.push_back(link.template cast<NewScalar>());
             }
             new_model.mass_matrix      = mass_matrix.template cast<NewScalar>();
-            new_model.kinetic_energy   = NewScalar(kinetic_energy);
             new_model.potential_energy = NewScalar(potential_energy);
-            new_model.total_energy     = NewScalar(total_energy);
             new_model.C                = C.template cast<NewScalar>();
             new_model.fh               = fh.template cast<NewScalar>();
             new_model.spatial_gravity  = spatial_gravity.template cast<NewScalar>();
