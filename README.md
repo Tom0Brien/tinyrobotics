@@ -35,7 +35,7 @@ The core algorithms of tinyrobotics are listed below, for detailed documentation
 
 ## Install
 
-### 1. Install Dependencies
+### 1. Install dependencies
 - [Eigen3](https://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [Catch2](https://github.com/catchorg/Catch2)
 - [TinyXML2](https://github.com/leethomason/tinyxml2)
@@ -45,7 +45,7 @@ The core algorithms of tinyrobotics are listed below, for detailed documentation
 sudo apt install -y libeigen3-dev catch2 libtinyxml2-dev
 ```
 
-### 2. Build with cmake
+### 2. Build and install with cmake
   ```bash
   git clone https://github.com/Tom0Brien/tinyrobotics.git && cd tinyrobotics
   mkdir build && cd build
@@ -54,17 +54,54 @@ sudo apt install -y libeigen3-dev catch2 libtinyxml2-dev
   sudo make install # copies files in the include folder to /usr/local/include*
   ```
 
-## Examples
-Numerous examples are provided in the `examples` folder. 
+## Example
+The code below demonstrates how to generate a model via a URDF and use kinematics and dynamics functions.
+Numerous other examples are provided in the `examples` folder. 
 
-The code below demonstrates how to load in a URDF model and compute the forward kinematics.
 ```c++
-// Create a tinyrobotics model with 4 joints using URDF file defined in 4_link.urdf
-auto model = import_urdf<double, 4>("4_link.urdf");
+    // Parse URDF
+    const int n_joints      = 5;
+    auto model              = import_urdf<double, n_joints>("5_link.urdf");
 
-// Create a home configuration vector (all zeros).
-auto q = model.home_configuration();
+    // Create test configuration, velocity, acceleration and torque vectors
+    auto q = model.random_configuration();
+    auto dq = Eigen::Matrix<double, n_joints, 1>::Zero();
+    auto ddq = Eigen::Matrix<double, n_joints, 1>::Zero();
+    auto tau = Eigen::Matrix<double, n_joints, 1>::Zero();
 
-// Compute the forward kinematics to the link 2 from the base frame at the home configuration.
-auto H = forward_kinematics(model, q, 2);
+    // Forward Kinematics
+    std::string source_link = "base";
+    std::string target_link = "end_effector";
+    auto H = forward_kinematics(model, q, target_link, source_link);
+
+    // Center of Mass
+    auto com = center_of_mass(model, q);
+
+    // Inverse Kinematics
+    InverseKinematicsOptions<double, n_joints> options;
+    options.max_iterations = 1000;
+    options.tolerance      = 1e-4;
+    options.method         = InverseKinematicsMethod::LEVENBERG_MARQUARDT;
+    auto q_solution             = inverse_kinematics(model, target_link, source_link, H, q, options);
+
+    // Jacobian
+    auto J = jacobian(model, q, target_link);
+
+    // Forward Dynamics
+    auto acceleration = forward_dynamics(model, q, dq, tau);
+   
+    // Inverse Dynamics
+    auto torque = inverse_dynamics(model, q, dq, ddq);
+
+    // Mass Matrix
+    auto M = mass_matrix(model, q);
+
+    // Kinetic Energy
+    auto T = kinetic_energy(model, q, dq);
+
+    // Potential Energy
+    auto V = potential_energy(model, q);
+
+    // Total Energy
+    auto E = total_energy(model, q, q);
 ```
