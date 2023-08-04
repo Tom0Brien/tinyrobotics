@@ -10,44 +10,6 @@
 namespace tinyrobotics {
 
     /**
-     * @brief Manually convert the given rotation matrix to [Roll, Pitch, Yaw] ZYX intrinsic euler angle (Better range
-     * than Eigen conversion).
-     * @param mat Rotation matrix
-     * @return [Roll, Pitch, Yaw] ZYX intrinsic euler angle
-     */
-    template <typename T,
-              typename Scalar                                                                 = typename T::Scalar,
-              std::enable_if_t<((T::RowsAtCompileTime == 3) && (T::ColsAtCompileTime == 3))>* = nullptr>
-    inline Eigen::Matrix<Scalar, 3, 1> rotation_to_rpy(const T& mat) {
-        using std::atan2;
-        using std::sqrt;
-        // Eigen euler angles and with better range
-        return Eigen::Matrix<Scalar, 3, 1>(
-            // Roll
-            atan2(mat(2, 1), mat(2, 2)),
-            // Pitch
-            atan2(-mat(2, 0), sqrt(mat(2, 1) * mat(2, 1) + mat(2, 2) * mat(2, 2))),
-            // Yaw
-            atan2(mat(1, 0), mat(0, 0)));
-    }
-
-    /**
-     * @brief Convert given Euler angles in [Roll, Pitch, Yaw] ZYX intrinsic format to rotation matrix
-     * @param angles [Roll, Pitch, Yaw] ZYX intrinsic euler angles
-     * @return Rotation matrix corresponding to given euler angles
-     */
-    template <typename T,
-              typename Scalar                                                                 = typename T::Scalar,
-              std::enable_if_t<((T::RowsAtCompileTime == 3) && (T::ColsAtCompileTime == 1))>* = nullptr>
-    inline Eigen::Matrix<Scalar, 3, 3> rpy_to_rotation(const T& angles) {
-        Eigen::AngleAxis<Scalar> yawRot(angles.z(), Eigen::Matrix<Scalar, 3, 1>::UnitZ());
-        Eigen::AngleAxis<Scalar> pitchRot(angles.y(), Eigen::Matrix<Scalar, 3, 1>::UnitY());
-        Eigen::AngleAxis<Scalar> rollRot(angles.x(), Eigen::Matrix<Scalar, 3, 1>::UnitX());
-        Eigen::Quaternion<Scalar> quat = yawRot * pitchRot * rollRot;
-        return quat.matrix();
-    }
-
-    /**
      * @brief Computes the skew of a 3x3 vector.
      * @param input The 3x3 vector.
      * @tparam Scalar Scalar type.
@@ -69,20 +31,6 @@ namespace tinyrobotics {
         Eigen::Matrix<Scalar, 3, 3> out;
         out << Scalar(0), -input(2), input(1), input(2), Scalar(0), -input(0), -input(1), input(0), Scalar(0);
         return out;
-    }
-
-    /**
-     * @brief Computes an orthonormal basis for the null space of a matrix.
-     * @param A Input matrix.
-     * @tparam Scalar Scalar type.
-     * @return The orthonormal basis for the null space of A.
-     */
-    template <typename Scalar>
-    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> null(
-        const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>& A) {
-        Eigen::FullPivLU<Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>> lu(A);
-        Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> A_null_space = lu.kernel();
-        return A_null_space;
     }
 
     /**

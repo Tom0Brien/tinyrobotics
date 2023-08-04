@@ -36,14 +36,6 @@ int main(int argc, char* argv[]) {
     Hst_solution = forward_kinematics(link_5, q_solution, target_link_name, source_link_name);
 
     // Check that the solution is close to the desired transform
-    std::cout << "Hst_desired translation:" << Hst_desired.translation().transpose() << std::endl;
-    std::cout << "Hst_solution translation:" << Hst_solution.translation().transpose() << std::endl;
-    std::cout << "Translation error: " << (Hst_desired.translation() - Hst_solution.translation()).squaredNorm()
-              << std::endl;
-    std::cout << "Hst_desired orientation:" << rotation_to_rpy(Hst_desired.linear()).transpose() << std::endl;
-    std::cout << "Hst_solution orientation:" << rotation_to_rpy(Hst_solution.linear()).transpose() << std::endl;
-    std::cout << "Orientation error: "
-              << (rotation_to_rpy(Hst_solution.rotation()) - rotation_to_rpy(Hst_desired.rotation())).squaredNorm()
-              << std::endl;
+    std::cout << "IK error: " << homogeneous_error(Hst_solution, Hst_desired).norm() << std::endl;
     std::cout << "Time taken by inverse kinematics: " << duration.count() << " microseconds" << std::endl;
 }
