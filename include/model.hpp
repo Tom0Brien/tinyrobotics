@@ -6,10 +6,6 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <map>
-#include <memory>
-#include <numeric>
-#include <sstream>
 
 #include "joint.hpp"
 #include "link.hpp"
@@ -27,6 +23,9 @@ namespace tinyrobotics {
      */
     template <typename Scalar, int nq>
     struct Model {
+
+        /// **************** Model Information ****************
+
         /// @brief Name of the model
         std::string name = "";
 
@@ -281,7 +280,6 @@ namespace tinyrobotics {
                 new_model.d[i]   = NewScalar(d[i]);
                 new_model.u[i]   = NewScalar(u[i]);
                 new_model.a[i]   = a[i].template cast<NewScalar>();
-                new_model.avp[i] = avp[i].template cast<NewScalar>();
                 new_model.fvp[i] = fvp[i].template cast<NewScalar>();
                 new_model.IC[i]  = IC[i].template cast<NewScalar>();
             }
