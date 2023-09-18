@@ -103,5 +103,5 @@ auto T = kinetic_energy(model, q, dq);
 auto V = potential_energy(model, q);
 
 // Total Energy
-auto E = total_energy(model, q, q);
+auto E = total_energy(model, q, dq);
 ```
