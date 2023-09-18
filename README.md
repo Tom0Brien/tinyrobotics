@@ -59,49 +59,49 @@ The code below demonstrates how to generate a model via a URDF and use kinematic
 Numerous other examples are provided in the `examples` folder. 
 
 ```c++
-    // Parse URDF
-    const int n_joints      = 5;
-    auto model              = import_urdf<double, n_joints>("5_link.urdf");
+// Parse URDF
+const int n_joints      = 5;
+auto model              = import_urdf<double, n_joints>("5_link.urdf");
 
-    // Create test configuration, velocity, acceleration and torque vectors
-    auto q = model.random_configuration();
-    auto dq = Eigen::Matrix<double, n_joints, 1>::Zero();
-    auto ddq = Eigen::Matrix<double, n_joints, 1>::Zero();
-    auto tau = Eigen::Matrix<double, n_joints, 1>::Zero();
+// Create test configuration, velocity, acceleration and torque vectors
+auto q = model.random_configuration();
+auto dq = Eigen::Matrix<double, n_joints, 1>::Zero();
+auto ddq = Eigen::Matrix<double, n_joints, 1>::Zero();
+auto tau = Eigen::Matrix<double, n_joints, 1>::Zero();
 
-    // Forward Kinematics
-    std::string source_link = "base";
-    std::string target_link = "end_effector";
-    auto H = forward_kinematics(model, q, target_link, source_link);
+// Forward Kinematics
+std::string source_link = "base";
+std::string target_link = "end_effector";
+auto H = forward_kinematics(model, q, target_link, source_link);
 
-    // Center of Mass
-    auto com = center_of_mass(model, q);
+// Center of Mass
+auto com = center_of_mass(model, q);
 
-    // Inverse Kinematics
-    InverseKinematicsOptions<double, n_joints> options;
-    options.max_iterations = 1000;
-    options.tolerance      = 1e-4;
-    options.method         = InverseKinematicsMethod::LEVENBERG_MARQUARDT;
-    auto q_solution             = inverse_kinematics(model, target_link, source_link, H, q, options);
+// Inverse Kinematics
+InverseKinematicsOptions<double, n_joints> options;
+options.max_iterations = 1000;
+options.tolerance      = 1e-4;
+options.method         = InverseKinematicsMethod::LEVENBERG_MARQUARDT;
+auto q_solution             = inverse_kinematics(model, target_link, source_link, H, q, options);
 
-    // Jacobian
-    auto J = jacobian(model, q, target_link);
+// Jacobian
+auto J = jacobian(model, q, target_link);
 
-    // Forward Dynamics
-    auto acceleration = forward_dynamics(model, q, dq, tau);
-   
-    // Inverse Dynamics
-    auto torque = inverse_dynamics(model, q, dq, ddq);
+// Forward Dynamics
+auto acceleration = forward_dynamics(model, q, dq, tau);
 
-    // Mass Matrix
-    auto M = mass_matrix(model, q);
+// Inverse Dynamics
+auto torque = inverse_dynamics(model, q, dq, ddq);
 
-    // Kinetic Energy
-    auto T = kinetic_energy(model, q, dq);
+// Mass Matrix
+auto M = mass_matrix(model, q);
 
-    // Potential Energy
-    auto V = potential_energy(model, q);
+// Kinetic Energy
+auto T = kinetic_energy(model, q, dq);
 
-    // Total Energy
-    auto E = total_energy(model, q, q);
+// Potential Energy
+auto V = potential_energy(model, q);
+
+// Total Energy
+auto E = total_energy(model, q, q);
 ```
