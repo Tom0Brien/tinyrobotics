@@ -203,3 +203,14 @@ TEST_CASE("Test Inverse Dynamics for 5 link model", "[Dynamics]") {
     qdd << 1, 2, 3, 4, 5;
     auto tau = inverse_dynamics(robot_model, q, qd, qdd);
 }
+
+TEST_CASE("Test gravity torque vector", "[Dynamics]") {
+    const int n_joints = 2;
+    auto robot_model   = import_urdf<double, n_joints>("data/urdfs/2_link_upright.urdf");
+    // Create some inputs
+    Eigen::Matrix<double, n_joints, 1> q;
+    q << 1, 2;
+    Eigen::Matrix<double, n_joints, 1> G = gravity_torque(robot_model, q);
+    CHECK(G(0) == Approx(-3.0946));
+    CHECK(G(1) == Approx(4.8559));
+}

@@ -303,6 +303,21 @@ namespace tinyrobotics {
         return m.tau;
     }
 
+    /**
+     * @brief Compute the gravity vector (generalized gravity forces) for the tinyrobotics model.
+     * @param m The tinyrobotics model.
+     * @param q The joint configuration of the robot.
+     * @tparam Scalar Type of the tinyrobotics model.
+     * @tparam nq Number of configuration coordinates (degrees of freedom).
+     * @return Gravity torque vector for the given configuration.
+     */
+    template <typename Scalar, int nq>
+    Eigen::Matrix<Scalar, nq, 1> gravity_torque(Model<Scalar, nq>& m, const Eigen::Matrix<Scalar, nq, 1>& q) {
+        // Compute inverse dynamics with zero velocities and accelerations to get only the gravitational term
+        Eigen::Matrix<Scalar, nq, 1> zero = Eigen::Matrix<Scalar, nq, 1>::Zero();
+        return inverse_dynamics(m, q, zero, zero);
+    }
+
 }  // namespace tinyrobotics
 
 #endif
