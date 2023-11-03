@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     auto q0                                     = link_5.home_configuration();
     // Compute the forward kinematics for the random configuration
     Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
-    std::string target_link_name = "left_foot";
+    std::string target_link_name = "left_foot_base";
     std::string source_link_name = "torso";
     Hst_desired                  = forward_kinematics(link_5, q_random, target_link_name, source_link_name);
     // Compute the inverse kinematics for the random desired transform

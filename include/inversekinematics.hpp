@@ -378,10 +378,7 @@ namespace tinyrobotics {
                 forward_kinematics(model, q_new, target_link_name, source_link_name);
 
             // Compute the new error vector
-            Eigen::Matrix<Scalar, 6, 1> new_pose_error;
-            new_pose_error.head(3) = new_pose.translation() - desired_pose.translation();
-            Eigen::AngleAxis<Scalar> new_rot_error(new_pose.rotation().transpose() * desired_pose.rotation());
-            new_pose_error.tail(3) = new_rot_error.angle() * new_rot_error.axis();
+            Eigen::Matrix<Scalar, 6, 1> new_pose_error = homogeneous_error(new_pose, desired_pose);
 
             // Check if the new error is smaller than the old error
             if (new_pose_error.norm() < pose_error.norm()) {

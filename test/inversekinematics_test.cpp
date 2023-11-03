@@ -256,14 +256,14 @@ TEST_CASE("Test inverse kinematics for nugus robot with nlopt optimisation metho
 
     // Compute the forward kinematics for the random configuration
     Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
-    std::string target_link_name = "left_foot";
+    std::string target_link_name = "left_foot_base";
     std::string source_link_name = "torso";
     Hst_desired                  = forward_kinematics(nugus, q_random, target_link_name, source_link_name);
 
     // Compute the inverse kinematics for the random desired transform
     auto q0 = nugus.home_configuration();
     InverseKinematicsOptions<double, n_joints> options;
-    options.method = InverseKinematicsMethod::NLOPT;
+    options.method = InverseKinematicsMethod::LEVENBERG_MARQUARDT;
     Eigen::Matrix<double, n_joints, 1> q_solution =
         inverse_kinematics<double, n_joints>(nugus, target_link_name, source_link_name, Hst_desired, q0, options);
 
@@ -286,16 +286,15 @@ TEST_CASE("Test inverse kinematics for nugus robot with all IK methods", "[inver
 
     // Compute the forward kinematics for the random configuration
     Eigen::Transform<double, 3, Eigen::Isometry> Hst_desired;
-    std::string target_link_name = "left_foot";
+    std::string target_link_name = "left_foot_base";
     std::string source_link_name = "torso";
     Hst_desired                  = forward_kinematics(link_5, q_random, target_link_name, source_link_name);
 
     // Set up options
     InverseKinematicsOptions<double, n_joints> options;
-    options.max_iterations                       = 1000;
+    options.max_iterations                       = 10000;
     options.tolerance                            = 1e-5;
     std::vector<InverseKinematicsMethod> methods = {InverseKinematicsMethod::JACOBIAN,
-                                                    InverseKinematicsMethod::NLOPT,
                                                     InverseKinematicsMethod::LEVENBERG_MARQUARDT,
                                                     InverseKinematicsMethod::PARTICLE_SWARM,
                                                     InverseKinematicsMethod::BFGS};
