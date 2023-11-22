@@ -204,6 +204,52 @@ namespace tinyrobotics {
         return model.J;
     }
 
+    template <typename Scalar, int nq, typename TargetLink, typename SourceLink = int>
+    Eigen::Matrix<Scalar, 6, nq> jacobian(Model<Scalar, nq>& model,
+                                          const Eigen::Matrix<Scalar, nq, 1>& q,
+                                          const TargetLink& target_link,
+                                          const SourceLink& source_link) {
+        // Compute forward kinematics for all the links
+        forward_kinematics(model, q);
+
+        Eigen::Matrix<Scalar, 6, nq> J;
+        J.setZero();
+
+        // Get indices of target and source links
+        int target_idx = get_link_idx(model, target_link);
+        int source_idx = get_link_idx(model, source_link);
+
+        // Transform from base to source link
+        Eigen::Transform<Scalar, 3, Eigen::Isometry> Hbs = forward_kinematics(model, q, source_idx);
+        Eigen::Matrix<Scalar, 3, 3> Rbs                  = Hbs.linear();  // Rotation matrix from base to source
+
+        Link<Scalar> current_link        = model.links[target_idx];
+        Eigen::Matrix<Scalar, 3, 1> rTSs = Hbs.inverse() * model.forward_kinematics[current_link.idx].translation();
+
+        // Compute the Jacobian
+        while (current_link.idx != source_idx) {
+            if (current_link.joint.idx != -1) {
+                Eigen::Matrix<Scalar, 3, 1> zIBb =
+                    model.forward_kinematics[current_link.idx].linear() * current_link.joint.axis;
+                Eigen::Matrix<Scalar, 3, 1> rISs =
+                    Hbs.inverse() * model.forward_kinematics[current_link.idx].translation();
+                Eigen::Matrix<Scalar, 3, 1> zISs = Rbs.transpose() * zIBb;  // Transform joint axis to source frame
+
+                if (current_link.joint.type == JointType::PRISMATIC) {
+                    J.block(0, current_link.joint.idx, 3, 1) = zISs;
+                    J.block(3, current_link.joint.idx, 3, 1) = Eigen::Matrix<Scalar, 3, 1>::Zero();
+                }
+                else if (current_link.joint.type == JointType::REVOLUTE) {
+                    J.block(0, current_link.joint.idx, 3, 1) = zISs.cross(rTSs - rISs);
+                    J.block(3, current_link.joint.idx, 3, 1) = zISs;
+                }
+            }
+            current_link = model.links[current_link.parent];
+        }
+
+        return J;
+    }
+
     /**
      * @brief Computes the center of mass expressed in source link frame.
      * @param model tinyrobotics model.

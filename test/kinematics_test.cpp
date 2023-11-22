@@ -74,6 +74,40 @@ TEST_CASE("Test jacobian calculations for simple model", "[ForwardKinematics]") 
     REQUIRE(J.isApprox(J_expected, 1e-4));
 }
 
+TEST_CASE("Test jacobian calculations with source source simple model", "[ForwardKinematics]") {
+    // Create a configuration for the robot
+    auto q = robot_model.home_configuration();
+    q << 1, 2, 3, 4;
+    // Compute the geometric jacobian of robot with respect to the ground
+    std::string target_link_name  = "left_foot";
+    std::string source_link_name  = "ground";
+    Eigen::Matrix<double, 6, 4> J = jacobian(robot_model, q, target_link_name, source_link_name);
+    // Check that the geometric jacobian is correct
+    Eigen::Matrix<double, 6, 4> J_expected;
+    J_expected << 1.0, 0, -0.9899924966, 0, 0, 0, 0, 0, 0, 1.0, 0.14112, 0, 0, 0, 0, 0, 0, 0, -1.0, 0, 0, 0, 0, 0;
+    REQUIRE(J.isApprox(J_expected, 1e-4));
+    // Test for another target link
+    target_link_name = "right_foot";
+    J                = jacobian(robot_model, q, target_link_name, source_link_name);
+    // Check that the geometric jacobian is correct
+    J_expected << 1.0, 0, 0, -0.6536, 0, 0, 0, 0, 0, 1.0, 0, -0.7568, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0;
+    REQUIRE(J.isApprox(J_expected, 1e-4));
+}
+
+TEST_CASE("Test jacobian calculations with same source and target for simple model", "[ForwardKinematics]") {
+    // Create a configuration for the robot
+    auto q = robot_model.home_configuration();
+    q << 1, 2, 3, 4;
+    // Compute the geometric jacobian with same source and target
+    std::string target_link_name  = "left_foot";
+    std::string source_link_name  = "left_foot";
+    Eigen::Matrix<double, 6, 4> J = jacobian(robot_model, q, target_link_name, source_link_name);
+    // Check that the geometric jacobian is correct
+    Eigen::Matrix<double, 6, 4> J_expected = Eigen::Matrix<double, 6, 4>::Zero();
+    REQUIRE(J.isApprox(J_expected, 1e-4));
+}
+
+
 TEST_CASE("Test jacobian calculations for kuka model", "[ForwardKinematics]") {
     auto kuka_model = import_urdf<double, 7>("data/urdfs/kuka.urdf");
     // Create a configuration for the robot
